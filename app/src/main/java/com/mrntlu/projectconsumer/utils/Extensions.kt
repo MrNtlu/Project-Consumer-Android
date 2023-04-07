@@ -25,6 +25,10 @@ fun String.convertToFormattedDate(): String? {
     return if(date != null) SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date) else this
 }
 
+fun String.isNotEmptyOrBlank(): Boolean{
+    return this.trim().isNotEmpty() && this.trim().isNotBlank()
+}
+
 fun View.setGone(){
     this.visibility = View.GONE
 }
