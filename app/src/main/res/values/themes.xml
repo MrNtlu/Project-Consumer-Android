@@ -14,6 +14,11 @@
 
         <!-- Customize your theme here. -->
         <item name="toolbarBackgroundColor">?attr/colorPrimary</item>
+
+        <!-- TODO Change colors      -->
+        <item name="bottomNavBackgroundColor">?attr/colorPrimary</item>
+        <item name="bottomNavSelectedColor">@color/white</item>
+        <item name="bottomNavUnselectedColor">@color/blue900</item>
     </style>
 
     <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">

@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
-import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -44,9 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
+        //TODO Implement floating bottom app bar with hide/show function on scroll
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+                R.id.navigation_show, R.id.navigation_anime, R.id.navigation_game
             )
         )
 
