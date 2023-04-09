@@ -46,14 +46,35 @@ class MainActivity : AppCompatActivity() {
         //TODO Implement floating bottom app bar with hide/show function on scroll
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_show, R.id.navigation_anime, R.id.navigation_game
+                R.id.navigation_movie, R.id.navigation_tv, R.id.navigation_anime, R.id.navigation_game
             )
         )
 
+        setSupportActionBar(binding.toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
         setObservers()
+        setToolbar()
+
+        //TODO
+        // Add menu to toolbar
+        // Find font
+        // Setup firebase analytics and crashlytics
+        // Toggle BottomAppBar on Scroll
+        // Custom BottomAppBar
+        // Custom Toolbar/ActionBar
+        // Toolbar Settings Left & Profile on Right
+        // On Pressed hide BottomAppBar
+
+        //TODO Login Flow
+        // MainActivity should be the controller
+        // SharedViewModel should keep isLoggedIn value and present necessary UI elements accordingly.
+        // If logged in show different layout on toolbar if not show image and login button
+    }
+
+    private fun setToolbar() {
+        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {

@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Project Consumer</string>
-    <string name="title_show">Shows</string>
+    <string name="title_movie">Movies</string>
+    <string name="title_tv">Series</string>
     <string name="title_anime">Anime</string>
     <string name="title_game">Games</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
