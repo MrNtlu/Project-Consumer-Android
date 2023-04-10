@@ -1,9 +1,13 @@
 package com.mrntlu.projectconsumer.di
 
 import android.content.Context
+import androidx.room.Room
 import com.mrntlu.projectconsumer.service.AuthAuthenticator
 import com.mrntlu.projectconsumer.service.AuthInterceptor
+import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.TokenManager
+import com.mrntlu.projectconsumer.service.room.CacheDao
+import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -56,4 +60,23 @@ class SingletonModule {
         Retrofit.Builder()
             .baseUrl(Constants.API_URL)
             .addConverterFactory(GsonConverterFactory.create())
+
+    @Singleton
+    @Provides
+    fun provideMovieAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): MovieApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(MovieApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideCacheDatabase(@ApplicationContext context: Context): CacheDatabase =
+        Room
+            .databaseBuilder(context, CacheDatabase::class.java, Constants.CACHE_DB_NAME)
+            .build()
+
+    @Singleton
+    @Provides
+    fun provideCacheDao(cacheDB: CacheDatabase): CacheDao = cacheDB.getCacheDao()
 }
