@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/userProfileIV"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="6dp"
+        android:clickable="true"
+        app:tint="?attr/toolbarTintColor"
+        android:src="@drawable/ic_person_64"
+        android:contentDescription="@string/login_register_cd" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="@string/login_register_toolbar"
+        android:textColor="?attr/toolbarTintColor"
+        android:textSize="12sp" />
+
+</LinearLayout>

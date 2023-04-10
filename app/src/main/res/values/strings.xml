@@ -4,6 +4,9 @@
     <string name="title_tv">Series</string>
     <string name="title_anime">Anime</string>
     <string name="title_game">Games</string>
+    <string name="settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_register_toolbar">Login/Register</string>
+    <string name="login_register_cd">Login/Register Image</string>
 </resources>

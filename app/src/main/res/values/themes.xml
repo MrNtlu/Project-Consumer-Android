@@ -13,18 +13,19 @@
         <item name="android:statusBarColor">?attr/toolbarBackgroundColor</item>
 
         <!-- Customize your theme here. -->
-        <item name="toolbarBackgroundColor">@color/white</item>
 
         <!-- TODO Change colors      -->
+        <item name="toolbarBackgroundColor">@color/white</item>
+        <item name="toolbarTintColor">@color/materialBlack</item>
         <item name="bottomNavBackgroundColor">@color/white</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>
         <item name="bottomNavUnselectedColor">@color/grey500</item>
     </style>
 
     <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
-        <item name="android:background">@color/purple500</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="iconTint">@color/white</item>
-        <item name="colorControlNormal">@color/white</item>
+        <item name="android:background">?attr/toolbarBackgroundColor</item>
+        <item name="android:textColorPrimary">@color/materialBlack</item>
+        <item name="iconTint">@color/materialBlack</item>
+        <item name="colorControlNormal">@color/materialBlack</item>
     </style>
 </resources>

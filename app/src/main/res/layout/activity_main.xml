@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,26 +11,20 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/toolbarBackgroundColor"
-        android:minHeight="?attr/actionBarSize"
         android:elevation="0dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/Theme.ProjectConsumer.Toolbar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/userProfile"
-            android:clickable="true"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/profile"
-            android:layout_marginEnd="6dp"/>
-        <TextView
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/anonymousInc"
+            layout="@layout/anonymous_layout"
+            android:visibility="visible"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Login/Register"
-            android:textColor="@color/materialBlack"
-            android:textSize="12sp"
-            android:textStyle="bold"/>
+            android:layout_height="wrap_content"/>
     </androidx.appcompat.widget.Toolbar>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -60,6 +55,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:navGraph="@navigation/mobile_navigation" />
+        app:navGraph="@navigation/mobile_navigation"
+        tools:ignore="FragmentTagUsage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

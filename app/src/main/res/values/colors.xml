@@ -13,9 +13,11 @@
 
     <color name="darkWhite">#FAFAFA</color>
     <color name="materialBlack">#212121</color>
+    <color name="androidBlack">#FF121212</color>
 
     <color name="grey400">#BDBDBD</color>
     <color name="grey500">#9E9E9E</color>
     <color name="grey600">#757575</color>
     <color name="grey700">#616161</color>
+    <color name="greyAndroid">#808080</color>
 </resources>

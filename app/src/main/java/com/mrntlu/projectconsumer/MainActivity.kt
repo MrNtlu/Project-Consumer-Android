@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.AttributeSet
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,6 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.printLog
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -58,7 +61,6 @@ class MainActivity : AppCompatActivity() {
         setToolbar()
 
         //TODO
-        // Add menu to toolbar
         // Find font
         // Setup firebase analytics and crashlytics
         // Toggle BottomAppBar on Scroll
@@ -75,6 +77,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setToolbar() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        binding.anonymousInc.root.setOnClickListener {
+            printLog("Clicked")
+        }
     }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
@@ -83,6 +89,20 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(if (viewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
 
         return super.onCreateView(name, context, attrs)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.settingsMenu -> {
+
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun setObservers() {
