@@ -6,7 +6,7 @@ import com.mrntlu.projectconsumer.service.AuthAuthenticator
 import com.mrntlu.projectconsumer.service.AuthInterceptor
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.TokenManager
-import com.mrntlu.projectconsumer.service.room.CacheDao
+import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.utils.Constants
 import dagger.Module
@@ -78,5 +78,5 @@ class SingletonModule {
 
     @Singleton
     @Provides
-    fun provideCacheDao(cacheDB: CacheDatabase): CacheDao = cacheDB.getCacheDao()
+    fun provideMovieDao(cacheDB: CacheDatabase): MovieDao = cacheDB.getMovieDao()
 }
