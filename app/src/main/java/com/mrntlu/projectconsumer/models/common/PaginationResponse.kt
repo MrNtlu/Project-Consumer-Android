@@ -7,4 +7,6 @@ data class PaginationResponse(
     val prev: Int,
     val total: Int,
     val totalPage: Int
-)
+) {
+    constructor(): this(0,0,0,0,0,0)
+}

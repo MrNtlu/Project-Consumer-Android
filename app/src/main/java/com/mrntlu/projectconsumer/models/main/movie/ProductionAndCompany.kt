@@ -7,4 +7,6 @@ data class ProductionAndCompany(
     val name: String,
     @SerializedName("origin_country")
     val originCountry: String
-)
+) {
+    constructor(): this("", "", "")
+}

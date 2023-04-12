@@ -11,4 +11,6 @@ data class Streaming(
     val rentOptions: List<StreamingPlatform>,
     @SerializedName("streaming_platforms")
     val streamingPlatforms: List<StreamingPlatform>
-)
+) {
+    constructor(): this(listOf<StreamingPlatform>(), "", listOf<StreamingPlatform>(), listOf<StreamingPlatform>())
+}

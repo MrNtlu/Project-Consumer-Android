@@ -1,6 +1,6 @@
 package com.mrntlu.projectconsumer.service
 
-import com.mrntlu.projectconsumer.models.auth.response.Login
+import com.mrntlu.projectconsumer.models.auth.LoginResponse
 import com.mrntlu.projectconsumer.utils.Constants
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -34,7 +34,7 @@ class AuthAuthenticator @Inject constructor(
 
     // TODO Check a way to pass retrofit via hilt
     // google://android authenticator hilt retrofit
-    private suspend fun getNewToken(refreshToken: String?): retrofit2.Response<Login> {
+    private suspend fun getNewToken(refreshToken: String?): retrofit2.Response<LoginResponse> {
         TODO("Uncomment")
 //        val okHttpClient = OkHttpClient.Builder().build()
 //

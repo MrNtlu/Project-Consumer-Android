@@ -6,4 +6,6 @@ data class MovieGenre(
     val name: String,
     @SerializedName("tmdb_id")
     val tmdbID: Int,
-)
+) {
+    constructor(): this("", 0)
+}
