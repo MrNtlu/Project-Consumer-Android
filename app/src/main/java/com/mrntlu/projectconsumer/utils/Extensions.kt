@@ -9,11 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import kotlinx.coroutines.android.awaitFrame
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.Target
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,7 +41,19 @@ fun View.setVisible(){
     this.visibility = View.VISIBLE
 }
 
-fun ImageView.loadWithGlide(imageUrl:String, progressBar: ProgressBar) =
+fun Double.roundOffDecimal(): Double {
+    val df = DecimalFormat("#.##")
+    df.roundingMode = RoundingMode.CEILING
+    return df.format(this).toDouble()
+}
+
+fun Double.roundSingleDecimal(): Double {
+    val df = DecimalFormat("#.#")
+    df.roundingMode = RoundingMode.CEILING
+    return df.format(this).toDouble()
+}
+
+fun ImageView.loadWithGlide(imageUrl:String, progressBar: ProgressBar, transformImage: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable>) =
     Glide.with(context).load(imageUrl).addListener(object: RequestListener<Drawable> {
         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
             progressBar.setGone()
@@ -48,7 +64,7 @@ fun ImageView.loadWithGlide(imageUrl:String, progressBar: ProgressBar) =
             progressBar.setGone()
             return false
         }
-    }).into(this)
+    }).transformImage().into(this)
 
 suspend fun RecyclerView.quickScrollToTop(
     jumpThreshold: Int = DEFAULT_JUMP_THRESHOLD,

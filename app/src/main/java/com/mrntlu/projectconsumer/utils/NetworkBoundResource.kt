@@ -19,21 +19,26 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
 ) = flow<NetworkListResponse<ReturnType>> {
     val data = cacheQuery()
 
-    val flow: NetworkListResponse<ReturnType> = if (shouldFetch(data)) {
+    printLog("CacheQuery $data\n")
+    val networkListResponse: NetworkListResponse<ReturnType> = if (shouldFetch(data)) {
         emit(NetworkListResponse.Loading(isPaginating = isPaginating))
 
         try {
             val response = fetchNetwork()
 
+            printLog("Response ${response.isSuccessful} ${response.body()} ${response.errorBody()}\n")
             if (response.isSuccessful && response.body() != null) {
                 val result = saveAndQueryResult(response.body()!!)
 
+                printLog("Result ${result.first} ${result.second}\n")
                 NetworkListResponse.Success(
                     mapper(result.first),
                     isPaginationData = isPaginating,
                     isPaginationExhausted = result.second
                 )
             } else {
+                printLog("Not Successful\n")
+
                 if (isPaginating) {
                     NetworkListResponse.Success(
                         mapper(data),
@@ -45,6 +50,7 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
                 }
             }
         } catch (throwable: Throwable) {
+            printLog("Catch Error $throwable\n")
             if (isPaginating) {
                 NetworkListResponse.Success(
                     emptyObjectCreator(),
@@ -56,8 +62,10 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
             }
         }
     } else {
+        printLog("Should not fetch\n")
         NetworkListResponse.Success(mapper(data), isPaginationData = isPaginating)
     }
 
-    emit(flow)
+    printLog("Final response $networkListResponse")
+    emit(networkListResponse)
 }.flowOn(Dispatchers.IO)

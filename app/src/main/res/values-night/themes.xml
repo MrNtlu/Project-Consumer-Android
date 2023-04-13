@@ -13,6 +13,9 @@
         <item name="android:statusBarColor">?attr/toolbarBackgroundColor</item>
 
         <!-- Customize your theme here. -->
+        <item name="mainBackgroundColor">@color/androidBlack</item>
+        <item name="mainTextColor">@color/white</item>
+
         <item name="toolbarBackgroundColor">@color/androidBlack</item>
         <item name="toolbarTintColor">@color/white</item>
         <item name="bottomNavBackgroundColor">@color/materialBlack</item>

@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.models.main.movie
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.DiffUtilComparison
 
 data class Movie(
     @SerializedName("_id")
@@ -32,4 +33,19 @@ data class Movie(
     val tmdbVoteCount: Int,
     @SerializedName("production_companies")
     val productionCompanies: List<ProductionAndCompany>,
-)
+): DiffUtilComparison<Movie> {
+    override fun areItemsTheSame(newItem: Movie): Boolean {
+        return id == newItem.id
+    }
+
+    override fun areContentsTheSame(newItem: Movie): Boolean {
+        return when {
+            id != newItem.id -> false
+            titleEn != newItem.titleEn -> false
+            titleOriginal != newItem.titleOriginal -> false
+            description != newItem.description -> false
+            else -> true
+        }
+    }
+
+}

@@ -20,6 +20,7 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
 
     protected abstract fun handleDiffUtil(newList: ArrayList<T>)
 
+    //TODO Uncomment
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
             RecyclerViewEnum.View.value -> {
@@ -28,9 +29,9 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
             RecyclerViewEnum.Error.value -> {
                 (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
             }
-            RecyclerViewEnum.PaginationExhaust.value -> {
-                (holder as PaginationExhaustViewHolderBind<T>).bind(interaction)
-            }
+//            RecyclerViewEnum.PaginationExhaust.value -> {
+//                (holder as PaginationExhaustViewHolderBind<T>).bind(interaction)
+//            }
         }
     }
 

@@ -8,6 +8,7 @@ import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.utils.networkBoundResource
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 private const val UPCOMING_TAG = "upcoming"
@@ -26,6 +27,7 @@ class MovieRepository @Inject constructor(
             movieDao.getMoviesByTag(UPCOMING_TAG, page, sort)
         },
         fetchNetwork = {
+//            delay(3000L)
             movieApiService.getUpcomingMovies(page, sort)
         },
         mapper = {
