@@ -7,21 +7,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.LoadingViewHolder
-import com.mrntlu.projectconsumer.databinding.CellErrorBinding
-import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
-import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
+import com.mrntlu.projectconsumer.adapters.viewholders.PaginationExhaustViewHolder
+import com.mrntlu.projectconsumer.adapters.viewholders.PaginationLoadingViewHolder
+import com.mrntlu.projectconsumer.databinding.*
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setVisible
 
 class MovieAdapter(
     override val interaction: Interaction<Movie>
 ): BaseAdapter<Movie>(interaction) {
     override fun handleDiffUtil(newList: ArrayList<Movie>) {
-        val diffUtil = DiffUtilCallback<Movie>(
+        val diffUtil = DiffUtilCallback(
             arrayList,
             newList
         )
@@ -37,12 +38,15 @@ class MovieAdapter(
         return when(viewType) {
             RecyclerViewEnum.Loading.value -> LoadingViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.Error.value ->ErrorViewHolder<Movie>(CellErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.PaginationLoading.value -> PaginationLoadingViewHolder(CellPaginationLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.PaginationExhaust.value -> PaginationExhaustViewHolder(CellPaginationExhaustBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> return ItemViewHolder(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
     //TODO Handle null image error
-    //https://image.tmdb.org/t/p/original/null
+    // If no image show text in card with rounded corners
+    // https://image.tmdb.org/t/p/original/null
     inner class ItemViewHolder(
         private val binding: CellPreviewItemBinding,
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<Movie> {

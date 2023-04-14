@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         setToolbar()
 
         //TODO
+        // Status bar when white texts are not visible
         // Find font
         // Setup firebase analytics and crashlytics
         // Toggle BottomAppBar on Scroll
@@ -147,6 +148,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setObservers() {
+        //TODO Implement dark theme and get from the system
         viewModel.themeCode.observe(this) {
             AppCompatDelegate.setDefaultNightMode(if (it == Constants.LIGHT_THEME) MODE_NIGHT_NO else MODE_NIGHT_YES)
             setThemePref(it)

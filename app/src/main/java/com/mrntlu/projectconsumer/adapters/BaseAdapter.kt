@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
-import com.mrntlu.projectconsumer.interfaces.PaginationExhaustViewHolderBind
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.printLog
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
@@ -20,7 +20,6 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
 
     protected abstract fun handleDiffUtil(newList: ArrayList<T>)
 
-    //TODO Uncomment
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
             RecyclerViewEnum.View.value -> {
@@ -29,9 +28,6 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
             RecyclerViewEnum.Error.value -> {
                 (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
             }
-//            RecyclerViewEnum.PaginationExhaust.value -> {
-//                (holder as PaginationExhaustViewHolderBind<T>).bind(interaction)
-//            }
         }
     }
 
@@ -51,10 +47,13 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
     }
 
     override fun getItemCount(): Int {
-        return if (isLoading || errorMessage != null || arrayList.isEmpty())
+        return if (isLoading)
+            20
+        else if (errorMessage != null || arrayList.isEmpty()) {
             1
+        }
         else {
-            if (arrayList.isNotEmpty() && !isPaginating && canPaginate) //View Type
+            if (arrayList.isNotEmpty() && !isPaginating && canPaginate)
                 arrayList.size
             else
                 arrayList.size.plus(1)
@@ -102,21 +101,24 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
                 isLoading = false
                 isPaginating = false
                 errorMessage = null
+                canPaginate = false
             }
             RecyclerViewEnum.Loading -> {
                 isLoading = true
                 isPaginating = false
                 errorMessage = null
-                canPaginate = true
+                canPaginate = false
             }
             RecyclerViewEnum.Error -> {
                 isLoading = false
                 isPaginating = false
+                canPaginate = false
             }
             RecyclerViewEnum.View -> {
                 isLoading = false
                 isPaginating = false
                 errorMessage = null
+                canPaginate = true
             }
             RecyclerViewEnum.PaginationLoading -> {
                 isLoading = false

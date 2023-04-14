@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.facebook.shimmer.ShimmerFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_centerInParent="true"
-    app:shimmer_duration="1300"
     app:shimmer_auto_start="true"
-    app:shimmer_repeat_count="10">
+    app:shimmer_duration="1300"
+    app:shimmer_repeat_count="5">
 
     <include layout="@layout/cell_shimmer_preview"/>
 </com.facebook.shimmer.ShimmerFrameLayout>

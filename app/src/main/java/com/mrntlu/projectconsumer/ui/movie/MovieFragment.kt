@@ -50,14 +50,20 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
 
     private fun setRecyclerView() {
         binding.upcomingRV.apply {
-            val gridLayoutManager = object: GridLayoutManager(this.context, gridCount) {
-                override fun checkLayoutParams(lp: RecyclerView.LayoutParams?): Boolean {
-                    lp?.height = (height / heightSpan).toInt()
-                    lp?.width = (width / gridCount) - (gridCount * 8)
+            val gridLayoutManager = GridLayoutManager(this.context, gridCount)
 
-                    return true
+            //TODO Make pagination loading Jetpack Compsose
+            // Pass the gridCount and add shimmer layout gridLayoutTimes.
+            gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    val itemViewType = movieAdapter?.getItemViewType(position)
+                    return if (
+                        itemViewType == RecyclerViewEnum.View.value ||
+                        itemViewType == RecyclerViewEnum.Loading.value
+                    ) 1 else gridCount
                 }
             }
+
             layoutManager = gridLayoutManager
             movieAdapter = MovieAdapter(object: Interaction<Movie> {
                 override fun onItemSelected(item: Movie, position: Int) {
@@ -65,7 +71,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
                 }
 
                 override fun onErrorRefreshPressed() {
-
+                    //TODO Refresh
                 }
 
                 override fun onExhaustButtonPressed() {

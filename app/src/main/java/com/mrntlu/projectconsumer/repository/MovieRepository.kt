@@ -8,6 +8,7 @@ import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.utils.networkBoundResource
+import com.mrntlu.projectconsumer.utils.printLog
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -27,7 +28,8 @@ class MovieRepository @Inject constructor(
             movieDao.getMoviesByTag(UPCOMING_TAG, page, sort)
         },
         fetchNetwork = {
-//            delay(3000L)
+            delay(3000L)
+            printLog("Fetching $page")
             movieApiService.getUpcomingMovies(page, sort)
         },
         mapper = {
@@ -37,8 +39,14 @@ class MovieRepository @Inject constructor(
             listOf<Movie>()
         },
         saveAndQueryResult = { movieResponse ->
+            printLog("Data Size ${movieResponse.data.count()}")
+
             cacheDatabase.withTransaction {
-                movieDao.deleteMoviesByTag(UPCOMING_TAG)
+                if (page == 1) {
+                    movieDao.deleteMoviesByTag(UPCOMING_TAG)
+                } else {
+                    movieDao.deleteMoviesByTagAndPage(UPCOMING_TAG, page)
+                }
                 movieDao.insertMovieList(movieResponse.data.asEntity(UPCOMING_TAG, page))
                 Pair(
                     movieDao.getMoviesByTag(UPCOMING_TAG, page, sort),

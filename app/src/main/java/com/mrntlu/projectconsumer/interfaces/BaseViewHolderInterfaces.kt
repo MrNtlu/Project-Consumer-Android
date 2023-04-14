@@ -7,7 +7,3 @@ interface ItemViewHolderBind<T> {
 interface ErrorViewHolderBind<T> {
     fun bind(errorMessage: String?, interaction: Interaction<T>)
 }
-
-interface PaginationExhaustViewHolderBind<T> {
-    fun bind(interaction: Interaction<T>)
-}

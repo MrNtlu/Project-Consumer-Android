@@ -33,6 +33,9 @@ interface MovieDao {
 //    )
 //    suspend fun getAllMoviesByTag(tag: String, page: Int, sort: String): List<MovieEntity>
 
+    @Query("Delete From movies Where tag = :tag And page = :page")
+    suspend fun deleteMoviesByTagAndPage(tag: String, page: Int)
+
     @Query("Delete From movies Where tag = :tag")
     suspend fun deleteMoviesByTag(tag: String)
 }

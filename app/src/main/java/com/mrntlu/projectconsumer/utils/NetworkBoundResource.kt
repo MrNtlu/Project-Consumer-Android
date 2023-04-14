@@ -37,8 +37,6 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
                     isPaginationExhausted = result.second
                 )
             } else {
-                printLog("Not Successful\n")
-
                 if (isPaginating) {
                     NetworkListResponse.Success(
                         mapper(data),
@@ -66,6 +64,8 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
         NetworkListResponse.Success(mapper(data), isPaginationData = isPaginating)
     }
 
-    printLog("Final response $networkListResponse")
+    printLog("Final response ${if (networkListResponse is NetworkListResponse.Success) { 
+        Pair(networkListResponse.isPaginationData, networkListResponse.isPaginationExhausted)
+    } else networkListResponse}")
     emit(networkListResponse)
 }.flowOn(Dispatchers.IO)
