@@ -32,7 +32,6 @@ enum class WindowSizeClass { COMPACT, MEDIUM, EXPANDED }
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainActivityViewModel by viewModels()
     private val sharedViewModel: ActivitySharedViewModel by viewModels()
 
     private val navController: NavController by lazy {
@@ -106,15 +105,15 @@ class MainActivity : AppCompatActivity() {
             else -> WindowSizeClass.EXPANDED
         }
 
-        val heightDp = metrics.bounds.height() /
-                resources.displayMetrics.density
-        val heightWindowSizeClass = when {
-            heightDp < 480f -> WindowSizeClass.COMPACT
-            heightDp < 900f -> WindowSizeClass.MEDIUM
-            else -> WindowSizeClass.EXPANDED
-        }
+//        val heightDp = metrics.bounds.height() /
+//                resources.displayMetrics.density
+//        val heightWindowSizeClass = when {
+//            heightDp < 480f -> WindowSizeClass.COMPACT
+//            heightDp < 900f -> WindowSizeClass.MEDIUM
+//            else -> WindowSizeClass.EXPANDED
+//        }
 
-        sharedViewModel.setWindowSize(widthWindowSizeClass, heightWindowSizeClass, heightDp)
+        sharedViewModel.setWindowSize(widthWindowSizeClass)
     }
 
     private fun setToolbar() {
@@ -126,9 +125,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-        viewModel.setThemeCode(prefs.getInt(Constants.THEME_PREF, Constants.LIGHT_THEME))
+        sharedViewModel.setThemeCode(prefs.getInt(Constants.THEME_PREF, Constants.LIGHT_THEME))
 
-        AppCompatDelegate.setDefaultNightMode(if (viewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
+        AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
 
         return super.onCreateView(name, context, attrs)
     }
@@ -141,7 +140,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.settingsMenu -> {
-
+                sharedViewModel.toggleTheme()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -149,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setObservers() {
         //TODO Implement dark theme and get from the system
-        viewModel.themeCode.observe(this) {
+        sharedViewModel.themeCode.observe(this) {
             AppCompatDelegate.setDefaultNightMode(if (it == Constants.LIGHT_THEME) MODE_NIGHT_NO else MODE_NIGHT_YES)
             setThemePref(it)
         }
@@ -162,8 +161,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        if (viewModel.themeCode.hasObservers())
-            viewModel.themeCode.removeObservers(this)
+        if (sharedViewModel.themeCode.hasObservers())
+            sharedViewModel.themeCode.removeObservers(this)
         super.onDestroy()
     }
 }

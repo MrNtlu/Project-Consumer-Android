@@ -2,15 +2,12 @@ package com.mrntlu.projectconsumer.adapters
 
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
-import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
-import com.mrntlu.projectconsumer.interfaces.Interaction
-import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
+import com.mrntlu.projectconsumer.interfaces.*
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.printLog
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
-abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val gridCount: Int, private val isDarkTheme: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
     var isLoading = true
     var isPaginating = false
@@ -27,6 +24,12 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
             }
             RecyclerViewEnum.Error.value -> {
                 (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
+            }
+            RecyclerViewEnum.PaginationLoading.value -> {
+                (holder as PaginationLoadingViewHolderBind).bind(gridCount, isDarkTheme)
+            }
+            RecyclerViewEnum.Loading.value -> {
+                (holder as LoadingViewHolderBind).bind(isDarkTheme)
             }
         }
     }
@@ -124,6 +127,7 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>): RecyclerVie
                 isLoading = false
                 isPaginating = true
                 errorMessage = null
+                canPaginate = false
             }
             RecyclerViewEnum.PaginationExhaust -> {
                 isLoading = false

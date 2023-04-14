@@ -34,6 +34,10 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.4.1'
     }
 }
 
@@ -43,6 +47,12 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.window:window:1.0.0"
+
+    def compose_version = "1.7.0"
+    def compose_compiler_version = "1.4.1"
+    implementation "androidx.activity:activity-compose:$compose_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_compiler_version"
+    implementation "androidx.compose.material:material:$compose_compiler_version"
 
     def coroutine_version = "1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"

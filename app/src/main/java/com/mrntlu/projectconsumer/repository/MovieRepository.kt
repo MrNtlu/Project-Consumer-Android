@@ -7,12 +7,11 @@ import com.mrntlu.projectconsumer.models.main.movie.mapper.asModel
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
+import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
 import com.mrntlu.projectconsumer.utils.printLog
 import kotlinx.coroutines.delay
 import javax.inject.Inject
-
-private const val UPCOMING_TAG = "upcoming"
 
 class MovieRepository @Inject constructor(
     private val movieApiService: MovieApiService,
@@ -22,18 +21,17 @@ class MovieRepository @Inject constructor(
 
     //TODO parse error message and return with code
     //TODO Test error and check if we are getting data from cache or network
-    fun fetchUpcomingMovies(page: Int, sort: String) = networkBoundResource(
+    fun fetchUpcomingMovies(page: Int, sort: String, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
         cacheQuery = {
-            movieDao.getMoviesByTag(UPCOMING_TAG, page, sort)
+            movieDao.getMoviesByTag(FetchType.UPCOMING.tag, page, sort)
         },
         fetchNetwork = {
-            delay(3000L)
-            printLog("Fetching $page")
+//            delay(4000L)
             movieApiService.getUpcomingMovies(page, sort)
         },
         mapper = {
-             it.asModel()
+             it!!.asModel()
         },
         emptyObjectCreator = {
             listOf<Movie>()
@@ -43,16 +41,21 @@ class MovieRepository @Inject constructor(
 
             cacheDatabase.withTransaction {
                 if (page == 1) {
-                    movieDao.deleteMoviesByTag(UPCOMING_TAG)
-                } else {
-                    movieDao.deleteMoviesByTagAndPage(UPCOMING_TAG, page)
+                    movieDao.deleteMoviesByTag(FetchType.UPCOMING.tag)
                 }
-                movieDao.insertMovieList(movieResponse.data.asEntity(UPCOMING_TAG, page))
+
+                movieDao.insertMovieList(movieResponse.data.asEntity(FetchType.UPCOMING.tag, page))
                 Pair(
-                    movieDao.getMoviesByTag(UPCOMING_TAG, page, sort),
+                    movieDao.getMoviesByTag(FetchType.UPCOMING.tag, page, sort),
                     page >= movieResponse.pagination.totalPage
                 )
             }
+        },
+        isCachePaginationExhausted = {
+            !movieDao.isMoviePageExist(FetchType.UPCOMING.tag, page.plus(1))
+        },
+        shouldFetch = {
+            !(isRestoringData && !it.isNullOrEmpty()) // TODO Add internet check
         }
     )
 }

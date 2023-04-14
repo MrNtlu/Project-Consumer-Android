@@ -19,8 +19,8 @@ import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setVisible
 
 class MovieAdapter(
-    override val interaction: Interaction<Movie>
-): BaseAdapter<Movie>(interaction) {
+    override val interaction: Interaction<Movie>, gridCount: Int, isDarkTheme: Boolean
+): BaseAdapter<Movie>(interaction, gridCount, isDarkTheme) {
     override fun handleDiffUtil(newList: ArrayList<Movie>) {
         val diffUtil = DiffUtilCallback(
             arrayList,

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.AbsListView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -20,9 +19,6 @@ import com.mrntlu.projectconsumer.utils.*
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.NonDisposableHandle.parent
-import kotlin.math.roundToInt
-import kotlin.math.roundToLong
 
 @AndroidEntryPoint
 class MovieFragment : BaseFragment<FragmentMovieBinding>() {
@@ -32,7 +28,6 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
 
     private var movieAdapter: MovieAdapter? = null
     private var gridCount = 3
-    private var heightSpan: Double = 4.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +40,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.setTag(FetchType.UPCOMING)
         setObservers()
     }
 
@@ -65,20 +61,19 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
             }
 
             layoutManager = gridLayoutManager
-            movieAdapter = MovieAdapter(object: Interaction<Movie> {
-                override fun onItemSelected(item: Movie, position: Int) {
-                    printLog("Item Selected $item")
-                }
+            movieAdapter = MovieAdapter(
+                gridCount = gridCount,
+                isDarkTheme = !sharedViewModel.isLightTheme(),
+                interaction =  object: Interaction<Movie> {
+                    override fun onItemSelected(item: Movie, position: Int) {
+                        printLog("Item Selected $item")
+                    }
 
-                override fun onErrorRefreshPressed() {
-                    //TODO Refresh
+                    override fun onErrorRefreshPressed() {
+                        //TODO Refresh
+                    }
                 }
-
-                override fun onExhaustButtonPressed() {
-                    TODO("Not yet implemented")
-                }
-
-            })
+            )
             adapter = movieAdapter
 
             var isScrolling = false
@@ -94,12 +89,12 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
                     val lastVisibleItemPosition = gridLayoutManager.findLastVisibleItemPosition()
 
                     val centerScrollPosition = (gridLayoutManager.findLastCompletelyVisibleItemPosition() + gridLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
-//                    viewModel.setScrollPosition(centerScrollPosition)
+                    viewModel.setScrollPosition(centerScrollPosition)
 
                     movieAdapter?.let {
                         if (
                             isScrolling &&
-                            lastVisibleItemPosition >= itemCount.minus(5) &&
+                            lastVisibleItemPosition >= itemCount.minus(2) &&
                             it.canPaginate &&
                             !it.isPaginating
                         ) {
@@ -113,60 +108,16 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
 
     private fun setObservers() {
         sharedViewModel.windowSize.observe(viewLifecycleOwner) {
-            val widthSize = it.first
-            val heightSize = it.second
+            val widthSize: WindowSizeClass = it
 
-            when(widthSize) {
-                WindowSizeClass.COMPACT -> {
-                    gridCount = 2
-
-                    heightSpan = when(heightSize) {
-                        WindowSizeClass.COMPACT -> {
-                            2.0
-                        }
-                        WindowSizeClass.MEDIUM -> {
-                            compactMediumCalculator(it.third)
-                        }
-                        WindowSizeClass.EXPANDED -> {
-                            1.0
-                        }
-                    }
-                }
-                WindowSizeClass.MEDIUM -> {
-                    gridCount = 3
-
-                    heightSpan = when(heightSize) {
-                        WindowSizeClass.COMPACT -> {
-                            2.0
-                        }
-                        WindowSizeClass.MEDIUM -> {
-                            2.2
-                        }
-                        WindowSizeClass.EXPANDED -> {
-                            3.0
-                        }
-                    }
-                }
-                WindowSizeClass.EXPANDED -> {
-                    gridCount = 5
-
-                    heightSpan = when(heightSize) {
-                        WindowSizeClass.COMPACT -> {
-                            1.3
-                        }
-                        WindowSizeClass.MEDIUM -> {
-                            expandedMediumCalculator(it.third)
-                        }
-                        WindowSizeClass.EXPANDED -> {
-                            4.0
-                        }
-                    }
-                }
+            gridCount = when(widthSize) {
+                WindowSizeClass.COMPACT -> 2
+                WindowSizeClass.MEDIUM -> 3
+                WindowSizeClass.EXPANDED -> 5
             }
 
             setRecyclerView()
         }
-
 
         viewModel.upcomingMovies.observe(viewLifecycleOwner) { response ->
             when(response) {
@@ -178,6 +129,18 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
                 }
                 is NetworkListResponse.Success -> {
                     movieAdapter?.setData(response.data.toCollection(ArrayList()), response.isPaginationData, response.isPaginationExhausted)
+
+                    if (viewModel.isRestoringData || viewModel.didOrientationChange) {
+                        binding.upcomingRV.scrollToPosition(viewModel.scrollPosition - 1)
+
+                        if (viewModel.isRestoringData) {
+                            viewModel.isRestoringData = false
+                        } else {
+                            viewModel.didOrientationChange = false
+                        }
+                    } else {
+                        binding.upcomingRV.scrollToPosition(viewModel.scrollPosition - 1)
+                    }
                 }
             }
         }
@@ -185,9 +148,14 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        viewModel.didOrientationChange = true
     }
 
     override fun onDestroyView() {
+        viewLifecycleOwner.apply {
+            viewModel.upcomingMovies.removeObservers(this)
+            sharedViewModel.windowSize.removeObservers(this)
+        }
         movieAdapter = null
         super.onDestroyView()
     }

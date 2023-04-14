@@ -21,7 +21,10 @@ interface MovieDao {
                 "Case When :sort = 'later' Then release_date End Desc," +
                 "Case When :sort = 'soon' Then release_date End Asc"
     )
-    fun getMoviesByTag(tag: String, page: Int, sort: String): List<MovieEntity>
+    fun getMoviesByTag(tag: String, page: Int, sort: String): List<MovieEntity>?
+
+    @Query("Select Exists(Select * From movies Where page = :page And tag = :tag)")
+    fun isMoviePageExist(tag: String, page: Int): Boolean
 
 //    @Query(
 //        "Select * From movies Where page <= :page And tag = :tag Order By " +
