@@ -53,9 +53,11 @@ class MovieAdapter(
         override fun bind(item: Movie, position: Int, interaction: Interaction<Movie>) {
             binding.apply {
                 previewIVProgress.setVisible()
-                previewIV.loadWithGlide(item.imageURL, binding.previewIVProgress) {
+                previewIV.loadWithGlide(item.imageURL, previewCard, previewIVProgress) {
                     centerCrop().transform(RoundedCorners(16))
                 }
+
+                previewTV.text = item.titleEn
 
                 root.setOnClickListener {
                     interaction.onItemSelected(item, position)

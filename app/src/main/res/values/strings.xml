@@ -10,4 +10,5 @@
     <string name="login_register_toolbar">Login/Register</string>
     <string name="login_register_cd">Login/Register Image</string>
     <string name="refresh_cd">Refresh</string>
+    <string name="no_poster">No Poster</string>
 </resources>

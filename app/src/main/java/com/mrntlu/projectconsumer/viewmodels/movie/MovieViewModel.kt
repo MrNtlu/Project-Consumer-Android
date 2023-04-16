@@ -46,6 +46,14 @@ class MovieViewModel @Inject constructor(
         }
     }
 
+    fun refreshData() {
+        setPagePosition(1)
+
+        when(tag) {
+            FetchType.UPCOMING.tag -> fetchUpcomingMovies(sort)
+        }
+    }
+
     fun fetchUpcomingMovies(newSort: String) {
         setTag(FetchType.UPCOMING)
 

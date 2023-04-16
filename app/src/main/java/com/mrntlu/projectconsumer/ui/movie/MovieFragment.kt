@@ -70,7 +70,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
                     }
 
                     override fun onErrorRefreshPressed() {
-                        //TODO Refresh
+                        viewModel.refreshData()
                     }
                 }
             )

@@ -53,15 +53,17 @@ fun Double.roundSingleDecimal(): Double {
     return df.format(this).toDouble()
 }
 
-fun ImageView.loadWithGlide(imageUrl:String, progressBar: ProgressBar, transformImage: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable>) =
+fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: ProgressBar, transformImage: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable>) =
     Glide.with(context).load(imageUrl).addListener(object: RequestListener<Drawable> {
         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
             progressBar.setGone()
+            placeHolder?.setVisible()
             return false
         }
 
         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
             progressBar.setGone()
+            placeHolder?.setGone()
             return false
         }
     }).transformImage().into(this)
