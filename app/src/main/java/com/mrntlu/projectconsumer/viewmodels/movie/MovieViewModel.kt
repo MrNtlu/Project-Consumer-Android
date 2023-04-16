@@ -36,8 +36,6 @@ class MovieViewModel @Inject constructor(
     // Variable for detecting orientation change
     var didOrientationChange = false
 
-    //TODO Implement process death and orientation change handler
-    // https://github.com/MrNtlu/mobillium-case/blob/master/app/src/main/java/com/example/mobilliumcase/viewmodels/MainViewModel.kt
     init {
         if (page != 1) {
             restoreData()
