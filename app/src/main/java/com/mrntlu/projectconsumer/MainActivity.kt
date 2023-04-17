@@ -21,6 +21,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.printLog
@@ -32,6 +35,7 @@ enum class WindowSizeClass { COMPACT, MEDIUM, EXPANDED }
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val sharedViewModel: ActivitySharedViewModel by viewModels()
 
     private val navController: NavController by lazy {
@@ -49,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        firebaseAnalytics = Firebase.analytics
 
         val navView: BottomNavigationView = binding.navView
 
@@ -67,11 +72,8 @@ class MainActivity : AppCompatActivity() {
         setToolbar()
 
         //TODO
-        // Status bar when white texts are not visible
         // Find font
-        // Setup firebase analytics and crashlytics
         // Toggle BottomAppBar on Scroll
-        // Custom BottomAppBar
         // Custom Toolbar/ActionBar
         // Toolbar Settings Left & Profile on Right
         // On Pressed hide BottomAppBar
@@ -104,14 +106,6 @@ class MainActivity : AppCompatActivity() {
             widthDp < 840f -> WindowSizeClass.MEDIUM
             else -> WindowSizeClass.EXPANDED
         }
-
-//        val heightDp = metrics.bounds.height() /
-//                resources.displayMetrics.density
-//        val heightWindowSizeClass = when {
-//            heightDp < 480f -> WindowSizeClass.COMPACT
-//            heightDp < 900f -> WindowSizeClass.MEDIUM
-//            else -> WindowSizeClass.EXPANDED
-//        }
 
         sharedViewModel.setWindowSize(widthWindowSizeClass)
     }
@@ -147,7 +141,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setObservers() {
-        //TODO Implement dark theme and get from the system
         sharedViewModel.themeCode.observe(this) {
             AppCompatDelegate.setDefaultNightMode(if (it == Constants.LIGHT_THEME) MODE_NIGHT_NO else MODE_NIGHT_YES)
             setThemePref(it)

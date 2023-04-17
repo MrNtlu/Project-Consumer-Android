@@ -33,7 +33,6 @@ class MovieAdapter(
         diffResults.dispatchUpdatesTo(this)
     }
 
-    //TODO https://github.com/MrNtlu/Mobillium-Case/blob/master/app/src/main/java/com/example/mobilliumcase/adapters/UpcomingMovieAdapter.kt
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             RecyclerViewEnum.Loading.value -> LoadingViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -44,9 +43,6 @@ class MovieAdapter(
         }
     }
 
-    //TODO Handle null image error
-    // If no image show text in card with rounded corners
-    // https://image.tmdb.org/t/p/original/null
     inner class ItemViewHolder(
         private val binding: CellPreviewItemBinding,
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<Movie> {

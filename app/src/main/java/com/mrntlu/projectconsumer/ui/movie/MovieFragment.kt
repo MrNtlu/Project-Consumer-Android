@@ -48,8 +48,6 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
         binding.upcomingRV.apply {
             val gridLayoutManager = GridLayoutManager(this.context, gridCount)
 
-            //TODO Make pagination loading Jetpack Compsose
-            // Pass the gridCount and add shimmer layout gridLayoutTimes.
             gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     val itemViewType = movieAdapter?.getItemViewType(position)
@@ -64,7 +62,7 @@ class MovieFragment : BaseFragment<FragmentMovieBinding>() {
             movieAdapter = MovieAdapter(
                 gridCount = gridCount,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
-                interaction =  object: Interaction<Movie> {
+                interaction = object: Interaction<Movie> {
                     override fun onItemSelected(item: Movie, position: Int) {
                         printLog("Item Selected $item")
                     }
