@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
-        //TODO Implement floating bottom app bar with hide/show function on scroll
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_movie, R.id.navigation_tv, R.id.navigation_anime, R.id.navigation_game
@@ -75,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         // Find font
         // Toggle BottomAppBar on Scroll
         // Custom Toolbar/ActionBar
-        // Toolbar Settings Left & Profile on Right
         // On Pressed hide BottomAppBar
 
         //TODO Login Flow
