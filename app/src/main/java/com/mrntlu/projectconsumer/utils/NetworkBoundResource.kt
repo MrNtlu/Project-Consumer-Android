@@ -17,8 +17,7 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
 
     //TODO
     // Find a way to delete cache only when necessary
-    // Get error code and if error is not connected to database or no internet
-    // Get from caches
+    // Get error code and if error is not connected to database or no internet get from caches
     val data = cacheQuery()
 
     val networkListResponse: NetworkListResponse<ReturnType> = if (shouldFetch(data)) {
