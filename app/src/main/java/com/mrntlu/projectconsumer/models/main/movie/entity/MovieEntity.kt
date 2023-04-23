@@ -1,10 +1,9 @@
 package com.mrntlu.projectconsumer.models.main.movie.entity
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mrntlu.projectconsumer.models.main.movie.MovieGenre
+import com.mrntlu.projectconsumer.models.main.movie.Actor
 import com.mrntlu.projectconsumer.models.main.movie.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.main.movie.Streaming
 
@@ -14,7 +13,8 @@ data class MovieEntity(
     val id: String,
     val description: String,
     val genres: List<MovieGenreEntity>,
-    val streamingList: List<Streaming>?,
+    val streaming: List<Streaming>?,
+    val actors: List<Actor>,
     val length: Int,
     val status: String,
 
@@ -55,7 +55,7 @@ data class MovieEntity(
     val page: Int,
 ) {
     constructor(): this(
-        "","", listOf(), listOf(),0,"","",
+        "","", listOf(), listOf(), listOf(), 0,"","",
         "","","","","","",
         0.0, 0.0, 0, listOf(), "", 0
     )
