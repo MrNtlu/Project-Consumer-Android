@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.models.main.movie.entity
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.mrntlu.projectconsumer.models.main.movie.Actor
 import com.mrntlu.projectconsumer.models.main.movie.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.main.movie.Streaming
 
@@ -32,6 +33,20 @@ class Converters {
         if (streamingList != null) {
             val streaming = object : TypeToken<List<Streaming>>() {}.type
             return Gson().fromJson(streamingList, streaming)
+        }
+        return emptyList()
+    }
+
+    @TypeConverter
+    fun fromActorList(actors: List<Actor>): String {
+        return Gson().toJson(actors)
+    }
+
+    @TypeConverter
+    fun toActorList(actors: String?): List<Actor> {
+        if (actors != null) {
+            val actor = object : TypeToken<List<Actor>>() {}.type
+            return Gson().fromJson(actors, actor)
         }
         return emptyList()
     }

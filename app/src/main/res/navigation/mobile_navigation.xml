@@ -28,4 +28,9 @@
         android:name="com.mrntlu.projectconsumer.ui.game.GameFragment"
         android:label="@string/title_game"
         tools:layout="@layout/fragment_game" />
+    <fragment
+        android:id="@+id/movieListFragment"
+        android:name="com.mrntlu.projectconsumer.ui.movie.MovieListFragment"
+        android:label="fragment_movie_list"
+        tools:layout="@layout/fragment_movie_list" />
 </navigation>

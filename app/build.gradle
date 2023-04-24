@@ -48,10 +48,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation "androidx.window:window:1.0.0"
 
-    def compose_version = "1.7.0"
-    def compose_compiler_version = "1.4.1"
+    def compose_version = "1.7.1"
+    def compose_compiler_version = "1.4.2"
     implementation "androidx.activity:activity-compose:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_compiler_version"
     implementation "androidx.compose.material:material:$compose_compiler_version"
@@ -86,7 +87,11 @@ dependencies {
     def glide_version = "4.13.2"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
-    implementation "com.github.skydoves:landscapist-glide:2.0.0"
+    implementation 'jp.wasabeef:glide-transformations:4.3.0'
+    implementation "com.github.skydoves:landscapist-glide:2.1.11"
+
+    def coil_version = "2.3.0"
+    implementation "io.coil-kt:coil-compose:$coil_version"
 
     def room_version = "2.5.1"
     implementation "androidx.room:room-runtime:$room_version"
