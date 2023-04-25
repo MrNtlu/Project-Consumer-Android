@@ -1,7 +1,8 @@
 package com.mrntlu.projectconsumer.utils
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
 
 inline fun <EntityType, ModelType, ReturnType> networkBoundResource(

@@ -12,6 +12,7 @@
     <string name="refresh_cd">Refresh</string>
     <string name="no_poster">No Poster</string>
     <string name="upcoming">Upcoming</string>
+    <string name="genres">Genres</string>
 
     <string name="see_all_cd">See All</string>
     <string name="login_register_cd">Login/Register Image</string>

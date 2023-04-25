@@ -12,6 +12,7 @@
   <li> Retrofit
   <li> Shimmer
   <li> Jetpack Compose
+  <li> Coil
 </ul>
 
 ## TODO
@@ -19,10 +20,11 @@
 * Main Page Design
     * Search and Discover Movies
         * Search > Simple search by name
-        * Discover > Sort/Filter
     * Upcoming xxx
     * Popular xxx
     * Genres
+        * First item is Discover
+            * Discover > Sort/Filter
         * Get popular genres from database and save to devices
 * Details Page Design
     * Collapsing Toolbar with Image. If no image default.

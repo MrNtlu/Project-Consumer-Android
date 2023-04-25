@@ -9,13 +9,16 @@ import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.LoadingViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.PaginationExhaustViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.PaginationLoadingViewHolder
-import com.mrntlu.projectconsumer.databinding.*
+import com.mrntlu.projectconsumer.databinding.CellErrorBinding
+import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
+import com.mrntlu.projectconsumer.databinding.CellPaginationExhaustBinding
+import com.mrntlu.projectconsumer.databinding.CellPaginationLoadingBinding
+import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setVisible
 
 class MovieAdapter(
@@ -53,7 +56,7 @@ class MovieAdapter(
                     centerCrop().transform(RoundedCorners(16))
                 }
 
-                previewTV.text = item.titleEn
+                previewTV.text = item.title
 
                 root.setOnClickListener {
                     interaction.onItemSelected(item, position)

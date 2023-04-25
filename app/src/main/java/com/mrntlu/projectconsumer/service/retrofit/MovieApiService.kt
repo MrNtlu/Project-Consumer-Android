@@ -10,11 +10,11 @@ interface MovieApiService {
     suspend fun getMovieBySortFilter(
         @Query("page") page: Int,
         @Query("sort") sort: String,
-        @Query("status") status: String,
-        @Query("production_companies") productionCompanies: String,
-        @Query("genres") genres: String,
-        @Query("from") releaseDateFrom: Int,
-        @Query("to") releaseDateTo: Int,
+        @Query("status") status: String?,
+        @Query("production_companies") productionCompanies: String?,
+        @Query("genres") genres: String?,
+        @Query("from") releaseDateFrom: Int?,
+        @Query("to") releaseDateTo: Int?,
     ): Response<MovieResponse>
 
     @GET("movie/upcoming")

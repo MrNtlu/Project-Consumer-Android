@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.di
 
+import com.mrntlu.projectconsumer.repository.MoviePreviewRepository
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
@@ -17,4 +18,7 @@ class HiltModule {
     fun provideMovieRepository(
         movieApiService: MovieApiService, movieDao: MovieDao, cacheDatabase: CacheDatabase
     ) = MovieRepository(movieApiService, movieDao, cacheDatabase)
+
+    @Provides
+    fun provideMoviePreviewRepository(movieApiService: MovieApiService) = MoviePreviewRepository(movieApiService)
 }

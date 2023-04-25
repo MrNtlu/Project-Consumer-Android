@@ -1,7 +1,5 @@
 package com.mrntlu.projectconsumer.interfaces
 
-import java.util.Date
-
 interface EntityMapper<Model, Entity> {
 
     fun asEntity(

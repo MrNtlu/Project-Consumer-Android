@@ -10,7 +10,6 @@ import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
 import com.mrntlu.projectconsumer.utils.printLog
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(

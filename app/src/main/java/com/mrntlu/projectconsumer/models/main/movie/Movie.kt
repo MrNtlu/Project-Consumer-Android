@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.models.main.movie
 
 import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.DiffUtilComparison
+import com.mrntlu.projectconsumer.interfaces.PreviewModel
 
 data class Movie(
     @SerializedName("_id")
@@ -13,7 +14,7 @@ data class Movie(
     val length: Int,
     val status: String,
     @SerializedName("image_url")
-    val imageURL: String,
+    override val imageURL: String,
     @SerializedName("small_image_url")
     val smallImageURL: String,
     @SerializedName("imdb_id")
@@ -21,7 +22,7 @@ data class Movie(
     @SerializedName("release_date")
     val releaseDate: String,
     @SerializedName("title_en")
-    val titleEn: String,
+    override val title: String,
     @SerializedName("title_original")
     val titleOriginal: String,
     @SerializedName("tmdb_id")
@@ -34,7 +35,7 @@ data class Movie(
     val tmdbVoteCount: Int,
     @SerializedName("production_companies")
     val productionCompanies: List<ProductionAndCompany>,
-): DiffUtilComparison<Movie> {
+): DiffUtilComparison<Movie>, PreviewModel {
     override fun areItemsTheSame(newItem: Movie): Boolean {
         return id == newItem.id
     }
@@ -42,11 +43,10 @@ data class Movie(
     override fun areContentsTheSame(newItem: Movie): Boolean {
         return when {
             id != newItem.id -> false
-            titleEn != newItem.titleEn -> false
+            title != newItem.title -> false
             titleOriginal != newItem.titleOriginal -> false
             description != newItem.description -> false
             else -> true
         }
     }
-
 }

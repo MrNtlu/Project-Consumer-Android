@@ -10,16 +10,20 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import kotlinx.coroutines.android.awaitFrame
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.Target
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import retrofit2.Response
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
@@ -67,6 +71,24 @@ fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: P
             return false
         }
     }).transformImage().into(this)
+
+fun<T> networkResponseFlow(call: suspend () -> Response<T>): Flow<NetworkResponse<T>> = flow {
+    emit(NetworkResponse.Loading)
+
+    try {
+        val response = call()
+
+        if (response.isSuccessful) {
+            response.body()?.let { data ->
+                emit(NetworkResponse.Success(data))
+            }
+        } else {
+            emit(NetworkResponse.Failure(errorMessage = response.message()))
+        }
+    } catch (e: Exception) {
+        emit(NetworkResponse.Failure(e.message ?: e.toString()))
+    }
+}.flowOn(Dispatchers.IO)
 
 suspend fun RecyclerView.quickScrollToTop(
     jumpThreshold: Int = DEFAULT_JUMP_THRESHOLD,

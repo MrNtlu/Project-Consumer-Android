@@ -15,7 +15,11 @@ import com.mrntlu.projectconsumer.databinding.FragmentMovieListBinding
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BaseFragment
-import com.mrntlu.projectconsumer.utils.*
+import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.FetchType
+import com.mrntlu.projectconsumer.utils.NetworkListResponse
+import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint

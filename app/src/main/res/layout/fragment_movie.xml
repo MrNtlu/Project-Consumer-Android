@@ -2,11 +2,11 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/movieScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:background="?attr/mainBackgroundColor">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,6 +30,7 @@
             android:id="@+id/movieSearchView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:elevation="4dp"
             android:layout_marginTop="16dp"
             android:submitBackground="@drawable/bottom_nav_background"
             android:queryBackground="@drawable/bottom_nav_background"
@@ -57,6 +58,7 @@
             android:src="@drawable/ic_arrow_right_16"
             android:background="@android:color/transparent"
             android:padding="4dp"
+            app:tint="?attr/mainTextColor"
             android:contentDescription="@string/see_all_cd"
             app:layout_constraintBottom_toBottomOf="@+id/textView"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -65,7 +67,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/upcomingPreviewRV"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:layout_marginTop="6dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -90,6 +92,7 @@
             android:background="@android:color/transparent"
             android:padding="4dp"
             android:src="@drawable/ic_arrow_right_16"
+            app:tint="?attr/mainTextColor"
             android:contentDescription="@string/see_all_popular_cd"
             app:layout_constraintBottom_toBottomOf="@+id/textView4"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -98,11 +101,23 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/popularPreviewRV"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:layout_marginTop="6dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toBottomOf="@+id/seeAllUpcomingMoviesButton2" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/genres"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/popularPreviewRV" />
 
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/gridLayoutCompose"
@@ -113,7 +128,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/popularPreviewRV" />
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -25,7 +25,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
                 movie.smallImageURL,
                 movie.imdbID,
                 movie.releaseDate,
-                movie.titleEn,
+                movie.title,
                 movie.titleOriginal,
                 movie.tmdbID,
                 movie.tmdbPopularity,
