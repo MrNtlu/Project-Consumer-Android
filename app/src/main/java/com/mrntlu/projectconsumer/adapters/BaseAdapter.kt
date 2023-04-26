@@ -31,6 +31,9 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val 
             RecyclerViewEnum.Loading.value -> {
                 (holder as LoadingViewHolderBind).bind(isDarkTheme)
             }
+            RecyclerViewEnum.PaginationExhaust.value -> {
+                (holder as PaginationExhaustViewHolderBind<T>).bind(interaction)
+            }
         }
     }
 
@@ -92,7 +95,8 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val 
             arrayList.addAll(newList)
             notifyDataSetChanged()
         } else {
-            notifyItemRemoved(itemCount)
+            if (!isPaginationExhausted)
+                notifyItemRemoved(itemCount)
 
             handleDiffUtil(newList)
         }

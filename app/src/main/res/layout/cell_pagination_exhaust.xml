@@ -15,7 +15,7 @@
         android:drawableLeft="@drawable/ic_arrow"
         android:drawableRight="@drawable/ic_arrow"
         android:drawableTint="?attr/mainTextColor"
-        android:text="Back to Top"
+        android:text="@string/back_to_top"
         android:textAllCaps="false"
         android:textColor="?attr/mainTextColor"
         android:textSize="14sp"

@@ -2,7 +2,9 @@ package com.mrntlu.projectconsumer.adapters.viewholders
 
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
@@ -20,8 +22,9 @@ class LoadingPreviewViewHolder(private val binding: CellLoadingBinding): Recycle
 
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                LoadingShimmer(isDarkTheme = isDarkTheme) {
+                LoadingShimmer(isDarkTheme = isDarkTheme, roundedCornerSize = 6.dp) {
                     fillMaxHeight()
+                    padding(horizontal = 3.dp)
                 }
             }
         }

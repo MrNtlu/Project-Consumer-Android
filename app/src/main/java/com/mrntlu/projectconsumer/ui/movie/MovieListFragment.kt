@@ -2,11 +2,19 @@ package com.mrntlu.projectconsumer.ui.movie
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -20,17 +28,21 @@ import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.printLog
+import com.mrntlu.projectconsumer.utils.quickScrollToTop
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
     private val viewModel: MovieViewModel by viewModels()
     private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
+    private val args: MovieListFragmentArgs by navArgs()
 
     private var movieAdapter: MovieAdapter? = null
+    private var sortType: String = Constants.SortUpcomingRequests[0]
     private var gridCount = 3
 
     override fun onCreateView(
@@ -44,8 +56,32 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.setTag(FetchType.UPCOMING)
+        viewModel.setTag(args.fetchType)
+        if (!viewModel.isRestoringData) {
+            when(args.fetchType) {
+                FetchType.UPCOMING.tag -> viewModel.fetchUpcomingMovies(sortType)
+                else -> viewModel.fetchPopularMovies(sortType)
+            }
+        }
+
+        setMenu()
         setObservers()
+    }
+
+    //TODO Set sort/filter option
+    private fun setMenu() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object: MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+                menu.clear()
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean { return false }
+
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setRecyclerView() {
@@ -74,6 +110,12 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                     override fun onErrorRefreshPressed() {
                         viewModel.refreshData()
                     }
+
+                    override fun onExhaustButtonPressed() {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            quickScrollToTop()
+                        }
+                    }
                 }
             )
             adapter = movieAdapter
@@ -96,11 +138,14 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                     movieAdapter?.let {
                         if (
                             isScrolling &&
+                            !it.isLoading &&
                             lastVisibleItemPosition >= itemCount.minus(2) &&
                             it.canPaginate &&
                             !it.isPaginating
                         ) {
-                            viewModel.fetchUpcomingMovies(Constants.SortUpcomingRequests[0])
+                            printLog("Paginating ${it.isPaginating} ${it.canPaginate} ${it.isPaginating}")
+
+                            viewModel.fetchMovies()
                         }
                     }
                 }
@@ -121,7 +166,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
             setRecyclerView()
         }
 
-        viewModel.upcomingMovies.observe(viewLifecycleOwner) { response ->
+        viewModel.movies.observe(viewLifecycleOwner) { response ->
             when(response) {
                 is NetworkListResponse.Failure -> {
                     movieAdapter?.setErrorView(response.errorMessage)
@@ -155,7 +200,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
-            viewModel.upcomingMovies.removeObservers(this)
+            viewModel.movies.removeObservers(this)
             sharedViewModel.windowSize.removeObservers(this)
         }
         movieAdapter = null

@@ -15,3 +15,7 @@ interface LoadingViewHolderBind {
 interface PaginationLoadingViewHolderBind {
     fun bind(gridCount: Int, isDarkTheme: Boolean)
 }
+
+interface PaginationExhaustViewHolderBind<T> {
+    fun bind(interaction: Interaction<T>)
+}

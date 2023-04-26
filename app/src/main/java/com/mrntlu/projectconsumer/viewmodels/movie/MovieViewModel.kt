@@ -26,8 +26,8 @@ class MovieViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val movieRepository: MovieRepository,
 ): ViewModel() {
-    private val _upcomingList = MutableLiveData<NetworkListResponse<List<Movie>>>()
-    val upcomingMovies: LiveData<NetworkListResponse<List<Movie>>> = _upcomingList
+    private val _movieList = MutableLiveData<NetworkListResponse<List<Movie>>>()
+    val movies: LiveData<NetworkListResponse<List<Movie>>> = _movieList
 
     // Process Death variables
     var isRestoringData = false
@@ -43,10 +43,6 @@ class MovieViewModel @Inject constructor(
     init {
         if (page != 1) {
             restoreData()
-        } else {
-            when(tag) {
-                FetchType.UPCOMING.tag -> fetchUpcomingMovies(sort)
-            }
         }
     }
 
@@ -55,29 +51,45 @@ class MovieViewModel @Inject constructor(
 
         when(tag) {
             FetchType.UPCOMING.tag -> fetchUpcomingMovies(sort)
+            FetchType.POPULAR.tag -> fetchPopularMovies(sort)
         }
     }
 
     fun fetchUpcomingMovies(newSort: String) {
-        setTag(FetchType.UPCOMING)
+        setTag(FetchType.UPCOMING.tag)
 
         if (sort != newSort) {
             setPagePosition(1)
             setSort(newSort)
         }
 
+        fetchMovies()
+    }
+
+    fun fetchPopularMovies(newSort: String) {
+        setTag(FetchType.POPULAR.tag)
+
+        if (sort != newSort) {
+            setPagePosition(1)
+            setSort(newSort)
+        }
+
+        fetchMovies()
+    }
+
+    fun fetchMovies() {
         val prevList = arrayListOf<Movie>()
-        if (_upcomingList.value is NetworkListResponse.Success) {
-            prevList.addAll((_upcomingList.value as NetworkListResponse.Success<List<Movie>>).data.toCollection(ArrayList()))
+        if (_movieList.value is NetworkListResponse.Success) {
+            prevList.addAll((_movieList.value as NetworkListResponse.Success<List<Movie>>).data.toCollection(ArrayList()))
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.fetchUpcomingMovies(page, sort).collect { response ->
+            movieRepository.fetchMovies(page, sort, tag).collect { response ->
                 withContext(Dispatchers.Main) {
                     if (response is NetworkListResponse.Success) {
                         prevList.addAll(response.data)
 
-                        _upcomingList.value = NetworkListResponse.Success(
+                        _movieList.value = NetworkListResponse.Success(
                             prevList,
                             isPaginationData = response.isPaginationData,
                             isPaginationExhausted = response.isPaginationExhausted,
@@ -87,7 +99,7 @@ class MovieViewModel @Inject constructor(
                             setPagePosition(page.plus(1))
                         }
                     } else {
-                        _upcomingList.value = response
+                        _movieList.value = response
                     }
                 }
             }
@@ -102,21 +114,17 @@ class MovieViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             for (p in 1..page) {
                 val job = launch(Dispatchers.IO) {
-                    when(tag) {
-                        FetchType.UPCOMING.tag -> {
-                            movieRepository.fetchUpcomingMovies(p, sort, isRestoringData = true).collect { response ->
-                                if (response is NetworkListResponse.Success) {
-                                    tempList.addAll(response.data)
-                                    isPaginationExhausted = response.isPaginationExhausted
-                                }
-                            }
+                    movieRepository.fetchMovies(p, sort, tag, isRestoringData = true).collect { response ->
+                        if (response is NetworkListResponse.Success) {
+                            tempList.addAll(response.data)
+                            isPaginationExhausted = response.isPaginationExhausted
                         }
                     }
                 }
                 job.join()
             }
             withContext(Dispatchers.Main) {
-                _upcomingList.value = NetworkListResponse.Success(
+                _movieList.value = NetworkListResponse.Success(
                     tempList,
                     isPaginationData = false,
                     isPaginationExhausted = isPaginationExhausted,
@@ -125,9 +133,9 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    fun setTag(newTag: FetchType) {
-        if (tag != newTag.tag) {
-            tag = newTag.tag
+    fun setTag(newTag: String) {
+        if (tag != newTag) {
+            tag = newTag
             savedStateHandle[TAG_KEY] = tag
         }
     }

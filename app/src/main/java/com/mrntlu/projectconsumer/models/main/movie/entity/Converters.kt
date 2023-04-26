@@ -38,12 +38,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun fromActorList(actors: List<Actor>): String {
+    fun fromActorList(actors: List<Actor>?): String {
         return Gson().toJson(actors)
     }
 
     @TypeConverter
-    fun toActorList(actors: String?): List<Actor> {
+    fun toActorList(actors: String?): List<Actor>? {
         if (actors != null) {
             val actor = object : TypeToken<List<Actor>>() {}.type
             return Gson().fromJson(actors, actor)

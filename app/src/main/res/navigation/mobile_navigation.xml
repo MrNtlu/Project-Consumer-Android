@@ -9,7 +9,15 @@
         android:id="@+id/navigation_movie"
         android:name="com.mrntlu.projectconsumer.ui.movie.MovieFragment"
         android:label="@string/title_movie"
-        tools:layout="@layout/fragment_movie" />
+        tools:layout="@layout/fragment_movie" >
+        <action
+            android:id="@+id/action_navigation_movie_to_movieListFragment"
+            app:destination="@id/movieListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_tv"
@@ -32,5 +40,10 @@
         android:id="@+id/movieListFragment"
         android:name="com.mrntlu.projectconsumer.ui.movie.MovieListFragment"
         android:label="fragment_movie_list"
-        tools:layout="@layout/fragment_movie_list" />
+        tools:layout="@layout/fragment_movie_list" >
+        <argument
+            android:name="fetchType"
+            app:argType="string"
+            android:defaultValue="popular" />
+    </fragment>
 </navigation>

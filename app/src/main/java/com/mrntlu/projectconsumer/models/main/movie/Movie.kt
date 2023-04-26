@@ -10,7 +10,7 @@ data class Movie(
     val description: String,
     val genres: List<MovieGenre>,
     val streaming: List<Streaming>?,
-    val actors: List<Actor>,
+    val actors: List<Actor>?,
     val length: Int,
     val status: String,
     @SerializedName("image_url")

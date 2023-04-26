@@ -13,11 +13,12 @@
   <li> Shimmer
   <li> Jetpack Compose
   <li> Coil
+  <li> SafeArgs
 </ul>
 
 ## TODO
 
-* Main Page Design
+* Main Page Design [DONE]
     * Search and Discover Movies
         * Search > Simple search by name
     * Upcoming xxx

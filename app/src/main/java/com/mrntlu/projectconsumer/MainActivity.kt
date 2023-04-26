@@ -27,6 +27,8 @@ import com.google.firebase.ktx.Firebase
 import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.printLog
+import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        setListeners()
         setObservers()
         setToolbar()
 
@@ -91,6 +94,21 @@ class MainActivity : AppCompatActivity() {
         })
 
         computeWindowSizeClasses()
+    }
+
+    private fun setListeners() {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when(destination.id) {
+                R.id.navigation_movie, R.id.navigation_tv, R.id.navigation_anime, R.id.navigation_game -> {
+                    binding.navView.setVisible()
+                    binding.anonymousInc.root.setVisible()
+                }
+                else -> {
+                    binding.navView.setGone()
+                    binding.anonymousInc.root.setGone()
+                }
+            }
+        }
     }
 
     private fun computeWindowSizeClasses() {
@@ -133,6 +151,9 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId) {
             R.id.settingsMenu -> {
                 sharedViewModel.toggleTheme()
+            }
+            android.R.id.home -> {
+                navController.popBackStack()
             }
         }
         return super.onOptionsItemSelected(item)

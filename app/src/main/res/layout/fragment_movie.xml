@@ -27,7 +27,7 @@
             app:layout_constraintGuide_percent="0.04" />
 
         <SearchView
-            android:id="@+id/movieSearchView"
+            android:id="@+id/previewSearchView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:elevation="4dp"
@@ -49,10 +49,10 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/movieSearchView" />
+            app:layout_constraintTop_toBottomOf="@+id/previewSearchView" />
 
         <ImageButton
-            android:id="@+id/seeAllUpcomingMoviesButton"
+            android:id="@+id/seeAllButtonFirst"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_arrow_right_16"
@@ -71,7 +71,7 @@
             android:layout_marginTop="6dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/seeAllUpcomingMoviesButton" />
+            app:layout_constraintTop_toBottomOf="@+id/seeAllButtonFirst" />
 
         <TextView
             android:id="@+id/textView4"
@@ -86,7 +86,7 @@
             app:layout_constraintTop_toBottomOf="@+id/upcomingPreviewRV" />
 
         <ImageButton
-            android:id="@+id/seeAllUpcomingMoviesButton2"
+            android:id="@+id/seeAllButtonSecond"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@android:color/transparent"
@@ -105,7 +105,7 @@
             android:layout_marginTop="6dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/seeAllUpcomingMoviesButton2" />
+            app:layout_constraintTop_toBottomOf="@+id/seeAllButtonSecond" />
 
         <TextView
             android:id="@+id/textView3"

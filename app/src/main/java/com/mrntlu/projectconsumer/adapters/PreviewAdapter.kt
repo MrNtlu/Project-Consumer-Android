@@ -126,7 +126,7 @@ class PreviewAdapter(
 
                 previewIVProgress.setVisible()
                 previewIV.loadWithGlide(item.imageURL, previewCard, previewIVProgress) {
-                    centerCrop().transform(RoundedCorners(16))
+                    centerCrop().transform(RoundedCorners(18))
                 }
 
                 previewTV.text = item.title

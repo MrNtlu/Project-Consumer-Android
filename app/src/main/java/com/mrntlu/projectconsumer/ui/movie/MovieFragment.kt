@@ -16,6 +16,7 @@ import com.mrntlu.projectconsumer.models.main.movie.MovieResponse
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.compose.GenreGrid
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.movie.MoviePreviewViewModel
@@ -49,7 +50,26 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
     }
 
     private fun setListeners() {
+        binding.apply {
+            previewSearchView.apply {
+                setOnClickListener {
+                    isIconified = false
+                    requestFocus()
+                }
+            }
 
+            seeAllButtonFirst.setOnClickListener {
+                val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.UPCOMING.tag)
+
+                navController.navigate(navWithAction)
+            }
+
+            seeAllButtonSecond.setOnClickListener {
+                val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.POPULAR.tag)
+
+                navController.navigate(navWithAction)
+            }
+        }
     }
 
     private fun setGridLayout() {
@@ -81,6 +101,8 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                 override fun onErrorRefreshPressed() {
                     viewModel.fetchUpcomingMovies()
                 }
+
+                override fun onExhaustButtonPressed() {}
             }, isDarkTheme = !sharedViewModel.isLightTheme())
             adapter = upcomingAdapter
         }
@@ -95,6 +117,8 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                 override fun onErrorRefreshPressed() {
                     viewModel.fetchPopularMovies()
                 }
+
+                override fun onExhaustButtonPressed() {}
             }, isDarkTheme = !sharedViewModel.isLightTheme())
             adapter = popularAdapter
         }

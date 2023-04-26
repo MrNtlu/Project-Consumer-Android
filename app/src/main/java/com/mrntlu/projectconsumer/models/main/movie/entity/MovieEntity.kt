@@ -14,7 +14,7 @@ data class MovieEntity(
     val description: String,
     val genres: List<MovieGenreEntity>,
     val streaming: List<Streaming>?,
-    val actors: List<Actor>,
+    val actors: List<Actor>?,
     val length: Int,
     val status: String,
 
