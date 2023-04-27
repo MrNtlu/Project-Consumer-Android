@@ -58,6 +58,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                 }
             }
 
+            //TODO Make all layout clickable not just button
             seeAllButtonFirst.setOnClickListener {
                 val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.UPCOMING.tag)
 
@@ -128,6 +129,16 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
         viewModel.upcomingMovies.observe(viewLifecycleOwner) { handleObserver(it, upcomingAdapter) }
 
         viewModel.popularMovies.observe(viewLifecycleOwner) { handleObserver(it, popularAdapter) }
+
+        sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
+            if (upcomingAdapter?.errorMessage != null && it) {
+                viewModel.fetchUpcomingMovies()
+            }
+
+            if (popularAdapter?.errorMessage != null && it) {
+                viewModel.fetchPopularMovies()
+            }
+        }
     }
 
     private fun handleObserver(response: NetworkResponse<MovieResponse>, adapter: PreviewAdapter?) {
@@ -144,6 +155,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
         viewLifecycleOwner.apply {
             viewModel.upcomingMovies.removeObservers(this)
             viewModel.popularMovies.removeObservers(this)
+            sharedViewModel.networkStatus.removeObservers(this)
         }
         upcomingAdapter = null
         popularAdapter = null

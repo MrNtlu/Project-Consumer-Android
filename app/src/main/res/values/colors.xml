@@ -8,6 +8,9 @@
     <color name="purple500">#673AB7</color>
     <color name="purple700">#7B1FA2</color>
 
+    <color name="redLight">#ba1a1a</color>
+    <color name="redDark">#ffb4ab</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 

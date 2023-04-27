@@ -11,6 +11,9 @@
         <attr name="toolbarBackgroundColor" format="color"/>
         <attr name="toolbarTintColor" format="color"/>
 
+        <attr name="messageBoxBackgroundColor" format="color"/>
+        <attr name="messageBoxTextColor" format="color"/>
+
         <attr name="bottomNavBackgroundColor" format="color"/>
         <attr name="bottomNavSelectedColor" format="color"/>
         <attr name="bottomNavUnselectedColor" format="color"/>

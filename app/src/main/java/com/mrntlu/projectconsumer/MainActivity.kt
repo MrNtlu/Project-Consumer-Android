@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -25,17 +26,25 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
+import com.mrntlu.projectconsumer.interfaces.ConnectivityObserver
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.FetchType
+import com.mrntlu.projectconsumer.utils.MessageBoxType
+import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 enum class WindowSizeClass { COMPACT, MEDIUM, EXPANDED }
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject lateinit var connectivityObserver: NetworkConnectivityObserver
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val sharedViewModel: ActivitySharedViewModel by viewModels()
@@ -73,12 +82,9 @@ class MainActivity : AppCompatActivity() {
         setObservers()
         setToolbar()
 
-        //TODO
-        // Find font
+        //TODO Main
         // Toggle BottomAppBar on Scroll
-        // Custom Toolbar/ActionBar
-        // On Pressed hide BottomAppBar
-
+        //---
         //TODO Login Flow
         // MainActivity should be the controller
         // SharedViewModel should keep isLoggedIn value and present necessary UI elements accordingly.
@@ -97,13 +103,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
-        navController.addOnDestinationChangedListener { _, destination, _ ->
+        binding.messageBoxButton.setOnClickListener {
+            binding.messageBoxLayout.setGone()
+        }
+
+        navController.addOnDestinationChangedListener { _, destination, args ->
+            supportActionBar?.title = when(destination.id) {
+                R.id.movieListFragment -> {
+                    printLog("$args ${args?.getString("fetchType")}")
+                    if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
+                        "Upcoming Movies"
+                    else if (args?.getString("fetchType") == FetchType.POPULAR.tag)
+                        "Popular Movies"
+                    else ""
+                }
+                else -> ""
+            }
+
             when(destination.id) {
                 R.id.navigation_movie, R.id.navigation_tv, R.id.navigation_anime, R.id.navigation_game -> {
+                    supportActionBar?.setDisplayShowTitleEnabled(false)
                     binding.navView.setVisible()
                     binding.anonymousInc.root.setVisible()
                 }
                 else -> {
+                    supportActionBar?.setDisplayShowTitleEnabled(true)
                     binding.navView.setGone()
                     binding.anonymousInc.root.setGone()
                 }
@@ -127,8 +151,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setToolbar() {
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-
         binding.anonymousInc.root.setOnClickListener {
             printLog("Clicked")
         }
@@ -160,9 +182,58 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setObservers() {
+        lifecycleScope.launch {
+            connectivityObserver.observe().collect { status ->
+                when(status) {
+                    ConnectivityObserver.Status.Unavailable -> {
+                        sharedViewModel.setNetworkStatus(false)
+
+                        sharedViewModel.setMessageBox(
+                            Triple(
+                                MessageBoxType.ERROR,
+                                getString(R.string.no_internet_connection),
+                                R.drawable.ic_no_internet_24
+                            )
+                        )
+                    }
+
+                    ConnectivityObserver.Status.Lost -> {
+                        sharedViewModel.setNetworkStatus(false)
+
+                        sharedViewModel.setMessageBox(
+                            Triple(
+                                MessageBoxType.ERROR,
+                                getString(R.string.connection_lost_no_internet_connection),
+                                R.drawable.ic_no_internet_24
+                            )
+                        )
+                    }
+
+                    ConnectivityObserver.Status.Available -> {
+                        sharedViewModel.setNetworkStatus(true)
+
+                        sharedViewModel.setMessageBox(Triple(MessageBoxType.NOTHING, null, null))
+                    }
+                }
+            }
+        }
+
         sharedViewModel.themeCode.observe(this) {
             AppCompatDelegate.setDefaultNightMode(if (it == Constants.LIGHT_THEME) MODE_NIGHT_NO else MODE_NIGHT_YES)
             setThemePref(it)
+        }
+
+        sharedViewModel.globalMessageBox.observe(this) {
+            if (it.first != MessageBoxType.NOTHING && it.second != null) {
+                binding.messageBoxLayout.setVisible()
+                binding.messageBoxTV.text = it.second
+                if (it.third != null)
+                    binding.messageBoxIcon.setBackgroundResource(it.third!!)
+                else
+                    binding.messageBoxIcon.setGone()
+            } else {
+                binding.messageBoxLayout.setGone()
+            }
         }
     }
 
@@ -173,8 +244,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        if (sharedViewModel.themeCode.hasObservers())
-            sharedViewModel.themeCode.removeObservers(this)
+        sharedViewModel.themeCode.removeObservers(this)
+        sharedViewModel.globalMessageBox.removeObservers(this)
+        sharedViewModel.networkStatus.removeObservers(this)
+
         super.onDestroy()
     }
 }

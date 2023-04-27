@@ -29,11 +29,13 @@ class MovieViewModel @Inject constructor(
     private val _movieList = MutableLiveData<NetworkListResponse<List<Movie>>>()
     val movies: LiveData<NetworkListResponse<List<Movie>>> = _movieList
 
+    var isNetworkAvailable = true
+
     // Process Death variables
     var isRestoringData = false
     private var page: Int = savedStateHandle[PAGE_KEY] ?: 1
     private var tag: String = savedStateHandle[TAG_KEY] ?: FetchType.UPCOMING.tag
-    private var sort: String = savedStateHandle[SORT_KEY] ?: Constants.SortUpcomingRequests[0]
+    private var sort: String = savedStateHandle[SORT_KEY] ?: Constants.SortUpcomingRequests[0].request
     var scrollPosition: Int = savedStateHandle[SCROLL_POSITION_KEY] ?: 0
         private set
 
@@ -79,12 +81,12 @@ class MovieViewModel @Inject constructor(
 
     fun fetchMovies() {
         val prevList = arrayListOf<Movie>()
-        if (_movieList.value is NetworkListResponse.Success) {
+        if (_movieList.value is NetworkListResponse.Success && page != 1) {
             prevList.addAll((_movieList.value as NetworkListResponse.Success<List<Movie>>).data.toCollection(ArrayList()))
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.fetchMovies(page, sort, tag).collect { response ->
+            movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable).collect { response ->
                 withContext(Dispatchers.Main) {
                     if (response is NetworkListResponse.Success) {
                         prevList.addAll(response.data)
@@ -114,7 +116,7 @@ class MovieViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             for (p in 1..page) {
                 val job = launch(Dispatchers.IO) {
-                    movieRepository.fetchMovies(p, sort, tag, isRestoringData = true).collect { response ->
+                    movieRepository.fetchMovies(p, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
                         if (response is NetworkListResponse.Success) {
                             tempList.addAll(response.data)
                             isPaginationExhausted = response.isPaginationExhausted

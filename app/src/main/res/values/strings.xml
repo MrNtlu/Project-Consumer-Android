@@ -13,11 +13,16 @@
     <string name="no_poster">No Poster</string>
     <string name="upcoming">Upcoming</string>
     <string name="genres">Genres</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="back_to_top">Back to Top</string>
+    <string name="no_internet_connection">No internet connection!</string>
+    <string name="connection_lost_no_internet_connection">Connection lost! No internet connection.</string>
 
     <string name="see_all_cd">See All</string>
     <string name="login_register_cd">Login/Register Image</string>
     <string name="popular">Popular</string>
     <string name="see_all_popular_cd">See All Popular</string>
     <string name="genre_image_cd">Genre Image</string>
-    <string name="back_to_top">Back to Top</string>
+    <string name="message_icon_cd">Message Icon</string>
+    <string name="sort">Sort</string>
 </resources>

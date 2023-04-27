@@ -27,7 +27,7 @@ class PreviewAdapter(
     private val isDarkTheme: Boolean,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var errorMessage: String? = null
+    var errorMessage: String? = null
     var isLoading = true
 
     private var arrayList: ArrayList<PreviewModel> = arrayListOf()

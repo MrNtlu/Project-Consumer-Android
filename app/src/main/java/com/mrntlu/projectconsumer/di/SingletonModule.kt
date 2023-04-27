@@ -9,6 +9,7 @@ import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,6 +38,10 @@ class SingletonModule {
     @Provides
     fun provideAuthAuthenticator(tokenManager: TokenManager): AuthAuthenticator =
         AuthAuthenticator(tokenManager)
+
+    @Singleton
+    @Provides
+    fun provideNetworkConnectivityObserver(@ApplicationContext context: Context) = NetworkConnectivityObserver(context)
 
     @Singleton
     @Provides

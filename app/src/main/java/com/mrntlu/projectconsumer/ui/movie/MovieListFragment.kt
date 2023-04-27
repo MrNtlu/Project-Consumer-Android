@@ -8,8 +8,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.get
+import androidx.core.view.size
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -17,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.adapters.MovieAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieListBinding
@@ -37,12 +41,12 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
-    private val viewModel: MovieViewModel by viewModels()
     private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
+    private val viewModel: MovieViewModel by viewModels()
     private val args: MovieListFragmentArgs by navArgs()
 
     private var movieAdapter: MovieAdapter? = null
-    private var sortType: String = Constants.SortUpcomingRequests[0]
+    private var sortType: String = Constants.SortRequests[0].request
     private var gridCount = 3
 
     override fun onCreateView(
@@ -57,29 +61,94 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.setTag(args.fetchType)
+        viewModel.isNetworkAvailable = sharedViewModel.isNetworkAvailable()
+
+        fetchData()
+
+        setMenu()
+        setObservers()
+    }
+
+    private fun fetchData() {
         if (!viewModel.isRestoringData) {
             when(args.fetchType) {
                 FetchType.UPCOMING.tag -> viewModel.fetchUpcomingMovies(sortType)
                 else -> viewModel.fetchPopularMovies(sortType)
             }
         }
-
-        setMenu()
-        setObservers()
     }
 
-    //TODO Set sort/filter option
     private fun setMenu() {
         val menuHost: MenuHost = requireActivity()
 
+        //TODO Mark currently selected sort with Checkmark icon or different color etc.
         menuHost.addMenuProvider(object: MenuProvider {
             override fun onPrepareMenu(menu: Menu) {
-                menu.clear()
+                menu.removeItem(R.id.settingsMenu)
             }
 
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.sort_toolbar_menu, menu)
+            }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean { return false }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when(menuItem.itemId) {
+                    R.id.sortMenu -> {
+                        val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
+                        val popupMenu = PopupMenu(requireContext(), menuItemView)
+                        val fetchType = args.fetchType
+
+                        popupMenu.menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)
+
+                        when(fetchType) {
+                            FetchType.UPCOMING.tag -> {
+                                for (i in 0..popupMenu.menu.size.minus(1)) {
+                                    popupMenu.menu[i].title = Constants.SortUpcomingRequests[i].name
+                                }
+                            }
+                            else -> {
+                                for (i in 0..popupMenu.menu.size.minus(1)) {
+                                    popupMenu.menu[i].title = Constants.SortRequests[i].name
+                                }
+                            }
+                        }
+
+                        popupMenu.setOnMenuItemClickListener { item ->
+                            val newSortType = when (item.itemId) {
+                                R.id.firstSortMenu -> {
+                                    when(fetchType) {
+                                        FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[0].request
+                                        else -> Constants.SortRequests[0].request
+                                    }
+                                }
+                                R.id.secondSortMenu -> {
+                                    when(fetchType) {
+                                        FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[1].request
+                                        else -> Constants.SortRequests[1].request
+                                    }
+                                }
+                                R.id.thirdSortMenu -> {
+                                    when(fetchType) {
+                                        FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[2].request
+                                        else -> Constants.SortRequests[2].request
+                                    }
+                                }
+                                else -> { Constants.SortRequests[0].request }
+                            }
+
+                            if (newSortType != sortType) {
+                                sortType = newSortType
+                                fetchData()
+                            }
+
+                            true
+                        }
+
+                        popupMenu.show()
+                    }
+                }
+                return true
+            }
 
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
@@ -143,8 +212,6 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                             it.canPaginate &&
                             !it.isPaginating
                         ) {
-                            printLog("Paginating ${it.isPaginating} ${it.canPaginate} ${it.isPaginating}")
-
                             viewModel.fetchMovies()
                         }
                     }
@@ -164,6 +231,10 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
             }
 
             setRecyclerView()
+        }
+
+        sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
+            viewModel.isNetworkAvailable = it
         }
 
         viewModel.movies.observe(viewLifecycleOwner) { response ->
@@ -202,6 +273,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
         viewLifecycleOwner.apply {
             viewModel.movies.removeObservers(this)
             sharedViewModel.windowSize.removeObservers(this)
+            sharedViewModel.networkStatus.removeObservers(this)
         }
         movieAdapter = null
         super.onDestroyView()

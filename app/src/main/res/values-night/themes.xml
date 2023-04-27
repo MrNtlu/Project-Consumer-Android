@@ -17,6 +17,9 @@
         <item name="mainBackgroundColor">@color/androidBlack</item>
         <item name="mainTextColor">@color/white</item>
 
+        <item name="messageBoxBackgroundColor">@color/redDark</item>
+        <item name="messageBoxTextColor">@color/black</item>
+
         <item name="toolbarBackgroundColor">@color/androidBlack</item>
         <item name="toolbarTintColor">@color/white</item>
         <item name="bottomNavBackgroundColor">@color/materialBlack</item>

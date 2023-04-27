@@ -19,16 +19,15 @@ class MovieRepository @Inject constructor(
 
     //TODO parse error message and return with code
     //TODO Test error and check if we are getting data from cache or network
-    fun fetchMovies(page: Int, sort: String, tag: String, isRestoringData: Boolean = false) = networkBoundResource(
+    fun fetchMovies(page: Int, sort: String, tag: String, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
         cacheQuery = {
             movieDao.getMoviesByTag(tag, page, sort)
         },
         fetchNetwork = {
-            if (tag == FetchType.UPCOMING.tag) {
-                movieApiService.getUpcomingMovies(page, sort)
-            } else {
-                movieApiService.getMovieBySortFilter(page, sort, null, null, null, null, null)
+            when(tag) {
+                FetchType.UPCOMING.tag -> movieApiService.getUpcomingMovies(page, sort)
+                else -> movieApiService.getMovieBySortFilter(page, sort, "released", null, null, null, null)
             }
         },
         mapper = {
@@ -51,11 +50,13 @@ class MovieRepository @Inject constructor(
             }
         },
         isCachePaginationExhausted = {
-            // TODO && internet is not available
             !movieDao.isMoviePageExist(tag, page.plus(1))
         },
         shouldFetch = {
-            !(isRestoringData && !it.isNullOrEmpty()) // TODO Add internet check
+            !(
+                (isRestoringData && !it.isNullOrEmpty()) ||
+                (!isNetworkAvailable && !it.isNullOrEmpty())
+            )
         }
     )
 }
