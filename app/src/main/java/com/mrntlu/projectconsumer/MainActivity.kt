@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, args ->
             supportActionBar?.title = when(destination.id) {
                 R.id.movieListFragment -> {
-                    printLog("$args ${args?.getString("fetchType")}")
                     if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
                         "Upcoming Movies"
                     else if (args?.getString("fetchType") == FetchType.POPULAR.tag)

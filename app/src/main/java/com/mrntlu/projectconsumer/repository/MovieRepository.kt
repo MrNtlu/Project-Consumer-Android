@@ -18,7 +18,6 @@ class MovieRepository @Inject constructor(
 ) {
 
     //TODO parse error message and return with code
-    //TODO Test error and check if we are getting data from cache or network
     fun fetchMovies(page: Int, sort: String, tag: String, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
         cacheQuery = {

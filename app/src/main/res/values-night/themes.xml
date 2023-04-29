@@ -14,6 +14,8 @@
         <item name="android:windowLightStatusBar">false</item>
 
         <!-- Customize your theme here. -->
+        <item name="popupMenuStyle">@style/CustomPopupMenu</item>
+
         <item name="mainBackgroundColor">@color/androidBlack</item>
         <item name="mainTextColor">@color/white</item>
 
@@ -25,6 +27,10 @@
         <item name="bottomNavBackgroundColor">@color/materialBlack</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>
         <item name="bottomNavUnselectedColor">@color/grey500</item>
+    </style>
+
+    <style name="CustomPopupMenu" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:popupBackground">@color/materialBlack</item>
     </style>
 
     <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">

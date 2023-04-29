@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.get
@@ -37,14 +38,20 @@ import com.mrntlu.projectconsumer.viewmodels.movie.MovieViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
     private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
-    private val viewModel: MovieViewModel by viewModels()
     private val args: MovieListFragmentArgs by navArgs()
 
+    @Inject lateinit var viewModelFactory: MovieViewModel.Factory
+    private val viewModel: MovieViewModel by viewModels {
+        MovieViewModel.provideMovieViewModelFactory(viewModelFactory, this, arguments, args.fetchType, sharedViewModel.isNetworkAvailable())
+    }
+
+    private lateinit var popupMenu: PopupMenu
     private var movieAdapter: MovieAdapter? = null
     private var sortType: String = Constants.SortRequests[0].request
     private var gridCount = 3
@@ -60,28 +67,13 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.setTag(args.fetchType)
-        viewModel.isNetworkAvailable = sharedViewModel.isNetworkAvailable()
-
-        fetchData()
-
         setMenu()
         setObservers()
-    }
-
-    private fun fetchData() {
-        if (!viewModel.isRestoringData) {
-            when(args.fetchType) {
-                FetchType.UPCOMING.tag -> viewModel.fetchUpcomingMovies(sortType)
-                else -> viewModel.fetchPopularMovies(sortType)
-            }
-        }
     }
 
     private fun setMenu() {
         val menuHost: MenuHost = requireActivity()
 
-        //TODO Mark currently selected sort with Checkmark icon or different color etc.
         menuHost.addMenuProvider(object: MenuProvider {
             override fun onPrepareMenu(menu: Menu) {
                 menu.removeItem(R.id.settingsMenu)
@@ -94,40 +86,52 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
-                        val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
-                        val popupMenu = PopupMenu(requireContext(), menuItemView)
+                        if (!::popupMenu.isInitialized) {
+                            val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
+                            popupMenu = PopupMenu(requireContext(), menuItemView)
+                            popupMenu.menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)
+                            popupMenu.setForceShowIcon(true)
+                        }
                         val fetchType = args.fetchType
 
-                        popupMenu.menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)
+                        val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+                        val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
 
-                        when(fetchType) {
-                            FetchType.UPCOMING.tag -> {
-                                for (i in 0..popupMenu.menu.size.minus(1)) {
-                                    popupMenu.menu[i].title = Constants.SortUpcomingRequests[i].name
-                                }
+                        for (i in 0..popupMenu.menu.size.minus(1)) {
+                            val popupMenuItem = popupMenu.menu[i]
+                            val sortRequest = when(fetchType) {
+                                FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[i]
+                                else -> Constants.SortRequests[i]
                             }
-                            else -> {
-                                for (i in 0..popupMenu.menu.size.minus(1)) {
-                                    popupMenu.menu[i].title = Constants.SortRequests[i].name
-                                }
-                            }
+
+                            popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                requireContext(),
+                                if(sortType == sortRequest.request) selectedColor else unselectedColor
+                            )
+                            popupMenuItem.title = sortRequest.name
                         }
 
                         popupMenu.setOnMenuItemClickListener { item ->
                             val newSortType = when (item.itemId) {
                                 R.id.firstSortMenu -> {
+                                    setPopupMenuItemVisibility(popupMenu, 0)
+
                                     when(fetchType) {
                                         FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[0].request
                                         else -> Constants.SortRequests[0].request
                                     }
                                 }
                                 R.id.secondSortMenu -> {
+                                    setPopupMenuItemVisibility(popupMenu, 1)
+
                                     when(fetchType) {
                                         FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[1].request
                                         else -> Constants.SortRequests[1].request
                                     }
                                 }
                                 R.id.thirdSortMenu -> {
+                                    setPopupMenuItemVisibility(popupMenu, 2)
+
                                     when(fetchType) {
                                         FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[2].request
                                         else -> Constants.SortRequests[2].request
@@ -136,9 +140,11 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                                 else -> { Constants.SortRequests[0].request }
                             }
 
+                            item.isChecked = true
+
                             if (newSortType != sortType) {
                                 sortType = newSortType
-                                fetchData()
+                                viewModel.startMoviesFetch(sortType)
                             }
 
                             true
@@ -151,6 +157,15 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
             }
 
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun setPopupMenuItemVisibility(popupMenu: PopupMenu, selectedIndex: Int) {
+        val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+        val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+
+        for(i in 0..popupMenu.menu.size.minus(1)) {
+            popupMenu.menu[i].iconTintList = ContextCompat.getColorStateList(requireContext(), if(i == selectedIndex) selectedColor else unselectedColor)
+        }
     }
 
     private fun setRecyclerView() {
@@ -177,7 +192,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                     }
 
                     override fun onErrorRefreshPressed() {
-                        viewModel.refreshData()
+                        viewModel.startMoviesFetch(sortType)
                     }
 
                     override fun onExhaustButtonPressed() {

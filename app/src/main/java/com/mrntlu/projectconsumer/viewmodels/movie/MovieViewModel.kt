@@ -1,35 +1,38 @@
 package com.mrntlu.projectconsumer.viewmodels.movie
 
+import android.os.Bundle
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.savedstate.SavedStateRegistryOwner
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
-import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 const val PAGE_KEY = "rv.movie.page"
 const val SORT_KEY = "rv.movie.sort"
 const val SCROLL_POSITION_KEY = "rv.movie.scroll_position"
 const val TAG_KEY = "fetch.tag"
 
-@HiltViewModel
-class MovieViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+class MovieViewModel @AssistedInject constructor(
     private val movieRepository: MovieRepository,
+    @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted private val vmTag: String,
+    @Assisted var isNetworkAvailable: Boolean
 ): ViewModel() {
     private val _movieList = MutableLiveData<NetworkListResponse<List<Movie>>>()
     val movies: LiveData<NetworkListResponse<List<Movie>>> = _movieList
-
-    var isNetworkAvailable = true
 
     // Process Death variables
     var isRestoringData = false
@@ -45,36 +48,19 @@ class MovieViewModel @Inject constructor(
     init {
         if (page != 1) {
             restoreData()
+        } else {
+            setTag(vmTag)
+
+            startMoviesFetch(sort, true)
         }
     }
 
-    fun refreshData() {
-        setPagePosition(1)
-
-        when(tag) {
-            FetchType.UPCOMING.tag -> fetchUpcomingMovies(sort)
-            FetchType.POPULAR.tag -> fetchPopularMovies(sort)
-        }
-    }
-
-    fun fetchUpcomingMovies(newSort: String) {
-        setTag(FetchType.UPCOMING.tag)
-
+    fun startMoviesFetch(newSort: String, refreshAnyway: Boolean = false) {
         if (sort != newSort) {
-            setPagePosition(1)
             setSort(newSort)
-        }
-
-        fetchMovies()
-    }
-
-    fun fetchPopularMovies(newSort: String) {
-        setTag(FetchType.POPULAR.tag)
-
-        if (sort != newSort) {
             setPagePosition(1)
-            setSort(newSort)
-        }
+        } else if (refreshAnyway)
+            setPagePosition(1)
 
         fetchMovies()
     }
@@ -135,7 +121,7 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    fun setTag(newTag: String) {
+    private fun setTag(newTag: String) {
         if (tag != newTag) {
             tag = newTag
             savedStateHandle[TAG_KEY] = tag
@@ -156,6 +142,22 @@ class MovieViewModel @Inject constructor(
         if (!isRestoringData && !didOrientationChange) {
             scrollPosition = newPosition
             savedStateHandle[SCROLL_POSITION_KEY] = scrollPosition
+        }
+    }
+
+    @AssistedFactory
+    interface Factory {
+        fun create(savedStateHandle: SavedStateHandle, vmTag: String, isNetworkAvailable: Boolean): MovieViewModel
+    }
+
+    companion object {
+        fun provideMovieViewModelFactory(factory: Factory, owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null, vmTag: String, isNetworkAvailable: Boolean): AbstractSavedStateViewModelFactory {
+            return object: AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+                    return factory.create(handle, vmTag, isNetworkAvailable) as T
+                }
+            }
         }
     }
 }

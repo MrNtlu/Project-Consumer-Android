@@ -24,7 +24,7 @@ fun LoadingShimmer(
             .sizeModifier()
             .aspectRatio(0.6666667f)
             .clip(RoundedCornerShape(roundedCornerSize))
-            .background(GetShimmerBrush(isDarkTheme = isDarkTheme)),
+            .background(getShimmerBrush(isDarkTheme = isDarkTheme)),
     )
 }
 

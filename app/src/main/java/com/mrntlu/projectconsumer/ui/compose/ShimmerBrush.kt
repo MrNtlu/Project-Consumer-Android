@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun GetShimmerBrush(
-    isDarkTheme: Boolean
+fun getShimmerBrush(
+    isDarkTheme: Boolean,
 ): Brush {
     val color = if (isDarkTheme) Color.LightGray else Color.Gray
 
