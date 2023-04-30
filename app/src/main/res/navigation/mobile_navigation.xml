@@ -46,4 +46,16 @@
             app:argType="string"
             android:defaultValue="popular" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mrntlu.projectconsumer.ui.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/settingsFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
 </navigation>

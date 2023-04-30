@@ -58,7 +58,6 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                 }
             }
 
-            //TODO Make all layout clickable not just button
             seeAllButtonFirst.setOnClickListener {
                 val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.UPCOMING.tag)
 

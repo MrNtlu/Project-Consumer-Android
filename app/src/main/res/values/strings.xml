@@ -17,6 +17,14 @@
     <string name="back_to_top">Back to Top</string>
     <string name="no_internet_connection">No internet connection!</string>
     <string name="connection_lost_no_internet_connection">Connection lost! No internet connection.</string>
+    <string name="sort">Sort</string>
+    <string name="account">Account</string>
+    <string name="application">Application</string>
+    <string name="privacy_and_policy"><![CDATA[Privacy & Policy]]></string>
+    <string name="terms_and_conditions"><![CDATA[Terms & Conditions]]></string>
+    <string name="delete_account">Delete Account</string>
+    <string name="dark_theme">Dark Theme</string>
+    <string name="light_theme">Light Theme</string>
 
     <string name="see_all_cd">See All</string>
     <string name="login_register_cd">Login/Register Image</string>
@@ -24,5 +32,5 @@
     <string name="see_all_popular_cd">See All Popular</string>
     <string name="genre_image_cd">Genre Image</string>
     <string name="message_icon_cd">Message Icon</string>
-    <string name="sort">Sort</string>
+
 </resources>

@@ -116,6 +116,9 @@ class MainActivity : AppCompatActivity() {
                         "Popular Movies"
                     else ""
                 }
+                R.id.settingsFragment -> {
+                    "Settings"
+                }
                 else -> ""
             }
 
@@ -171,7 +174,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.settingsMenu -> {
-                sharedViewModel.toggleTheme()
+                navController.navigate(R.id.action_global_settingsFragment)
             }
             android.R.id.home -> {
                 navController.popBackStack()
