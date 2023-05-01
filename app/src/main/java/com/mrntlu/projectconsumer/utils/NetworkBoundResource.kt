@@ -16,9 +16,6 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
     crossinline shouldFetch: (EntityType) -> Boolean = { true }
 ) = flow<NetworkListResponse<ReturnType>> {
 
-    //TODO
-    // Find a way to delete cache only when necessary
-    // Get error code and if error is not connected to database or no internet get from caches
     val data = cacheQuery()
 
     val networkListResponse: NetworkListResponse<ReturnType> = if (shouldFetch(data)) {

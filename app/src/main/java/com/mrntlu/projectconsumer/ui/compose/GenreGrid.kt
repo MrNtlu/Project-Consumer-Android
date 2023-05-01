@@ -83,7 +83,6 @@ fun GenreGrid(
                     },
                 contentAlignment = Alignment.Center,
             ) {
-                //TODO Test no internet and image failed case
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxSize()

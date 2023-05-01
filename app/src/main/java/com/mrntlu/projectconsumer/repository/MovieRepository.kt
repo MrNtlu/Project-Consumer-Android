@@ -17,11 +17,13 @@ class MovieRepository @Inject constructor(
     private val cacheDatabase: CacheDatabase,
 ) {
 
-    //TODO parse error message and return with code
     fun fetchMovies(page: Int, sort: String, tag: String, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
         cacheQuery = {
-            movieDao.getMoviesByTag(tag, page, sort)
+            if (isRestoringData)
+                movieDao.getAllMoviesByTag(tag, page, sort)
+            else
+                movieDao.getMoviesByTag(tag, page, sort)
         },
         fetchNetwork = {
             when(tag) {

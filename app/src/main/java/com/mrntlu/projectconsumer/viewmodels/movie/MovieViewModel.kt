@@ -17,6 +17,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -100,17 +101,15 @@ class MovieViewModel @AssistedInject constructor(
         var isPaginationExhausted = false
         val tempList = arrayListOf<Movie>()
         viewModelScope.launch(Dispatchers.IO) {
-            for (p in 1..page) {
-                val job = launch(Dispatchers.IO) {
-                    movieRepository.fetchMovies(p, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
-                        if (response is NetworkListResponse.Success) {
-                            tempList.addAll(response.data)
-                            isPaginationExhausted = response.isPaginationExhausted
-                        }
+            launch(Dispatchers.IO) {
+                movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
+                    if (response is NetworkListResponse.Success) {
+                        tempList.addAll(response.data)
+                        isPaginationExhausted = response.isPaginationExhausted
                     }
                 }
-                job.join()
             }
+
             withContext(Dispatchers.Main) {
                 _movieList.value = NetworkListResponse.Success(
                     tempList,

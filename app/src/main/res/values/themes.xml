@@ -15,7 +15,6 @@
 
         <!-- Customize your theme here. -->
 
-        <!-- TODO Change colors      -->
         <item name="mainBackgroundColor">@color/darkWhite</item>
         <item name="mainTextColor">@color/black</item>
 
