@@ -6,6 +6,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -47,13 +48,13 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
     implementation "androidx.window:window:1.0.0"
 
     def compose_version = "1.7.1"
-    def compose_compiler_version = "1.4.2"
+    def compose_compiler_version = "1.4.3"
     implementation "androidx.activity:activity-compose:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_compiler_version"
     implementation "androidx.compose.material:material:$compose_compiler_version"

@@ -18,35 +18,36 @@ import com.mrntlu.projectconsumer.interfaces.PreviewModel
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
-class PreviewAdapter(
-    private val interaction: Interaction<PreviewModel>,
+class PreviewAdapter<T: PreviewModel>(
+    private val interaction: Interaction<T>,
     private val isDarkTheme: Boolean,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var errorMessage: String? = null
     var isLoading = true
 
-    private var arrayList: ArrayList<PreviewModel> = arrayListOf()
+    private var arrayList: ArrayList<T> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             RecyclerViewEnum.Error.value -> ErrorViewHolder<Movie>(CellErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.Loading.value -> LoadingPreviewViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else -> return ItemPreviewHolder(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            else -> return ItemPreviewHolder<T>(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
             RecyclerViewEnum.View.value -> {
-                (holder as ItemPreviewHolder).bind(arrayList[position], position, interaction)
+                (holder as ItemPreviewHolder<T>).bind(arrayList[position], position, interaction)
             }
             RecyclerViewEnum.Error.value -> {
-                (holder as ErrorViewHolderBind<PreviewModel>).bind(errorMessage, interaction)
+                (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
             }
             RecyclerViewEnum.Loading.value -> {
                 (holder as LoadingPreviewViewHolder).bind(isDarkTheme)
@@ -83,7 +84,7 @@ class PreviewAdapter(
         notifyDataSetChanged()
     }
 
-    fun setData(newList: List<PreviewModel>) {
+    fun setData(newList: List<T>) {
         setState(RecyclerViewEnum.View)
 
         if (arrayList.isNotEmpty())
@@ -109,10 +110,10 @@ class PreviewAdapter(
         }
     }
 
-    inner class ItemPreviewHolder(
+    inner class ItemPreviewHolder<T: PreviewModel>(
         private val binding: CellPreviewItemBinding,
-    ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<PreviewModel> {
-        override fun bind(item: PreviewModel, position: Int, interaction: Interaction<PreviewModel>) {
+    ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
+        override fun bind(item: T, position: Int, interaction: Interaction<T>) {
             binding.apply {
                 val params = ConstraintLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -124,6 +125,7 @@ class PreviewAdapter(
 
                 binding.root.layoutParams = params
 
+                previewCard.setGone()
                 previewIVProgress.setVisible()
                 previewIV.loadWithGlide(item.imageURL, previewCard, previewIVProgress) {
                     centerCrop().transform(RoundedCorners(18))

@@ -19,6 +19,7 @@ import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
 
 class MovieAdapter(
@@ -51,6 +52,7 @@ class MovieAdapter(
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<Movie> {
         override fun bind(item: Movie, position: Int, interaction: Interaction<Movie>) {
             binding.apply {
+                previewCard.setGone()
                 previewIVProgress.setVisible()
                 previewIV.loadWithGlide(item.imageURL, previewCard, previewIVProgress) {
                     centerCrop().transform(RoundedCorners(24))

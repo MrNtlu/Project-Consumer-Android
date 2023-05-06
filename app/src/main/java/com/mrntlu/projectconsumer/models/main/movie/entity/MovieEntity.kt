@@ -15,6 +15,7 @@ data class MovieEntity(
     val genres: List<MovieGenreEntity>,
     val streaming: List<Streaming>?,
     val actors: List<Actor>?,
+    val translations: List<TranslationEntity>?,
     val length: Int,
     val status: String,
 
@@ -55,7 +56,7 @@ data class MovieEntity(
     val page: Int,
 ) {
     constructor(): this(
-        "","", listOf(), listOf(), listOf(), 0,"","",
+        "","", listOf(), listOf(), listOf(), listOf(), 0,"","",
         "","","","","","",
         0.0, 0.0, 0, listOf(), "", 0
     )

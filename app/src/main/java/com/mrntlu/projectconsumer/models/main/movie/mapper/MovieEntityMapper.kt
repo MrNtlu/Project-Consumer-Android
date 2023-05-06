@@ -3,8 +3,10 @@ package com.mrntlu.projectconsumer.models.main.movie.mapper
 import com.mrntlu.projectconsumer.interfaces.EntityMapper
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.models.main.movie.MovieGenre
+import com.mrntlu.projectconsumer.models.main.movie.Translation
 import com.mrntlu.projectconsumer.models.main.movie.entity.MovieEntity
 import com.mrntlu.projectconsumer.models.main.movie.entity.MovieGenreEntity
+import com.mrntlu.projectconsumer.models.main.movie.entity.TranslationEntity
 
 object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
     override fun asEntity(
@@ -19,6 +21,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
                 movie.genres.map { MovieGenreEntity(it.name, it.tmdbID) },
                 movie.streaming,
                 movie.actors,
+                movie.translations?.map { TranslationEntity(it.lanCode, it.lanName, it.lanNameEn, it.title, it.description) },
                 movie.length,
                 movie.status,
                 movie.imageURL,
@@ -46,6 +49,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
                 movieEntity.genres.map { MovieGenre(it.name, it.tmdbID) },
                 movieEntity.streaming,
                 movieEntity.actors,
+                movieEntity.translations?.map { Translation(it.lanCode, it.lanName, it.lanNameEn, it.title, it.description) },
                 movieEntity.length,
                 movieEntity.status,
                 movieEntity.imageURL,

@@ -52,6 +52,20 @@ class Converters {
     }
 
     @TypeConverter
+    fun fromTranslationList(translations: List<TranslationEntity>?): String {
+        return Gson().toJson(translations)
+    }
+
+    @TypeConverter
+    fun toTranslationList(translations: String?): List<TranslationEntity>? {
+        if (translations != null) {
+            val translation = object : TypeToken<List<TranslationEntity>>() {}.type
+            return Gson().fromJson(translations, translation)
+        }
+        return emptyList()
+    }
+
+    @TypeConverter
     fun fromProductionAndCompanyList(productionCompanies: List<ProductionAndCompany>?): String {
         return Gson().toJson(productionCompanies)
     }

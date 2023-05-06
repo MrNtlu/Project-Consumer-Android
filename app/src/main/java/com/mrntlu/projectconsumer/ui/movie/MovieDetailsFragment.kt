@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
@@ -12,9 +13,9 @@ import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
+    private val args: MovieDetailsFragmentArgs by navArgs()
 
-    //TODO Use safeargs
-    //Pass movie information and make new request
+    //TODO Pass movie information and make new request
     //while fetching show passed info and update after fetch
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +28,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.detailsTV.text = args.movieArgs.title
     }
 
     override fun onDestroyView() {

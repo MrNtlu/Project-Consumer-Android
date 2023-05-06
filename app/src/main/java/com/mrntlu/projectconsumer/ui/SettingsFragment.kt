@@ -45,6 +45,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         setListeners()
     }
 
+    //TODO Implement https://developer.android.com/develop/ui/views/components/spinner
     private fun setUI() {
         //TODO If not logged in hide/show
         binding.apply {

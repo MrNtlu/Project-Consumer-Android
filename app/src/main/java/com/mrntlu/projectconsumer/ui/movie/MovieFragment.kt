@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieBinding
 import com.mrntlu.projectconsumer.interfaces.Interaction
-import com.mrntlu.projectconsumer.interfaces.PreviewModel
+import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.models.main.movie.MovieResponse
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.compose.GenreGrid
@@ -29,8 +29,8 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
     private val viewModel: MoviePreviewViewModel by viewModels()
     private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
 
-    private var upcomingAdapter: PreviewAdapter? = null
-    private var popularAdapter: PreviewAdapter? = null
+    private var upcomingAdapter: PreviewAdapter<Movie>? = null
+    private var popularAdapter: PreviewAdapter<Movie>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,9 +93,11 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
     private fun setRecyclerView() {
         binding.upcomingPreviewRV.apply {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-            upcomingAdapter = PreviewAdapter(object: Interaction<PreviewModel> {
-                override fun onItemSelected(item: PreviewModel, position: Int) {
-                    printLog("Item Clicked")
+            upcomingAdapter = PreviewAdapter(object: Interaction<Movie> {
+                override fun onItemSelected(item: Movie, position: Int) {
+                    val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
+
+                    navController.navigate(navWithAction)
                 }
 
                 override fun onErrorRefreshPressed() {
@@ -109,9 +111,11 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
 
         binding.popularPreviewRV.apply {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-            popularAdapter = PreviewAdapter(object: Interaction<PreviewModel> {
-                override fun onItemSelected(item: PreviewModel, position: Int) {
-                    printLog("Item Clicked 2")
+            popularAdapter = PreviewAdapter(object: Interaction<Movie> {
+                override fun onItemSelected(item: Movie, position: Int) {
+                    val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
+
+                    navController.navigate(navWithAction)
                 }
 
                 override fun onErrorRefreshPressed() {
@@ -140,7 +144,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
         }
     }
 
-    private fun handleObserver(response: NetworkResponse<MovieResponse>, adapter: PreviewAdapter?) {
+    private fun handleObserver(response: NetworkResponse<MovieResponse>, adapter: PreviewAdapter<Movie>?) {
         when(response) {
             is NetworkResponse.Failure -> adapter?.setErrorView(response.errorMessage)
             NetworkResponse.Loading -> adapter?.setLoadingView()

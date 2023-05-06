@@ -1,9 +1,12 @@
 package com.mrntlu.projectconsumer.models.main.movie
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.DiffUtilComparison
 import com.mrntlu.projectconsumer.interfaces.PreviewModel
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Movie(
     @SerializedName("_id")
     val id: String,
@@ -11,6 +14,7 @@ data class Movie(
     val genres: List<MovieGenre>,
     val streaming: List<Streaming>?,
     val actors: List<Actor>?,
+    val translations: List<Translation>?,
     val length: Int,
     val status: String,
     @SerializedName("image_url")
@@ -35,7 +39,7 @@ data class Movie(
     val tmdbVoteCount: Int,
     @SerializedName("production_companies")
     val productionCompanies: List<ProductionAndCompany>,
-): DiffUtilComparison<Movie>, PreviewModel {
+): DiffUtilComparison<Movie>, PreviewModel, Parcelable {
     override fun areItemsTheSame(newItem: Movie): Boolean {
         return id == newItem.id
     }

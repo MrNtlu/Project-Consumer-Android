@@ -32,7 +32,6 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
@@ -188,7 +187,9 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<Movie> {
                     override fun onItemSelected(item: Movie, position: Int) {
-                        printLog("Item Selected $item")
+                        val navWithAction = MovieListFragmentDirections.actionMovieListFragmentToMovieDetailsFragment(item)
+
+                        navController.navigate(navWithAction)
                     }
 
                     override fun onErrorRefreshPressed() {
