@@ -9,6 +9,7 @@
         <attr name="accessoryTextColor" format="color"/>
 
         <attr name="toolbarBackgroundColor" format="color"/>
+        <attr name="toolbarBackButtonColor" format="color"/>
         <attr name="toolbarTintColor" format="color"/>
 
         <attr name="messageBoxBackgroundColor" format="color"/>

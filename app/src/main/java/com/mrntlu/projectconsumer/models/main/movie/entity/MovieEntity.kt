@@ -18,6 +18,7 @@ data class MovieEntity(
     val translations: List<TranslationEntity>?,
     val length: Int,
     val status: String,
+    val backdrop: String?,
 
     @ColumnInfo("image_url")
     val imageURL: String,
@@ -56,7 +57,7 @@ data class MovieEntity(
     val page: Int,
 ) {
     constructor(): this(
-        "","", listOf(), listOf(), listOf(), listOf(), 0,"","",
+        "","", listOf(), listOf(), listOf(), listOf(), 0,"", null,"",
         "","","","","","",
         0.0, 0.0, 0, listOf(), "", 0
     )

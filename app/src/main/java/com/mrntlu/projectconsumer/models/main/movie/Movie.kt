@@ -17,6 +17,7 @@ data class Movie(
     val translations: List<Translation>?,
     val length: Int,
     val status: String,
+    val backdrop: String?,
     @SerializedName("image_url")
     override val imageURL: String,
     @SerializedName("small_image_url")

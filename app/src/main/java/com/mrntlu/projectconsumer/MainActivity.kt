@@ -124,11 +124,16 @@ class MainActivity : AppCompatActivity() {
 
             when(destination.id) {
                 R.id.navigation_movie, R.id.navigation_tv, R.id.navigation_anime, R.id.navigation_game -> {
+                    binding.toolbar.setVisible()
                     supportActionBar?.setDisplayShowTitleEnabled(false)
                     binding.navView.setVisible()
                     binding.anonymousInc.root.setVisible()
                 }
+                R.id.movieDetailsFragment -> {
+                    binding.toolbar.setGone()
+                }
                 else -> {
+                    binding.toolbar.setVisible()
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                     binding.navView.setGone()
                     binding.anonymousInc.root.setGone()

@@ -17,12 +17,15 @@
 
         <item name="mainBackgroundColor">@color/darkWhite</item>
         <item name="mainTextColor">@color/black</item>
+        <item name="subTextColor">@color/grey700</item>
 
         <item name="messageBoxBackgroundColor">@color/redLight</item>
         <item name="messageBoxTextColor">@color/white</item>
 
         <item name="toolbarBackgroundColor">@color/darkWhite</item>
+        <item name="toolbarBackButtonColor">#BFFFFFFF</item>
         <item name="toolbarTintColor">@color/materialBlack</item>
+
         <item name="bottomNavBackgroundColor">@color/white</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>
         <item name="bottomNavUnselectedColor">@color/grey500</item>
