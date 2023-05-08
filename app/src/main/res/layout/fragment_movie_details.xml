@@ -69,16 +69,6 @@
             android:layout_height="match_parent"
             android:background="?attr/mainBackgroundColor">
 
-            <ImageView
-                android:id="@+id/detailsPosterIV"
-                android:layout_width="75dp"
-                android:layout_height="112dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:scaleType="centerCrop"
-                tools:src="@tools:sample/avatars" />
-
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline5"
                 android:layout_width="wrap_content"
@@ -93,31 +83,29 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.96" />
 
+            <include
+                android:id="@+id/detailsInclude"
+                layout="@layout/user_interaction_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/detailsTitleTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="12dp"
                 android:textAlignment="textStart"
                 android:textColor="?attr/mainTextColor"
-                android:textSize="20sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/detailsPosterIV"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsInclude"
                 tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
-
-            <ProgressBar
-                android:id="@+id/detailsPosterProgress"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminateTint="?attr/mainTextColor"
-                app:layout_constraintBottom_toBottomOf="@+id/detailsPosterIV"
-                app:layout_constraintEnd_toEndOf="@+id/detailsPosterIV"
-                app:layout_constraintStart_toStartOf="@+id/detailsPosterIV"
-                app:layout_constraintTop_toTopOf="@+id/detailsPosterIV" />
 
             <TextView
                 android:id="@+id/detailsOriginalTV"
@@ -126,59 +114,52 @@
                 android:layout_marginTop="6dp"
                 android:textAlignment="textStart"
                 android:textColor="?attr/subTextColor"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/detailsPosterIV"
-                app:layout_constraintEnd_toEndOf="@+id/detailsTitleTV"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toStartOf="@+id/detailsTitleTV"
                 app:layout_constraintTop_toBottomOf="@+id/detailsTitleTV"
-                app:layout_constraintVertical_bias="0.0"
                 tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="130dp" />
-
-            <TextView
-                android:id="@+id/detailsRateTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginBottom="2dp"
-                android:textColor="?attr/mainTextColor"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
-                tools:text="8.2" />
-
-            <TextView
-                android:id="@+id/detailsRateCountTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="?attr/mainTextColor"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintStart_toEndOf="@+id/detailsRateTV"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
-                tools:text="| 10123" />
 
             <TextView
                 android:id="@+id/detailsReleaseTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textAlignment="textEnd"
+                android:layout_marginEnd="8dp"
                 android:textColor="?attr/mainTextColor"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toEndOf="@+id/detailsRateCountTV"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imdbButton"
+                app:layout_constraintEnd_toStartOf="@+id/tmdbButton"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toTopOf="@+id/imdbButton"
                 tools:text="In Production" />
+
+            <Button
+                android:id="@+id/tmdbButton"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#04243f"
+                android:padding="0dp"
+                android:text="@string/tmdb"
+                android:textColor="#58bab0"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imdbButton"
+                app:layout_constraintEnd_toStartOf="@+id/imdbButton"
+                app:layout_constraintTop_toTopOf="@+id/imdbButton" />
+
+            <Button
+                android:id="@+id/imdbButton"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#f6c800"
+                android:padding="0dp"
+                android:text="@string/imdb"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintTop_toBottomOf="@+id/detailsOriginalTV" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline8"
@@ -194,29 +175,102 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailsReleaseTV" />
+                app:layout_constraintTop_toBottomOf="@+id/imdbButton" />
 
             <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Plot"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
+
+            <io.github.glailton.expandabletextview.ExpandableTextView
                 android:id="@+id/detailsDescriptionTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="6dp"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
+                app:animDuration="500"
+                app:collapsedLines="3"
+                app:ellipsizeTextColor="?attr/subTextColor"
+                app:isExpanded="false"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="parent"
-                tools:text="TextView" />
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                app:readLessText="Hide"
+                app:readMoreText="Expand"
+                app:textMode="line"
+                tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="12dp"
-                android:src="@drawable/ic_star_48"
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Genres"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="@+id/guideline9" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsGenreRV"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="6dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+            <TextView
+                android:id="@+id/detailsActorsTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Actors"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/detailsGenreRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsActorsRV"
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="6dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/detailsActorsTV" />
+
+            <TextView
+                android:id="@+id/detailsProductionTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Production"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/detailsActorsRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsProductionRV"
+                android:layout_width="0dp"
+                android:layout_height="75dp"
+                android:layout_marginTop="6dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/detailsProductionTV" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

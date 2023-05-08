@@ -131,6 +131,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.movieDetailsFragment -> {
                     binding.toolbar.setGone()
+                    binding.navView.setGone()
+                    binding.anonymousInc.root.setGone()
                 }
                 else -> {
                     binding.toolbar.setVisible()

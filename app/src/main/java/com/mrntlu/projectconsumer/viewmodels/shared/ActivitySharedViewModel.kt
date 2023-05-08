@@ -7,6 +7,8 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 
 class ActivitySharedViewModel: ViewModel() {
+    //TODO isLoggedIn, Language Selection
+
     // Theme
     val themeCode: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()

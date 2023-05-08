@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="ds">
         <attr name="mainTextColor" format="color"/>
+        <attr name="descriptionTitleTextColor" format="color"/>
         <attr name="mainBackgroundColor" format="color"/>
         <attr name="subTextColor" format="color"/>
 

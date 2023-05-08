@@ -27,7 +27,7 @@ data class MovieEntity(
     val smallImageURL: String,
 
     @ColumnInfo("imdb_id")
-    val imdbID: String,
+    val imdbID: String?,
 
     @ColumnInfo("release_date")
     val releaseDate: String,

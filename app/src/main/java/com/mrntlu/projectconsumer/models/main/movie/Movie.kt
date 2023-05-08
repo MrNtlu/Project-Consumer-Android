@@ -18,26 +18,37 @@ data class Movie(
     val length: Int,
     val status: String,
     val backdrop: String?,
+
     @SerializedName("image_url")
     override val imageURL: String,
+
     @SerializedName("small_image_url")
     val smallImageURL: String,
+
     @SerializedName("imdb_id")
-    val imdbID: String,
+    val imdbID: String?,
+
     @SerializedName("release_date")
     val releaseDate: String,
+
     @SerializedName("title_en")
     override val title: String,
+
     @SerializedName("title_original")
     val titleOriginal: String,
+
     @SerializedName("tmdb_id")
     val tmdbID: String,
+
     @SerializedName("tmdb_popularity")
     val tmdbPopularity: Double,
+
     @SerializedName("tmdb_vote")
     val tmdbVote: Double,
+
     @SerializedName("tmdb_vote_count")
     val tmdbVoteCount: Int,
+
     @SerializedName("production_companies")
     val productionCompanies: List<ProductionAndCompany>,
 ): DiffUtilComparison<Movie>, PreviewModel, Parcelable {

@@ -32,5 +32,7 @@
     <string name="see_all_popular_cd">See All Popular</string>
     <string name="genre_image_cd">Genre Image</string>
     <string name="message_icon_cd">Message Icon</string>
+    <string name="tmdb">TMDB</string>
+    <string name="imdb">IMDB</string>
 
 </resources>
