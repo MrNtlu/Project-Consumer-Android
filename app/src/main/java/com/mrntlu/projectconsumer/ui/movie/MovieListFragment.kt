@@ -66,6 +66,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //TODO Test pagination stuck case where when you navigate and comeback you only see pagination. Test with 5 sec sleep etc.
         setMenu()
         setObservers()
     }

@@ -51,7 +51,7 @@ data class MovieEntity(
     val tmdbVoteCount: Int,
 
     @ColumnInfo("production_companies")
-    val productionCompanies: List<ProductionAndCompany>,
+    val productionCompanies: List<ProductionAndCompany>?,
 
     val tag: String,
     val page: Int,

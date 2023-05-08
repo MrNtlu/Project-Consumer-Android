@@ -9,16 +9,21 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout.LayoutParams
 import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.adapters.DetailsAdapter
+import com.mrntlu.projectconsumer.adapters.DetailsUI
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -28,6 +33,9 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
+
+    private var actorAdapter: DetailsAdapter? = null
+    private var companiesAdapter: DetailsAdapter? = null
 
     //TODO Pass movie information and make new request
     //while fetching show passed info and update after fetch
@@ -45,6 +53,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
         setUI()
         setListeners()
+        setRecyclerView()
     }
 
     private fun setUI() {
@@ -120,11 +129,57 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
     }
 
+    private fun setRecyclerView() {
+        printLog("${args.movieArgs.actors}")
+        if (!args.movieArgs.actors.isNullOrEmpty()) {
+            binding.detailsActorsRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+                actorAdapter = DetailsAdapter(detailsList = args.movieArgs.actors!!.filter {
+                    it.name.isNotEmptyOrBlank()
+                }.map {
+                    DetailsUI(
+                        it.name,
+                        it.image,
+                        it.character
+                    )
+                })
+                adapter = actorAdapter
+            }
+        } else {
+            binding.detailsActorsTV.setGone()
+            binding.detailsActorsRV.setGone()
+        }
+
+        if (!args.movieArgs.productionCompanies.isNullOrEmpty()) {
+            binding.detailsProductionRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+                actorAdapter = DetailsAdapter(R.drawable.ic_company_75, 18F, args.movieArgs.productionCompanies!!.filter {
+                    it.name.isNotEmptyOrBlank()
+                }.map {
+                    DetailsUI(
+                        it.name,
+                        it.logo ?: "",
+                        it.originCountry
+                    )
+                }) {
+                    centerCrop().transform(RoundedCorners(12))
+                }
+                adapter = actorAdapter
+            }
+        } else {
+            binding.detailsProductionTV.setGone()
+            binding.detailsProductionRV.setGone()
+        }
+    }
+
     override fun onDestroyView() {
         activity?.let {
             it.window.statusBarColor = ContextCompat.getColor(it, if (sharedViewModel.isLightTheme()) R.color.darkWhite else R.color.androidBlack)
         }
-
+        actorAdapter = null
+        companiesAdapter = null
         super.onDestroyView()
     }
 }

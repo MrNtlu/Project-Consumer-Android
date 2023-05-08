@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="4dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/detailsIVCard"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        app:cardBackgroundColor="?attr/bottomNavBackgroundColor"
+        app:cardCornerRadius="37dp"
+        app:cardElevation="3dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/detailsCircleIV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/detailsCirclePlaceholderIV"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_person_75"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?attr/mainTextColor" />
+
+        <ProgressBar
+            android:id="@+id/detailsCircleIVProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="?attr/mainTextColor"
+            tools:visibility="gone" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/detailsNameTV"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxWidth="150dp"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textColor="?attr/mainTextColor"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/detailsIVCard"
+        app:layout_constraintStart_toStartOf="@+id/detailsIVCard"
+        app:layout_constraintTop_toBottomOf="@+id/detailsIVCard"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/detailsSubTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxWidth="150dp"
+        android:textAlignment="center"
+        android:textColor="?attr/subTextColor"
+        android:maxLines="1"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/detailsNameTV"
+        app:layout_constraintStart_toStartOf="@+id/detailsNameTV"
+        app:layout_constraintTop_toBottomOf="@+id/detailsNameTV"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="TextView"
+        tools:ignore="SmallSp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

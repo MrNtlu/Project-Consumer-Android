@@ -50,7 +50,7 @@ data class Movie(
     val tmdbVoteCount: Int,
 
     @SerializedName("production_companies")
-    val productionCompanies: List<ProductionAndCompany>,
+    val productionCompanies: List<ProductionAndCompany>?,
 ): DiffUtilComparison<Movie>, PreviewModel, Parcelable {
     override fun areItemsTheSame(newItem: Movie): Boolean {
         return id == newItem.id
