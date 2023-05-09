@@ -16,9 +16,11 @@
         <!-- Customize your theme here. -->
 
         <item name="mainTextColor">@color/black</item>
-        <item name="descriptionTitleTextColor">@color/deep_purple_700</item>
-        <item name="mainBackgroundColor">@color/darkWhite</item>
         <item name="subTextColor">@color/grey700</item>
+        <item name="descriptionTitleTextColor">@color/deep_purple_700</item>
+
+        <item name="mainBackgroundColor">@color/darkWhite</item>
+        <item name="subBackgroundColor">@color/white</item>
 
         <item name="messageBoxBackgroundColor">@color/redLight</item>
         <item name="messageBoxTextColor">@color/white</item>

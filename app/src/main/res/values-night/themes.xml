@@ -17,9 +17,11 @@
         <item name="popupMenuStyle">@style/CustomPopupMenu</item>
 
         <item name="mainTextColor">@color/white</item>
-        <item name="descriptionTitleTextColor">@color/deep_purple_200</item>
-        <item name="mainBackgroundColor">@color/androidBlack</item>
         <item name="subTextColor">@color/grey400</item>
+        <item name="descriptionTitleTextColor">@color/deep_purple_200</item>
+
+        <item name="mainBackgroundColor">@color/androidBlack</item>
+        <item name="subBackgroundColor">@color/materialBlack</item>
 
         <item name="messageBoxBackgroundColor">@color/redDark</item>
         <item name="messageBoxTextColor">@color/black</item>

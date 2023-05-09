@@ -211,7 +211,7 @@
                 tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/detailsGenreTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -225,11 +225,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detailsGenreRV"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsGenreTV" />
 
             <TextView
                 android:id="@+id/detailsActorsTV"

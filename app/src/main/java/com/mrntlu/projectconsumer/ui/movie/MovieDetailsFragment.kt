@@ -19,8 +19,9 @@ import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout.LayoutParams
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
-import com.mrntlu.projectconsumer.adapters.DetailsUI
+import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
+import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
@@ -36,6 +37,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private var actorAdapter: DetailsAdapter? = null
     private var companiesAdapter: DetailsAdapter? = null
+    private var genreAdapter: GenreAdapter? = null
 
     //TODO Pass movie information and make new request
     //while fetching show passed info and update after fetch
@@ -80,7 +82,8 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
             binding.detailsInclude.apply {
                 interactionRateTV.text = tmdbVote.roundSingleDecimal().toString()
-                interactionsRateCountTV.text = " | $tmdbVoteCount"
+                val rateCountText = " | $tmdbVoteCount"
+                interactionsRateCountTV.text = rateCountText
             }
 
             val lengthStr = if (length > 10) {
@@ -155,6 +158,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             binding.detailsProductionRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
+
                 actorAdapter = DetailsAdapter(R.drawable.ic_company_75, 18F, args.movieArgs.productionCompanies!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
@@ -171,6 +175,21 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         } else {
             binding.detailsProductionTV.setGone()
             binding.detailsProductionRV.setGone()
+        }
+
+        if (args.movieArgs.genres.isNotEmpty()) {
+            binding.detailsGenreRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                genreAdapter = GenreAdapter(args.movieArgs.genres.map { it.name }) {
+                    printLog("Genre ${args.movieArgs.genres[it]}")
+                }
+                adapter = genreAdapter
+            }
+        } else {
+            binding.detailsGenreTV.setGone()
+            binding.detailsGenreRV.setGone()
         }
     }
 

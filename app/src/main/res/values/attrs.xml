@@ -2,9 +2,11 @@
 <resources>
     <declare-styleable name="ds">
         <attr name="mainTextColor" format="color"/>
-        <attr name="descriptionTitleTextColor" format="color"/>
-        <attr name="mainBackgroundColor" format="color"/>
         <attr name="subTextColor" format="color"/>
+        <attr name="descriptionTitleTextColor" format="color"/>
+
+        <attr name="mainBackgroundColor" format="color"/>
+        <attr name="subBackgroundColor" format="color"/>
 
         <attr name="progressColor" format="color"/>
         <attr name="accessoryTextColor" format="color"/>

@@ -9,15 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestBuilder
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.CellDetailsBinding
+import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
-
-data class DetailsUI(
-    val title: String,
-    val image: String,
-    val subTitle: String,
-)
 
 class DetailsAdapter(
     private val placeHolderImage: Int = R.drawable.ic_person_75,
