@@ -8,13 +8,14 @@
     android:paddingHorizontal="4dp">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/ivCard"
+        android:id="@+id/streamingIVCard"
         android:layout_width="0dp"
-        android:layout_height="75dp"
+        android:layout_height="60dp"
         android:layout_marginStart="2dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="2dp"
         app:cardBackgroundColor="?attr/bottomNavBackgroundColor"
-        app:cardCornerRadius="40dp"
+        app:cardCornerRadius="12dp"
         app:cardElevation="3dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,29 +23,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/circleIV"
+            android:id="@+id/streamingIV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/backgrounds/scenic"
-            tools:visibility="gone" />
-
-        <ImageView
-            android:id="@+id/circlePlaceholderIV"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_person_75"
-            android:visibility="visible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/mainTextColor" />
+            tools:src="@tools:sample/backgrounds/scenic" />
 
         <ProgressBar
-            android:id="@+id/circleIVProgressBar"
+            android:id="@+id/streamingIVProgressBar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,8 +42,8 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/nameTV"
-        android:layout_width="100dp"
+        android:id="@+id/streamingNameTV"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:ellipsize="end"
@@ -64,27 +52,8 @@
         android:textAlignment="center"
         android:textColor="?attr/mainTextColor"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/ivCard"
-        app:layout_constraintStart_toStartOf="@+id/ivCard"
-        app:layout_constraintTop_toBottomOf="@+id/ivCard"
+        app:layout_constraintEnd_toEndOf="@+id/streamingIVCard"
+        app:layout_constraintStart_toStartOf="@+id/streamingIVCard"
+        app:layout_constraintTop_toBottomOf="@+id/streamingIVCard"
         tools:text="TextView" />
-
-    <TextView
-        android:id="@+id/subTV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:ellipsize="end"
-        android:maxWidth="150dp"
-        android:textAlignment="center"
-        android:textColor="?attr/subTextColor"
-        android:maxLines="1"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/nameTV"
-        app:layout_constraintStart_toStartOf="@+id/nameTV"
-        app:layout_constraintTop_toBottomOf="@+id/nameTV"
-        app:layout_constraintVertical_bias="0.0"
-        tools:text="TextView"
-        tools:ignore="SmallSp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,23 +16,13 @@
   <li> SafeArgs
 </ul>
 
+# [Wiki Page](https://github.com/MrNtlu/Project-Consumer)
+
 ## TODO
 
-* Main Page Design [DONE]
-    * Search and Discover Movies
-        * Search > Simple search by name
-    * Upcoming xxx
-    * Popular xxx
-    * Genres
-        * First item is Discover
-            * Discover > Sort/Filter
-        * Get popular genres from database and save to devices
+* All contents should be unified and bottom bar should be used for easier access to bottom nav etc.
+* Better implementation and usage of logs both analytics and on backend.
 * Details Page Design
-    * Collapsing Toolbar with Image. If no image default.
-    * User Interaction buttons
-    * Expanding description depending on text size
-    * Switch Cast/Characters/Details(Studios,ProductionCompanies)/StreamingPlatforms/Genres
-    * Open In Links TMDB/MAL/IMDB etc.
     * NOTE
         * Watchlist/Userlist should be simple. By default, user should be able to simply click the button and add.
         * If needed, user can open extra interface/dialog/bottomsheet etc. and rate/comment/times finished etc.

@@ -22,12 +22,12 @@
         <item name="mainBackgroundColor">@color/darkWhite</item>
         <item name="subBackgroundColor">@color/white</item>
 
-        <item name="messageBoxBackgroundColor">@color/redLight</item>
         <item name="messageBoxTextColor">@color/white</item>
+        <item name="messageBoxBackgroundColor">@color/redLight</item>
 
-        <item name="toolbarBackgroundColor">@color/darkWhite</item>
-        <item name="toolbarBackButtonColor">#BFFFFFFF</item>
         <item name="toolbarTintColor">@color/materialBlack</item>
+        <item name="toolbarBackButtonColor">#BFFFFFFF</item>
+        <item name="toolbarBackgroundColor">@color/darkWhite</item>
 
         <item name="bottomNavBackgroundColor">@color/white</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>

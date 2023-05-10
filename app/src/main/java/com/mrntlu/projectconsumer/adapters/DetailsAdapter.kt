@@ -31,16 +31,16 @@ class DetailsAdapter(
         val item = detailsList[position]
 
         holder.binding.apply {
-            detailsCircleIVProgressBar.setVisible()
-            detailsCircleIV.setVisible()
-            detailsCirclePlaceholderIV.setGone()
+            circleIVProgressBar.setVisible()
+            circleIV.setVisible()
+            circlePlaceholderIV.setGone()
 
-            detailsIVCard.radius = cardCornerRadius
-            detailsCirclePlaceholderIV.setImageDrawable(ContextCompat.getDrawable(root.context, placeHolderImage))
-            detailsCircleIV.loadWithGlide(item.image, detailsCirclePlaceholderIV, detailsCircleIVProgressBar, transformImage)
+            ivCard.radius = cardCornerRadius
+            circlePlaceholderIV.setImageDrawable(ContextCompat.getDrawable(root.context, placeHolderImage))
+            circleIV.loadWithGlide(item.image, circlePlaceholderIV, circleIVProgressBar, transformImage)
 
-            detailsNameTV.text = item.title
-            detailsSubTV.text = item.subTitle
+            nameTV.text = item.title
+            subTV.text = item.subTitle
         }
 
         holder.binding.root.setOnClickListener {

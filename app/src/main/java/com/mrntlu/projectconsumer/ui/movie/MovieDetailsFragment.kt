@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
@@ -20,6 +22,7 @@ import com.google.android.material.appbar.AppBarLayout.LayoutParams
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
+import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.ui.BaseFragment
@@ -27,8 +30,9 @@ import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
-import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
+import java.util.Locale
 
 class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
@@ -38,6 +42,18 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     private var actorAdapter: DetailsAdapter? = null
     private var companiesAdapter: DetailsAdapter? = null
     private var genreAdapter: GenreAdapter? = null
+    private var streamingAdapter: StreamingAdapter? = null
+    private var buyAdapter: StreamingAdapter? = null
+    private var rentAdapter: StreamingAdapter? = null
+
+    private lateinit var countryCode: String
+
+    private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
+        val locale = Locale("", it)
+        Pair(locale.displayCountry, locale.country.uppercase())
+    }.sortedBy {
+        it.first
+    }
 
     //TODO Pass movie information and make new request
     //while fetching show passed info and update after fetch
@@ -52,6 +68,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.statusBarColor = Color.TRANSPARENT
+        countryCode = sharedViewModel.getCountryCode()
 
         setUI()
         setListeners()
@@ -75,9 +92,26 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             }
         }).into(binding.detailsToolbarIV)
 
+        val spinnerAdapter = ArrayAdapter(binding.root.context, android.R.layout.simple_spinner_item, countryList.map { it.first })
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.detailsStreamingCountrySpinner.adapter = spinnerAdapter
+        binding.detailsStreamingCountrySpinner.setSelection(
+            countryList.indexOfFirst {
+                it.second == countryCode
+            }
+        )
+
         args.movieArgs.apply {
-            //TODO Check translations and set
-            binding.detailsTitleTV.text = title
+            val titleStr = if (!translations.isNullOrEmpty()) {
+                translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.title ?: title
+            } else title
+
+            val descriptionStr = if (!translations.isNullOrEmpty()) {
+                translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.description ?: description
+            } else description
+
+            binding.detailsTitleTV.text = titleStr
+            binding.detailsDescriptionTV.text = descriptionStr
             binding.detailsOriginalTV.text = titleOriginal
 
             binding.detailsInclude.apply {
@@ -93,14 +127,14 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             } else null
 
             val releaseText = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.take(4) else status}"
-
             binding.detailsReleaseTV.text = releaseText
 
-            binding.detailsDescriptionTV.text = description
-
-            if (imdbID == null)
-                binding.imdbButton.setGone()
-            else binding.imdbButton.setVisible()
+            binding.imdbButton.setVisibilityByCondition(imdbID == null)
+            binding.detailsAvailableTV.setVisibilityByCondition(streaming.isNullOrEmpty())
+            binding.detailsStreamingCountrySpinner.setVisibilityByCondition(streaming.isNullOrEmpty())
+            binding.detailsStreamingTV.setVisibilityByCondition(streaming.isNullOrEmpty())
+            binding.detailsBuyTV.setVisibilityByCondition(streaming.isNullOrEmpty())
+            binding.detailsRentTV.setVisibilityByCondition(streaming.isNullOrEmpty())
         }
     }
 
@@ -129,11 +163,24 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             tmdbButton.setOnClickListener {
                 //Open in web with id
             }
+
+            detailsStreamingCountrySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    countryCode = countryList[position].second
+                    val streaming = args.movieArgs.streaming!!
+                    val streamingList = streaming.firstOrNull { it.countryCode == countryCode }
+
+                    streamingAdapter?.setNewList(streamingList?.streamingPlatforms ?: listOf())
+                    buyAdapter?.setNewList(streamingList?.buyOptions ?: listOf())
+                    rentAdapter?.setNewList(streamingList?.rentOptions ?: listOf())
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
         }
     }
 
     private fun setRecyclerView() {
-        printLog("${args.movieArgs.actors}")
         if (!args.movieArgs.actors.isNullOrEmpty()) {
             binding.detailsActorsRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -191,6 +238,40 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             binding.detailsGenreTV.setGone()
             binding.detailsGenreRV.setGone()
         }
+
+        if (!args.movieArgs.streaming.isNullOrEmpty()) {
+            val streaming = args.movieArgs.streaming!!
+
+            binding.detailsStreamingRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                streamingAdapter = StreamingAdapter(
+                    streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms ?: listOf()
+                )
+                adapter = streamingAdapter
+            }
+
+            binding.detailsBuyRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                buyAdapter = StreamingAdapter(
+                    streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions ?: listOf()
+                )
+                adapter = buyAdapter
+            }
+
+            binding.detailsRentRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                rentAdapter = StreamingAdapter(
+                    streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions ?: listOf()
+                )
+                adapter = rentAdapter
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -199,6 +280,10 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
         actorAdapter = null
         companiesAdapter = null
+        genreAdapter = null
+        streamingAdapter = null
+        buyAdapter = null
+        rentAdapter = null
         super.onDestroyView()
     }
 }

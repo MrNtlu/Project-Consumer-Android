@@ -37,6 +37,10 @@ fun String.isNotEmptyOrBlank(): Boolean{
     return this.trim().isNotEmpty() && this.trim().isNotBlank()
 }
 
+fun View.setVisibilityByCondition(shouldHide: Boolean){
+    this.visibility = if (shouldHide) View.GONE else View.VISIBLE
+}
+
 fun View.setGone(){
     this.visibility = View.GONE
 }

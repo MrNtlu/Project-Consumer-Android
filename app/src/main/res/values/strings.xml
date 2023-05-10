@@ -34,5 +34,8 @@
     <string name="message_icon_cd">Message Icon</string>
     <string name="tmdb">TMDB</string>
     <string name="imdb">IMDB</string>
+    <string name="not_available">Not Available</string>
+    <string name="change_country">Change Country</string>
+    <string name="change_language">Change Language</string>
 
 </resources>

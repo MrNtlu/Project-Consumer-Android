@@ -26,9 +26,9 @@
         <item name="messageBoxBackgroundColor">@color/redDark</item>
         <item name="messageBoxTextColor">@color/black</item>
 
-        <item name="toolbarBackgroundColor">@color/androidBlack</item>
         <item name="toolbarTintColor">@color/white</item>
-        <item name="toolbarBackButtonColor">#BF000000</item>
+        <item name="toolbarBackButtonColor">#BF121212</item>
+        <item name="toolbarBackgroundColor">@color/androidBlack</item>
 
         <item name="bottomNavBackgroundColor">@color/materialBlack</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>

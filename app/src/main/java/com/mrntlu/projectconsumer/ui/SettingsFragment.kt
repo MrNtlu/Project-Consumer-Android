@@ -7,6 +7,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
@@ -16,15 +18,27 @@ import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
+import java.util.Locale
 
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
+        val locale = Locale("", it)
+        Pair(locale.displayCountry, locale.country.uppercase())
+    }.sortedBy {
+        it.first
+    }
+
+    private val languageList = Locale.getISOLanguages().filter { it.length == 2 }.map {
+        val locale = Locale(it)
+        Pair(locale.displayLanguage, locale.language.uppercase())
+    }.sortedBy {
+        it.first
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -45,7 +59,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         setListeners()
     }
 
-    //TODO Implement https://developer.android.com/develop/ui/views/components/spinner
     private fun setUI() {
         //TODO If not logged in hide/show
         binding.apply {
@@ -56,6 +69,28 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             themeSwitchTV.text = getString(if (sharedViewModel.isLightTheme()) R.string.light_theme else R.string.dark_theme)
 
             applicationFirstClickTile.settingsClickTileTV.text = "Placeholder"
+
+            applicationFirstSpinnerTile.settingsSpinnerTileTV.text = getString(R.string.change_country)
+
+            val spinnerAdapter = ArrayAdapter(this.root.context, android.R.layout.simple_spinner_item, countryList.map { it.first })
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            applicationFirstSpinnerTile.settingsSpinner.adapter = spinnerAdapter
+            applicationFirstSpinnerTile.settingsSpinner.setSelection(
+                countryList.indexOfFirst {
+                    it.second == sharedViewModel.getCountryCode()
+                }
+            )
+
+            applicationSecondSpinnerTile.settingsSpinnerTileTV.text = getString(R.string.change_language)
+
+            val languageSpinnerAdapter = ArrayAdapter(this.root.context, android.R.layout.simple_spinner_item, languageList.map { it.first })
+            languageSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            applicationSecondSpinnerTile.settingsSpinner.adapter = languageSpinnerAdapter
+            applicationSecondSpinnerTile.settingsSpinner.setSelection(
+                languageList.indexOfFirst {
+                    it.second == sharedViewModel.getLanguageCode()
+                }
+            )
         }
     }
 
@@ -70,6 +105,22 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             applicationFirstClickTile.root.setOnClickListener {
                 accountTitleTV.setVisible()
                 accountSettingsCard.setVisible()
+            }
+
+            applicationFirstSpinnerTile.settingsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    sharedViewModel.setCountryCode(countryList[position].second)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            applicationSecondSpinnerTile.settingsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                    sharedViewModel.setLanguageCode(languageList[position].second)
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }
     }

@@ -37,6 +37,7 @@ import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 enum class WindowSizeClass { COMPACT, MEDIUM, EXPANDED }
@@ -166,6 +167,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
+        sharedViewModel.setCountryCode(prefs.getString(Constants.COUNTRY_PREF, Locale.getDefault().country.uppercase()))
+        sharedViewModel.setLanguageCode(prefs.getString(Constants.LAN_PREF, Locale.getDefault().language.uppercase()))
         sharedViewModel.setThemeCode(prefs.getInt(Constants.THEME_PREF, Constants.LIGHT_THEME))
 
         AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
@@ -227,6 +230,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        sharedViewModel.countryCode.observe(this) {
+            setCodePref(Constants.COUNTRY_PREF, it)
+        }
+
+        sharedViewModel.languageCode.observe(this) {
+            setCodePref(Constants.LAN_PREF, it)
+        }
+
         sharedViewModel.themeCode.observe(this) {
             AppCompatDelegate.setDefaultNightMode(if (it == Constants.LIGHT_THEME) MODE_NIGHT_NO else MODE_NIGHT_YES)
             setThemePref(it)
@@ -252,7 +263,15 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
     }
 
+    private fun setCodePref(key: String, value: String){
+        val editor = prefs.edit()
+        editor.putString(key, value)
+        editor.apply()
+    }
+
     override fun onDestroy() {
+        sharedViewModel.countryCode.removeObservers(this)
+        sharedViewModel.languageCode.removeObservers(this)
         sharedViewModel.themeCode.removeObservers(this)
         sharedViewModel.globalMessageBox.removeObservers(this)
         sharedViewModel.networkStatus.removeObservers(this)

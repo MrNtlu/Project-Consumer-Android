@@ -7,7 +7,31 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 
 class ActivitySharedViewModel: ViewModel() {
-    //TODO isLoggedIn, Language Selection
+    //TODO isLoggedIn
+
+    //Country Code
+    val countryCode: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
+    fun getCountryCode() = countryCode.value!!
+
+    fun setCountryCode(code: String?) {
+        if (code != null)
+            this.countryCode.value = code
+    }
+
+    //Language Code
+    val languageCode: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
+
+    fun getLanguageCode() = languageCode.value!!
+
+    fun setLanguageCode(code: String?) {
+        if (code != null)
+            this.languageCode.value = code
+    }
 
     // Theme
     val themeCode: MutableLiveData<Int> by lazy {
