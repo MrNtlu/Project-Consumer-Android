@@ -163,17 +163,57 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp" />
 
-                <include
-                    android:id="@+id/applicationFirstSpinnerTile"
-                    layout="@layout/settings_spinner_tile" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/settingsSpinnerTileTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:textColor="?attr/mainTextColor"
+                        android:textSize="16sp"
+                        tools:text="Language"/>
+
+                    <Spinner
+                        android:id="@+id/settingsSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+                </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
                     android:layout_width="match_parent"
                     android:layout_height="1dp" />
 
-                <include
-                    android:id="@+id/applicationSecondSpinnerTile"
-                    layout="@layout/settings_spinner_tile" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/applicationSecondSpinnerTileTV"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:textColor="?attr/mainTextColor"
+                        android:textSize="16sp"
+                        tools:text="Language"/>
+
+                    <Spinner
+                        android:id="@+id/applicationSecondSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+                </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

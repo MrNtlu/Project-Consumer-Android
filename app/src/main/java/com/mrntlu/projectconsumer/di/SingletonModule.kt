@@ -6,6 +6,7 @@ import com.mrntlu.projectconsumer.service.AuthAuthenticator
 import com.mrntlu.projectconsumer.service.AuthInterceptor
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.utils.Constants
@@ -65,6 +66,14 @@ class SingletonModule {
         Retrofit.Builder()
             .baseUrl(Constants.API_URL)
             .addConverterFactory(GsonConverterFactory.create())
+
+    @Singleton
+    @Provides
+    fun provideUserListAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): UserListApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(UserListApiService::class.java)
 
     @Singleton
     @Provides

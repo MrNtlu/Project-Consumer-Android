@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.service.retrofit
 
-import com.mrntlu.projectconsumer.models.main.movie.MovieResponse
+import com.mrntlu.projectconsumer.models.main.movie.retrofit.MoviePaginationResponse
+import com.mrntlu.projectconsumer.models.main.movie.retrofit.MovieResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -15,12 +16,17 @@ interface MovieApiService {
         @Query("genres") genres: String?,
         @Query("from") releaseDateFrom: Int?,
         @Query("to") releaseDateTo: Int?,
-    ): Response<MovieResponse>
+    ): Response<MoviePaginationResponse>
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
         @Query("page") page: Int,
         @Query("sort") sort: String,
+    ): Response<MoviePaginationResponse>
+
+    @GET("movie/search")
+    suspend fun searchMovies(
+        @Query("search") search: String,
     ): Response<MovieResponse>
 
     @GET("movie/decade")

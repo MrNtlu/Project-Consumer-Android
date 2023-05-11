@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mrntlu.projectconsumer.models.main.movie.MovieResponse
+import com.mrntlu.projectconsumer.models.main.movie.retrofit.MoviePaginationResponse
 import com.mrntlu.projectconsumer.repository.MoviePreviewRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,11 +17,11 @@ import javax.inject.Inject
 class MoviePreviewViewModel @Inject constructor(
     private val moviePreviewRepository: MoviePreviewRepository,
 ): ViewModel() {
-    private val _upcomingList = MutableLiveData<NetworkResponse<MovieResponse>>()
-    val upcomingMovies: LiveData<NetworkResponse<MovieResponse>> = _upcomingList
+    private val _upcomingList = MutableLiveData<NetworkResponse<MoviePaginationResponse>>()
+    val upcomingMovies: LiveData<NetworkResponse<MoviePaginationResponse>> = _upcomingList
 
-    private val _popularList = MutableLiveData<NetworkResponse<MovieResponse>>()
-    val popularMovies: LiveData<NetworkResponse<MovieResponse>> = _popularList
+    private val _popularList = MutableLiveData<NetworkResponse<MoviePaginationResponse>>()
+    val popularMovies: LiveData<NetworkResponse<MoviePaginationResponse>> = _popularList
 
     init {
         fetchUpcomingMovies()

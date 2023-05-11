@@ -70,23 +70,23 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
             applicationFirstClickTile.settingsClickTileTV.text = "Placeholder"
 
-            applicationFirstSpinnerTile.settingsSpinnerTileTV.text = getString(R.string.change_country)
+            settingsSpinnerTileTV.text = getString(R.string.change_country)
 
             val spinnerAdapter = ArrayAdapter(this.root.context, android.R.layout.simple_spinner_item, countryList.map { it.first })
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            applicationFirstSpinnerTile.settingsSpinner.adapter = spinnerAdapter
-            applicationFirstSpinnerTile.settingsSpinner.setSelection(
+            settingsSpinner.adapter = spinnerAdapter
+            settingsSpinner.setSelection(
                 countryList.indexOfFirst {
                     it.second == sharedViewModel.getCountryCode()
                 }
             )
 
-            applicationSecondSpinnerTile.settingsSpinnerTileTV.text = getString(R.string.change_language)
+            applicationSecondSpinnerTileTV.text = getString(R.string.change_language)
 
             val languageSpinnerAdapter = ArrayAdapter(this.root.context, android.R.layout.simple_spinner_item, languageList.map { it.first })
             languageSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            applicationSecondSpinnerTile.settingsSpinner.adapter = languageSpinnerAdapter
-            applicationSecondSpinnerTile.settingsSpinner.setSelection(
+            applicationSecondSpinner.adapter = languageSpinnerAdapter
+            applicationSecondSpinner.setSelection(
                 languageList.indexOfFirst {
                     it.second == sharedViewModel.getLanguageCode()
                 }
@@ -107,7 +107,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 accountSettingsCard.setVisible()
             }
 
-            applicationFirstSpinnerTile.settingsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            settingsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     sharedViewModel.setCountryCode(countryList[position].second)
                 }
@@ -115,7 +115,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
 
-            applicationSecondSpinnerTile.settingsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+            applicationSecondSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     sharedViewModel.setLanguageCode(languageList[position].second)
                 }

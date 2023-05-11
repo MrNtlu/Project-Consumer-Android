@@ -2,7 +2,9 @@ package com.mrntlu.projectconsumer.di
 
 import com.mrntlu.projectconsumer.repository.MoviePreviewRepository
 import com.mrntlu.projectconsumer.repository.MovieRepository
+import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
 import dagger.Module
@@ -21,4 +23,7 @@ class HiltModule {
 
     @Provides
     fun provideMoviePreviewRepository(movieApiService: MovieApiService) = MoviePreviewRepository(movieApiService)
+
+    @Provides
+    fun provideUserListRepository(userListApiService: UserListApiService) = UserListRepository(userListApiService)
 }

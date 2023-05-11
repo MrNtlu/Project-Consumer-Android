@@ -20,8 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             app:contentScrim="?attr/toolbarBackgroundColor"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:statusBarScrim="?attr/toolbarBackgroundColor"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@id/detailsToolbar">
 
             <ImageView
@@ -63,12 +63,13 @@
         android:id="@+id/detailsNestedSV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="-20dp"
+        android:background="@drawable/top_rounded_corners"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/mainBackgroundColor">
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline5"
@@ -161,13 +162,6 @@
                 android:textSize="12sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintTop_toBottomOf="@+id/detailsOriginalTV" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="2000dp" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/materialDivider"
@@ -354,6 +348,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
                 app:layout_constraintTop_toBottomOf="@+id/detailsStreamingTV" />
