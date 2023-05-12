@@ -71,8 +71,43 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         countryCode = sharedViewModel.getCountryCode()
 
         setUI()
+        setLottieUI()
         setListeners()
         setRecyclerView()
+    }
+
+    private fun setLottieUI() {
+        binding.detailsInclude.watchLaterLottie.apply {
+            setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
+
+            setOnClickListener {
+                printLog("$frame $progress $speed")
+                if (frame != 0) {
+                    reverseAnimationSpeed()
+                    setMinAndMaxFrame(0, 60)
+                } else {
+                    speed = 1.4f
+                    setMinAndMaxFrame(0, 120)
+                }
+                playAnimation()
+                printLog("End $frame $progress $speed")
+            }
+        }
+
+        binding.detailsInclude.addListLottie.apply {
+            setAnimation(if(sharedViewModel.isLightTheme()) R.raw.like else R.raw.like_night)
+            frame = 0
+
+            setOnClickListener {
+                if (frame != 0) {
+                    setMinAndMaxFrame(75, 129)
+                } else {
+                    setMinAndMaxFrame(0, 75)
+                }
+                playAnimation()
+                printLog("$frame $progress $speed")
+            }
+        }
     }
 
     private fun setUI() {
@@ -146,14 +181,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
             detailsDescriptionTV.setOnClickListener {
                 detailsDescriptionTV.toggle()
-            }
-
-            detailsInclude.bookmarkInteractionButton.setOnClickListener {
-                detailsInclude.bookmarkInteractionButton.setImageDrawable(ContextCompat.getDrawable(it.context, R.drawable.ic_bookmark_filled))
-            }
-
-            detailsInclude.watchLaterInteractionButton.setOnClickListener {
-                detailsInclude.watchLaterInteractionButton.setImageDrawable(ContextCompat.getDrawable(it.context, R.drawable.ic_watchlist_filled))
             }
 
             imdbButton.setOnClickListener {

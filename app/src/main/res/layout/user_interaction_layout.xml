@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:src="@drawable/ic_star_48"
-        app:layout_constraintBottom_toBottomOf="@+id/bookmarkInteractionButton"
+        app:layout_constraintBottom_toBottomOf="@+id/watchLaterLottie"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bookmarkInteractionButton" />
+        app:layout_constraintTop_toTopOf="@+id/watchLaterLottie" />
 
     <TextView
         android:id="@+id/interactionRateTV"
@@ -39,29 +40,28 @@
         app:layout_constraintTop_toTopOf="@+id/imageView2"
         tools:text="| 10123" />
 
-    <ImageButton
-        android:id="@+id/bookmarkInteractionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_bookmark"
-        app:tint="?attr/mainTextColor"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/watchLaterInteractionButton"
-        app:layout_constraintEnd_toStartOf="@+id/watchLaterInteractionButton"
-        app:layout_constraintTop_toTopOf="@+id/watchLaterInteractionButton" />
-
-    <ImageButton
-        android:id="@+id/watchLaterInteractionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/watchLaterLottie"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
         android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_watchlist"
-        app:tint="?attr/mainTextColor"
-        android:padding="8dp"
+        android:scaleX="1.2"
+        android:scaleY="1.1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_rawRes="@raw/bookmark" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/addListLottie"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="6dp"
+        android:scaleX="0.92"
+        android:scaleY="0.92"
+        app:layout_constraintBottom_toBottomOf="@+id/watchLaterLottie"
+        app:layout_constraintEnd_toStartOf="@+id/watchLaterLottie"
+        app:layout_constraintTop_toTopOf="@+id/watchLaterLottie"
+        app:lottie_rawRes="@raw/like" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
