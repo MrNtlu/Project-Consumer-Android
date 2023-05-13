@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -31,11 +32,13 @@ import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.viewmodels.movie.MovieDetailsViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import java.util.Locale
 
 class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
+    private val viewModel: MovieDetailsViewModel by viewModels()
     private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
 
@@ -70,6 +73,26 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         activity?.window?.statusBarColor = Color.TRANSPARENT
         countryCode = sharedViewModel.getCountryCode()
 
+        /* TODO Flow
+        * WatchLater
+        * - Start animation and make request
+        * - Listen via observer, if success show message else show error message and reset button
+        * Add List
+        * - Open bottom sheet (Optional score, status[Finished, Plan to etc.], if finished show times finished)
+        *   - Show error message in bottom sheet
+        * - Delete
+        *   - Show loading bottom sheet and prevent closure on outsite pressed.
+        *       - If closed somehow, listen changes and on success start animation.
+        *   - On success close bottom sheet and start animation
+        * - Add
+        *   - Open bottom sheet and save
+        *   - On success close bottom sheet and start animation
+        * - Update
+        *   - No change on button
+        * If already added, show it with score between star and fav button.
+        *   - Maybe in a small container with semi transparent background
+         */
+
         setUI()
         setLottieUI()
         setListeners()
@@ -90,7 +113,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                     setMinAndMaxFrame(0, 120)
                 }
                 playAnimation()
-                printLog("End $frame $progress $speed")
             }
         }
 
@@ -105,7 +127,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                     setMinAndMaxFrame(0, 75)
                 }
                 playAnimation()
-                printLog("$frame $progress $speed")
             }
         }
     }

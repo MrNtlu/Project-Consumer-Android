@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mrntlu.projectconsumer.models.main.userlist.MovieWatchListBody
+import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
     private val repository: UserListRepository,
+    private val movieRepository: MovieRepository,
 ): ViewModel() {
 
     private val _movieWatchList = MutableLiveData<NetworkResponse<String>>()
@@ -28,4 +30,6 @@ class MovieDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    //TODO Get movie details
 }
