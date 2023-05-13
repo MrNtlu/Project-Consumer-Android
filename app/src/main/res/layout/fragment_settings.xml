@@ -142,13 +142,16 @@
                         android:textSize="16sp"
                         tools:text="Dark Theme" />
 
-                    <androidx.appcompat.widget.SwitchCompat
+                    <com.google.android.material.materialswitch.MaterialSwitch
                         android:id="@+id/themeSwitch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:thumb="@drawable/theme_switch_thumb"
-                        app:track="@drawable/theme_switch_track" />
+                        android:checked="false"
+                        app:thumbIcon="@drawable/theme_switch_thumb"
+                        app:thumbTint="@color/white"
+                        app:thumbIconTint="?attr/themeThumbTint"
+                        app:trackTint="@drawable/theme_switch_track"
+                        app:trackDecorationTint="?attr/themeTrackDecorationTint"/>
                 </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider

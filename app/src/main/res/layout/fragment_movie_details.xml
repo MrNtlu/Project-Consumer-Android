@@ -39,7 +39,7 @@
                 android:layout_gravity="center"
                 android:indeterminateTint="?attr/mainTextColor" />
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/detailsToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -54,11 +54,24 @@
                     android:elevation="0dp"
                     android:src="@drawable/ic_arrow_back_24"
                     app:tint="?attr/toolbarTintColor" />
-            </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+    <FrameLayout
+        android:id="@+id/listBottomSheetLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/top_rounded_corners"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <include
+            android:id="@+id/listBottomSheet"
+            layout="@layout/list_bottom_sheet_layout"/>
+
+    </FrameLayout>
+    
     <androidx.core.widget.NestedScrollView
         android:id="@+id/detailsNestedSV"
         android:layout_width="match_parent"
@@ -138,7 +151,7 @@
 
             <Button
                 android:id="@+id/tmdbButton"
-                android:layout_width="50dp"
+                android:layout_width="55dp"
                 android:layout_height="45dp"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#04243f"
@@ -152,7 +165,7 @@
 
             <Button
                 android:id="@+id/imdbButton"
-                android:layout_width="50dp"
+                android:layout_width="55dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="24dp"
                 android:backgroundTint="#f6c800"
@@ -177,7 +190,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Plot"
+                android:text="@string/plot"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -230,7 +243,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Actors"
+                android:text="@string/actors"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -251,7 +264,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Production"
+                android:text="@string/production"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -272,7 +285,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Streaming"
+                android:text="@string/streaming"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -292,7 +305,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Buy"
+                android:text="@string/buy"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -315,7 +328,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Rent"
+                android:text="@string/rent"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -336,7 +349,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Streaming"
+                android:text="@string/streaming"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"

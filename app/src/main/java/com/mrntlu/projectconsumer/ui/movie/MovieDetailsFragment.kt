@@ -100,6 +100,8 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     }
 
     private fun setLottieUI() {
+        val listBottomSheet = MovieDetailsBottomSheet()
+
         binding.detailsInclude.watchLaterLottie.apply {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
 
@@ -121,12 +123,16 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             frame = 0
 
             setOnClickListener {
-                if (frame != 0) {
-                    setMinAndMaxFrame(75, 129)
-                } else {
-                    setMinAndMaxFrame(0, 75)
+                activity?.let {
+                    listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
                 }
-                playAnimation()
+
+//                if (frame != 0) {
+//                    setMinAndMaxFrame(75, 129)
+//                } else {
+//                    setMinAndMaxFrame(0, 75)
+//                }
+//                playAnimation()
             }
         }
     }

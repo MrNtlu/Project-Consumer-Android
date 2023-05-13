@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Theme.ProjectConsumer" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.ProjectConsumer" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/blue500</item>
         <item name="colorPrimaryVariant">@color/blue900</item>
@@ -14,6 +14,7 @@
         <item name="android:windowLightStatusBar">true</item>
 
         <!-- Customize your theme here. -->
+        <item name="popupMenuStyle">@style/CustomPopupMenu</item>
 
         <item name="mainTextColor">@color/black</item>
         <item name="subTextColor">@color/grey700</item>
@@ -29,12 +30,21 @@
         <item name="toolbarBackButtonColor">#BFFFFFFF</item>
         <item name="toolbarBackgroundColor">@color/darkWhite</item>
 
+        <item name="themeThumbTint">@color/yellow700</item>
+        <item name="themeTrackTint">@color/yellow500</item>
+        <item name="themeTrackDecorationTint">@color/yellow700</item>
+
         <item name="bottomNavBackgroundColor">@color/white</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>
         <item name="bottomNavUnselectedColor">@color/grey500</item>
+        <item name="colorSecondaryContainer">@color/white</item>
     </style>
 
-    <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+    <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:popupBackground">@drawable/custom_popup_background</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.Material3.Toolbar.Surface">
         <item name="android:background">?attr/toolbarBackgroundColor</item>
         <item name="android:textColorPrimary">@color/materialBlack</item>
         <item name="iconTint">@color/materialBlack</item>
