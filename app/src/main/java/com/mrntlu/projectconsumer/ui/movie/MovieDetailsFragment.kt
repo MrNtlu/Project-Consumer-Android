@@ -25,6 +25,7 @@ import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
+import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
 import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
@@ -34,8 +35,10 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieDetailsViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
+@AndroidEntryPoint
 class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
@@ -56,6 +59,21 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         Pair(locale.displayCountry, locale.country.uppercase())
     }.sortedBy {
         it.first
+    }
+
+    private val onBottomSheetClosedCallback = object: OnButtomSheetClosed {
+        override fun onSuccess(isDeleted: Boolean) {
+            binding.detailsInclude.addListLottie.apply {
+                frame = if (isDeleted) 130 else 0
+
+                if (frame != 0) {
+                    setMinAndMaxFrame(75, 129)
+                } else {
+                    setMinAndMaxFrame(0, 75)
+                }
+                playAnimation()
+            }
+        }
     }
 
     //TODO Pass movie information and make new request
@@ -100,13 +118,10 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     }
 
     private fun setLottieUI() {
-        val listBottomSheet = MovieDetailsBottomSheet()
-
         binding.detailsInclude.watchLaterLottie.apply {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
 
             setOnClickListener {
-                printLog("$frame $progress $speed")
                 if (frame != 0) {
                     reverseAnimationSpeed()
                     setMinAndMaxFrame(0, 60)
@@ -124,15 +139,13 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
             setOnClickListener {
                 activity?.let {
+                    val listBottomSheet = MovieDetailsBottomSheet(
+                        onBottomSheetClosedCallback,
+                        args.movieArgs.id,
+                        args.movieArgs.tmdbID,
+                    )
                     listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
                 }
-
-//                if (frame != 0) {
-//                    setMinAndMaxFrame(75, 129)
-//                } else {
-//                    setMinAndMaxFrame(0, 75)
-//                }
-//                playAnimation()
             }
         }
     }

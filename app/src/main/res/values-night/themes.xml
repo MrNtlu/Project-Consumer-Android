@@ -34,14 +34,37 @@
         <item name="themeTrackTint">@color/yellow500</item>
         <item name="themeTrackDecorationTint">@color/darkWhite</item>
 
+        <item name="firstSegmentedButtonBackgroundColor">@color/green700</item>
+        <item name="secondSegmentedButtonBackgroundColor">@color/blue700</item>
+        <item name="thirdSegmentedButtonBackgroundColor">@color/red700</item>
+
         <item name="bottomNavBackgroundColor">@color/materialBlack</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>
         <item name="bottomNavUnselectedColor">@color/grey500</item>
         <item name="colorSecondaryContainer">@color/materialBlack</item>
     </style>
 
+    <style name="Theme.ProjectConsumer.FirstSegmentedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@drawable/segmented_button_background_first</item>
+        <item name="android:textColor">@drawable/segmented_button_text</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.SecondSegmentedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@drawable/segmented_button_background_second</item>
+        <item name="android:textColor">@drawable/segmented_button_text</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.ThirdSegmentedButton" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="backgroundTint">@drawable/segmented_button_background_third</item>
+        <item name="android:textColor">@drawable/segmented_button_text</item>
+    </style>
+
     <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">
         <item name="android:popupBackground">@drawable/custom_popup_background</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.BottomSheet" parent="Widget.Material3.BottomSheet">
+        <item name="android:background">?attr/mainBackgroundColor</item>
     </style>
 
     <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.Material3.Toolbar.Surface">

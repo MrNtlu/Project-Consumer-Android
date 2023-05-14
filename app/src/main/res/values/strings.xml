@@ -44,7 +44,13 @@
     <string name="see_all_popular_cd">See All Popular</string>
     <string name="genre_image_cd">Genre Image</string>
     <string name="message_icon_cd">Message Icon</string>
-    
+    <string name="select_score">Select Score</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="times_finished">Times Finished</string>
+    <string name="input_number">Please input a number.</string>
+    <string name="close">Close</string>
+
     <string-array name="score_list">
         <item>@string/select</item>
         <item>0</item>

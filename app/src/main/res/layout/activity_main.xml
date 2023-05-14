@@ -20,13 +20,14 @@
 
         <include
             android:id="@+id/anonymousInc"
-            layout="@layout/anonymous_layout"
+            layout="@layout/layout_anonymous"
             android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </com.google.android.material.appbar.MaterialToolbar>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        style="@style/Widget.MaterialComponents.BottomNavigationView"
         android:id="@+id/nav_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

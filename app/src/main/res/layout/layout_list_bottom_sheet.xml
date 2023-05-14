@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/top_rounded_corners"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_remove"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/mainTextColor" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleButtonGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:checkedButton="@id/firstToggleGroupButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <Button
+            android:id="@+id/firstToggleGroupButton"
+            style="@style/Theme.ProjectConsumer.FirstSegmentedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Active" />
+
+        <Button
+            android:id="@+id/secondToggleGroupButton"
+            style="@style/Theme.ProjectConsumer.SecondSegmentedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Dropped" />
+
+        <Button
+            android:id="@+id/thirdToggleGroupButton"
+            style="@style/Theme.ProjectConsumer.ThirdSegmentedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Finished" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/scoreSelection"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/select_score"
+        app:layout_constraintEnd_toEndOf="@+id/toggleButtonGroup"
+        app:layout_constraintStart_toStartOf="@+id/toggleButtonGroup"
+        app:layout_constraintTop_toBottomOf="@+id/toggleButtonGroup"
+        app:startIconDrawable="@drawable/ic_star_36"
+        app:startIconTint="#F5C518">
+
+        <AutoCompleteTextView
+            android:id="@+id/scoreSelectionACTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            app:simpleItems="@array/score_list" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/timesFinishedTextLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="@string/times_finished"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/scoreSelection"
+        app:layout_constraintStart_toStartOf="@+id/scoreSelection"
+        app:layout_constraintTop_toBottomOf="@+id/scoreSelection"
+        tools:visibility="visible">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/timesFinishedTextInputET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toBottomOf="@+id/timesFinishedTextLayout" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/cancel"
+        android:textColor="?attr/messageBoxBackgroundColor"
+        app:layout_constraintBottom_toBottomOf="@+id/saveButton"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
+        app:layout_constraintTop_toTopOf="@+id/saveButton" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/responseStatusLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?attr/mainBackgroundColor"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:visibility="visible">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/responseStatusLottie"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/loading" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.55" />
+
+        <TextView
+            android:id="@+id/responseStatusTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textAlignment="center"
+            android:textColor="?attr/mainTextColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline8"
+            tools:text="TextView" />
+
+        <Button
+            android:id="@+id/responseCloseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:text="@string/close"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

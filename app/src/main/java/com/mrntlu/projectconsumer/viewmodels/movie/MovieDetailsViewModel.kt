@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mrntlu.projectconsumer.models.common.response.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userlist.MovieWatchListBody
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.repository.UserListRepository
@@ -20,8 +21,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
 ): ViewModel() {
 
-    private val _movieWatchList = MutableLiveData<NetworkResponse<String>>()
-    val movieWatchList: LiveData<NetworkResponse<String>> = _movieWatchList
+    private val _movieWatchList = MutableLiveData<NetworkResponse<MessageResponse>>()
+    val movieWatchList: LiveData<NetworkResponse<MessageResponse>> = _movieWatchList
 
     fun createMovieWatchList(body: MovieWatchListBody) = viewModelScope.launch(Dispatchers.IO) {
         repository.createMovieWatchList(body).collect { response ->

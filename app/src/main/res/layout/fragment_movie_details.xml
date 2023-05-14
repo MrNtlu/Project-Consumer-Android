@@ -68,7 +68,7 @@
 
         <include
             android:id="@+id/listBottomSheet"
-            layout="@layout/list_bottom_sheet_layout"/>
+            layout="@layout/layout_list_bottom_sheet"/>
 
     </FrameLayout>
     
@@ -100,7 +100,7 @@
 
             <include
                 android:id="@+id/detailsInclude"
-                layout="@layout/user_interaction_layout"
+                layout="@layout/layout_user_interaction"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
