@@ -1,7 +1,7 @@
 package com.mrntlu.projectconsumer.interfaces
 
-interface OnButtomSheetClosed {
-    fun onSuccess(isDeleted: Boolean)
+interface OnButtomSheetClosed<T> {
+    fun onSuccess(data: T?, isDeleted: Boolean)
 }
 
 enum class BottomSheetState {

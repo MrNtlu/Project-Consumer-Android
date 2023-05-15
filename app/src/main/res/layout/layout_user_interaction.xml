@@ -64,4 +64,26 @@
         app:layout_constraintTop_toTopOf="@+id/watchLaterLottie"
         app:lottie_rawRes="@raw/like" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/userInteractionLoadingLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="?attr/mainBackgroundColor"
+        android:scaleX="1.7"
+        android:scaleY="1.7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/watchLaterLottie"
+        app:layout_constraintStart_toStartOf="@+id/addListLottie"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/userInteractionLoading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/loading" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

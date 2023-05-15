@@ -1,6 +1,6 @@
 package com.mrntlu.projectconsumer.repository
 
-import com.mrntlu.projectconsumer.models.main.userlist.MovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.MovieWatchListBody
 import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
 import javax.inject.Inject

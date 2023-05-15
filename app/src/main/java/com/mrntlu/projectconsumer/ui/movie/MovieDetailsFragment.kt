@@ -27,7 +27,10 @@ import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
 import com.mrntlu.projectconsumer.models.common.DetailsUI
+import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
+import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
@@ -53,6 +56,8 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     private var rentAdapter: StreamingAdapter? = null
 
     private lateinit var countryCode: String
+    private var watchList: MovieWatchList? = null
+    private var consumeLater: ConsumeLater? = null
 
     private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
         val locale = Locale("", it)
@@ -61,23 +66,34 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         it.first
     }
 
-    private val onBottomSheetClosedCallback = object: OnButtomSheetClosed {
-        override fun onSuccess(isDeleted: Boolean) {
-            binding.detailsInclude.addListLottie.apply {
-                frame = if (isDeleted) 130 else 0
+    /* TODO Flow
+    * WatchLater
+    * - Start animation and make request
+    * - Listen via observer, if success show message else show error message and reset button
+    * Add List
+    * - Open bottom sheet (Optional score, status[Finished, Plan to etc.], if finished show times finished)
+    *   - Show error message in bottom sheet
+    * - Delete
+    *   - Show loading bottom sheet and prevent closure on outsite pressed.
+    *       - If closed somehow, listen changes and on success start animation.
+    *   - On success close bottom sheet and start animation
+    * - Add
+    *   - Open bottom sheet and save
+    *   - On success close bottom sheet and start animation
+    * - Update
+    *   - No change on button
+    * If already added, show it with score between star and fav button.
+    *   - Maybe in a small container with semi transparent background
+     */
 
-                if (frame != 0) {
-                    setMinAndMaxFrame(75, 129)
-                } else {
-                    setMinAndMaxFrame(0, 75)
-                }
-                playAnimation()
-            }
+    private val onBottomSheetClosedCallback = object: OnButtomSheetClosed<MovieWatchList> {
+        override fun onSuccess(data: MovieWatchList?, isDeleted: Boolean) {
+            watchList = data
+
+            handleWatchListLottie()
         }
     }
 
-    //TODO Pass movie information and make new request
-    //while fetching show passed info and update after fetch
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -91,30 +107,11 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         activity?.window?.statusBarColor = Color.TRANSPARENT
         countryCode = sharedViewModel.getCountryCode()
 
-        /* TODO Flow
-        * WatchLater
-        * - Start animation and make request
-        * - Listen via observer, if success show message else show error message and reset button
-        * Add List
-        * - Open bottom sheet (Optional score, status[Finished, Plan to etc.], if finished show times finished)
-        *   - Show error message in bottom sheet
-        * - Delete
-        *   - Show loading bottom sheet and prevent closure on outsite pressed.
-        *       - If closed somehow, listen changes and on success start animation.
-        *   - On success close bottom sheet and start animation
-        * - Add
-        *   - Open bottom sheet and save
-        *   - On success close bottom sheet and start animation
-        * - Update
-        *   - No change on button
-        * If already added, show it with score between star and fav button.
-        *   - Maybe in a small container with semi transparent background
-         */
-
         setUI()
         setLottieUI()
         setListeners()
         setRecyclerView()
+        setObservers()
     }
 
     private fun setLottieUI() {
@@ -135,18 +132,32 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
         binding.detailsInclude.addListLottie.apply {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.like else R.raw.like_night)
-            frame = 0
 
             setOnClickListener {
                 activity?.let {
                     val listBottomSheet = MovieDetailsBottomSheet(
                         onBottomSheetClosedCallback,
+                        watchList,
                         args.movieArgs.id,
                         args.movieArgs.tmdbID,
                     )
                     listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
                 }
             }
+        }
+    }
+
+    private fun handleWatchListLottie() {
+        binding.detailsInclude.addListLottie.apply {
+            printLog("Handle Lottie $watchList")
+            frame = if (watchList == null) 130 else 0
+
+            if (frame != 0) {
+                setMinAndMaxFrame(75, 129)
+            } else {
+                setMinAndMaxFrame(0, 75)
+            }
+            playAnimation()
         }
     }
 
@@ -341,7 +352,34 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
     }
 
+    private fun setObservers() {
+        if (!viewModel.movieDetails.hasObservers())
+            viewModel.getMovieDetails(args.movieArgs.id)
+
+        //TODO if is logged in
+        viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
+            binding.detailsInclude.apply {
+                userInteractionLoadingLayout.setVisibilityByCondition(response != NetworkResponse.Loading)
+
+                if (response != NetworkResponse.Loading)
+                    userInteractionLoading.cancelAnimation()
+                else
+                    userInteractionLoading.playAnimation()
+
+                if (response is NetworkResponse.Success) {
+                    printLog("Observer ${response.data.data.movieWatchList}")
+                    watchList = response.data.data.movieWatchList
+                    consumeLater = response.data.data.watchLater
+                }
+
+                if (watchList != null)
+                    handleWatchListLottie()
+            }
+        }
+    }
+
     override fun onDestroyView() {
+        viewModel.movieDetails.removeObservers(viewLifecycleOwner)
         activity?.let {
             it.window.statusBarColor = ContextCompat.getColor(it, if (sharedViewModel.isLightTheme()) R.color.darkWhite else R.color.androidBlack)
         }

@@ -9,6 +9,7 @@ import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
+import com.mrntlu.projectconsumer.utils.networkResponseFlow
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
@@ -60,4 +61,8 @@ class MovieRepository @Inject constructor(
             )
         }
     )
+
+    fun getMovieDetails(id: String) = networkResponseFlow {
+        movieApiService.getMovieDetails(id)
+    }
 }

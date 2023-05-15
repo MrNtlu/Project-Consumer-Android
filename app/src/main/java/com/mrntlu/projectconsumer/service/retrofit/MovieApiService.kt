@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.service.retrofit
 
+import com.mrntlu.projectconsumer.models.main.movie.retrofit.MovieDetailsResponse
 import com.mrntlu.projectconsumer.models.main.movie.retrofit.MoviePaginationResponse
 import com.mrntlu.projectconsumer.models.main.movie.retrofit.MovieResponse
 import retrofit2.Response
@@ -38,4 +39,9 @@ interface MovieApiService {
     suspend fun getPopularMoviesByGenre(
         @Query("page") page: Int,
     )
+
+    @GET("movie/details")
+    suspend fun getMovieDetails(
+        @Query("id") id: String,
+    ): Response<MovieDetailsResponse>
 }

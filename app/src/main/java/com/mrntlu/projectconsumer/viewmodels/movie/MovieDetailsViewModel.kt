@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mrntlu.projectconsumer.models.common.response.MessageResponse
-import com.mrntlu.projectconsumer.models.main.userlist.MovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.movie.retrofit.MovieDetailsResponse
+import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
+import com.mrntlu.projectconsumer.models.main.userList.MovieWatchListBody
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
@@ -21,8 +22,11 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
 ): ViewModel() {
 
-    private val _movieWatchList = MutableLiveData<NetworkResponse<MessageResponse>>()
-    val movieWatchList: LiveData<NetworkResponse<MessageResponse>> = _movieWatchList
+    private val _movieWatchList = MutableLiveData<NetworkResponse<MovieWatchList>>()
+    val movieWatchList: LiveData<NetworkResponse<MovieWatchList>> = _movieWatchList
+
+    private val _movieDetails = MutableLiveData<NetworkResponse<MovieDetailsResponse>>()
+    val movieDetails: LiveData<NetworkResponse<MovieDetailsResponse>> = _movieDetails
 
     fun createMovieWatchList(body: MovieWatchListBody) = viewModelScope.launch(Dispatchers.IO) {
         repository.createMovieWatchList(body).collect { response ->
@@ -32,5 +36,11 @@ class MovieDetailsViewModel @Inject constructor(
         }
     }
 
-    //TODO Get movie details
+    fun getMovieDetails(id: String) = viewModelScope.launch(Dispatchers.IO) {
+        movieRepository.getMovieDetails(id).collect { response ->
+            withContext(Dispatchers.Main) {
+                _movieDetails.value = response
+            }
+        }
+    }
 }

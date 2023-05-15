@@ -6,6 +6,7 @@
     android:background="@drawable/top_rounded_corners"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="70dp"
@@ -17,83 +18,27 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="?attr/mainTextColor" />
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/toggleButtonGroup"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/layoutEditInc"
+        layout="@layout/layout_details_edit_bottom_sheet"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:checkedButton="@id/firstToggleGroupButton"
+        tools:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:selectionRequired="true"
-        app:singleSelection="true">
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-        <Button
-            android:id="@+id/firstToggleGroupButton"
-            style="@style/Theme.ProjectConsumer.FirstSegmentedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="Active" />
-
-        <Button
-            android:id="@+id/secondToggleGroupButton"
-            style="@style/Theme.ProjectConsumer.SecondSegmentedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="Dropped" />
-
-        <Button
-            android:id="@+id/thirdToggleGroupButton"
-            style="@style/Theme.ProjectConsumer.ThirdSegmentedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:text="Finished" />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/scoreSelection"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+    <include
+        android:id="@+id/layoutViewInc"
+        layout="@layout/layout_details_view_bottom_sheet"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="@string/select_score"
-        app:layout_constraintEnd_toEndOf="@+id/toggleButtonGroup"
-        app:layout_constraintStart_toStartOf="@+id/toggleButtonGroup"
-        app:layout_constraintTop_toBottomOf="@+id/toggleButtonGroup"
-        app:startIconDrawable="@drawable/ic_star_36"
-        app:startIconTint="#F5C518">
-
-        <AutoCompleteTextView
-            android:id="@+id/scoreSelectionACTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none"
-            app:simpleItems="@array/score_list" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/timesFinishedTextLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:hint="@string/times_finished"
+        android:layout_marginTop="16dp"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@+id/scoreSelection"
-        app:layout_constraintStart_toStartOf="@+id/scoreSelection"
-        app:layout_constraintTop_toBottomOf="@+id/scoreSelection"
-        tools:visibility="visible">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/timesFinishedTextInputET"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
         android:id="@+id/saveButton"
@@ -107,7 +52,7 @@
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline7"
-        app:layout_constraintTop_toBottomOf="@+id/timesFinishedTextLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/barrier" />
 
     <Button
         android:id="@+id/cancelButton"
@@ -128,6 +73,13 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="layoutEditInc, layoutViewInc"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/responseStatusLayout"
         android:layout_width="0dp"
@@ -138,7 +90,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/responseStatusLottie"

@@ -14,7 +14,8 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.LayoutListBottomSheetBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
-import com.mrntlu.projectconsumer.models.main.userlist.MovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
+import com.mrntlu.projectconsumer.models.main.userList.MovieWatchListBody
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setGone
@@ -25,7 +26,8 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MovieDetailsBottomSheet(
-    private val onBottomSheetClosed: OnButtomSheetClosed,
+    private val onBottomSheetClosed: OnButtomSheetClosed<MovieWatchList>,
+    private var watchList: MovieWatchList?,
     private val movieId: String,
     private val movieTMDBId: String,
 ): BottomSheetDialogFragment() {
@@ -44,8 +46,7 @@ class MovieDetailsBottomSheet(
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
-    //TODO if userlist already exits, view else edit
-    private var bottomSheetState = BottomSheetState.EDIT
+    private var bottomSheetState = if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = LayoutListBottomSheetBinding.inflate(inflater, container, false)
@@ -61,43 +62,42 @@ class MovieDetailsBottomSheet(
         setObservers()
     }
 
-
     private fun setUI() {
         //TODO Set colors, active green, finished blue, dropped red.
-        binding.firstToggleGroupButton.text = Constants.UserListStatus[0].name
-        binding.secondToggleGroupButton.text = Constants.UserListStatus[1].name
-        binding.thirdToggleGroupButton.text = Constants.UserListStatus[2].name
+        binding.layoutEditInc.firstToggleGroupButton.text = Constants.UserListStatus[0].name
+        binding.layoutEditInc.secondToggleGroupButton.text = Constants.UserListStatus[1].name
+        binding.layoutEditInc.thirdToggleGroupButton.text = Constants.UserListStatus[2].name
     }
 
     private fun setListeners() {
         binding.apply {
-            toggleButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            layoutEditInc.toggleButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
                 if (isChecked) {
                     if (checkedId == R.id.secondToggleGroupButton)
-                        timesFinishedTextInputET.setText("1")
+                        layoutEditInc.timesFinishedTextInputET.setText("1")
                     else
-                        timesFinishedTextInputET.text = null
+                        layoutEditInc.timesFinishedTextInputET.text = null
 
-                    timesFinishedTextLayout.setVisibilityByCondition(checkedId != R.id.secondToggleGroupButton)
+                    layoutEditInc.timesFinishedTextLayout.setVisibilityByCondition(checkedId != R.id.secondToggleGroupButton)
                 }
             }
 
-            scoreSelectionACTV.setOnDismissListener {
-                if (scoreSelectionACTV.text.toString().run { isEmpty() || isBlank() }) {
-                    scoreSelectionACTV.setSelection(0)
-                    scoreSelectionACTV.setText(scoreSelectionACTV.adapter.getItem(0).toString(), false)
-                    scoreSelectionACTV.dismissDropDown()
+            layoutEditInc.scoreSelectionACTV.setOnDismissListener {
+                if (layoutEditInc.scoreSelectionACTV.text.toString().run { isEmpty() || isBlank() }) {
+                    layoutEditInc.scoreSelectionACTV.setSelection(0)
+                    layoutEditInc.scoreSelectionACTV.setText(layoutEditInc.scoreSelectionACTV.adapter.getItem(0).toString(), false)
+                    layoutEditInc.scoreSelectionACTV.dismissDropDown()
                 }
             }
 
-            timesFinishedTextInputET.addTextChangedListener { text ->
-                timesFinishedTextLayout.error = if (text.isNullOrEmpty()) getString(R.string.input_number) else null
+            layoutEditInc.timesFinishedTextInputET.addTextChangedListener { text ->
+                layoutEditInc.timesFinishedTextLayout.error = if (text.isNullOrEmpty()) getString(R.string.input_number) else null
             }
 
             saveButton.setOnClickListener {
-                val score: Int? = scoreSelectionACTV.text.toString().toIntOrNull()
+                val score: Int? = layoutEditInc.scoreSelectionACTV.text.toString().toIntOrNull()
                 val status = Constants.UserListStatus[
-                        when(toggleButtonGroup.checkedButtonId) {
+                        when(layoutEditInc.toggleButtonGroup.checkedButtonId) {
                             R.id.firstToggleGroupButton -> 0
                             R.id.secondToggleGroupButton -> 1
                             R.id.thirdToggleGroupButton -> 2
@@ -132,11 +132,18 @@ class MovieDetailsBottomSheet(
                 else -> BottomSheetState.EDIT
             }
 
+            if (response is NetworkResponse.Success) {
+                watchList = response.data
+            }
+
             binding.apply {
                 responseStatusLayout.setVisible()
 
                 responseStatusLottie.apply {
                     repeatMode = LottieDrawable.RESTART
+
+                    scaleX = if (response == NetworkResponse.Loading) 1.5f else 1f
+                    scaleY = if (response == NetworkResponse.Loading) 1.5f else 1f
 
                     setAnimation(
                         when(response) {
@@ -154,10 +161,11 @@ class MovieDetailsBottomSheet(
                     playAnimation()
                 }
 
+                //TODO Extract strings
                 responseStatusTV.text = when(response) {
                     is NetworkResponse.Failure -> response.errorMessage
                     NetworkResponse.Loading -> "Please wait..."
-                    is NetworkResponse.Success -> response.data.message
+                    is NetworkResponse.Success -> "Successfully created."
                 }
 
                 responseCloseButton.setVisibilityByCondition(response == NetworkResponse.Loading)
@@ -169,7 +177,7 @@ class MovieDetailsBottomSheet(
         viewModel.movieWatchList.removeObservers(viewLifecycleOwner)
 
         if (bottomSheetState == BottomSheetState.SUCCESS)
-            onBottomSheetClosed.onSuccess(false)
+            onBottomSheetClosed.onSuccess(watchList, false)
 
         super.onDestroyView()
         _binding = null

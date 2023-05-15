@@ -50,6 +50,7 @@
     <string name="times_finished">Times Finished</string>
     <string name="input_number">Please input a number.</string>
     <string name="close">Close</string>
+    <string name="status">Status</string>
 
     <string-array name="score_list">
         <item>@string/select</item>
