@@ -2,16 +2,15 @@ package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
 
-data class MovieWatchListBody(
-    @SerializedName("movie_id")
-    val movieId: String,
+data class UpdateMovieWatchListBody(
+    val id: String,
 
-    @SerializedName("movie_tmdb_id")
-    val movieTMDBId: String,
+    @SerializedName("is_updating_score")
+    val isUpdatingScore: Boolean,
 
     @SerializedName("times_finished")
     val timesFinished: Int?,
 
     val score: Int?,
-    val status: String
+    val status: String?,
 )

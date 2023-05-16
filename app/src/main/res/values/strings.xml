@@ -37,13 +37,6 @@
     <string name="rent">Rent</string>
     <string name="plot">Plot</string>
     <string name="select">Select</string>
-
-    <string name="see_all_cd">See All</string>
-    <string name="login_register_cd">Login/Register Image</string>
-    <string name="popular">Popular</string>
-    <string name="see_all_popular_cd">See All Popular</string>
-    <string name="genre_image_cd">Genre Image</string>
-    <string name="message_icon_cd">Message Icon</string>
     <string name="select_score">Select Score</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
@@ -51,6 +44,22 @@
     <string name="input_number">Please input a number.</string>
     <string name="close">Close</string>
     <string name="status">Status</string>
+    <string name="edit">Edit</string>
+    <string name="please_wait_">Please wait…</string>
+    <string name="created">created</string>
+    <string name="updated">updated</string>
+    <string name="deleted">deleted</string>
+    <string name="successfully">Successfully</string>
+
+    <string name="see_all_cd">See All</string>
+    <string name="login_register_cd">Login/Register Image</string>
+    <string name="popular">Popular</string>
+    <string name="see_all_popular_cd">See All Popular</string>
+    <string name="genre_image_cd">Genre Image</string>
+    <string name="message_icon_cd">Message Icon</string>
+    <string name="delete">Delete</string>
+    <string name="remove">Remove</string>
+    <string name="update">Update</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

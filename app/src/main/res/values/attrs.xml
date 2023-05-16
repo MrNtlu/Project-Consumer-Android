@@ -18,9 +18,9 @@
         <attr name="messageBoxBackgroundColor" format="color"/>
         <attr name="messageBoxTextColor" format="color"/>
 
-        <attr name="firstSegmentedButtonBackgroundColor" format="color"/>
-        <attr name="secondSegmentedButtonBackgroundColor" format="color"/>
-        <attr name="thirdSegmentedButtonBackgroundColor" format="color"/>
+        <attr name="statusActiveColor" format="color"/>
+        <attr name="statusFinishedColor" format="color"/>
+        <attr name="statusDroppedColor" format="color"/>
 
         <attr name="themeThumbTint" format="color"/>
         <attr name="themeTrackTint" format="color"/>

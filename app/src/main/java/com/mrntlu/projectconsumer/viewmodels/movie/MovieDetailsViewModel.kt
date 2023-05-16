@@ -5,8 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mrntlu.projectconsumer.models.main.movie.retrofit.MovieDetailsResponse
-import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.UpdateMovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListResponse
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
@@ -22,14 +23,22 @@ class MovieDetailsViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
 ): ViewModel() {
 
-    private val _movieWatchList = MutableLiveData<NetworkResponse<MovieWatchList>>()
-    val movieWatchList: LiveData<NetworkResponse<MovieWatchList>> = _movieWatchList
+    private val _movieWatchList = MutableLiveData<NetworkResponse<MovieWatchListResponse>>()
+    val movieWatchList: LiveData<NetworkResponse<MovieWatchListResponse>> = _movieWatchList
 
     private val _movieDetails = MutableLiveData<NetworkResponse<MovieDetailsResponse>>()
     val movieDetails: LiveData<NetworkResponse<MovieDetailsResponse>> = _movieDetails
 
     fun createMovieWatchList(body: MovieWatchListBody) = viewModelScope.launch(Dispatchers.IO) {
         repository.createMovieWatchList(body).collect { response ->
+            withContext(Dispatchers.Main) {
+                _movieWatchList.value = response
+            }
+        }
+    }
+
+    fun updateMovieWatchList(body: UpdateMovieWatchListBody) = viewModelScope.launch(Dispatchers.IO) {
+        repository.updateMovieWatchList(body).collect { response ->
             withContext(Dispatchers.Main) {
                 _movieWatchList.value = response
             }

@@ -34,9 +34,9 @@
         <item name="themeTrackTint">@color/yellow500</item>
         <item name="themeTrackDecorationTint">@color/darkWhite</item>
 
-        <item name="firstSegmentedButtonBackgroundColor">@color/green700</item>
-        <item name="secondSegmentedButtonBackgroundColor">@color/blue700</item>
-        <item name="thirdSegmentedButtonBackgroundColor">@color/red700</item>
+        <item name="statusActiveColor">@color/green700</item>
+        <item name="statusFinishedColor">@color/blue700</item>
+        <item name="statusDroppedColor">@color/red700</item>
 
         <item name="bottomNavBackgroundColor">@color/materialBlack</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>

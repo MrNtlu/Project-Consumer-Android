@@ -30,9 +30,9 @@
         <item name="toolbarBackButtonColor">#BFFFFFFF</item>
         <item name="toolbarBackgroundColor">@color/darkWhite</item>
 
-        <item name="firstSegmentedButtonBackgroundColor">@color/green500</item>
-        <item name="secondSegmentedButtonBackgroundColor">@color/blue500</item>
-        <item name="thirdSegmentedButtonBackgroundColor">@color/red500</item>
+        <item name="statusActiveColor">@color/green500</item>
+        <item name="statusFinishedColor">@color/blue500</item>
+        <item name="statusDroppedColor">@color/red500</item>
 
         <item name="themeThumbTint">@color/yellow700</item>
         <item name="themeTrackTint">@color/yellow500</item>

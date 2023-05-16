@@ -25,6 +25,7 @@ import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
+import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
 import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
@@ -71,26 +72,18 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     * - Start animation and make request
     * - Listen via observer, if success show message else show error message and reset button
     * Add List
-    * - Open bottom sheet (Optional score, status[Finished, Plan to etc.], if finished show times finished)
-    *   - Show error message in bottom sheet
     * - Delete
     *   - Show loading bottom sheet and prevent closure on outsite pressed.
     *       - If closed somehow, listen changes and on success start animation.
     *   - On success close bottom sheet and start animation
-    * - Add
-    *   - Open bottom sheet and save
-    *   - On success close bottom sheet and start animation
-    * - Update
-    *   - No change on button
-    * If already added, show it with score between star and fav button.
-    *   - Maybe in a small container with semi transparent background
      */
 
     private val onBottomSheetClosedCallback = object: OnButtomSheetClosed<MovieWatchList> {
-        override fun onSuccess(data: MovieWatchList?, isDeleted: Boolean) {
+        override fun onSuccess(data: MovieWatchList?, operation: BottomSheetOperation) {
             watchList = data
 
-            handleWatchListLottie()
+            if (operation != BottomSheetOperation.UPDATE)
+                handleWatchListLottie()
         }
     }
 
@@ -149,7 +142,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private fun handleWatchListLottie() {
         binding.detailsInclude.addListLottie.apply {
-            printLog("Handle Lottie $watchList")
             frame = if (watchList == null) 130 else 0
 
             if (frame != 0) {
