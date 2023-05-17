@@ -1,9 +1,13 @@
 package com.mrntlu.projectconsumer.ui.movie
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -18,6 +22,7 @@ import com.mrntlu.projectconsumer.ui.compose.GenreGrid
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.movie.MoviePreviewViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
@@ -49,8 +54,20 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
         setObservers()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         binding.apply {
+            movieScrollView.setOnTouchListener { _, event ->
+                if (event != null && event.action == MotionEvent.ACTION_MOVE) {
+                    if (previewSearchView.hasFocus())
+                        previewSearchView.clearFocus()
+
+                    hideKeyboard()
+                }
+
+                false
+            }
+
             previewSearchView.apply {
                 setOnClickListener {
                     isIconified = false

@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.models.common
+package com.mrntlu.projectconsumer.models.common.retrofit
 
 data class PaginationResponse(
     val next: Int,

@@ -6,8 +6,8 @@
         <item name="colorPrimaryVariant">@color/blue700</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/yellow500</item>
-        <item name="colorSecondaryVariant">@color/yellow700</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/darkWhite</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/toolbarBackgroundColor</item>
@@ -42,6 +42,8 @@
         <item name="bottomNavSelectedColor">@color/blue700</item>
         <item name="bottomNavUnselectedColor">@color/grey500</item>
         <item name="colorSecondaryContainer">@color/materialBlack</item>
+
+        <item name="materialAlertDialogTheme">@style/Theme.ProjectConsumer.MaterialAlertDialog</item>
     </style>
 
     <style name="Theme.ProjectConsumer.FirstSegmentedButton" parent="Widget.Material3.Button.OutlinedButton">
@@ -72,5 +74,27 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="iconTint">@color/white</item>
         <item name="colorControlNormal">@color/white</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorPrimary">?attr/messageBoxBackgroundColor</item>
+        <item name="colorSecondary">?attr/messageBoxBackgroundColor</item>
+        <item name="colorSurface">?attr/messageBoxBackgroundColor</item>
+        <item name="colorOnSurface">?attr/messageBoxBackgroundColor</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.TitleText</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.BodyText</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Button</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.TitleText" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.BodyText" parent="MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/red700</item>
     </style>
 </resources>

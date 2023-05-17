@@ -18,8 +18,8 @@ import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
-import com.mrntlu.projectconsumer.models.main.userList.MovieWatchListBody
-import com.mrntlu.projectconsumer.models.main.userList.UpdateMovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.printLog
@@ -40,11 +40,6 @@ class MovieDetailsBottomSheet(
     companion object {
         const val TAG = "ListBottomSheet"
     }
-
-    //TODO Listen and load, while loading prevent cancelation via isCancelable
-    //TODO New loading animation, lottie
-    //TODO Paramater, userlist value
-    //https://m3.material.io/components/search/overview
 
     private var _binding: LayoutListBottomSheetBinding? = null
     private val binding get() = _binding!!
@@ -149,9 +144,10 @@ class MovieDetailsBottomSheet(
             }
 
             layoutEditInc.scoreSelectionACTV.setOnDismissListener {
-                if (layoutEditInc.scoreSelectionACTV.text.toString().run { isEmpty() || isBlank() }) {
+                if (layoutEditInc.scoreSelectionACTV.text.toString().run { isEmpty() || isBlank() })
                     setACTVSelection(0)
-                }
+                else
+                    layoutEditInc.scoreSelectionACTV.clearFocus()
             }
 
             layoutEditInc.timesFinishedTextInputET.addTextChangedListener { text ->

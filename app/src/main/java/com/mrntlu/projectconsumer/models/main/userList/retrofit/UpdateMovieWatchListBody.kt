@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.models.main.userList
+package com.mrntlu.projectconsumer.models.main.userList.retrofit
 
 import com.google.gson.annotations.SerializedName
 

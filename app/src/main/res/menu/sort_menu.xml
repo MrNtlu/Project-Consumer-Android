@@ -5,17 +5,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MenuTitle">
     <item
-        android:icon="@drawable/ic_check_24"
+        android:icon="@drawable/ic_circle_12"
         android:id="@+id/firstSortMenu"
         app:showAsAction="never" />
 
     <item
-        android:icon="@drawable/ic_check_24"
+        android:icon="@drawable/ic_circle_12"
         android:id="@+id/secondSortMenu"
         app:showAsAction="never"/>
 
     <item
-        android:icon="@drawable/ic_check_24"
+        android:icon="@drawable/ic_circle_12"
         android:id="@+id/thirdSortMenu"
         app:showAsAction="never" />
 </menu>

@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -20,6 +21,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout.LayoutParams
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
@@ -28,9 +30,13 @@ import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
 import com.mrntlu.projectconsumer.models.common.DetailsUI
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
+import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
+import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
@@ -56,9 +62,11 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     private var buyAdapter: StreamingAdapter? = null
     private var rentAdapter: StreamingAdapter? = null
 
-    private lateinit var countryCode: String
     private var watchList: MovieWatchList? = null
     private var consumeLater: ConsumeLater? = null
+    private lateinit var countryCode: String
+
+    private var consumeLaterDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
 
     private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
         val locale = Locale("", it)
@@ -112,14 +120,32 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
 
             setOnClickListener {
-                if (frame != 0) {
-                    reverseAnimationSpeed()
-                    setMinAndMaxFrame(0, 60)
+                if (consumeLater == null) {
+                    args.movieArgs.apply {
+                        viewModel.createConsumeLater(
+                            ConsumeLaterBody(id, tmdbID,null, "movie", null)
+                        )
+                    }
                 } else {
-                    speed = 1.4f
-                    setMinAndMaxFrame(0, 120)
+                    if (consumeLaterDeleteLiveData != null && consumeLaterDeleteLiveData?.hasActiveObservers() == true)
+                        consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
+
+                    consumeLaterDeleteLiveData = viewModel.deleteConsumeLater(IDBody(consumeLater!!.id))
+
+
+                    consumeLaterDeleteLiveData?.observe(viewLifecycleOwner) { response ->
+                        handleUserInteractionLoading(response)
+
+                        if (response is NetworkResponse.Success)
+                            consumeLater = null
+
+                        if (consumeLater == null)
+                            handleWatchLaterLottie()
+
+                        if (response is NetworkResponse.Failure)
+                            showErrorDialog(response.errorMessage)
+                    }
                 }
-                playAnimation()
             }
         }
 
@@ -150,6 +176,32 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                 setMinAndMaxFrame(0, 75)
             }
             playAnimation()
+        }
+    }
+
+    private fun handleWatchLaterLottie() {
+        binding.detailsInclude.watchLaterLottie.apply {
+            frame = if (consumeLater == null) 60 else 0
+
+            if (frame != 0) {
+                reverseAnimationSpeed()
+                setMinAndMaxFrame(0, 60)
+            } else {
+                speed = 1.4f
+                setMinAndMaxFrame(0, 120)
+            }
+            playAnimation()
+        }
+    }
+
+    private fun handleUserInteractionLoading(response: NetworkResponse<*>) {
+        binding.detailsInclude.apply {
+            userInteractionLoadingLayout.setVisibilityByCondition(response != NetworkResponse.Loading)
+
+            if (response != NetworkResponse.Loading)
+                userInteractionLoading.cancelAnimation()
+            else
+                userInteractionLoading.playAnimation()
         }
     }
 
@@ -351,27 +403,53 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         //TODO if is logged in
         viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
             binding.detailsInclude.apply {
-                userInteractionLoadingLayout.setVisibilityByCondition(response != NetworkResponse.Loading)
-
-                if (response != NetworkResponse.Loading)
-                    userInteractionLoading.cancelAnimation()
-                else
-                    userInteractionLoading.playAnimation()
+                handleUserInteractionLoading(response)
 
                 if (response is NetworkResponse.Success) {
-                    printLog("Observer ${response.data.data.movieWatchList}")
                     watchList = response.data.data.movieWatchList
                     consumeLater = response.data.data.watchLater
                 }
 
                 if (watchList != null)
                     handleWatchListLottie()
+
+                if (consumeLater != null)
+                    handleWatchLaterLottie()
             }
+        }
+
+        viewModel.consumeLater.observe(viewLifecycleOwner) { response ->
+            handleUserInteractionLoading(response)
+
+            if (response is NetworkResponse.Success)
+                consumeLater = response.data.data
+
+            if (consumeLater != null)
+                handleWatchLaterLottie()
+
+            if (response is NetworkResponse.Failure)
+                showErrorDialog(response.errorMessage)
+        }
+    }
+
+    private fun showErrorDialog(message: String) {
+        context?.let {
+            MaterialAlertDialogBuilder(it)
+                .setTitle("Error")
+                .setMessage(message)
+                .setPositiveButton(resources.getString(R.string.dismiss)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
     }
 
     override fun onDestroyView() {
-        viewModel.movieDetails.removeObservers(viewLifecycleOwner)
+        viewLifecycleOwner.apply {
+            viewModel.movieDetails.removeObservers(this)
+            viewModel.consumeLater.removeObservers(this)
+            consumeLaterDeleteLiveData?.removeObservers(this)
+        }
         activity?.let {
             it.window.statusBarColor = ContextCompat.getColor(it, if (sharedViewModel.isLightTheme()) R.color.darkWhite else R.color.androidBlack)
         }
