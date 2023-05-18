@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.repository
 
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
 import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
@@ -16,5 +17,9 @@ class UserListRepository @Inject constructor(
 
     fun updateMovieWatchList(body: UpdateMovieWatchListBody) = networkResponseFlow {
         userListApiService.updateMovieWatchList(body)
+    }
+
+    fun deleteUserList(body: DeleteUserListBody) = networkResponseFlow {
+        userListApiService.deleteUserList(body)
     }
 }

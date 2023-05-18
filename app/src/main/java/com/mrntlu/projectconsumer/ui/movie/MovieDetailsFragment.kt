@@ -279,11 +279,11 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             }
 
             imdbButton.setOnClickListener {
-                //Open in web with id
+                //TODO Open in web with id
             }
 
             tmdbButton.setOnClickListener {
-                //Open in web with id
+                //TODO Open in web with id
             }
 
             detailsStreamingCountrySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {

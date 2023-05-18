@@ -11,12 +11,14 @@ import com.mrntlu.projectconsumer.models.main.movie.retrofit.MovieDetailsRespons
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.repository.UserInteractionRepository
 import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.networkResponseFlowCollector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,28 +41,36 @@ class MovieDetailsViewModel @Inject constructor(
     private val _movieDetails = MutableLiveData<NetworkResponse<MovieDetailsResponse>>()
     val movieDetails: LiveData<NetworkResponse<MovieDetailsResponse>> = _movieDetails
 
-    fun createMovieWatchList(body: MovieWatchListBody) = viewModelScope.launch(Dispatchers.IO) {
-        repository.createMovieWatchList(body).collect { response ->
-            withContext(Dispatchers.Main) {
-                _movieWatchList.value = response
-            }
-        }
+    fun createMovieWatchList(body: MovieWatchListBody) = networkResponseFlowCollector(
+        repository.createMovieWatchList(body)
+    ) { response ->
+        _movieWatchList.value = response
     }
 
-    fun updateMovieWatchList(body: UpdateMovieWatchListBody) = viewModelScope.launch(Dispatchers.IO) {
-        repository.updateMovieWatchList(body).collect { response ->
-            withContext(Dispatchers.Main) {
-                _movieWatchList.value = response
-            }
-        }
+    fun updateMovieWatchList(body: UpdateMovieWatchListBody) = networkResponseFlowCollector(
+        repository.updateMovieWatchList(body)
+    ) { response ->
+        _movieWatchList.value = response
     }
 
-    fun createConsumeLater(body: ConsumeLaterBody) = viewModelScope.launch(Dispatchers.IO) {
-        userInteractionRepository.createConsumeLater(body).collect { response ->
-            withContext(Dispatchers.Main) {
-                _consumeLater.value = response
+    fun deleteUserList(body: DeleteUserListBody): LiveData<NetworkResponse<MessageResponse>> {
+        val liveData = MutableLiveData<NetworkResponse<MessageResponse>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteUserList(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    liveData.value = response
+                }
             }
         }
+
+        return liveData
+    }
+
+    fun createConsumeLater(body: ConsumeLaterBody) = networkResponseFlowCollector(
+        userInteractionRepository.createConsumeLater(body)
+    ) { response ->
+        _consumeLater.value = response
     }
 
     fun deleteConsumeLater(body: IDBody): LiveData<NetworkResponse<MessageResponse>> {
@@ -77,11 +87,9 @@ class MovieDetailsViewModel @Inject constructor(
         return liveData
     }
 
-    fun getMovieDetails(id: String) = viewModelScope.launch(Dispatchers.IO) {
-        movieRepository.getMovieDetails(id).collect { response ->
-            withContext(Dispatchers.Main) {
-                _movieDetails.value = response
-            }
-        }
+    fun getMovieDetails(id: String) = networkResponseFlowCollector(
+        movieRepository.getMovieDetails(id)
+    ) { response ->
+        _movieDetails.value = response
     }
 }

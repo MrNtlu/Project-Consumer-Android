@@ -10,6 +10,7 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mrntlu.projectconsumer.R
@@ -17,7 +18,9 @@ import com.mrntlu.projectconsumer.databinding.LayoutListBottomSheetBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
+import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
 import com.mrntlu.projectconsumer.utils.Constants
@@ -48,6 +51,8 @@ class MovieDetailsBottomSheet(
 
     private var bottomSheetState = if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW
     private var bottomSheetOperation = if (watchList == null) BottomSheetOperation.INSERT else BottomSheetOperation.DELETE
+
+    private var userListDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = LayoutListBottomSheetBinding.inflate(inflater, container, false)
@@ -125,9 +130,28 @@ class MovieDetailsBottomSheet(
     private fun setListeners() {
         binding.apply {
             layoutViewInc.deleteButton.setOnClickListener {
-                watchList = null
-                bottomSheetState = BottomSheetState.SUCCESS
-                dismiss()
+                if (watchList != null) {
+                    if (userListDeleteLiveData != null && userListDeleteLiveData?.hasActiveObservers() == true)
+                        userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
+
+                    userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(watchList!!.id, "movie"))
+
+                    userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
+                        isCancelable = response != NetworkResponse.Loading
+
+                        bottomSheetState = when(response) {
+                            is NetworkResponse.Success -> BottomSheetState.SUCCESS
+                            is NetworkResponse.Failure -> BottomSheetState.FAILURE
+                            else -> BottomSheetState.VIEW
+                        }
+
+                        if (response is NetworkResponse.Success){
+                            watchList = null
+                        }
+
+                        handleResponseStatusLayout(response)
+                    }
+                }
             }
 
             layoutEditInc.toggleButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
@@ -218,47 +242,50 @@ class MovieDetailsBottomSheet(
             }
 
             if (response is NetworkResponse.Success) {
-                printLog("Response ${response.data.data}")
                 watchList = response.data.data
             }
 
-            binding.apply {
-                responseStatusLayout.setVisible()
+            handleResponseStatusLayout(response)
+        }
+    }
 
-                responseStatusLottie.apply {
-                    repeatMode = LottieDrawable.RESTART
+    private fun handleResponseStatusLayout(response: NetworkResponse<*>) {
+        binding.apply {
+            responseStatusLayout.setVisible()
 
-                    scaleX = if (response == NetworkResponse.Loading) 1.5f else 1f
-                    scaleY = if (response == NetworkResponse.Loading) 1.5f else 1f
+            responseStatusLottie.apply {
+                repeatMode = LottieDrawable.RESTART
 
-                    setAnimation(
-                        when(response) {
-                            is NetworkResponse.Failure -> R.raw.error
-                            NetworkResponse.Loading -> R.raw.loading
-                            is NetworkResponse.Success -> R.raw.success
-                        }
-                    )
+                scaleX = if (response == NetworkResponse.Loading) 1.5f else 1f
+                scaleY = if (response == NetworkResponse.Loading) 1.5f else 1f
 
-                    repeatCount = when(response) {
-                        is NetworkResponse.Failure, NetworkResponse.Loading -> ValueAnimator.INFINITE
-                        else -> 0
+                setAnimation(
+                    when(response) {
+                        is NetworkResponse.Failure -> R.raw.error
+                        NetworkResponse.Loading -> R.raw.loading
+                        is NetworkResponse.Success -> R.raw.success
                     }
+                )
 
-                    playAnimation()
+                repeatCount = when(response) {
+                    is NetworkResponse.Failure, NetworkResponse.Loading -> ValueAnimator.INFINITE
+                    else -> 0
                 }
 
-                responseStatusTV.text = when(response) {
-                    is NetworkResponse.Failure -> response.errorMessage
-                    NetworkResponse.Loading -> getString(R.string.please_wait_)
-                    is NetworkResponse.Success -> "${getString(R.string.successfully)} ${when(bottomSheetOperation){
-                        BottomSheetOperation.INSERT -> getString(R.string.created)
-                        BottomSheetOperation.UPDATE -> getString(R.string.updated)
-                        BottomSheetOperation.DELETE -> getString(R.string.deleted)
-                    }}."
-                }
-
-                responseCloseButton.setVisibilityByCondition(response == NetworkResponse.Loading)
+                playAnimation()
             }
+
+            responseStatusTV.text = when(response) {
+                is NetworkResponse.Failure -> response.errorMessage
+                NetworkResponse.Loading -> getString(R.string.please_wait_)
+                is NetworkResponse.Success -> "${getString(R.string.successfully)} ${when(bottomSheetOperation){
+                    BottomSheetOperation.INSERT -> getString(R.string.created)
+                    BottomSheetOperation.UPDATE -> getString(R.string.updated)
+                    BottomSheetOperation.DELETE -> getString(R.string.deleted)
+                }}."
+            }
+
+            responseCloseButton.setVisibilityByCondition(response == NetworkResponse.Loading)
         }
     }
 

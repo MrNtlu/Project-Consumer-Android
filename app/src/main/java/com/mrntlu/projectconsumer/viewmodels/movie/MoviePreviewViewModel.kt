@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.mrntlu.projectconsumer.models.main.movie.retrofit.MoviePaginationResponse
 import com.mrntlu.projectconsumer.repository.MoviePreviewRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.networkResponseFlowCollector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,19 +29,15 @@ class MoviePreviewViewModel @Inject constructor(
         fetchPopularMovies()
     }
 
-    fun fetchUpcomingMovies() = viewModelScope.launch(Dispatchers.IO) {
-        moviePreviewRepository.fetchUpcomingMovies().collect { response ->
-            withContext(Dispatchers.Main) {
-                _upcomingList.value = response
-            }
-        }
+    fun fetchUpcomingMovies() = networkResponseFlowCollector(
+        moviePreviewRepository.fetchUpcomingMovies()
+    ) { response ->
+        _upcomingList.value = response
     }
 
-    fun fetchPopularMovies() = viewModelScope.launch(Dispatchers.IO) {
-        moviePreviewRepository.fetchPopularMovies().collect { response ->
-            withContext(Dispatchers.Main) {
-                _popularList.value = response
-            }
-        }
+    fun fetchPopularMovies() = networkResponseFlowCollector(
+        moviePreviewRepository.fetchPopularMovies()
+    ) { response ->
+        _popularList.value = response
     }
 }

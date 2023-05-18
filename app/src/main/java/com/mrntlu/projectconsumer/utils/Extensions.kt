@@ -9,6 +9,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +25,8 @@ import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -93,23 +97,16 @@ fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: P
         }
     }).transformImage().into(this)
 
-fun<T> networkResponseFlow(call: suspend () -> Response<T>): Flow<NetworkResponse<T>> = flow {
-    emit(NetworkResponse.Loading)
-
-    try {
-        val response = call()
-
-        if (response.isSuccessful) {
-            response.body()?.let { data ->
-                emit(NetworkResponse.Success(data))
-            }
-        } else {
-            emit(NetworkResponse.Failure(errorMessage = response.message()))
+fun<Response> ViewModel.networkResponseFlowCollector(
+    request: Flow<NetworkResponse<Response>>,
+    collect: (NetworkResponse<Response>) -> Unit,
+) = viewModelScope.launch(Dispatchers.IO) {
+    request.collect { response ->
+        withContext(Dispatchers.Main) {
+            collect(response)
         }
-    } catch (e: Exception) {
-        emit(NetworkResponse.Failure(e.message ?: e.toString()))
     }
-}.flowOn(Dispatchers.IO)
+}
 
 suspend fun RecyclerView.quickScrollToTop(
     jumpThreshold: Int = DEFAULT_JUMP_THRESHOLD,
