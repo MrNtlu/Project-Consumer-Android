@@ -1,17 +1,55 @@
 package com.mrntlu.projectconsumer.utils
 
-sealed class NetworkListResponse<out T> {
-    data class Loading(
-        val isPaginating: Boolean = false,
-    ): NetworkListResponse<Nothing>()
+data class NetworkListResponse<T>(
+    var data: T?,
+    var isLoading: Boolean,
+    var isPaginating: Boolean,
+    var isFailed: Boolean,
+    var isPaginationData: Boolean,
+    var isPaginationExhausted: Boolean,
+    var errorMessage: String?,
+)
 
-    data class Success<out T>(
-        val data: T,
-        val isPaginationData: Boolean = false,
-        val isPaginationExhausted: Boolean = false,
-    ): NetworkListResponse<T>()
+fun <T> NetworkListResponse<T>.isSuccessful() = data != null && !isLoading && !isPaginating && !isFailed
 
-    data class Failure(
-        val errorMessage: String,
-    ): NetworkListResponse<Nothing>()
-}
+fun <T> NetworkListResponse<T>.isFailed() = isFailed && errorMessage != null
+
+fun <T> setLoading() = NetworkListResponse<T>(
+    data = null,
+    isLoading = true,
+    isPaginating = false,
+    isFailed = false,
+    isPaginationData = false,
+    isPaginationExhausted = false,
+    errorMessage = null,
+)
+
+fun <T> setPaginationLoading(data: T? = null) = NetworkListResponse<T>(
+    data = data,
+    isLoading = false,
+    isPaginating = true,
+    isFailed = false,
+    isPaginationData = false,
+    isPaginationExhausted = false,
+    errorMessage = null,
+)
+
+fun <T> setFailure(data: T? = null, isPaginationData: Boolean, isPaginationExhausted: Boolean, errorMessage: String) = NetworkListResponse<T>(
+    data = data,
+    isLoading = false,
+    isPaginating = false,
+    isFailed = true,
+    isPaginationData = isPaginationData,
+    isPaginationExhausted = isPaginationExhausted,
+    errorMessage = errorMessage,
+)
+
+fun <T> setData(data: T, isPaginationData: Boolean, isPaginationExhausted: Boolean) = NetworkListResponse<T>(
+    data = data,
+    isLoading = false,
+    isPaginating = false,
+    isFailed = false,
+    isPaginationData = isPaginationData,
+    isPaginationExhausted = isPaginationExhausted,
+    errorMessage = null,
+)

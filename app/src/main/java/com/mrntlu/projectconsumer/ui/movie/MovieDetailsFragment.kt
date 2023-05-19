@@ -36,7 +36,6 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.ui.BaseFragment
-import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog

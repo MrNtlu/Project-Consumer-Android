@@ -72,28 +72,34 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val 
         notifyDataSetChanged()
     }
 
-    fun setLoadingView(isPaginating: Boolean) {
-        if (isPaginating) {
-            setState(RecyclerViewEnum.PaginationLoading)
-            notifyItemInserted(itemCount)
-        } else {
-            setState(RecyclerViewEnum.Loading)
-            notifyDataSetChanged()
-        }
+    fun setLoadingView() {
+        setState(RecyclerViewEnum.Loading)
+        notifyDataSetChanged()
     }
 
     fun setData(
         newList: ArrayList<T>,
         isPaginationData: Boolean = false,
-        isPaginationExhausted: Boolean = false
+        isPaginationExhausted: Boolean = false,
+        isPaginating: Boolean = false,
     ) {
-        setState(if (isPaginationExhausted) RecyclerViewEnum.PaginationExhaust else RecyclerViewEnum.View)
+        setState(
+            if (isPaginationExhausted) RecyclerViewEnum.PaginationExhaust
+            else if (isPaginating) RecyclerViewEnum.PaginationLoading
+            else RecyclerViewEnum.View
+        )
 
-        if (!isPaginationData) {
+        if (!isPaginationData && !isPaginating) {
             if (arrayList.isNotEmpty())
                 arrayList.clear()
+
             arrayList.addAll(newList)
             notifyDataSetChanged()
+        } else if (isPaginating) {
+            notifyItemInserted(itemCount)
+
+            if (arrayList.isEmpty())
+                handleDiffUtil(newList)
         } else {
             if (!isPaginationExhausted)
                 notifyItemRemoved(itemCount)

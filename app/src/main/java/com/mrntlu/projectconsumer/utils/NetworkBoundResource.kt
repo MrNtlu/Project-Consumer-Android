@@ -19,7 +19,7 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
     val data = cacheQuery()
 
     val networkListResponse: NetworkListResponse<ReturnType> = if (shouldFetch(data)) {
-        emit(NetworkListResponse.Loading(isPaginating = isPaginating))
+        emit(if (isPaginating) setPaginationLoading() else setLoading())
 
         try {
             val response = fetchNetwork()
@@ -27,35 +27,27 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
             if (response.isSuccessful && response.body() != null) {
                 val result = saveAndQueryResult(response.body()!!)
 
-                NetworkListResponse.Success(
+                setData(
                     mapper(result.first),
-                    isPaginationData = isPaginating,
-                    isPaginationExhausted = result.second
+                    isPaginating,
+                    result.second
                 )
             } else {
                 if (isPaginating) {
-                    NetworkListResponse.Success(
+                    setData(
                         mapper(data),
                         isPaginationData = true,
-                        isPaginationExhausted = true
+                        isPaginationExhausted = true,
                     )
                 } else {
-                    NetworkListResponse.Failure(response.message())
+                    setFailure(isPaginationData = false, isPaginationExhausted = false, errorMessage = response.message())
                 }
             }
         } catch (throwable: Throwable) {
-            if (isPaginating) {
-                NetworkListResponse.Success(
-                    emptyObjectCreator(),
-                    isPaginationData = true,
-                    isPaginationExhausted = true
-                )
-            } else {
-                 NetworkListResponse.Failure(throwable.message ?: throwable.toString())
-            }
+            setFailure(emptyObjectCreator(), isPaginationData = isPaginating, isPaginationExhausted = isPaginating, errorMessage = throwable.message ?: throwable.toString())
         }
     } else {
-        NetworkListResponse.Success(mapper(data), isPaginationData = isPaginating, isPaginationExhausted = isCachePaginationExhausted())
+        setData(mapper(data), isPaginationData = isPaginating, isPaginationExhausted = isCachePaginationExhausted())
     }
 
     emit(networkListResponse)

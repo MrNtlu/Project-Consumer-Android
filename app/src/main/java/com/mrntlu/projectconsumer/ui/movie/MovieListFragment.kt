@@ -30,8 +30,9 @@ import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
-import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.isFailed
+import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
@@ -55,6 +56,9 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
     private var sortType: String = Constants.SortRequests[0].request
     private var gridCount = 3
 
+    private var isNavigatingBack = false
+
+    //TODO Add scroll to top button
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,7 +70,6 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //TODO Test pagination stuck case where when you navigate and comeback you only see pagination. Test with 5 sec sleep etc.
         setMenu()
         setObservers()
     }
@@ -190,6 +193,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                     override fun onItemSelected(item: Movie, position: Int) {
                         val navWithAction = MovieListFragmentDirections.actionMovieListFragmentToMovieDetailsFragment(item)
 
+                        isNavigatingBack = true
                         navController.navigate(navWithAction)
                     }
 
@@ -216,16 +220,18 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val itemCount = gridLayoutManager.itemCount / gridCount
-                    val lastVisibleItemPosition = gridLayoutManager.findLastVisibleItemPosition()
+                    val lastVisibleItemPosition = gridLayoutManager.findLastVisibleItemPosition() / gridCount
 
-                    val centerScrollPosition = (gridLayoutManager.findLastCompletelyVisibleItemPosition() + gridLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
-                    viewModel.setScrollPosition(centerScrollPosition)
+                    if (isScrolling && !isNavigatingBack) {
+                        val centerScrollPosition = (gridLayoutManager.findLastCompletelyVisibleItemPosition() + gridLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
+                        viewModel.setScrollPosition(centerScrollPosition)
+                    }
 
                     movieAdapter?.let {
                         if (
                             isScrolling &&
                             !it.isLoading &&
-                            lastVisibleItemPosition >= itemCount.minus(2) &&
+                            lastVisibleItemPosition >= itemCount.minus(3) &&
                             it.canPaginate &&
                             !it.isPaginating
                         ) {
@@ -255,27 +261,31 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
         }
 
         viewModel.movies.observe(viewLifecycleOwner) { response ->
-            when(response) {
-                is NetworkListResponse.Failure -> {
-                    movieAdapter?.setErrorView(response.errorMessage)
-                }
-                is NetworkListResponse.Loading -> {
-                    movieAdapter?.setLoadingView(response.isPaginating)
-                }
-                is NetworkListResponse.Success -> {
-                    movieAdapter?.setData(response.data.toCollection(ArrayList()), response.isPaginationData, response.isPaginationExhausted)
+            if (response.isFailed()) {
+                movieAdapter?.setErrorView(response.errorMessage!!)
+            } else if (response.isLoading) {
+                movieAdapter?.setLoadingView()
+            } else if (response.isSuccessful() || response.isPaginating) {
+                val arrayList = response.data!!.toCollection(ArrayList())
 
-                    if (viewModel.isRestoringData || viewModel.didOrientationChange) {
-                        binding.upcomingRV.scrollToPosition(viewModel.scrollPosition - 1)
+                movieAdapter?.setData(
+                    arrayList,
+                    response.isPaginationData,
+                    response.isPaginationExhausted,
+                    response.isPaginating,
+                )
 
-                        if (viewModel.isRestoringData) {
-                            viewModel.isRestoringData = false
-                        } else {
-                            viewModel.didOrientationChange = false
-                        }
+                if (viewModel.isRestoringData || viewModel.didOrientationChange) {
+                    binding.upcomingRV.scrollToPosition(viewModel.scrollPosition - 1)
+
+                    if (viewModel.isRestoringData) {
+                        viewModel.isRestoringData = false
                     } else {
-                        binding.upcomingRV.scrollToPosition(viewModel.scrollPosition - 1)
+                        viewModel.didOrientationChange = false
                     }
+                } else if (!response.isPaginating) {
+                    binding.upcomingRV.scrollToPosition(viewModel.scrollPosition - 1)
+                    isNavigatingBack = false
                 }
             }
         }

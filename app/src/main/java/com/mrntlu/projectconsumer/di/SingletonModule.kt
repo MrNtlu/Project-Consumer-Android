@@ -56,7 +56,7 @@ class SingletonModule {
 
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
+//            .addInterceptor(loggingInterceptor)
             .authenticator(authAuthenticator)
             .build()
     }

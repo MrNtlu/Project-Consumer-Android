@@ -13,6 +13,9 @@ import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
+import com.mrntlu.projectconsumer.utils.isSuccessful
+import com.mrntlu.projectconsumer.utils.setData
+import com.mrntlu.projectconsumer.utils.setPaginationLoading
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -67,28 +70,24 @@ class MovieViewModel @AssistedInject constructor(
 
     fun fetchMovies() {
         val prevList = arrayListOf<Movie>()
-        if (_movieList.value is NetworkListResponse.Success && page != 1) {
-            prevList.addAll((_movieList.value as NetworkListResponse.Success<List<Movie>>).data.toCollection(ArrayList()))
+        if (_movieList.value?.data != null && page != 1) {
+            prevList.addAll(_movieList.value!!.data!!.toCollection(ArrayList()))
         }
 
         viewModelScope.launch(Dispatchers.IO) {
             movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable).collect { response ->
                 withContext(Dispatchers.Main) {
-                    if (response is NetworkListResponse.Success) {
-                        prevList.addAll(response.data)
+                    if (response.isSuccessful()) {
+                        prevList.addAll(response.data!!)
 
-                        _movieList.value = NetworkListResponse.Success(
-                            prevList,
-                            isPaginationData = response.isPaginationData,
-                            isPaginationExhausted = response.isPaginationExhausted,
-                        )
+                        _movieList.value = setData(prevList, response.isPaginationData, response.isPaginationExhausted)
 
-                        if (!response.isPaginationExhausted) {
+                        if (!response.isPaginationExhausted)
                             setPagePosition(page.plus(1))
-                        }
-                    } else {
+                    } else if (response.isPaginating) {
+                        _movieList.value = setPaginationLoading(prevList)
+                    } else
                         _movieList.value = response
-                    }
                 }
             }
         }
@@ -102,18 +101,18 @@ class MovieViewModel @AssistedInject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             launch(Dispatchers.IO) {
                 movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
-                    if (response is NetworkListResponse.Success) {
-                        tempList.addAll(response.data)
+                    if (response.isSuccessful()) {
+                        tempList.addAll(response.data!!)
                         isPaginationExhausted = response.isPaginationExhausted
                     }
                 }
             }
 
             withContext(Dispatchers.Main) {
-                _movieList.value = NetworkListResponse.Success(
+                _movieList.value = setData(
                     tempList,
                     isPaginationData = false,
-                    isPaginationExhausted = isPaginationExhausted,
+                    isPaginationExhausted = if (isNetworkAvailable) false else isPaginationExhausted
                 )
             }
         }

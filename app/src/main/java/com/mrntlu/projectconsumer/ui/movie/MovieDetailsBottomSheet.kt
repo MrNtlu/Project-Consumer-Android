@@ -25,7 +25,6 @@ import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBo
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
