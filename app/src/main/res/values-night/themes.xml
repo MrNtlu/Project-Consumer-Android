@@ -44,8 +44,11 @@
         <item name="colorSecondaryContainer">@color/materialBlack</item>
 
         <item name="materialAlertDialogTheme">@style/Theme.ProjectConsumer.MaterialAlertDialog</item>
+
+        <item name="floatingActionButtonSmallStyle">@style/Theme.ProjectConsumer.SmallFAB</item>
     </style>
 
+<!--   Segmented Button Style   -->
     <style name="Theme.ProjectConsumer.FirstSegmentedButton" parent="Widget.Material3.Button.OutlinedButton">
         <item name="backgroundTint">@drawable/segmented_button_background_first</item>
         <item name="android:textColor">@drawable/segmented_button_text</item>
@@ -61,14 +64,17 @@
         <item name="android:textColor">@drawable/segmented_button_text</item>
     </style>
 
+<!--   Custom Popup Menu Style   -->
     <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">
         <item name="android:popupBackground">@drawable/custom_popup_background</item>
     </style>
 
+<!--   BottomSheet Style   -->
     <style name="Theme.ProjectConsumer.BottomSheet" parent="Widget.Material3.BottomSheet">
         <item name="android:background">?attr/mainBackgroundColor</item>
     </style>
 
+<!--   Toolbar Style   -->
     <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.Material3.Toolbar.Surface">
         <item name="android:background">?attr/toolbarBackgroundColor</item>
         <item name="android:textColorPrimary">@color/white</item>
@@ -76,6 +82,7 @@
         <item name="colorControlNormal">@color/white</item>
     </style>
 
+<!--   Material Dialog Style   -->
     <style name="Theme.ProjectConsumer.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="colorPrimary">?attr/messageBoxBackgroundColor</item>
         <item name="colorSecondary">?attr/messageBoxBackgroundColor</item>
@@ -96,5 +103,15 @@
 
     <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textColor">@color/red700</item>
+    </style>
+
+<!--   FAB Style   -->
+    <style name="Theme.ProjectConsumer.SmallFAB" parent="Widget.Material3.FloatingActionButton.Small.Primary">
+        <item name="materialThemeOverlay">@style/Theme.ProjectConsumer.FABOverlay</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.FABOverlay" parent="">
+        <item name="colorContainer">?attr/colorPrimary</item>
+        <item name="colorOnContainer">?attr/mainBackgroundColor</item>
     </style>
 </resources>

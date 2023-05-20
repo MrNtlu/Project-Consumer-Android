@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.LoadingPreviewViewHolder
+import com.mrntlu.projectconsumer.adapters.viewholders.PreviewErrorViewHolder
 import com.mrntlu.projectconsumer.databinding.CellErrorBinding
 import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
+import com.mrntlu.projectconsumer.databinding.CellPreviewErrorBinding
 import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.Interaction
@@ -35,7 +37,7 @@ class PreviewAdapter<T: PreviewModel>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            RecyclerViewEnum.Error.value -> ErrorViewHolder<Movie>(CellErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.Error.value -> PreviewErrorViewHolder<Movie>(CellPreviewErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.Loading.value -> LoadingPreviewViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> return ItemPreviewHolder<T>(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }

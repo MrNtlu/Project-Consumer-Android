@@ -58,7 +58,6 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
     private var isNavigatingBack = false
 
-    //TODO Add scroll to top button
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,6 +71,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
         setMenu()
         setObservers()
+        setListeners()
     }
 
     private fun setMenu() {
@@ -89,71 +89,73 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
-                        if (!::popupMenu.isInitialized) {
-                            val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
-                            popupMenu = PopupMenu(requireContext(), menuItemView)
-                            popupMenu.menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)
-                            popupMenu.setForceShowIcon(true)
-                        }
-                        val fetchType = args.fetchType
+                        if (movieAdapter?.isLoading == false) {
+                            if (!::popupMenu.isInitialized) {
+                                val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
+                                popupMenu = PopupMenu(requireContext(), menuItemView)
+                                popupMenu.menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)
+                                popupMenu.setForceShowIcon(true)
+                            }
+                            val fetchType = args.fetchType
 
-                        val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-                        val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+                            val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+                            val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
 
-                        for (i in 0..popupMenu.menu.size.minus(1)) {
-                            val popupMenuItem = popupMenu.menu[i]
-                            val sortRequest = when(fetchType) {
-                                FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[i]
-                                else -> Constants.SortRequests[i]
+                            for (i in 0..popupMenu.menu.size.minus(1)) {
+                                val popupMenuItem = popupMenu.menu[i]
+                                val sortRequest = when(fetchType) {
+                                    FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[i]
+                                    else -> Constants.SortRequests[i]
+                                }
+
+                                popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                    requireContext(),
+                                    if(sortType == sortRequest.request) selectedColor else unselectedColor
+                                )
+                                popupMenuItem.title = sortRequest.name
                             }
 
-                            popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-                                requireContext(),
-                                if(sortType == sortRequest.request) selectedColor else unselectedColor
-                            )
-                            popupMenuItem.title = sortRequest.name
-                        }
+                            popupMenu.setOnMenuItemClickListener { item ->
+                                val newSortType = when (item.itemId) {
+                                    R.id.firstSortMenu -> {
+                                        setPopupMenuItemVisibility(popupMenu, 0)
 
-                        popupMenu.setOnMenuItemClickListener { item ->
-                            val newSortType = when (item.itemId) {
-                                R.id.firstSortMenu -> {
-                                    setPopupMenuItemVisibility(popupMenu, 0)
-
-                                    when(fetchType) {
-                                        FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[0].request
-                                        else -> Constants.SortRequests[0].request
+                                        when(fetchType) {
+                                            FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[0].request
+                                            else -> Constants.SortRequests[0].request
+                                        }
                                     }
-                                }
-                                R.id.secondSortMenu -> {
-                                    setPopupMenuItemVisibility(popupMenu, 1)
+                                    R.id.secondSortMenu -> {
+                                        setPopupMenuItemVisibility(popupMenu, 1)
 
-                                    when(fetchType) {
-                                        FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[1].request
-                                        else -> Constants.SortRequests[1].request
+                                        when(fetchType) {
+                                            FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[1].request
+                                            else -> Constants.SortRequests[1].request
+                                        }
                                     }
-                                }
-                                R.id.thirdSortMenu -> {
-                                    setPopupMenuItemVisibility(popupMenu, 2)
+                                    R.id.thirdSortMenu -> {
+                                        setPopupMenuItemVisibility(popupMenu, 2)
 
-                                    when(fetchType) {
-                                        FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[2].request
-                                        else -> Constants.SortRequests[2].request
+                                        when(fetchType) {
+                                            FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[2].request
+                                            else -> Constants.SortRequests[2].request
+                                        }
                                     }
+                                    else -> { Constants.SortRequests[0].request }
                                 }
-                                else -> { Constants.SortRequests[0].request }
+
+                                item.isChecked = true
+
+                                if (newSortType != sortType) {
+                                    sortType = newSortType
+                                    viewModel.startMoviesFetch(sortType)
+                                }
+
+                                true
                             }
 
-                            item.isChecked = true
-
-                            if (newSortType != sortType) {
-                                sortType = newSortType
-                                viewModel.startMoviesFetch(sortType)
-                            }
-
-                            true
+                            popupMenu.show()
                         }
-
-                        popupMenu.show()
                     }
                 }
                 return true
@@ -201,6 +203,10 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                         viewModel.startMoviesFetch(sortType)
                     }
 
+                    override fun onCancelPressed() {
+                        navController.popBackStack()
+                    }
+
                     override fun onExhaustButtonPressed() {
                         viewLifecycleOwner.lifecycleScope.launch {
                             quickScrollToTop()
@@ -227,11 +233,20 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                         viewModel.setScrollPosition(centerScrollPosition)
                     }
 
+                    val isScrollingUp = dy <= -90
+                    val isScrollingDown = dy >= 10
+                    val isThresholdPassed = lastVisibleItemPosition > Constants.PAGINATION_LIMIT.div(gridCount)
+
+                    if (isThresholdPassed && isScrollingUp)
+                        binding.topFAB.show()
+                    else if (!isThresholdPassed || isScrollingDown)
+                        binding.topFAB.hide()
+
                     movieAdapter?.let {
                         if (
                             isScrolling &&
                             !it.isLoading &&
-                            lastVisibleItemPosition >= itemCount.minus(3) &&
+                            lastVisibleItemPosition >= itemCount.minus(4) &&
                             it.canPaginate &&
                             !it.isPaginating
                         ) {
@@ -288,6 +303,12 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                     isNavigatingBack = false
                 }
             }
+        }
+    }
+
+    private fun setListeners() {
+        binding.topFAB.setOnClickListener {
+            binding.upcomingRV.scrollToPosition(0)
         }
     }
 

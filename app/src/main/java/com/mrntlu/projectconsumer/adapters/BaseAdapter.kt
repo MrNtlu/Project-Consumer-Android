@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.adapters
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.interfaces.*
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 
 @Suppress("UNCHECKED_CAST")
@@ -54,7 +55,7 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val 
 
     override fun getItemCount(): Int {
         return if (isLoading)
-            20
+            Constants.PAGINATION_LIMIT
         else if (errorMessage != null || arrayList.isEmpty()) {
             1
         }

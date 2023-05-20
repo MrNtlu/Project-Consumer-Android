@@ -115,6 +115,10 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                     navController.navigate(navWithAction)
                 }
 
+                override fun onCancelPressed() {
+                    navController.popBackStack()
+                }
+
                 override fun onErrorRefreshPressed() {
                     viewModel.fetchUpcomingMovies()
                 }
@@ -125,7 +129,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
         }
 
         binding.popularPreviewRV.apply {
-            layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
             popularAdapter = PreviewAdapter(object: Interaction<Movie> {
                 override fun onItemSelected(item: Movie, position: Int) {
                     val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
@@ -135,6 +139,10 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
 
                 override fun onErrorRefreshPressed() {
                     viewModel.fetchPopularMovies()
+                }
+
+                override fun onCancelPressed() {
+                    navController.popBackStack()
                 }
 
                 override fun onExhaustButtonPressed() {}
