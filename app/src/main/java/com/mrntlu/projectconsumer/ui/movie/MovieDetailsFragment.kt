@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.ui.movie
 
+import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -63,6 +64,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private var watchList: MovieWatchList? = null
     private var consumeLater: ConsumeLater? = null
+    private var isUserInteractionFailed = false
     private lateinit var countryCode: String
 
     private var consumeLaterDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
@@ -73,17 +75,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     }.sortedBy {
         it.first
     }
-
-    /* TODO Flow
-    * WatchLater
-    * - Start animation and make request
-    * - Listen via observer, if success show message else show error message and reset button
-    * Add List
-    * - Delete
-    *   - Show loading bottom sheet and prevent closure on outsite pressed.
-    *       - If closed somehow, listen changes and on success start animation.
-    *   - On success close bottom sheet and start animation
-     */
 
     private val onBottomSheetClosedCallback = object: OnButtomSheetClosed<MovieWatchList> {
         override fun onSuccess(data: MovieWatchList?, operation: BottomSheetOperation) {
@@ -119,31 +110,36 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
 
             setOnClickListener {
-                if (consumeLater == null) {
-                    args.movieArgs.apply {
-                        viewModel.createConsumeLater(
-                            ConsumeLaterBody(id, tmdbID,null, "movie", null)
-                        )
+                if (sharedViewModel.isNetworkAvailable()) {
+                    if (consumeLater == null) {
+                        args.movieArgs.apply {
+                            viewModel.createConsumeLater(
+                                ConsumeLaterBody(id, tmdbID, null, "movie", null)
+                            )
+                        }
+                    } else {
+                        if (consumeLaterDeleteLiveData != null && consumeLaterDeleteLiveData?.hasActiveObservers() == true)
+                            consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
+
+                        consumeLaterDeleteLiveData =
+                            viewModel.deleteConsumeLater(IDBody(consumeLater!!.id))
+
+
+                        consumeLaterDeleteLiveData?.observe(viewLifecycleOwner) { response ->
+                            handleUserInteractionLoading(response)
+
+                            if (response is NetworkResponse.Success)
+                                consumeLater = null
+
+                            if (consumeLater == null)
+                                handleWatchLaterLottie()
+
+                            if (response is NetworkResponse.Failure)
+                                showErrorDialog(response.errorMessage)
+                        }
                     }
                 } else {
-                    if (consumeLaterDeleteLiveData != null && consumeLaterDeleteLiveData?.hasActiveObservers() == true)
-                        consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
-
-                    consumeLaterDeleteLiveData = viewModel.deleteConsumeLater(IDBody(consumeLater!!.id))
-
-
-                    consumeLaterDeleteLiveData?.observe(viewLifecycleOwner) { response ->
-                        handleUserInteractionLoading(response)
-
-                        if (response is NetworkResponse.Success)
-                            consumeLater = null
-
-                        if (consumeLater == null)
-                            handleWatchLaterLottie()
-
-                        if (response is NetworkResponse.Failure)
-                            showErrorDialog(response.errorMessage)
-                    }
+                    showErrorDialog(getString(R.string.no_internet_connection))
                 }
             }
         }
@@ -152,14 +148,18 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.like else R.raw.like_night)
 
             setOnClickListener {
-                activity?.let {
-                    val listBottomSheet = MovieDetailsBottomSheet(
-                        onBottomSheetClosedCallback,
-                        watchList,
-                        args.movieArgs.id,
-                        args.movieArgs.tmdbID,
-                    )
-                    listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
+                if (sharedViewModel.isNetworkAvailable()) {
+                    activity?.let {
+                        val listBottomSheet = MovieDetailsBottomSheet(
+                            onBottomSheetClosedCallback,
+                            watchList,
+                            args.movieArgs.id,
+                            args.movieArgs.tmdbID,
+                        )
+                        listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
+                    }
+                } else {
+                    showErrorDialog(getString(R.string.no_internet_connection))
                 }
             }
         }
@@ -194,13 +194,28 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     }
 
     private fun handleUserInteractionLoading(response: NetworkResponse<*>) {
-        binding.detailsInclude.apply {
-            userInteractionLoadingLayout.setVisibilityByCondition(response != NetworkResponse.Loading)
+        isUserInteractionFailed = response is NetworkResponse.Failure
 
-            if (response != NetworkResponse.Loading)
-                userInteractionLoading.cancelAnimation()
-            else
-                userInteractionLoading.playAnimation()
+        binding.detailsInclude.apply {
+            userInteractionLoading.setAnimation(if (response is NetworkResponse.Failure) R.raw.error_small else R.raw.loading)
+            userInteractionLoadingLayout.setVisibilityByCondition(shouldHide = response is NetworkResponse.Success)
+
+            userInteractionLoading.apply {
+                if (response is NetworkResponse.Failure) {
+                    repeatCount = 1
+                    scaleX = 1.2f
+                    scaleY = 1.2f
+                } else if (response == NetworkResponse.Loading) {
+                    repeatCount = ValueAnimator.INFINITE
+                    scaleX = 1.7f
+                    scaleY = 1.7f
+                }
+
+                if (response != NetworkResponse.Loading)
+                    cancelAnimation()
+                else
+                    playAnimation()
+            }
         }
     }
 
@@ -428,6 +443,11 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
             if (response is NetworkResponse.Failure)
                 showErrorDialog(response.errorMessage)
+        }
+
+        sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
+            if (isUserInteractionFailed && it)
+                viewModel.getMovieDetails(args.movieArgs.id)
         }
     }
 

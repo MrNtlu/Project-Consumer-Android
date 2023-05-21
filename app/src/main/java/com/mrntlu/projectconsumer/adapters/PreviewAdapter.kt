@@ -6,10 +6,8 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.LoadingPreviewViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.PreviewErrorViewHolder
-import com.mrntlu.projectconsumer.databinding.CellErrorBinding
 import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
 import com.mrntlu.projectconsumer.databinding.CellPreviewErrorBinding
 import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding

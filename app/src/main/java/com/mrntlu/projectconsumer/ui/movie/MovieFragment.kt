@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -21,6 +22,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.hideKeyboard
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.movie.MoviePreviewViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
@@ -84,6 +86,22 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
 
                 navController.navigate(navWithAction)
             }
+
+            previewSearchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (query?.isNotEmptyOrBlank() == true) {
+                        val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieSearchFragment(query)
+
+                        navController.navigate(navWithAction)
+                    }
+
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return true
+                }
+            })
         }
     }
 

@@ -24,6 +24,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_navigation_movie_to_movieSearchFragment"
+            app:destination="@id/movieSearchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -80,5 +87,21 @@
         <argument
             android:name="movieArgs"
             app:argType="com.mrntlu.projectconsumer.models.main.movie.Movie" />
+    </fragment>
+    <fragment
+        android:id="@+id/movieSearchFragment"
+        android:name="com.mrntlu.projectconsumer.ui.movie.MovieSearchFragment"
+        android:label="fragment_movie_search"
+        tools:layout="@layout/fragment_movie_search" >
+        <argument
+            android:name="searchQuery"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_movieSearchFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 </navigation>
