@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieBinding
 import com.mrntlu.projectconsumer.interfaces.Interaction
+import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
 import com.mrntlu.projectconsumer.models.main.movie.Movie
-import com.mrntlu.projectconsumer.models.main.movie.retrofit.MoviePaginationResponse
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.compose.GenreGrid
 import com.mrntlu.projectconsumer.utils.Constants
@@ -71,7 +71,6 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
             previewSearchView.apply {
                 setOnClickListener {
                     isIconified = false
-                    requestFocus()
                 }
             }
 
@@ -90,6 +89,9 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
             previewSearchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query?.isNotEmptyOrBlank() == true) {
+                        previewSearchView.isIconified = true
+                        previewSearchView.isIconified = true
+
                         val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieSearchFragment(query)
 
                         navController.navigate(navWithAction)
@@ -185,7 +187,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
         }
     }
 
-    private fun handleObserver(response: NetworkResponse<MoviePaginationResponse>, adapter: PreviewAdapter<Movie>?) {
+    private fun handleObserver(response: NetworkResponse<DataPaginationResponse<Movie>>, adapter: PreviewAdapter<Movie>?) {
         when(response) {
             is NetworkResponse.Failure -> adapter?.setErrorView(response.errorMessage)
             NetworkResponse.Loading -> adapter?.setLoadingView()

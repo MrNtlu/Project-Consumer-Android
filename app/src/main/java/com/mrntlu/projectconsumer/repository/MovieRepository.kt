@@ -10,6 +10,7 @@ import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
+import com.mrntlu.projectconsumer.utils.printLog
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
@@ -53,6 +54,48 @@ class MovieRepository @Inject constructor(
         },
         isCachePaginationExhausted = {
             !movieDao.isMoviePageExist(tag, page.plus(1))
+        },
+        shouldFetch = {
+            !(
+                (isRestoringData && !it.isNullOrEmpty()) ||
+                (!isNetworkAvailable && !it.isNullOrEmpty())
+            )
+        }
+    )
+
+    fun searchMoviesByTitle(search: String, page: Int, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
+        isPaginating = page != 1,
+        cacheQuery = {
+            if (isRestoringData)
+                movieDao.getAllSearchMovies(search, page)
+            else
+                movieDao.getSearchMovies(search, page)
+        },
+        fetchNetwork = {
+            movieApiService.searchMoviesByTitle(search, page)
+        },
+        mapper = {
+            it!!.asModel()
+        },
+        emptyObjectCreator = {
+            listOf<Movie>()
+        },
+        saveAndQueryResult = { movieResponse ->
+            cacheDatabase.withTransaction {
+                if (page == 1) {
+                    movieDao.deleteMoviesByTag("search")
+                }
+
+                if (movieResponse.data != null)
+                    movieDao.insertMovieList(movieResponse.data.asEntity("search", page))
+                Pair(
+                    movieDao.getSearchMovies("search", page),
+                    page >= movieResponse.pagination.totalPage
+                )
+            }
+        },
+        isCachePaginationExhausted = {
+            !movieDao.isMoviePageExist("search", page.plus(1))
         },
         shouldFetch = {
             !(

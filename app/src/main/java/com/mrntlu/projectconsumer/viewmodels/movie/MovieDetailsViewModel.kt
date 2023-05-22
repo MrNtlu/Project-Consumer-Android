@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
-import com.mrntlu.projectconsumer.models.main.movie.retrofit.MovieDetailsResponse
+import com.mrntlu.projectconsumer.models.main.movie.MovieDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
@@ -38,8 +38,8 @@ class MovieDetailsViewModel @Inject constructor(
     private val _consumeLater = MutableLiveData<NetworkResponse<DataResponse<ConsumeLater>>>()
     val consumeLater: LiveData<NetworkResponse<DataResponse<ConsumeLater>>> = _consumeLater
 
-    private val _movieDetails = MutableLiveData<NetworkResponse<MovieDetailsResponse>>()
-    val movieDetails: LiveData<NetworkResponse<MovieDetailsResponse>> = _movieDetails
+    private val _movieDetails = MutableLiveData<NetworkResponse<DataResponse<MovieDetails>>>()
+    val movieDetails: LiveData<NetworkResponse<DataResponse<MovieDetails>>> = _movieDetails
 
     fun createMovieWatchList(body: MovieWatchListBody) = networkResponseFlowCollector(
         repository.createMovieWatchList(body)

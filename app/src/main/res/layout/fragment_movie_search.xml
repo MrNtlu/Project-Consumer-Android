@@ -4,10 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.movie.MovieSearchFragment">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    tools:context=".ui.movie.MovieSearchFragment"
+    android:background="?attr/mainBackgroundColor"
+    android:focusable="false"
+    android:focusedByDefault="false"
+    android:descendantFocusability="blocksDescendants">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/movieSearchRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

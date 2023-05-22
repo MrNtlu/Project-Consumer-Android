@@ -9,9 +9,11 @@ import com.mrntlu.projectconsumer.models.main.movie.entity.MovieEntity
 @Dao
 interface MovieDao {
 
-    //https://github.com/MrNtlu/PassVault/blob/master/app/src/main/java/com/mrntlu/PassVault/services/ParseDao.kt
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovieList(movieList: List<MovieEntity>)
+
+    @Query("Select Exists(Select * From movies Where page = :page And tag = :tag)")
+    fun isMoviePageExist(tag: String, page: Int): Boolean
 
     @Query(
         "Select * From movies Where page = :page And tag = :tag Order By " +
@@ -23,9 +25,6 @@ interface MovieDao {
     )
     fun getMoviesByTag(tag: String, page: Int, sort: String): List<MovieEntity>?
 
-    @Query("Select Exists(Select * From movies Where page = :page And tag = :tag)")
-    fun isMoviePageExist(tag: String, page: Int): Boolean
-
     @Query(
         "Select * From movies Where page <= :page And tag = :tag Order By " +
                 "Case When :sort = 'popularity' Then tmdb_popularity End Desc," +
@@ -36,8 +35,11 @@ interface MovieDao {
     )
     fun getAllMoviesByTag(tag: String, page: Int, sort: String): List<MovieEntity>
 
-    @Query("Delete From movies Where tag = :tag And page = :page")
-    suspend fun deleteMoviesByTagAndPage(tag: String, page: Int)
+    @Query("Select * From movies Where page = :page And tag = :tag")
+    fun getSearchMovies(tag: String, page: Int): List<MovieEntity>?
+
+    @Query("Select * From movies Where page <= :page And tag = :tag")
+    fun getAllSearchMovies(tag: String, page: Int): List<MovieEntity>
 
     @Query("Delete From movies Where tag = :tag")
     suspend fun deleteMoviesByTag(tag: String)

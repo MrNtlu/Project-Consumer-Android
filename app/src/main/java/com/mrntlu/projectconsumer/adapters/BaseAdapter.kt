@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.interfaces.*
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.printLog
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
@@ -43,12 +44,12 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val 
             RecyclerViewEnum.Loading.value
         else if (errorMessage != null)
             RecyclerViewEnum.Error.value
+        else if (arrayList.isEmpty())
+            RecyclerViewEnum.Empty.value
         else if (isPaginating && position == arrayList.size)
             RecyclerViewEnum.PaginationLoading.value
         else if (!canPaginate && position == arrayList.size)
             RecyclerViewEnum.PaginationExhaust.value
-        else if (arrayList.isEmpty())
-            RecyclerViewEnum.Empty.value
         else
             RecyclerViewEnum.View.value
     }
@@ -85,27 +86,30 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val 
         isPaginating: Boolean = false,
     ) {
         setState(
-            if (isPaginationExhausted) RecyclerViewEnum.PaginationExhaust
+            if (arrayList.isEmpty() && newList.isEmpty()) RecyclerViewEnum.Empty
+            else if (isPaginationExhausted) RecyclerViewEnum.PaginationExhaust
             else if (isPaginating) RecyclerViewEnum.PaginationLoading
             else RecyclerViewEnum.View
         )
 
-        if (!isPaginationData && !isPaginating) {
-            if (arrayList.isNotEmpty())
-                arrayList.clear()
+        if (newList.isNotEmpty()) {
+            if (!isPaginationData && !isPaginating) {
+                if (arrayList.isNotEmpty())
+                    arrayList.clear()
 
-            arrayList.addAll(newList)
-            notifyDataSetChanged()
-        } else if (isPaginating) {
-            notifyItemInserted(itemCount)
+                arrayList.addAll(newList)
+                notifyDataSetChanged()
+            } else if (isPaginating) {
+                notifyItemInserted(itemCount)
 
-            if (arrayList.isEmpty())
+                if (arrayList.isEmpty())
+                    handleDiffUtil(newList)
+            } else {
+                if (!isPaginationExhausted)
+                    notifyItemRemoved(itemCount)
+
                 handleDiffUtil(newList)
-        } else {
-            if (!isPaginationExhausted)
-                notifyItemRemoved(itemCount)
-
-            handleDiffUtil(newList)
+            }
         }
     }
 
