@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.navArgs
@@ -44,7 +43,6 @@ import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieDetailsViewModel
-import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
@@ -52,7 +50,6 @@ import java.util.Locale
 class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
-    private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
 
     private var actorAdapter: DetailsAdapter? = null

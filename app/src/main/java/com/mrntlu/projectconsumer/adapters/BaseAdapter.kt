@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.interfaces.*
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.printLog
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
@@ -75,6 +74,8 @@ abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val 
     }
 
     fun setLoadingView() {
+        if (arrayList.isNotEmpty())
+            arrayList.clear()
         setState(RecyclerViewEnum.Loading)
         notifyDataSetChanged()
     }

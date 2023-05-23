@@ -1,4 +1,4 @@
-# Not Decided
+# Watch'nList
 
 <ul>
   <li> Hilt
@@ -17,6 +17,20 @@
 </ul>
 
 # [Wiki Page](https://github.com/MrNtlu/Project-Consumer)
+
+## Design TODO
+
+* Auth Login
+  * Google Signin
+  * Twitter Signin
+  * https://dribbble.com/shots/15196515-Abda-The-Beginning
+  * https://dribbble.com/shots/19203933-Movgul-Mobile-App
+* Main Screen
+  * If not logged in same as now
+  * If logged in https://dribbble.com/shots/21244070-Movie-Streaming-App
+    * Like the design, combine all in home.
+    * Search will act like discovery. Genres should be there.
+    * BottomNav (Home, Search, List, Profile)
 
 ## TODO
 

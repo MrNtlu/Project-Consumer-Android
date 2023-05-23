@@ -10,7 +10,6 @@ import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
-import com.mrntlu.projectconsumer.utils.printLog
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
@@ -67,9 +66,9 @@ class MovieRepository @Inject constructor(
         isPaginating = page != 1,
         cacheQuery = {
             if (isRestoringData)
-                movieDao.getAllSearchMovies(search, page)
+                movieDao.getAllSearchMovies("search:movie", page)
             else
-                movieDao.getSearchMovies(search, page)
+                movieDao.getSearchMovies("search:movie", page)
         },
         fetchNetwork = {
             movieApiService.searchMoviesByTitle(search, page)
@@ -83,19 +82,19 @@ class MovieRepository @Inject constructor(
         saveAndQueryResult = { movieResponse ->
             cacheDatabase.withTransaction {
                 if (page == 1) {
-                    movieDao.deleteMoviesByTag("search")
+                    movieDao.deleteMoviesByTag("search:movie")
                 }
 
                 if (movieResponse.data != null)
-                    movieDao.insertMovieList(movieResponse.data.asEntity("search", page))
+                    movieDao.insertMovieList(movieResponse.data.asEntity("search:movie", page))
                 Pair(
-                    movieDao.getSearchMovies("search", page),
+                    movieDao.getSearchMovies("search:movie", page),
                     page >= movieResponse.pagination.totalPage
                 )
             }
         },
         isCachePaginationExhausted = {
-            !movieDao.isMoviePageExist("search", page.plus(1))
+            !movieDao.isMoviePageExist("search:movie", page.plus(1))
         },
         shouldFetch = {
             !(

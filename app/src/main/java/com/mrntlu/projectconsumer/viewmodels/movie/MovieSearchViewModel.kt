@@ -12,7 +12,6 @@ import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.isSuccessful
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setData
 import com.mrntlu.projectconsumer.utils.setPaginationLoading
 import dagger.assisted.Assisted
@@ -46,7 +45,7 @@ class MovieSearchViewModel @AssistedInject constructor(
     var didOrientationChange = false
 
     init {
-        if (page != 1) {
+        if (page != 1 || search != vmSearch) {
             restoreData()
         } else {
             setSearch(vmSearch)
@@ -95,6 +94,7 @@ class MovieSearchViewModel @AssistedInject constructor(
 
         var isPaginationExhausted = false
         val tempList = arrayListOf<Movie>()
+
         viewModelScope.launch(Dispatchers.IO) {
             launch(Dispatchers.IO) {
                 movieRepository.searchMoviesByTitle(search, page, isNetworkAvailable, isRestoringData = true).collect { response ->

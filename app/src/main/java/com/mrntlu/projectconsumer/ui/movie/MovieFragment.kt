@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
@@ -25,14 +24,12 @@ import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.movie.MoviePreviewViewModel
-import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MovieFragment: BaseFragment<FragmentMovieBinding>() {
 
     private val viewModel: MoviePreviewViewModel by viewModels()
-    private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
 
     private var upcomingAdapter: PreviewAdapter<Movie>? = null
     private var popularAdapter: PreviewAdapter<Movie>? = null
@@ -100,9 +97,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                     return true
                 }
 
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    return true
-                }
+                override fun onQueryTextChange(newText: String?) = true
             })
         }
     }

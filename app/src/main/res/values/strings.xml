@@ -62,6 +62,7 @@
     <string name="message_icon_cd">Message Icon</string>
     <string name="scroll_to_top_button_cd">Scroll to top</string>
     <string name="try_again">Try Again</string>
+    <string name="search">Search</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -11,18 +11,16 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
-import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
+@AndroidEntryPoint
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
-
-    private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
 
     private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
         val locale = Locale("", it)

@@ -14,7 +14,6 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.get
 import androidx.core.view.size
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -35,7 +34,6 @@ import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieViewModel
-import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -43,7 +41,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
-    private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
     private val args: MovieListFragmentArgs by navArgs()
 
     @Inject lateinit var viewModelFactory: MovieViewModel.Factory

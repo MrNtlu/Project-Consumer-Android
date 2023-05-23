@@ -8,9 +8,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -26,11 +26,10 @@ import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isFailed
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isSuccessful
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieSearchViewModel
-import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -38,7 +37,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
-    private val sharedViewModel: ActivitySharedViewModel by activityViewModels()
     private val args: MovieSearchFragmentArgs by navArgs()
 
     @Inject lateinit var viewModelFactory: MovieSearchViewModel.Factory
@@ -68,15 +66,37 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
     private fun setUI() {
         val menuHost: MenuHost = requireActivity()
+
         menuHost.addMenuProvider(object: MenuProvider {
             override fun onPrepareMenu(menu: Menu) {
                 menu.removeItem(R.id.settingsMenu)
             }
 
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.search_toolbar_menu, menu)
 
-            override fun onMenuItemSelected(menuItem: MenuItem) = false
+                val searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
+                searchView.setQuery(searchQuery, false)
+                searchView.isIconified = false
+                searchView.clearFocus()
 
+                searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        if (query?.isNotEmptyOrBlank() == true) {
+                            searchView.clearFocus()
+
+                            searchQuery = query
+                            viewModel.startMoviesFetch(searchQuery)
+                        }
+
+                        return true
+                    }
+
+                    override fun onQueryTextChange(newText: String?) = true
+                })
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem) = true
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
