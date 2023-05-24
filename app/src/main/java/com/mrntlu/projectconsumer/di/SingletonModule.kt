@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.mrntlu.projectconsumer.service.AuthAuthenticator
 import com.mrntlu.projectconsumer.service.AuthInterceptor
 import com.mrntlu.projectconsumer.service.TokenManager
+import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserInteractionApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
@@ -21,6 +22,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -63,6 +65,18 @@ class SingletonModule {
 
     @Singleton
     @Provides
+    @Named("auth_okhttp")
+    fun provideAuthOkHttpClient(): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+
+        return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+    }
+
+    @Singleton
+    @Provides
     fun provideRetrofitBuilder(): Retrofit.Builder =
         Retrofit.Builder()
             .baseUrl(Constants.API_URL)
@@ -91,6 +105,14 @@ class SingletonModule {
             .client(okHttpClient)
             .build()
             .create(MovieApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideAuthAPIService(@Named("auth_okhttp") okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): AuthApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(AuthApiService::class.java)
 
     @Singleton
     @Provides

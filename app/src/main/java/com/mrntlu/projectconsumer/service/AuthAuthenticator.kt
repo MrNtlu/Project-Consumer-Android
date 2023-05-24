@@ -1,6 +1,6 @@
 package com.mrntlu.projectconsumer.service
 
-import com.mrntlu.projectconsumer.models.auth.LoginResponse
+import com.mrntlu.projectconsumer.models.auth.retrofit.LoginResponse
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator

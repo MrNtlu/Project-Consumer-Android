@@ -31,7 +31,6 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
@@ -83,9 +82,6 @@ class MainActivity : AppCompatActivity() {
         setObservers()
         setToolbar()
 
-        //TODO Main
-        // Toggle BottomAppBar on Scroll
-        //---
         //TODO Login Flow
         // MainActivity should be the controller
         // SharedViewModel should keep isLoggedIn value and present necessary UI elements accordingly.
@@ -162,7 +158,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setToolbar() {
         binding.anonymousInc.root.setOnClickListener {
-            printLog("Clicked")
+            navController.navigate(R.id.action_global_authFragment)
         }
     }
 
