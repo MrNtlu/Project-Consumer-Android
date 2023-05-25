@@ -43,7 +43,7 @@
         <item name="bottomNavUnselectedColor">@color/grey500</item>
         <item name="colorSecondaryContainer">@color/white</item>
 
-        <item name="materialAlertDialogTheme">@style/Theme.ProjectConsumer.MaterialAlertDialog</item>
+        <item name="materialAlertDialogTheme">@style/Theme.ProjectConsumer.ErrorMaterialAlertDialog</item>
 
         <item name="floatingActionButtonSmallStyle">@style/Theme.ProjectConsumer.SmallFAB</item>
     </style>
@@ -83,28 +83,59 @@
     </style>
 
 <!--   Material Dialog Style   -->
-    <style name="Theme.ProjectConsumer.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+    <style name="Theme.ProjectConsumer.ErrorMaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="colorPrimary">?attr/messageBoxBackgroundColor</item>
         <item name="colorSecondary">?attr/messageBoxBackgroundColor</item>
         <item name="colorSurface">?attr/messageBoxBackgroundColor</item>
         <item name="colorOnSurface">?attr/messageBoxBackgroundColor</item>
-        <item name="materialAlertDialogTitleTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.TitleText</item>
-        <item name="materialAlertDialogBodyTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.BodyText</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Button</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorTitleText</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorBodyText</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.ErrorButton</item>
     </style>
 
-    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.TitleText" parent="MaterialAlertDialog.Material3.Title.Text">
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorTitleText" parent="MaterialAlertDialog.Material3.Title.Text">
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.BodyText" parent="MaterialAlertDialog.Material3.Body.Text">
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorBodyText" parent="MaterialAlertDialog.Material3.Body.Text">
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.ErrorButton" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="Theme.ProjectConsumer.InfoMaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="colorPrimary">?attr/mainBackgroundColor</item>
+        <item name="colorSecondary">?attr/mainBackgroundColor</item>
+        <item name="colorSurface">?attr/mainBackgroundColor</item>
+        <item name="colorOnSurface">?attr/mainBackgroundColor</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.InfoTitleText</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.InfoBodyText</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.InfoButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.InfoNegativeButton</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.InfoTitleText" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">?attr/mainTextColor</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.InfoBodyText" parent="MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textColor">?attr/mainTextColor</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.InfoButton" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/blue700</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.InfoNegativeButton" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/red700</item>
+    </style>
+
+    <style name="WrapContentDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="windowMinWidthMajor">0%</item>
+        <item name="windowMinWidthMinor">0%</item>
+    </style>
 <!--   FAB Style   -->
     <style name="Theme.ProjectConsumer.SmallFAB" parent="Widget.Material3.FloatingActionButton.Small.Primary">
         <item name="materialThemeOverlay">@style/Theme.ProjectConsumer.FABOverlay</item>

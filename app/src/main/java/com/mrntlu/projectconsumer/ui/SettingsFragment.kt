@@ -14,7 +14,7 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
-import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -60,8 +60,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private fun setUI() {
         //TODO If not logged in hide/show
         binding.apply {
-            accountTitleTV.setGone()
-            accountSettingsCard.setGone()
+
+            accountTitleTV.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
+            accountSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
 
             themeSwitch.isChecked = !sharedViewModel.isLightTheme()
             themeSwitchTV.text = getString(if (sharedViewModel.isLightTheme()) R.string.light_theme else R.string.dark_theme)

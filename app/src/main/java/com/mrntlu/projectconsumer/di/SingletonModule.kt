@@ -40,8 +40,8 @@ class SingletonModule {
 
     @Singleton
     @Provides
-    fun provideAuthAuthenticator(tokenManager: TokenManager): AuthAuthenticator =
-        AuthAuthenticator(tokenManager)
+    fun provideAuthAuthenticator(tokenManager: TokenManager, authApiService: AuthApiService): AuthAuthenticator =
+        AuthAuthenticator(tokenManager, authApiService)
 
     @Singleton
     @Provides

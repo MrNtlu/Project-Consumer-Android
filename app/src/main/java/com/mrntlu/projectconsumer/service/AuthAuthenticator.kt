@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.service
 
 import com.mrntlu.projectconsumer.models.auth.retrofit.LoginResponse
+import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
@@ -11,6 +12,7 @@ import javax.inject.Inject
 
 class AuthAuthenticator @Inject constructor(
     private val tokenManager: TokenManager,
+    private val service: AuthApiService,
 ): Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
         val token = runBlocking {
@@ -32,18 +34,7 @@ class AuthAuthenticator @Inject constructor(
         }
     }
 
-    // TODO Check a way to pass retrofit via hilt
-    // google://android authenticator hilt retrofit
     private suspend fun getNewToken(refreshToken: String?): retrofit2.Response<LoginResponse> {
-        TODO("Uncomment")
-//        val okHttpClient = OkHttpClient.Builder().build()
-//
-//        val retrofit = Retrofit.Builder()
-//            .baseUrl(Constants.API_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .client(okHttpClient)
-//            .build()
-//        val service = retrofit.create(AuthApiService::class.java)
-//        return service.refreshToken("Bearer $refreshToken")
+        return service.refreshToken("Bearer $refreshToken")
     }
 }

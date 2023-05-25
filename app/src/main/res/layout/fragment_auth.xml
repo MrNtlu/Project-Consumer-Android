@@ -158,6 +158,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:textColor="?attr/descriptionTitleTextColor"
+            app:rippleColor="@android:color/transparent"
             android:padding="4dp"
             android:minHeight="0dp"
             android:minWidth="0dp"

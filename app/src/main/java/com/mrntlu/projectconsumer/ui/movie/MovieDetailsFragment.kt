@@ -21,7 +21,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.appbar.AppBarLayout.LayoutParams
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
@@ -42,6 +41,7 @@ import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.movie.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -132,11 +132,11 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                                 handleWatchLaterLottie()
 
                             if (response is NetworkResponse.Failure)
-                                showErrorDialog(response.errorMessage)
+                                context?.showErrorDialog(response.errorMessage)
                         }
                     }
                 } else {
-                    showErrorDialog(getString(R.string.no_internet_connection))
+                    context?.showErrorDialog(getString(R.string.no_internet_connection))
                 }
             }
         }
@@ -156,7 +156,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                         listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
                     }
                 } else {
-                    showErrorDialog(getString(R.string.no_internet_connection))
+                    context?.showErrorDialog(getString(R.string.no_internet_connection))
                 }
             }
         }
@@ -439,24 +439,12 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                 handleWatchLaterLottie()
 
             if (response is NetworkResponse.Failure)
-                showErrorDialog(response.errorMessage)
+                context?.showErrorDialog(response.errorMessage)
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
             if (isUserInteractionFailed && it)
                 viewModel.getMovieDetails(args.movieArgs.id)
-        }
-    }
-
-    private fun showErrorDialog(message: String) {
-        context?.let {
-            MaterialAlertDialogBuilder(it)
-                .setTitle("Error")
-                .setMessage(message)
-                .setPositiveButton(resources.getString(R.string.dismiss)) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .show()
         }
     }
 

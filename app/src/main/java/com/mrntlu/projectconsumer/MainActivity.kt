@@ -1,19 +1,24 @@
 package com.mrntlu.projectconsumer
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -32,7 +37,9 @@ import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -55,6 +62,12 @@ class MainActivity : AppCompatActivity() {
 
     private val prefs: SharedPreferences by lazy {
         getSharedPreferences(Constants.THEME_PREF, 0)
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        //Granted or not
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -124,7 +137,7 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbar.setVisible()
                     supportActionBar?.setDisplayShowTitleEnabled(false)
                     binding.navView.setVisible()
-                    binding.anonymousInc.root.setVisible()
+                    binding.anonymousInc.root.setVisibilityByCondition(sharedViewModel.isLoggedIn())
                 }
                 R.id.movieDetailsFragment -> {
                     binding.toolbar.setGone()
@@ -154,6 +167,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         sharedViewModel.setWindowSize(widthWindowSizeClass)
+        askNotificationPermission()
     }
 
     private fun setToolbar() {
@@ -226,6 +240,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        sharedViewModel.isAuthenticated.observe(this) {
+            //TODO Change bottom nav
+        }
+
         sharedViewModel.countryCode.observe(this) {
             setCodePref(Constants.COUNTRY_PREF, it)
         }
@@ -253,6 +271,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun askNotificationPermission() {
+        // This is only necessary for API level >= 33 (TIRAMISU)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                //Granted
+            } else if (shouldShowRequestPermissionRationale(POST_NOTIFICATIONS)) {
+
+                //TODO If no, save via pref and don't show again!
+                showInfoDialog("Enable notifications to receive personalized recommendations, updates, and news about movies, tv shows, games and anime.") {
+                    requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+                }
+            } else {
+                requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+            }
+        }
+    }
+
     private fun setThemePref(value: Int){
         val editor = prefs.edit()
         editor.putInt(Constants.THEME_PREF, value)
@@ -266,6 +301,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        sharedViewModel.isAuthenticated.removeObservers(this)
         sharedViewModel.countryCode.removeObservers(this)
         sharedViewModel.languageCode.removeObservers(this)
         sharedViewModel.themeCode.removeObservers(this)

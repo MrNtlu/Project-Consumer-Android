@@ -7,7 +7,16 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 
 class ActivitySharedViewModel: ViewModel() {
-    //TODO isLoggedIn
+    //Is Logged in
+    val isAuthenticated: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>()
+    }
+
+    fun isLoggedIn() = isAuthenticated.value == true
+
+    fun setAuthentication(isAuth: Boolean) {
+        isAuthenticated.value = isAuth
+    }
 
     //Country Code
     val countryCode: MutableLiveData<String> by lazy {

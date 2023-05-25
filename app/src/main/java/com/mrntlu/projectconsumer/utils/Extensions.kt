@@ -20,6 +20,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.mrntlu.projectconsumer.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +47,30 @@ fun Activity.hideKeyboard() {
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun Context.showInfoDialog(message: String, onPositive: () -> Unit) {
+    MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
+        .setTitle(getString(R.string.info))
+        .setMessage(message)
+        .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            onPositive()
+            dialog.dismiss()
+        }
+        .setNegativeButton(getString(R.string.no_thanks_)) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
+}
+
+fun Context.showErrorDialog(message: String) {
+    MaterialAlertDialogBuilder(this)
+        .setTitle(getString(R.string.error))
+        .setMessage(message)
+        .setPositiveButton(resources.getString(R.string.dismiss)) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
 }
 
 fun String.convertToFormattedDate(): String? {
