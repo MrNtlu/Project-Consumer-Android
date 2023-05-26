@@ -7,6 +7,15 @@
     <string name="settings">Settings</string>
     <string name="notification_channel_id">Main_Notification</string>
 
+    <!-- Content Descriptions -->
+    <string name="see_all_cd">See All</string>
+    <string name="login_register_cd">Login/Register Image</string>
+    <string name="popular">Popular</string>
+    <string name="see_all_popular_cd">See All Popular</string>
+    <string name="genre_image_cd">Genre Image</string>
+    <string name="message_icon_cd">Message Icon</string>
+    <string name="scroll_to_top_button_cd">Scroll to top</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_register_toolbar">Login/Register</string>
@@ -15,9 +24,6 @@
     <string name="upcoming">Upcoming</string>
     <string name="genres">Genres</string>
     <string name="dismiss">Dismiss</string>
-    <string name="back_to_top">Back to Top</string>
-    <string name="no_internet_connection">No internet connection!</string>
-    <string name="connection_lost_no_internet_connection">Connection lost! No internet connection.</string>
     <string name="sort">Sort</string>
     <string name="account">Account</string>
     <string name="application">Application</string>
@@ -41,12 +47,9 @@
     <string name="select_score">Select Score</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
-    <string name="times_finished">Times Finished</string>
-    <string name="input_number">Please input a number.</string>
     <string name="close">Close</string>
     <string name="status">Status</string>
     <string name="edit">Edit</string>
-    <string name="please_wait_">Please wait…</string>
     <string name="created">created</string>
     <string name="updated">updated</string>
     <string name="deleted">deleted</string>
@@ -56,18 +59,36 @@
     <string name="update">Update</string>
     <string name="try_again">Try Again</string>
     <string name="search">Search</string>
-
-    <string name="see_all_cd">See All</string>
-    <string name="login_register_cd">Login/Register Image</string>
-    <string name="popular">Popular</string>
-    <string name="see_all_popular_cd">See All Popular</string>
-    <string name="genre_image_cd">Genre Image</string>
-    <string name="message_icon_cd">Message Icon</string>
-    <string name="scroll_to_top_button_cd">Scroll to top</string>
     <string name="error">Error</string>
     <string name="ok">OK</string>
     <string name="info">Info</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="username">Username</string>
+
+    <string name="back_to_top">Back to Top</string>
+    <string name="no_internet_connection">No internet connection!</string>
+    <string name="connection_lost_no_internet_connection">Connection lost! No internet connection.</string>
+    <string name="please_wait_">Please wait…</string>
+    <string name="times_finished">Times Finished</string>
+    <string name="input_number">Please input a number.</string>
     <string name="no_thanks_">No, thanks :(</string>
+    <string name="login_header">Welcome Back!</string>
+    <string name="login_sub_header">Please sign in to your account</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="dont_have_an_account_">Don\'t have an Account?</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="register_header">Create new account</string>
+    <string name="register_sub_header">Please fill the form to register</string>
+    <string name="password_again">Password Again</string>
+    <string name="already_have_an_account">Already have an Account?</string>
+    <string name="please_enter_an_email">Please enter an email.</string>
+    <string name="invalid_email_address">Invalid email address.</string>
+    <string name="password_too_short">Password is too short. Min 6.</string>
+    <string name="passwords_dont_match">Passwords don\'t match.</string>
+    <string name="please_fill_the_form">Please fill the form.</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -19,5 +19,4 @@
         android:id="@+id/navigation_game"
         android:icon="@drawable/game"
         android:title="@string/title_game" />
-
 </menu>

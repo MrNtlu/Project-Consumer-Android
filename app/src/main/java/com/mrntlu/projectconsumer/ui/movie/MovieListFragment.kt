@@ -76,7 +76,6 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
         menuHost.addMenuProvider(object: MenuProvider {
             override fun onPrepareMenu(menu: Menu) {
-                menu.removeItem(R.id.settingsMenu)
             }
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -32,17 +33,24 @@ import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
 import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
 import com.mrntlu.projectconsumer.interfaces.ConnectivityObserver
+import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
 
@@ -52,10 +60,11 @@ enum class WindowSizeClass { COMPACT, MEDIUM, EXPANDED }
 class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var connectivityObserver: NetworkConnectivityObserver
+    @Inject lateinit var tokenManager: TokenManager
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val sharedViewModel: ActivitySharedViewModel by viewModels()
-
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val navController: NavController by lazy {
         findNavController(R.id.nav_host_fragment_activity_main)
     }
@@ -91,17 +100,19 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        coroutineScope.launch {
+            val token = tokenManager.getToken().first()
+
+            withContext(Dispatchers.Main) {
+                sharedViewModel.setAuthentication(token != null && token.isNotEmptyOrBlank())
+            }
+        }
+
         setListeners()
         setObservers()
         setToolbar()
 
-        //TODO Login Flow
-        // MainActivity should be the controller
-        // SharedViewModel should keep isLoggedIn value and present necessary UI elements accordingly.
-        // If logged in show different layout on toolbar if not show image and login button
-
         val container: ViewGroup = binding.container
-
         container.addView(object : View(this) {
             override fun onConfigurationChanged(newConfig: Configuration?) {
                 super.onConfigurationChanged(newConfig)
@@ -118,6 +129,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, args ->
+            invalidateOptionsMenu()
+
             supportActionBar?.title = when(destination.id) {
                 R.id.movieListFragment -> {
                     if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
@@ -191,6 +204,18 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val currentItem = navController.currentDestination?.id
+
+        menu?.findItem(R.id.settingsMenu)?.isVisible = !(
+                currentItem != R.id.navigation_movie &&
+                currentItem != R.id.navigation_tv &&
+                currentItem != R.id.navigation_game &&
+                currentItem != R.id.navigation_anime)
+
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.settingsMenu -> {
@@ -241,7 +266,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         sharedViewModel.isAuthenticated.observe(this) {
+            if (it == true && binding.anonymousInc.root.isVisible)
+                binding.anonymousInc.root.setGone()
+
             //TODO Change bottom nav
+//            binding.navView.menu.clear()
+//            binding.navView.inflateMenu(if (it) R.menu.auth_bottom_nav_menu else R.menu.bottom_nav_menu)
         }
 
         sharedViewModel.countryCode.observe(this) {
@@ -307,6 +337,7 @@ class MainActivity : AppCompatActivity() {
         sharedViewModel.themeCode.removeObservers(this)
         sharedViewModel.globalMessageBox.removeObservers(this)
         sharedViewModel.networkStatus.removeObservers(this)
+        coroutineScope.cancel()
 
         super.onDestroy()
     }

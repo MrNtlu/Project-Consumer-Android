@@ -26,6 +26,8 @@
         <item name="messageBoxTextColor">@color/white</item>
         <item name="messageBoxBackgroundColor">@color/redLight</item>
 
+        <item name="highlightColor">@color/red500</item>
+
         <item name="toolbarTintColor">@color/materialBlack</item>
         <item name="toolbarBackButtonColor">#BFFFFFFF</item>
         <item name="toolbarBackgroundColor">@color/darkWhite</item>

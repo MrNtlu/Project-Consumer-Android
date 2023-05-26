@@ -85,7 +85,8 @@
                         android:layout_height="wrap_content"
                         android:checked="false"
                         android:thumb="@drawable/notification_switch_thumb"
-                        app:track="@drawable/notification_switch_track" />
+                        app:track="@drawable/notification_switch_track"
+                        tools:ignore="TouchTargetSizeCheck, DuplicateSpeakableTextCheck"/>
                 </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
@@ -151,7 +152,8 @@
                         app:thumbTint="@color/white"
                         app:thumbIconTint="?attr/themeThumbTint"
                         app:trackTint="@drawable/theme_switch_track"
-                        app:trackDecorationTint="?attr/themeTrackDecorationTint"/>
+                        app:trackDecorationTint="?attr/themeTrackDecorationTint"
+                        tools:ignore="TouchTargetSizeCheck"/>
                 </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
@@ -186,8 +188,9 @@
                     <Spinner
                         android:id="@+id/settingsSpinner"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
                 </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
@@ -214,8 +217,9 @@
                     <Spinner
                         android:id="@+id/applicationSecondSpinner"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center" />
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        tools:ignore="TouchTargetSizeCheck"/>
                 </LinearLayout>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

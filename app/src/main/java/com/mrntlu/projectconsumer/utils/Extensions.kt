@@ -78,6 +78,13 @@ fun String.convertToFormattedDate(): String? {
     return if(date != null) SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date) else this
 }
 
+fun String.isEmailValid(): Boolean {
+    val emailRegex = Regex("^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})")
+    return matches(emailRegex)
+}
+
+fun String.isEmptyOrBlank() = this.isEmpty() || this.isBlank()
+
 fun String.isNotEmptyOrBlank(): Boolean{
     return this.trim().isNotEmpty() && this.trim().isNotBlank()
 }

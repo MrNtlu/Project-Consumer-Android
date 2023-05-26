@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,7 +12,7 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome Back!"
+        android:text="@string/login_header"
         android:textColor="?attr/mainTextColor"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -24,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Please sign in to your account"
+        android:text="@string/login_sub_header"
         android:textColor="?attr/mainTextColor"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toStartOf="@+id/guideline11"
@@ -41,7 +42,7 @@
         android:id="@+id/mailTextLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Email"
+        android:hint="@string/email"
         app:boxBackgroundColor="?attr/mainBackgroundColor"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toStartOf="@+id/guideline11"
@@ -50,7 +51,10 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/mailET"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:imeOptions="actionNext" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,8 +63,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Password"
-        app:boxBackgroundColor="?attr/mainBackgroundColor"
+        android:hint="@string/password"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toStartOf="@+id/guideline11"
         app:layout_constraintTop_toBottomOf="@+id/mailTextLayout"
@@ -69,7 +72,10 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordET"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:imeOptions="actionDone" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -100,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Forgot Password?"
+        android:text="@string/forgot_password"
         android:textColor="?attr/mainTextColor"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
@@ -113,7 +119,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:backgroundTint="?attr/colorPrimary"
-        android:text="Sign In"
+        android:text="@string/sign_in"
         android:textColor="@color/white"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toStartOf="@+id/guideline11"
@@ -127,7 +133,7 @@
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/white"
         android:drawableLeft="@drawable/google"
-        android:text="Sign in with Google"
+        android:text="@string/sign_in_with_google"
         android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"
         app:layout_constraintStart_toStartOf="@+id/guideline11"
@@ -146,7 +152,7 @@
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have an Account?"
+            android:text="@string/dont_have_an_account_"
             android:textColor="?attr/mainTextColor"
             app:layout_constraintStart_toStartOf="@+id/guideline11"
             app:layout_constraintTop_toBottomOf="@+id/googleSignInButton" />
@@ -162,6 +168,6 @@
             android:padding="4dp"
             android:minHeight="0dp"
             android:minWidth="0dp"
-            android:text="Sign Up" />
+            android:text="@string/sign_up" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

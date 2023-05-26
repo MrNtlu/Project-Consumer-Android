@@ -4,16 +4,10 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,20 +18,32 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentAuthBinding
 import com.mrntlu.projectconsumer.models.auth.retrofit.GoogleLoginBody
+import com.mrntlu.projectconsumer.models.auth.retrofit.LoginBody
+import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.isEmailValid
+import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.auth.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
     private val viewModel: LoginViewModel by viewModels()
+    @Inject lateinit var tokenManager: TokenManager
 
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var fcmToken: String
     private lateinit var dialog: LoadingDialog
@@ -75,8 +81,6 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
         }
 
         getFCMToken()
-        setMenu()
-        setUI()
         setGoogleSignIn()
         setListeners()
         setObservers()
@@ -103,24 +107,6 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
         })
     }
 
-    private fun setMenu() {
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {
-                menu.removeItem(R.id.settingsMenu)
-            }
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
-            override fun onMenuItemSelected(menuItem: MenuItem) = true
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
-    private fun setUI() {
-        binding.apply {
-
-        }
-    }
-
     private fun setListeners() {
         binding.apply {
             googleSignInButton.setOnClickListener {
@@ -129,12 +115,18 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
             }
 
             signInButton.setOnClickListener {
-                //TODO Signin
+                if (validate()) {
+                    val body = LoginBody(
+                        binding.mailET.text!!.toString(),
+                        binding.passwordET.text!!.toString(),
+                    )
+
+                    viewModel.login(body)
+                }
             }
 
             signUpButton.setOnClickListener {
-                //TODO Signup
-                googleSignInClient.signOut()
+                navController.navigate(R.id.action_authFragment_to_registerFragment)
             }
 
             forgotPasswordButton.setOnClickListener {
@@ -160,15 +152,46 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
                     if (::dialog.isInitialized)
                         dialog.dismissDialog()
 
-                    sharedViewModel.setAuthentication(true)
-                    navController.popBackStack()
+                    coroutineScope.launch {
+                        tokenManager.saveToken(response.data.token)
+
+                        withContext(Dispatchers.Main) {
+                            sharedViewModel.setAuthentication(true)
+                            navController.popBackStack()
+                        }
+                    }
                 }
             }
         }
     }
 
+    private fun validate(): Boolean {
+        binding.apply {
+            mailTextLayout.error = null
+            passwordTextLayout.error = null
+
+            val email = mailET.text?.toString()
+            val password = passwordET.text?.toString()
+
+            //TODO Extract string
+            if (email?.isEmptyOrBlank() == true) {
+                mailTextLayout.error = getString(R.string.please_enter_an_email)
+                return false
+            } else if (email?.isEmailValid() == false) {
+                mailTextLayout.error = getString(R.string.invalid_email_address)
+                return false
+            } else if (password != null && password.length < 6) {
+                passwordTextLayout.error = getString(R.string.password_too_short)
+                return false
+            }
+        }
+
+        return true
+    }
+
     override fun onDestroyView() {
         viewModel.loginResponse.removeObservers(viewLifecycleOwner)
+        coroutineScope.cancel()
 
         super.onDestroyView()
     }
