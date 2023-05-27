@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -38,12 +37,15 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
+import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
+import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -62,8 +64,10 @@ class MainActivity : AppCompatActivity() {
     @Inject lateinit var connectivityObserver: NetworkConnectivityObserver
     @Inject lateinit var tokenManager: TokenManager
 
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val sharedViewModel: ActivitySharedViewModel by viewModels()
+    private val userSharedViewModel: UserSharedViewModel by viewModels()
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val navController: NavController by lazy {
         findNavController(R.id.nav_host_fragment_activity_main)
@@ -110,7 +114,6 @@ class MainActivity : AppCompatActivity() {
 
         setListeners()
         setObservers()
-        setToolbar()
 
         val container: ViewGroup = binding.container
         container.addView(object : View(this) {
@@ -124,8 +127,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
-        binding.messageBoxButton.setOnClickListener {
-            binding.messageBoxLayout.setGone()
+        binding.apply {
+            messageBoxButton.setOnClickListener {
+                binding.messageBoxLayout.setGone()
+            }
+
+            anonymousInc.root.setOnClickListener {
+                navController.navigate(R.id.action_global_authFragment)
+            }
+
+            userInc.root.setOnClickListener {
+                //TODO Profile Page
+            }
         }
 
         navController.addOnDestinationChangedListener { _, destination, args ->
@@ -150,18 +163,18 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbar.setVisible()
                     supportActionBar?.setDisplayShowTitleEnabled(false)
                     binding.navView.setVisible()
-                    binding.anonymousInc.root.setVisibilityByCondition(sharedViewModel.isLoggedIn())
+                    handleUserIncVisibility(false)
                 }
                 R.id.movieDetailsFragment -> {
                     binding.toolbar.setGone()
                     binding.navView.setGone()
-                    binding.anonymousInc.root.setGone()
+                    handleUserIncVisibility(true)
                 }
                 else -> {
                     binding.toolbar.setVisible()
                     supportActionBar?.setDisplayShowTitleEnabled(true)
                     binding.navView.setGone()
-                    binding.anonymousInc.root.setGone()
+                    handleUserIncVisibility(true)
                 }
             }
         }
@@ -181,12 +194,6 @@ class MainActivity : AppCompatActivity() {
 
         sharedViewModel.setWindowSize(widthWindowSizeClass)
         askNotificationPermission()
-    }
-
-    private fun setToolbar() {
-        binding.anonymousInc.root.setOnClickListener {
-            navController.navigate(R.id.action_global_authFragment)
-        }
     }
 
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
@@ -265,9 +272,39 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        userSharedViewModel.userInfoResponse.observe(this) { response ->
+            binding.apply {
+                userLoadingProgressBar.setVisibilityByCondition(response != NetworkResponse.Loading)
+                userInc.root.setVisibilityByCondition(response !is NetworkResponse.Success)
+            }
+
+            if (response is NetworkResponse.Success) {
+                userSharedViewModel.userInfo = response.data.data
+
+                binding.userInc.userIV.loadWithGlide(
+                    response.data.data.image ?: "",
+                    binding.userInc.userPlaceHolderIV,
+                    binding.userInc.userIVProgressBar,
+                ) {
+                    centerCrop()
+                }
+            }
+        }
+
         sharedViewModel.isAuthenticated.observe(this) {
-            if (it == true && binding.anonymousInc.root.isVisible)
-                binding.anonymousInc.root.setGone()
+            if (!it) {
+                binding.userInc.root.setGone()
+                binding.userLoadingProgressBar.setGone()
+            }
+            binding.anonymousInc.root.setVisibilityByCondition(it)
+
+            if (it) {
+                if (userSharedViewModel.userInfo == null) {
+                    userSharedViewModel.getUserInfo()
+                }
+            } else {
+                userSharedViewModel.userInfo = null
+            }
 
             //TODO Change bottom nav
 //            binding.navView.menu.clear()
@@ -318,6 +355,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleUserIncVisibility(shouldHide: Boolean) {
+        binding.apply {
+            if (sharedViewModel.isLoggedIn()) {
+                anonymousInc.root.setGone()
+                userInc.root.setVisibilityByCondition(shouldHide)
+                userLoadingProgressBar.setGone()
+            } else {
+                anonymousInc.root.setVisibilityByCondition(shouldHide)
+                userInc.root.setGone()
+                userLoadingProgressBar.setGone()
+            }
+        }
+    }
+
     private fun setThemePref(value: Int){
         val editor = prefs.edit()
         editor.putInt(Constants.THEME_PREF, value)
@@ -337,6 +388,7 @@ class MainActivity : AppCompatActivity() {
         sharedViewModel.themeCode.removeObservers(this)
         sharedViewModel.globalMessageBox.removeObservers(this)
         sharedViewModel.networkStatus.removeObservers(this)
+        userSharedViewModel.userInfoResponse.removeObservers(this)
         coroutineScope.cancel()
 
         super.onDestroy()

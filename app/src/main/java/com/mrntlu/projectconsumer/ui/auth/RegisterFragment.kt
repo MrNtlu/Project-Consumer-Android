@@ -15,6 +15,8 @@ import com.mrntlu.projectconsumer.databinding.FragmentRegisterBinding
 import com.mrntlu.projectconsumer.models.auth.retrofit.RegisterBody
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.LoadingDialog
+import com.mrntlu.projectconsumer.ui.SuccessDialog
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isEmailValid
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
@@ -31,6 +33,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
 
     private lateinit var fcmToken: String
     private lateinit var dialog: LoadingDialog
+    private lateinit var successDialog: SuccessDialog
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
@@ -41,6 +44,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
         super.onViewCreated(view, savedInstanceState)
         activity?.let {
             dialog = LoadingDialog(it)
+            successDialog = SuccessDialog(it)
         }
 
         getFCMToken()
@@ -78,7 +82,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
                         fcmToken,
                         usernameET.text!!.toString(),
                         passwordET.text!!.toString(),
-                        profileImageAdapter?.getSelectedImage(),
+                        profileImageAdapter?.getSelectedImage() ?: Constants.ProfileImageList[0],
                     )
 
                     viewModel.register(body)
@@ -108,7 +112,9 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
                     if (::dialog.isInitialized)
                         dialog.dismissDialog()
 
-                    //TODO Success dialog, on click popBack
+                    successDialog.showDialog(response.data.message) {
+                        navController.popBackStack()
+                    }
                 }
             }
         }
@@ -125,7 +131,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
             val password = passwordET.text?.toString()
             val passwordAgain = rePasswordET.text?.toString()
 
-            //TODO Extract string
             if (email?.isEmptyOrBlank() == true) {
                 mailTextLayout.error = getString(R.string.please_enter_an_email)
                 return false
@@ -150,6 +155,11 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
     override fun onDestroyView() {
         viewModel.registerResponse.removeObservers(viewLifecycleOwner)
         profileImageAdapter = null
+
+        if (::dialog.isInitialized)
+            dialog.dismissDialog()
+        if (::successDialog.isInitialized)
+            successDialog.dismissDialog()
 
         super.onDestroyView()
     }

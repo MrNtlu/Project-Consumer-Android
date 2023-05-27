@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.service.retrofit
 
+import com.mrntlu.projectconsumer.models.auth.retrofit.ForgotPasswordBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.GoogleLoginBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.LoginBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.LoginResponse
@@ -22,5 +23,8 @@ interface AuthApiService {
     suspend fun googleLogin(@Body body: GoogleLoginBody): Response<LoginResponse>
 
     @GET("auth/refresh")
-    suspend fun refreshToken(@Header("Authorization") token: String,): Response<LoginResponse>
+    suspend fun refreshToken(@Header("Authorization") token: String): Response<LoginResponse>
+
+    @POST("user/forgot-password")
+    suspend fun forgotPassword(@Body body: ForgotPasswordBody): Response<MessageResponse>
 }

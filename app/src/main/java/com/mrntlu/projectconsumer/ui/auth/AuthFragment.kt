@@ -57,7 +57,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
                 if (account.idToken != null) {
                     viewModel.googleLogin(
-                        GoogleLoginBody(account.idToken!!, fcmToken)
+                        GoogleLoginBody(account.idToken!!, Constants.ProfileImageList[(0..Constants.ProfileImageList.size).random()], fcmToken)
                     )
                 }
             } catch (exception: ApiException) {
@@ -173,7 +173,6 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
             val email = mailET.text?.toString()
             val password = passwordET.text?.toString()
 
-            //TODO Extract string
             if (email?.isEmptyOrBlank() == true) {
                 mailTextLayout.error = getString(R.string.please_enter_an_email)
                 return false

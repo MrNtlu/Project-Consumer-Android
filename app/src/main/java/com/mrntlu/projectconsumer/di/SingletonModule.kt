@@ -7,6 +7,7 @@ import com.mrntlu.projectconsumer.service.AuthInterceptor
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserInteractionApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
@@ -113,6 +114,14 @@ class SingletonModule {
             .client(okHttpClient)
             .build()
             .create(AuthApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideUserAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): UserApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(UserApiService::class.java)
 
     @Singleton
     @Provides

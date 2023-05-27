@@ -4,22 +4,30 @@ import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.mrntlu.projectconsumer.R
 
-class LoadingDialog(
-    private val activity: Activity
+class SuccessDialog(
+    private val activity: Activity,
 ) {
-
     lateinit var dialog: AlertDialog
 
-    fun showLoadingDialog() {
+    fun showDialog(message: String, onClick: () -> Unit) {
         val builder = AlertDialog.Builder(activity, R.style.WrapContentDialog)
+        val view = activity.layoutInflater.inflate(R.layout.layout_success_dialog, null)
 
         builder.apply {
-            setView(activity.layoutInflater.inflate(R.layout.layout_loading_dialog, null))
+            setView(view)
             setCancelable(false)
             dialog = create()
+        }
+
+        view.findViewById<TextView>(R.id.successTV).text = message
+        view.findViewById<Button>(R.id.okButton).setOnClickListener {
+            onClick()
+            dialog.dismiss()
         }
 
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

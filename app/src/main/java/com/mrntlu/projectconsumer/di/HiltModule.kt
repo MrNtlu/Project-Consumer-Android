@@ -4,8 +4,10 @@ import com.mrntlu.projectconsumer.repository.AuthRepository
 import com.mrntlu.projectconsumer.repository.MoviePreviewRepository
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.repository.UserListRepository
+import com.mrntlu.projectconsumer.repository.UserRepository
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
@@ -31,4 +33,7 @@ class HiltModule {
 
     @Provides
     fun provideAuthRepository(authApiService: AuthApiService) = AuthRepository(authApiService)
+
+    @Provides
+    fun provideUserRepository(userApiService: UserApiService) = UserRepository(userApiService)
 }

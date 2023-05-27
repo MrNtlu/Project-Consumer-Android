@@ -8,8 +8,7 @@
     android:padding="64dp">
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
+        android:id="@+id/loadingLottie"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleX="2"
