@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui
+package com.mrntlu.projectconsumer.ui.dialog
 
 import android.app.Activity
 import android.graphics.Color

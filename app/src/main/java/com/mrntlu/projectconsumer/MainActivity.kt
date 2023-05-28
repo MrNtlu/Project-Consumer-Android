@@ -94,14 +94,10 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_movie, R.id.navigation_tv, R.id.navigation_anime, R.id.navigation_game
-            )
-        )
 
         setSupportActionBar(binding.toolbar)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        setAppBarConfiguration()
         navView.setupWithNavController(navController)
 
         coroutineScope.launch {
@@ -126,6 +122,21 @@ class MainActivity : AppCompatActivity() {
         computeWindowSizeClasses()
     }
 
+    private fun setAppBarConfiguration() {
+        val appBarConfiguration = AppBarConfiguration(
+            if (sharedViewModel.isLoggedIn())
+                setOf(
+                    R.id.navigation_home, R.id.navigation_discover, R.id.navigation_profile
+                )
+            else
+                setOf(
+                    R.id.navigation_home, R.id.navigation_discover, R.id.navigation_settings
+                )
+        )
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+    }
+
     private fun setListeners() {
         binding.apply {
             messageBoxButton.setOnClickListener {
@@ -137,33 +148,28 @@ class MainActivity : AppCompatActivity() {
             }
 
             userInc.root.setOnClickListener {
-                //TODO Profile Page
+                navController.navigate(R.id.action_global_navigation_profile)
             }
         }
 
         navController.addOnDestinationChangedListener { _, destination, args ->
             invalidateOptionsMenu()
 
-            supportActionBar?.title = when(destination.id) {
-                R.id.movieListFragment -> {
-                    if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
-                        "Upcoming Movies"
-                    else if (args?.getString("fetchType") == FetchType.POPULAR.tag)
-                        "Popular Movies"
-                    else ""
-                }
-                R.id.settingsFragment -> {
-                    "Settings"
-                }
-                else -> ""
-            }
-
             when(destination.id) {
-                R.id.navigation_movie, R.id.navigation_tv, R.id.navigation_anime, R.id.navigation_game -> {
+                R.id.navigation_home, R.id.navigation_discover -> {
                     binding.toolbar.setVisible()
-                    supportActionBar?.setDisplayShowTitleEnabled(false)
                     binding.navView.setVisible()
                     handleUserIncVisibility(false)
+                }
+                R.id.navigation_settings -> {
+                    binding.toolbar.setVisible()
+                    binding.navView.setVisibilityByCondition(sharedViewModel.isLoggedIn())
+                    handleUserIncVisibility(true)
+                }
+                R.id.navigation_profile -> {
+                    binding.toolbar.setVisible()
+                    binding.navView.setVisible()
+                    handleUserIncVisibility(true)
                 }
                 R.id.movieDetailsFragment -> {
                     binding.toolbar.setGone()
@@ -172,10 +178,23 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {
                     binding.toolbar.setVisible()
-                    supportActionBar?.setDisplayShowTitleEnabled(true)
                     binding.navView.setGone()
                     handleUserIncVisibility(true)
                 }
+            }
+
+            binding.toolbar.title = when(destination.id) {
+                R.id.movieListFragment -> {
+                    if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
+                        "Upcoming Movies"
+                    else if (args?.getString("fetchType") == FetchType.POPULAR.tag)
+                        "Popular Movies"
+                    else ""
+                }
+                R.id.navigation_settings -> {
+                    "Settings"
+                }
+                else -> ""
             }
         }
     }
@@ -215,10 +234,10 @@ class MainActivity : AppCompatActivity() {
         val currentItem = navController.currentDestination?.id
 
         menu?.findItem(R.id.settingsMenu)?.isVisible = !(
-                currentItem != R.id.navigation_movie &&
-                currentItem != R.id.navigation_tv &&
-                currentItem != R.id.navigation_game &&
-                currentItem != R.id.navigation_anime)
+                currentItem != R.id.navigation_home &&
+                currentItem != R.id.navigation_discover &&
+                currentItem != R.id.navigation_profile) &&
+                sharedViewModel.isLoggedIn()
 
         return true
     }
@@ -274,8 +293,13 @@ class MainActivity : AppCompatActivity() {
 
         userSharedViewModel.userInfoResponse.observe(this) { response ->
             binding.apply {
-                userLoadingProgressBar.setVisibilityByCondition(response != NetworkResponse.Loading)
-                userInc.root.setVisibilityByCondition(response !is NetworkResponse.Success)
+                val currentItem = navController.currentDestination?.id
+                val shouldShow = currentItem == R.id.navigation_home ||
+                        currentItem == R.id.navigation_discover ||
+                        currentItem == R.id.navigation_profile
+
+                userLoadingProgressBar.setVisibilityByCondition(!(response == NetworkResponse.Loading && shouldShow))
+                userInc.root.setVisibilityByCondition(!(response is NetworkResponse.Success && shouldShow))
             }
 
             if (response is NetworkResponse.Success) {
@@ -292,6 +316,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         sharedViewModel.isAuthenticated.observe(this) {
+            binding.navView.menu.clear()
+            binding.navView.inflateMenu(if (it) R.menu.bottom_nav_auth_menu else R.menu.bottom_nav_menu)
+            setAppBarConfiguration()
+
             if (!it) {
                 binding.userInc.root.setGone()
                 binding.userLoadingProgressBar.setGone()
@@ -305,10 +333,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 userSharedViewModel.userInfo = null
             }
-
-            //TODO Change bottom nav
-//            binding.navView.menu.clear()
-//            binding.navView.inflateMenu(if (it) R.menu.auth_bottom_nav_menu else R.menu.bottom_nav_menu)
         }
 
         sharedViewModel.countryCode.observe(this) {

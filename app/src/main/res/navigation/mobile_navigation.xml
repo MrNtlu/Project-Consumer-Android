@@ -1,15 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_movie">
+    app:startDestination="@+id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_movie"
         android:name="com.mrntlu.projectconsumer.ui.movie.MovieFragment"
         android:label="@string/title_movie"
-        tools:layout="@layout/fragment_movie" >
+        tools:layout="@layout/fragment_movie"/>
+
+    <fragment
+        android:id="@+id/navigation_tv"
+        android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesFragment"
+        android:label="@string/title_tv"
+        tools:layout="@layout/fragment_tv_series" />
+
+    <fragment
+        android:id="@+id/navigation_anime"
+        android:name="com.mrntlu.projectconsumer.ui.anime.AnimeFragment"
+        android:label="@string/title_anime"
+        tools:layout="@layout/fragment_anime" />
+
+    <fragment
+        android:id="@+id/navigation_game"
+        android:name="com.mrntlu.projectconsumer.ui.game.GameFragment"
+        android:label="@string/title_game"
+        tools:layout="@layout/fragment_game" />
+
+    <fragment
+        android:id="@+id/movieListFragment"
+        android:name="com.mrntlu.projectconsumer.ui.movie.MovieListFragment"
+        android:label="fragment_movie_list"
+        tools:layout="@layout/fragment_movie_list" >
+        <argument
+            android:name="fetchType"
+            app:argType="string"
+            android:defaultValue="popular" />
+        <action
+            android:id="@+id/action_movieListFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.mrntlu.projectconsumer.ui.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings" />
+
+    <action
+        android:id="@+id/action_global_settingsFragment"
+        app:destination="@id/navigation_settings"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
+
+    <fragment
+        android:id="@+id/movieDetailsFragment"
+        android:name="com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragment"
+        android:label="fragment_movie_details"
+        tools:layout="@layout/fragment_movie_details" >
+        <argument
+            android:name="movieArgs"
+            app:argType="com.mrntlu.projectconsumer.models.main.movie.Movie" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/movieSearchFragment"
+        android:name="com.mrntlu.projectconsumer.ui.movie.MovieSearchFragment"
+        android:label="fragment_movie_search"
+        tools:layout="@layout/fragment_movie_search" >
+        <argument
+            android:name="searchQuery"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_movieSearchFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.mrntlu.projectconsumer.ui.auth.AuthFragment"
+        android:label="fragment_auth"
+        tools:layout="@layout/fragment_auth" >
+        <action
+            android:id="@+id/action_authFragment_to_registerFragment"
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_authFragment"
+        app:destination="@id/authFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"/>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.mrntlu.projectconsumer.ui.auth.RegisterFragment"
+        android:label="fragment_register"
+        tools:layout="@layout/fragment_register" />
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.mrntlu.projectconsumer.ui.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_navigation_movie_to_movieListFragment"
             app:destination="@id/movieListFragment"
@@ -34,99 +146,24 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_tv"
-        android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesFragment"
-        android:label="@string/title_tv"
-        tools:layout="@layout/fragment_tv_series" />
+        android:id="@+id/navigation_discover"
+        android:name="com.mrntlu.projectconsumer.ui.DiscoverFragment"
+        android:label="fragment_discover"
+        tools:layout="@layout/fragment_discover" />
 
     <fragment
-        android:id="@+id/navigation_anime"
-        android:name="com.mrntlu.projectconsumer.ui.anime.AnimeFragment"
-        android:label="@string/title_anime"
-        tools:layout="@layout/fragment_anime" />
+        android:id="@+id/navigation_profile"
+        android:name="com.mrntlu.projectconsumer.ui.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 
-    <fragment
-        android:id="@+id/navigation_game"
-        android:name="com.mrntlu.projectconsumer.ui.game.GameFragment"
-        android:label="@string/title_game"
-        tools:layout="@layout/fragment_game" />
-    <fragment
-        android:id="@+id/movieListFragment"
-        android:name="com.mrntlu.projectconsumer.ui.movie.MovieListFragment"
-        android:label="fragment_movie_list"
-        tools:layout="@layout/fragment_movie_list" >
-        <argument
-            android:name="fetchType"
-            app:argType="string"
-            android:defaultValue="popular" />
-        <action
-            android:id="@+id/action_movieListFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.mrntlu.projectconsumer.ui.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
     <action
-        android:id="@+id/action_global_settingsFragment"
-        app:destination="@id/settingsFragment"
+        android:id="@+id/action_global_navigation_profile"
+        app:destination="@id/navigation_profile"
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/slide_out_left"
         app:popEnterAnim="@anim/slide_in_left"
-        app:popExitAnim="@anim/slide_out_right" />
-    <fragment
-        android:id="@+id/movieDetailsFragment"
-        android:name="com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragment"
-        android:label="fragment_movie_details"
-        tools:layout="@layout/fragment_movie_details" >
-        <argument
-            android:name="movieArgs"
-            app:argType="com.mrntlu.projectconsumer.models.main.movie.Movie" />
-    </fragment>
-    <fragment
-        android:id="@+id/movieSearchFragment"
-        android:name="com.mrntlu.projectconsumer.ui.movie.MovieSearchFragment"
-        android:label="fragment_movie_search"
-        tools:layout="@layout/fragment_movie_search" >
-        <argument
-            android:name="searchQuery"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_movieSearchFragment_to_movieDetailsFragment"
-            app:destination="@id/movieDetailsFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-    </fragment>
-    <fragment
-        android:id="@+id/authFragment"
-        android:name="com.mrntlu.projectconsumer.ui.auth.AuthFragment"
-        android:label="fragment_auth"
-        tools:layout="@layout/fragment_auth" >
-        <action
-            android:id="@+id/action_authFragment_to_registerFragment"
-            app:destination="@id/registerFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
-    </fragment>
-    <action
-        android:id="@+id/action_global_authFragment"
-        app:destination="@id/authFragment"
-        app:enterAnim="@anim/slide_in_right"
-        app:exitAnim="@anim/slide_out_left"
-        app:popEnterAnim="@anim/slide_in_left"
-        app:popExitAnim="@anim/slide_out_right"/>
-    <fragment
-        android:id="@+id/registerFragment"
-        android:name="com.mrntlu.projectconsumer.ui.auth.RegisterFragment"
-        android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        app:popExitAnim="@anim/slide_out_right"
+        app:popUpTo="@id/navigation_home"
+        app:popUpToInclusive="true" />
 </navigation>

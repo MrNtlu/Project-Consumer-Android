@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
@@ -16,6 +17,7 @@ import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.HomeFragmentDirections
 import com.mrntlu.projectconsumer.ui.compose.GenreGrid
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
@@ -24,12 +26,16 @@ import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.movie.MoviePreviewViewModel
+import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MovieFragment: BaseFragment<FragmentMovieBinding>() {
 
+    //TODO Move search to discover fragment
+    
     private val viewModel: MoviePreviewViewModel by viewModels()
+    private val viewPagerSharedViewModel: ViewPagerSharedViewModel by activityViewModels()
 
     private var upcomingAdapter: PreviewAdapter<Movie>? = null
     private var popularAdapter: PreviewAdapter<Movie>? = null
@@ -65,6 +71,10 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                 false
             }
 
+            movieScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+                viewPagerSharedViewModel.setScrollYPosition(scrollY)
+            }
+
             previewSearchView.apply {
                 setOnClickListener {
                     isIconified = false
@@ -72,13 +82,13 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
             }
 
             seeAllButtonFirst.setOnClickListener {
-                val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.UPCOMING.tag)
+                val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.UPCOMING.tag)
 
                 navController.navigate(navWithAction)
             }
 
             seeAllButtonSecond.setOnClickListener {
-                val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.POPULAR.tag)
+                val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.POPULAR.tag)
 
                 navController.navigate(navWithAction)
             }
@@ -89,7 +99,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                         previewSearchView.isIconified = true
                         previewSearchView.isIconified = true
 
-                        val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieSearchFragment(query)
+                        val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieSearchFragment(query)
 
                         navController.navigate(navWithAction)
                     }
@@ -125,7 +135,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             upcomingAdapter = PreviewAdapter(object: Interaction<Movie> {
                 override fun onItemSelected(item: Movie, position: Int) {
-                    val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
+                    val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
 
                     navController.navigate(navWithAction)
                 }
@@ -147,7 +157,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
             popularAdapter = PreviewAdapter(object: Interaction<Movie> {
                 override fun onItemSelected(item: Movie, position: Int) {
-                    val navWithAction = MovieFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
+                    val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
 
                     navController.navigate(navWithAction)
                 }
@@ -198,6 +208,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
             viewModel.popularMovies.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
+        binding.movieScrollView.setOnScrollChangeListener(null)
         upcomingAdapter = null
         popularAdapter = null
         super.onDestroyView()

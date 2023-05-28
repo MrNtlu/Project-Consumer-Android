@@ -21,7 +21,7 @@ import com.mrntlu.projectconsumer.models.auth.retrofit.GoogleLoginBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.LoginBody
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
-import com.mrntlu.projectconsumer.ui.LoadingDialog
+import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isEmailValid

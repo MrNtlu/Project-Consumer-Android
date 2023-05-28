@@ -11,7 +11,7 @@
         android:title="Discover" />
 
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_64"
-        android:title="@string/settings" />
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/ic_person_75"
+        android:title="Profile" />
 </menu>

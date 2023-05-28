@@ -14,7 +14,7 @@ class AuthInterceptor @Inject constructor(
             tokenManager.getToken().first()
         }
         val request = chain.request().newBuilder()
-        request.addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODQzMzY5MzAsImlkIjoiNjQxZGFlZTNjYTQ4MzdjZTRlZjVmY2M5Iiwib3JpZ19pYXQiOjE2ODQwNzc3MzB9.tZ0xtSyWRrcJprw_iEqPE1d28kxIW5zWIsmaVxfI29s")
+        request.addHeader("Authorization", "Bearer $token")
         return chain.proceed(request.build())
     }
 }
