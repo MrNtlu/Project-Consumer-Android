@@ -100,7 +100,7 @@ fun GenreGrid(
                             (if (isDarkTheme)
                                 Color.White
                             else
-                                Color.Black).copy(alpha = 0.65f),
+                                Color.Black).copy(alpha = 0.4f),
                             shape = RoundedCornerShape(8.dp)
                         )
                         .fillMaxSize(),

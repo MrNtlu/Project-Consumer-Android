@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui
+package com.mrntlu.projectconsumer.ui.common
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
 import com.mrntlu.projectconsumer.service.TokenManager
+import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import dagger.hilt.android.AndroidEntryPoint

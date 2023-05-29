@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.mrntlu.projectconsumer.ui.SettingsFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
 
@@ -87,6 +87,10 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <argument
+            android:name="searchType"
+            app:argType="com.mrntlu.projectconsumer.utils.Constants$ContentType"
+            android:defaultValue="MOVIE" />
     </fragment>
 
     <fragment
@@ -119,7 +123,7 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.mrntlu.projectconsumer.ui.HomeFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -147,13 +151,21 @@
 
     <fragment
         android:id="@+id/navigation_discover"
-        android:name="com.mrntlu.projectconsumer.ui.DiscoverFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.DiscoverFragment"
         android:label="fragment_discover"
-        tools:layout="@layout/fragment_discover" />
+        tools:layout="@layout/fragment_discover" >
+        <action
+            android:id="@+id/action_navigation_discover_to_movieSearchFragment"
+            app:destination="@id/movieSearchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.mrntlu.projectconsumer.ui.ProfileFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
 

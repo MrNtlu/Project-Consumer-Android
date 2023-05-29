@@ -16,6 +16,7 @@ import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
 import com.mrntlu.projectconsumer.databinding.CellPaginationExhaustBinding
 import com.mrntlu.projectconsumer.databinding.CellPaginationLoadingBinding
 import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
+import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
 import com.mrntlu.projectconsumer.models.main.movie.Movie
@@ -24,10 +25,11 @@ import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
 
-class MovieAdapter(
-    override val interaction: Interaction<Movie>, gridCount: Int, isDarkTheme: Boolean
-): BaseAdapter<Movie>(interaction, gridCount, isDarkTheme) {
-    override fun handleDiffUtil(newList: ArrayList<Movie>) {
+class ContentAdapter<T: ContentModel>(
+    override val interaction: Interaction<T>, gridCount: Int, isDarkTheme: Boolean
+): BaseAdapter<T>(interaction, gridCount, isDarkTheme) {
+
+    override fun handleDiffUtil(newList: ArrayList<T>) {
         val diffUtil = DiffUtilCallback(
             arrayList,
             newList
@@ -35,7 +37,7 @@ class MovieAdapter(
 
         val diffResults = DiffUtil.calculateDiff(diffUtil, true)
 
-        arrayList = newList.toList() as ArrayList<Movie>
+        arrayList = newList.toList() as ArrayList<T>
         diffResults.dispatchUpdatesTo(this)
     }
 

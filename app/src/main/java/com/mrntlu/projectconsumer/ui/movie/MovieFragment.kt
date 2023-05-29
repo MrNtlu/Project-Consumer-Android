@@ -1,13 +1,9 @@
 package com.mrntlu.projectconsumer.ui.movie
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,14 +13,9 @@ import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BaseFragment
-import com.mrntlu.projectconsumer.ui.HomeFragmentDirections
-import com.mrntlu.projectconsumer.ui.compose.GenreGrid
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.hideKeyboard
-import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.movie.MoviePreviewViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,8 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MovieFragment: BaseFragment<FragmentMovieBinding>() {
 
-    //TODO Move search to discover fragment
-    
     private val viewModel: MoviePreviewViewModel by viewModels()
     private val viewPagerSharedViewModel: ViewPagerSharedViewModel by activityViewModels()
 
@@ -52,33 +41,14 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         setListeners()
-        setGridLayout()
         setRecyclerView()
         setObservers()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         binding.apply {
-            movieScrollView.setOnTouchListener { _, event ->
-                if (event != null && event.action == MotionEvent.ACTION_MOVE) {
-                    if (previewSearchView.hasFocus())
-                        previewSearchView.clearFocus()
-
-                    hideKeyboard()
-                }
-
-                false
-            }
-
             movieScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
                 viewPagerSharedViewModel.setScrollYPosition(scrollY)
-            }
-
-            previewSearchView.apply {
-                setOnClickListener {
-                    isIconified = false
-                }
             }
 
             seeAllButtonFirst.setOnClickListener {
@@ -91,41 +61,6 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
                 val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.POPULAR.tag)
 
                 navController.navigate(navWithAction)
-            }
-
-            previewSearchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    if (query?.isNotEmptyOrBlank() == true) {
-                        previewSearchView.isIconified = true
-                        previewSearchView.isIconified = true
-
-                        val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieSearchFragment(query)
-
-                        navController.navigate(navWithAction)
-                    }
-
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String?) = true
-            })
-        }
-    }
-
-    private fun setGridLayout() {
-        binding.gridLayoutCompose.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                GenreGrid(
-                    !sharedViewModel.isLightTheme(),
-                    Constants.MovieGenreList,
-                    onDiscoveryClicked = {
-                        printLog("Discover")
-                    },
-                    onGenreClicked = {
-                        printLog("Genre clicked $it")
-                    }
-                )
             }
         }
     }

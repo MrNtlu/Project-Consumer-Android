@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
-import com.mrntlu.projectconsumer.adapters.MovieAdapter
+import com.mrntlu.projectconsumer.adapters.ContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieListBinding
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.main.movie.Movie
@@ -49,7 +49,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
     }
 
     private lateinit var popupMenu: PopupMenu
-    private var movieAdapter: MovieAdapter? = null
+    private var contentAdapter: ContentAdapter<Movie>? = null
     private var sortType: String = Constants.SortRequests[0].request
     private var gridCount = 3
 
@@ -85,7 +85,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
-                        if (movieAdapter?.isLoading == false) {
+                        if (contentAdapter?.isLoading == false) {
                             if (!::popupMenu.isInitialized) {
                                 val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
                                 popupMenu = PopupMenu(requireContext(), menuItemView)
@@ -175,7 +175,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
             gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    val itemViewType = movieAdapter?.getItemViewType(position)
+                    val itemViewType = contentAdapter?.getItemViewType(position)
                     return if (
                         itemViewType == RecyclerViewEnum.View.value ||
                         itemViewType == RecyclerViewEnum.Loading.value
@@ -184,7 +184,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
             }
 
             layoutManager = gridLayoutManager
-            movieAdapter = MovieAdapter(
+            contentAdapter = ContentAdapter(
                 gridCount = gridCount,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<Movie> {
@@ -210,7 +210,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                     }
                 }
             )
-            adapter = movieAdapter
+            adapter = contentAdapter
 
             var isScrolling = false
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
@@ -238,7 +238,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                     else if (!isThresholdPassed || isScrollingDown)
                         binding.topFAB.hide()
 
-                    movieAdapter?.let {
+                    contentAdapter?.let {
                         if (
                             isScrolling &&
                             !it.isLoading &&
@@ -273,13 +273,13 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
 
         viewModel.movies.observe(viewLifecycleOwner) { response ->
             if (response.isFailed()) {
-                movieAdapter?.setErrorView(response.errorMessage!!)
+                contentAdapter?.setErrorView(response.errorMessage!!)
             } else if (response.isLoading) {
-                movieAdapter?.setLoadingView()
+                contentAdapter?.setLoadingView()
             } else if (response.isSuccessful() || response.isPaginating) {
                 val arrayList = response.data!!.toCollection(ArrayList())
 
-                movieAdapter?.setData(
+                contentAdapter?.setData(
                     arrayList,
                     response.isPaginationData,
                     response.isPaginationExhausted,
@@ -319,7 +319,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
             sharedViewModel.windowSize.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
-        movieAdapter = null
+        contentAdapter = null
         super.onDestroyView()
     }
 }

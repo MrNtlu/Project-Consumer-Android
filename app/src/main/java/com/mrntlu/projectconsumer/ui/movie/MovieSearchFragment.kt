@@ -19,11 +19,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
-import com.mrntlu.projectconsumer.adapters.MovieAdapter
+import com.mrntlu.projectconsumer.adapters.ContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieSearchBinding
+import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
-import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
@@ -37,15 +38,21 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
+    // TODO Convert it to generic search class, pass tag & searchQuery
+    // Change movie details, pass ID only.
+    // Change MovieSearchViewModel, implement contentType
+
     private val args: MovieSearchFragmentArgs by navArgs()
 
     @Inject lateinit var viewModelFactory: MovieSearchViewModel.Factory
     private val viewModel: MovieSearchViewModel by viewModels {
-        MovieSearchViewModel.provideMovieViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, sharedViewModel.isNetworkAvailable())
+        MovieSearchViewModel.provideMovieViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
     }
 
     private lateinit var searchQuery: String
-    private var movieAdapter: MovieAdapter? = null
+    private lateinit var searchType: Constants.ContentType
+
+    private var contentAdapter: ContentAdapter<ContentModel>? = null
     private var gridCount = 3
 
     override fun onCreateView(
@@ -59,6 +66,7 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         searchQuery = args.searchQuery
+        searchType = args.searchType
 
         setUI()
         setObservers()
@@ -119,14 +127,13 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
         viewModel.movies.observe(viewLifecycleOwner) { response ->
             if (response.isFailed()) {
-                movieAdapter?.setErrorView(response.errorMessage!!)
+                contentAdapter?.setErrorView(response.errorMessage!!)
             } else if (response.isLoading) {
-                movieAdapter?.setLoadingView()
+                contentAdapter?.setLoadingView()
             } else if (response.isSuccessful() || response.isPaginating) {
-                val arrayList = response.data!!.toCollection(ArrayList())
 
-                movieAdapter?.setData(
-                    arrayList,
+                contentAdapter?.setData(
+                    response.data!!.toCollection(ArrayList()),
                     response.isPaginationData,
                     response.isPaginationExhausted,
                     response.isPaginating,
@@ -153,7 +160,7 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
             gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    val itemViewType = movieAdapter?.getItemViewType(position)
+                    val itemViewType = contentAdapter?.getItemViewType(position)
                     return if (
                         itemViewType == RecyclerViewEnum.View.value ||
                         itemViewType == RecyclerViewEnum.Loading.value
@@ -162,14 +169,13 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
             }
 
             layoutManager = gridLayoutManager
-            movieAdapter = MovieAdapter(
+            contentAdapter = ContentAdapter(
                 gridCount = gridCount,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
-                interaction = object: Interaction<Movie> {
-                    override fun onItemSelected(item: Movie, position: Int) {
-                        val navWithAction = MovieSearchFragmentDirections.actionMovieSearchFragmentToMovieDetailsFragment(item)
-
-                        navController.navigate(navWithAction)
+                interaction = object: Interaction<ContentModel> {
+                    override fun onItemSelected(item: ContentModel, position: Int) {
+//                        val navWithAction = MovieSearchFragmentDirections.actionMovieSearchFragmentToMovieDetailsFragment(item)
+//                        navController.navigate(navWithAction)
                     }
 
                     override fun onErrorRefreshPressed() {
@@ -187,7 +193,7 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
                     }
                 }
             )
-            adapter = movieAdapter
+            adapter = contentAdapter
 
             var isScrolling = false
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
@@ -206,7 +212,7 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
                         viewModel.setScrollPosition(centerScrollPosition)
                     }
 
-                    movieAdapter?.let {
+                    contentAdapter?.let {
                         if (
                             isScrolling &&
                             !it.isLoading &&
@@ -233,7 +239,7 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
             sharedViewModel.windowSize.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
-        movieAdapter = null
+        contentAdapter = null
         super.onDestroyView()
     }
 }

@@ -8,8 +8,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
+import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.repository.MovieRepository
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.setData
@@ -24,18 +26,21 @@ import kotlinx.coroutines.withContext
 const val SEARCH_MOVIE_PAGE_KEY = "rv.movie.search.page"
 const val SEARCH_MOVIE_SCROLL_POSITION_KEY = "rv.movie.search.scroll_position"
 const val SEARCH_MOVIE_TEXT_KEY = "rv.movie.search.text"
+const val SEARCH_CONTENT_TYPE_KEY = "rv.search.content_type"
 
 class MovieSearchViewModel @AssistedInject constructor(
     private val movieRepository: MovieRepository,
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val vmSearch: String,
+    @Assisted private val vmContentType: Constants.ContentType,
     @Assisted var isNetworkAvailable: Boolean
 ): ViewModel() {
-    private val _movieList = MutableLiveData<NetworkListResponse<List<Movie>>>()
-    val movies: LiveData<NetworkListResponse<List<Movie>>> = _movieList
+    private val _movieList = MutableLiveData<NetworkListResponse<List<ContentModel>>>()
+    val movies: LiveData<NetworkListResponse<List<ContentModel>>> = _movieList
 
     // Process Death variables
     var isRestoringData = false
+    private var contentType: Constants.ContentType = savedStateHandle[SEARCH_CONTENT_TYPE_KEY] ?: vmContentType
     private var page: Int = savedStateHandle[SEARCH_MOVIE_PAGE_KEY] ?: 1
     private var search: String = savedStateHandle[SEARCH_MOVIE_TEXT_KEY] ?: vmSearch
     var scrollPosition: Int = savedStateHandle[SEARCH_MOVIE_SCROLL_POSITION_KEY] ?: 0
@@ -48,6 +53,7 @@ class MovieSearchViewModel @AssistedInject constructor(
         if (page != 1 || search != vmSearch) {
             restoreData()
         } else {
+            setContentType(vmContentType)
             setSearch(vmSearch)
 
             startMoviesFetch(search, true)
@@ -65,7 +71,7 @@ class MovieSearchViewModel @AssistedInject constructor(
     }
 
     fun searchMoviesByTitle() {
-        val prevList = arrayListOf<Movie>()
+        val prevList = arrayListOf<ContentModel>()
         if (_movieList.value?.data != null && page != 1) {
             prevList.addAll(_movieList.value!!.data!!.toCollection(ArrayList()))
         }
@@ -82,8 +88,13 @@ class MovieSearchViewModel @AssistedInject constructor(
                             setPagePosition(page.plus(1))
                     } else if (response.isPaginating) {
                         _movieList.value = setPaginationLoading(prevList)
-                    } else
-                        _movieList.value = response
+                    } else {
+                        val contentResponse: NetworkListResponse<List<ContentModel>> = NetworkListResponse(
+                            response.data, response.isLoading, response.isPaginating, response.isFailed,
+                            response.isPaginationData, response.isPaginationExhausted, response.errorMessage
+                        )
+                        _movieList.value = contentResponse
+                    }
                 }
             }
         }
@@ -115,6 +126,11 @@ class MovieSearchViewModel @AssistedInject constructor(
         }
     }
 
+    private fun setContentType(newContentType: Constants.ContentType) {
+        contentType = newContentType
+        savedStateHandle[SEARCH_CONTENT_TYPE_KEY] = contentType
+    }
+
     private fun setPagePosition(newPage: Int) {
         page = newPage
         savedStateHandle[SEARCH_MOVIE_PAGE_KEY] = page
@@ -134,15 +150,15 @@ class MovieSearchViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(savedStateHandle: SavedStateHandle, vmSearch: String, isNetworkAvailable: Boolean): MovieSearchViewModel
+        fun create(savedStateHandle: SavedStateHandle, vmSearch: String, vmContentType: Constants.ContentType, isNetworkAvailable: Boolean): MovieSearchViewModel
     }
 
     companion object {
-        fun provideMovieViewModelFactory(factory: Factory, owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null, vmSearch: String, isNetworkAvailable: Boolean): AbstractSavedStateViewModelFactory {
+        fun provideMovieViewModelFactory(factory: Factory, owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null, vmSearch: String, vmContentType: Constants.ContentType, isNetworkAvailable: Boolean): AbstractSavedStateViewModelFactory {
             return object: AbstractSavedStateViewModelFactory(owner, defaultArgs) {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
-                    return factory.create(handle, vmSearch, isNetworkAvailable) as T
+                    return factory.create(handle, vmSearch, vmContentType, isNetworkAvailable) as T
                 }
             }
         }

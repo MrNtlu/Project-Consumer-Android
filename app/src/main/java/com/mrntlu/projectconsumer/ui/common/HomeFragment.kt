@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui
+package com.mrntlu.projectconsumer.ui.common
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,23 +8,21 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mrntlu.projectconsumer.adapters.HomePagerAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentHomeBinding
+import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>() {
-
-    private val tabList = listOf(
-        "Movies",
-        "TV Series",
-        "Anime",
-        "Games"
-    )
 
     private val viewModel: ViewPagerSharedViewModel by activityViewModels()
 
     private var viewPagerAdapter: HomePagerAdapter? = null
     private var mediator: TabLayoutMediator? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -46,7 +44,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             isUserInputEnabled = false
 
             mediator = TabLayoutMediator(binding.homeTabLayout, this) { tab, position ->
-                tab.text = tabList[position]
+                tab.text = Constants.TabList[position]
             }
             mediator?.attach()
         }
