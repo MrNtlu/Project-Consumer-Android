@@ -19,6 +19,10 @@ import com.mrntlu.projectconsumer.utils.printLog
 
 class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
+    private companion object {
+        private const val KEY_VALUE = "content_type"
+    }
+
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
 
     override fun onCreateView(
@@ -32,6 +36,12 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        savedInstanceState?.let {
+            contentType = Constants.ContentType.fromStringValue(
+                savedInstanceState.getString(KEY_VALUE, Constants.ContentType.MOVIE.value)
+            )
+        }
+
         setUI()
         setListeners()
         setGridLayout()
@@ -41,7 +51,10 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
         binding.apply {
             discoverTabLayout.apply {
                 for (tab in Constants.TabList) {
-                    addTab(discoverTabLayout.newTab().setText(tab))
+                    addTab(
+                        discoverTabLayout.newTab().setText(tab),
+                        tab == contentType.value
+                    )
                 }
             }
         }
@@ -136,6 +149,12 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
                 )
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.putString(KEY_VALUE, contentType.value)
     }
 
     override fun onDestroyView() {

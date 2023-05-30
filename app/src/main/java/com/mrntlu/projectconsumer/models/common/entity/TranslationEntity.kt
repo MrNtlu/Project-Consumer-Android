@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.models.main.movie.entity
+package com.mrntlu.projectconsumer.models.common.entity
 
 import androidx.room.ColumnInfo
 

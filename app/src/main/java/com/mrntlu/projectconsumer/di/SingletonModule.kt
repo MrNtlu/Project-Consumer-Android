@@ -7,11 +7,13 @@ import com.mrntlu.projectconsumer.service.AuthInterceptor
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.TVSeriesApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserInteractionApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
+import com.mrntlu.projectconsumer.service.room.TVSeriesDao
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
 import dagger.Module
@@ -109,6 +111,14 @@ class SingletonModule {
 
     @Singleton
     @Provides
+    fun provideTVSeriesAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): TVSeriesApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(TVSeriesApiService::class.java)
+
+    @Singleton
+    @Provides
     fun provideAuthAPIService(@Named("auth_okhttp") okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): AuthApiService =
         retrofit
             .client(okHttpClient)
@@ -133,4 +143,8 @@ class SingletonModule {
     @Singleton
     @Provides
     fun provideMovieDao(cacheDB: CacheDatabase): MovieDao = cacheDB.getMovieDao()
+
+    @Singleton
+    @Provides
+    fun provideTVSeriesDao(cacheDB: CacheDatabase): TVSeriesDao = cacheDB.getTVSeriesDao()
 }

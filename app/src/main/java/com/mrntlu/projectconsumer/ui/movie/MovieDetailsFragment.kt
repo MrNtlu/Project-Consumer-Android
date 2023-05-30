@@ -31,7 +31,7 @@ import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
 import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
-import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
+import com.mrntlu.projectconsumer.models.main.movie.MovieDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.ui.BaseFragment
@@ -41,8 +41,9 @@ import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
-import com.mrntlu.projectconsumer.viewmodels.movie.MovieDetailsViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
@@ -59,9 +60,9 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     private var buyAdapter: StreamingAdapter? = null
     private var rentAdapter: StreamingAdapter? = null
 
-    private var watchList: MovieWatchList? = null
-    private var consumeLater: ConsumeLater? = null
-    private var isUserInteractionFailed = false
+    private var movieDetails: MovieDetails? = null
+
+    private var isResponseFailed = false
     private lateinit var countryCode: String
 
     private var consumeLaterDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
@@ -73,9 +74,14 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         it.first
     }
 
+    /* TODO!!!!
+    * TODO Check for process death
+    *  TODO!!!!!
+     */
+
     private val onBottomSheetClosedCallback = object: OnButtomSheetClosed<MovieWatchList> {
         override fun onSuccess(data: MovieWatchList?, operation: BottomSheetOperation) {
-            watchList = data
+            movieDetails?.movieWatchList = data
 
             if (operation != BottomSheetOperation.UPDATE)
                 handleWatchListLottie()
@@ -95,10 +101,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         activity?.window?.statusBarColor = Color.TRANSPARENT
         countryCode = sharedViewModel.getCountryCode()
 
-        setUI()
-        setLottieUI()
-        setListeners()
-        setRecyclerView()
         setObservers()
     }
 
@@ -107,28 +109,28 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
 
             setOnClickListener {
-                if (sharedViewModel.isNetworkAvailable()) {
-                    if (consumeLater == null) {
-                        args.movieArgs.apply {
+                if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
+                    if (movieDetails != null && movieDetails?.watchLater == null) {
+                        movieDetails!!.apply {
                             viewModel.createConsumeLater(
                                 ConsumeLaterBody(id, tmdbID, null, "movie", null)
                             )
                         }
-                    } else {
+                    } else if (movieDetails != null) {
                         if (consumeLaterDeleteLiveData != null && consumeLaterDeleteLiveData?.hasActiveObservers() == true)
                             consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
                         consumeLaterDeleteLiveData =
-                            viewModel.deleteConsumeLater(IDBody(consumeLater!!.id))
+                            viewModel.deleteConsumeLater(IDBody(movieDetails!!.watchLater!!.id))
 
 
                         consumeLaterDeleteLiveData?.observe(viewLifecycleOwner) { response ->
                             handleUserInteractionLoading(response)
 
                             if (response is NetworkResponse.Success)
-                                consumeLater = null
+                                movieDetails!!.watchLater = null
 
-                            if (consumeLater == null)
+                            if (movieDetails!!.watchLater == null)
                                 handleWatchLaterLottie()
 
                             if (response is NetworkResponse.Failure)
@@ -136,7 +138,10 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                         }
                     }
                 } else {
-                    context?.showErrorDialog(getString(R.string.no_internet_connection))
+                    if (!sharedViewModel.isNetworkAvailable())
+                        context?.showErrorDialog(getString(R.string.no_internet_connection))
+
+                    //TODO Else show login/register dialog!
                 }
             }
         }
@@ -145,18 +150,23 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.like else R.raw.like_night)
 
             setOnClickListener {
-                if (sharedViewModel.isNetworkAvailable()) {
-                    activity?.let {
-                        val listBottomSheet = MovieDetailsBottomSheet(
-                            onBottomSheetClosedCallback,
-                            watchList,
-                            args.movieArgs.id,
-                            args.movieArgs.tmdbID,
-                        )
-                        listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
+                if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
+                    if (movieDetails != null) {
+                        activity?.let {
+                            val listBottomSheet = MovieDetailsBottomSheet(
+                                onBottomSheetClosedCallback,
+                                movieDetails!!.movieWatchList,
+                                args.movieId,
+                                movieDetails!!.tmdbID,
+                            )
+                            listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
+                        }
                     }
                 } else {
-                    context?.showErrorDialog(getString(R.string.no_internet_connection))
+                    if (!sharedViewModel.isNetworkAvailable())
+                        context?.showErrorDialog(getString(R.string.no_internet_connection))
+
+                    //TODO Else show login/register dialog!
                 }
             }
         }
@@ -164,7 +174,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private fun handleWatchListLottie() {
         binding.detailsInclude.addListLottie.apply {
-            frame = if (watchList == null) 130 else 0
+            frame = if (movieDetails?.movieWatchList == null) 130 else 0
 
             if (frame != 0) {
                 setMinAndMaxFrame(75, 129)
@@ -177,7 +187,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private fun handleWatchLaterLottie() {
         binding.detailsInclude.watchLaterLottie.apply {
-            frame = if (consumeLater == null) 60 else 0
+            frame = if (movieDetails?.watchLater == null) 60 else 0
 
             if (frame != 0) {
                 reverseAnimationSpeed()
@@ -191,7 +201,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     }
 
     private fun handleUserInteractionLoading(response: NetworkResponse<*>) {
-        isUserInteractionFailed = response is NetworkResponse.Failure
+        isResponseFailed = response is NetworkResponse.Failure
 
         binding.detailsInclude.apply {
             userInteractionLoading.setAnimation(if (response is NetworkResponse.Failure) R.raw.error_small else R.raw.loading)
@@ -217,22 +227,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     }
 
     private fun setUI() {
-        //TODO if both images are null, hide.
-        Glide.with(requireContext()).load("https://image.tmdb.org/t/p/original/wxgD3fB5lQ2sGJLog0rvXW049Pf.jpg").addListener(object: RequestListener<Drawable> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                binding.detailsToolbarProgress.setGone()
-                binding.detailsAppBarLayout.setExpanded(false)
-                val collapsingLayoutParams: LayoutParams = binding.detailsCollapsingToolbar.layoutParams as LayoutParams
-                collapsingLayoutParams.scrollFlags = -1
-                return false
-            }
-
-            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                binding.detailsToolbarProgress.setGone()
-                return false
-            }
-        }).into(binding.detailsToolbarIV)
-
         val spinnerAdapter = ArrayAdapter(binding.root.context, android.R.layout.simple_spinner_item, countryList.map { it.first })
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.detailsStreamingCountrySpinner.adapter = spinnerAdapter
@@ -242,7 +236,24 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             }
         )
 
-        args.movieArgs.apply {
+        movieDetails!!.apply {
+            binding.detailsToolbarProgress.setVisible()
+            Glide.with(requireContext()).load(backdrop ?: imageURL).addListener(object:
+                RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    binding.detailsToolbarProgress.setGone()
+                    binding.detailsAppBarLayout.setExpanded(false)
+                    val collapsingLayoutParams: LayoutParams = binding.detailsCollapsingToolbar.layoutParams as LayoutParams
+                    collapsingLayoutParams.scrollFlags = -1
+                    return false
+                }
+
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    binding.detailsToolbarProgress.setGone()
+                    return false
+                }
+            }).into(binding.detailsToolbarIV)
+
             val titleStr = if (!translations.isNullOrEmpty()) {
                 translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.title ?: title
             } else title
@@ -300,8 +311,8 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             detailsStreamingCountrySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     countryCode = countryList[position].second
-                    val streaming = args.movieArgs.streaming!!
-                    val streamingList = streaming.firstOrNull { it.countryCode == countryCode }
+                    val streaming = movieDetails?.streaming
+                    val streamingList = streaming?.firstOrNull { it.countryCode == countryCode }
 
                     streamingAdapter?.setNewList(streamingList?.streamingPlatforms ?: listOf())
                     buyAdapter?.setNewList(streamingList?.buyOptions ?: listOf())
@@ -314,11 +325,11 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
     }
 
     private fun setRecyclerView() {
-        if (!args.movieArgs.actors.isNullOrEmpty()) {
+        if (!movieDetails?.actors.isNullOrEmpty()) {
             binding.detailsActorsRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
-                actorAdapter = DetailsAdapter(detailsList = args.movieArgs.actors!!.filter {
+                actorAdapter = DetailsAdapter(detailsList = movieDetails!!.actors!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -334,12 +345,12 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             binding.detailsActorsRV.setGone()
         }
 
-        if (!args.movieArgs.productionCompanies.isNullOrEmpty()) {
+        if (!movieDetails?.productionCompanies.isNullOrEmpty()) {
             binding.detailsProductionRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
 
-                actorAdapter = DetailsAdapter(R.drawable.ic_company_75, 18F, args.movieArgs.productionCompanies!!.filter {
+                actorAdapter = DetailsAdapter(R.drawable.ic_company_75, 18F, movieDetails!!.productionCompanies!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -357,13 +368,13 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             binding.detailsProductionRV.setGone()
         }
 
-        if (args.movieArgs.genres.isNotEmpty()) {
+        if (!movieDetails?.genres.isNullOrEmpty()) {
             binding.detailsGenreRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
 
-                genreAdapter = GenreAdapter(args.movieArgs.genres.map { it.name }) {
-                    printLog("Genre ${args.movieArgs.genres[it]}")
+                genreAdapter = GenreAdapter(movieDetails!!.genres.map { it.name }) {
+                    printLog("Genre ${movieDetails!!.genres[it]}")
                 }
                 adapter = genreAdapter
             }
@@ -372,8 +383,8 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             binding.detailsGenreRV.setGone()
         }
 
-        if (!args.movieArgs.streaming.isNullOrEmpty()) {
-            val streaming = args.movieArgs.streaming!!
+        if (!movieDetails?.streaming.isNullOrEmpty()) {
+            val streaming = movieDetails!!.streaming!!
 
             binding.detailsStreamingRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -407,25 +418,47 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
     }
 
+    private fun toggleLayoutScroll(isEnabled: Boolean) {
+        binding.detailsCollapsingToolbar.apply {
+            val layoutParams = layoutParams as LayoutParams
+            if (isEnabled)
+                layoutParams.scrollFlags = layoutParams.scrollFlags or LayoutParams.SCROLL_FLAG_SCROLL
+            else
+                layoutParams.scrollFlags = layoutParams.scrollFlags and LayoutParams.SCROLL_FLAG_SCROLL.inv()
+
+            binding.detailsCollapsingToolbar.layoutParams = layoutParams
+        }
+    }
+
     private fun setObservers() {
         if (!viewModel.movieDetails.hasObservers())
-            viewModel.getMovieDetails(args.movieArgs.id)
+            viewModel.getMovieDetails(args.movieId)
 
-        //TODO if is logged in
         viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
             binding.detailsInclude.apply {
-                handleUserInteractionLoading(response)
+                isResponseFailed = response is NetworkResponse.Failure
+                toggleLayoutScroll(response !is NetworkResponse.Loading)
+                binding.loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
 
-                if (response is NetworkResponse.Success) {
-                    watchList = response.data.data.movieWatchList
-                    consumeLater = response.data.data.watchLater
+                when(response) {
+                    is NetworkResponse.Failure -> TODO()
+                    is NetworkResponse.Success -> {
+                        movieDetails = response.data.data
+
+                        setUI()
+                        setLottieUI()
+                        setListeners()
+                        setRecyclerView()
+
+                        if (movieDetails?.movieWatchList != null)
+                            handleWatchListLottie()
+
+                        if (movieDetails?.watchLater != null)
+                            handleWatchLaterLottie()
+                    }
+                    else -> {}
                 }
-
-                if (watchList != null)
-                    handleWatchListLottie()
-
-                if (consumeLater != null)
-                    handleWatchLaterLottie()
+                //TODO Loading
             }
         }
 
@@ -433,9 +466,9 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             handleUserInteractionLoading(response)
 
             if (response is NetworkResponse.Success)
-                consumeLater = response.data.data
+                movieDetails?.watchLater = response.data.data
 
-            if (consumeLater != null)
+            if (movieDetails?.watchLater != null)
                 handleWatchLaterLottie()
 
             if (response is NetworkResponse.Failure)
@@ -443,8 +476,8 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
-            if (isUserInteractionFailed && it)
-                viewModel.getMovieDetails(args.movieArgs.id)
+            if (isResponseFailed && it)
+                viewModel.getMovieDetails(args.movieId)
         }
     }
 

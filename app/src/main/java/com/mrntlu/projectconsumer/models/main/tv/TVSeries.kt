@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.models.main.movie
+package com.mrntlu.projectconsumer.models.main.tv
 
 import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.ContentModel
@@ -6,17 +6,19 @@ import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
+import com.mrntlu.projectconsumer.models.main.movie.Streaming
 
-data class Movie(
+data class TVSeries(
     @SerializedName("_id")
     override val id: String,
     override val description: String,
-    val genres: List<TmdbGenre>,
-    val streaming: List<Streaming>?,
     val actors: List<Actor>?,
+    val genres: List<TmdbGenre>,
+    val networks: List<Network>?,
+    val seasons: List<Season>,
     val translations: List<Translation>?,
-    val length: Int,
     val status: String,
+    val streaming: List<Streaming>?,
     val backdrop: String?,
 
     @SerializedName("image_url")
@@ -25,11 +27,8 @@ data class Movie(
     @SerializedName("small_image_url")
     val smallImageURL: String,
 
-    @SerializedName("imdb_id")
-    val imdbID: String?,
-
-    @SerializedName("release_date")
-    val releaseDate: String,
+    @SerializedName("first_air_date")
+    val firstAirDate: String,
 
     @SerializedName("title_en")
     override val title: String,
@@ -48,6 +47,12 @@ data class Movie(
 
     @SerializedName("tmdb_vote_count")
     val tmdbVoteCount: Int,
+
+    @SerializedName("total_episodes")
+    val totalEpisodes: Int,
+
+    @SerializedName("total_seasons")
+    val totalSeasons: Int,
 
     @SerializedName("production_companies")
     val productionCompanies: List<ProductionAndCompany>?,

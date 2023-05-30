@@ -68,13 +68,13 @@
         android:label="fragment_movie_details"
         tools:layout="@layout/fragment_movie_details" >
         <argument
-            android:name="movieArgs"
-            app:argType="com.mrntlu.projectconsumer.models.main.movie.Movie" />
+            android:name="movieId"
+            app:argType="string" />
     </fragment>
 
     <fragment
-        android:id="@+id/movieSearchFragment"
-        android:name="com.mrntlu.projectconsumer.ui.movie.MovieSearchFragment"
+        android:id="@+id/searchFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.SearchFragment"
         android:label="fragment_movie_search"
         tools:layout="@layout/fragment_movie_search" >
         <argument
@@ -142,7 +142,7 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_navigation_movie_to_movieSearchFragment"
-            app:destination="@id/movieSearchFragment"
+            app:destination="@id/searchFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -156,7 +156,7 @@
         tools:layout="@layout/fragment_discover" >
         <action
             android:id="@+id/action_navigation_discover_to_movieSearchFragment"
-            app:destination="@id/movieSearchFragment"
+            app:destination="@id/searchFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"

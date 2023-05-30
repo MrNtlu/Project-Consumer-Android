@@ -1,38 +1,23 @@
-package com.mrntlu.projectconsumer.models.main.movie.entity
+package com.mrntlu.projectconsumer.models.common.entity
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.mrntlu.projectconsumer.models.main.movie.Actor
-import com.mrntlu.projectconsumer.models.main.movie.ProductionAndCompany
-import com.mrntlu.projectconsumer.models.main.movie.Streaming
+import com.mrntlu.projectconsumer.models.common.Actor
+import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 
 class Converters {
 
     @TypeConverter
-    fun fromGenreEntity(genres: List<MovieGenreEntity>?): String {
+    fun fromGenreEntity(genres: List<TmdbGenreEntity>?): String {
         return Gson().toJson(genres)
     }
 
     @TypeConverter
-    fun toGenreEntity(genres: String?): List<MovieGenreEntity>? {
+    fun toGenreEntity(genres: String?): List<TmdbGenreEntity>? {
         if (genres != null) {
-            val genre = object : TypeToken<List<MovieGenreEntity>>() {}.type
+            val genre = object : TypeToken<List<TmdbGenreEntity>>() {}.type
             return Gson().fromJson(genres, genre)
-        }
-        return emptyList()
-    }
-
-    @TypeConverter
-    fun fromStreamingList(streamingList: List<Streaming>?): String {
-        return Gson().toJson(streamingList)
-    }
-
-    @TypeConverter
-    fun toStreamingList(streamingList: String?): List<Streaming>? {
-        if (streamingList != null) {
-            val streaming = object : TypeToken<List<Streaming>>() {}.type
-            return Gson().fromJson(streamingList, streaming)
         }
         return emptyList()
     }

@@ -37,6 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:visibility="gone"
                 android:indeterminateTint="?attr/mainTextColor" />
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -222,7 +223,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Genres"
+                android:text="@string/genres"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -319,9 +320,7 @@
                 android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsBuyTV">
-
-            </androidx.recyclerview.widget.RecyclerView>
+                app:layout_constraintTop_toBottomOf="@+id/detailsBuyTV"/>
 
             <TextView
                 android:id="@+id/detailsRentTV"
@@ -369,4 +368,18 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/loadingLayout"
+        android:elevation="9dp"
+        android:background="?attr/mainBackgroundColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+        <include
+            layout="@layout/layout_shimmer_movie_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

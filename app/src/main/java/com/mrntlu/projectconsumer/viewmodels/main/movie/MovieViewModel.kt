@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.viewmodels.movie
+package com.mrntlu.projectconsumer.viewmodels.main.movie
 
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory

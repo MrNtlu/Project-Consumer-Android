@@ -16,7 +16,7 @@ import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.viewmodels.movie.MoviePreviewViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.movie.MoviePreviewViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -70,7 +70,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             upcomingAdapter = PreviewAdapter(object: Interaction<Movie> {
                 override fun onItemSelected(item: Movie, position: Int) {
-                    val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
+                    val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item.id)
 
                     navController.navigate(navWithAction)
                 }
@@ -92,7 +92,7 @@ class MovieFragment: BaseFragment<FragmentMovieBinding>() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
             popularAdapter = PreviewAdapter(object: Interaction<Movie> {
                 override fun onItemSelected(item: Movie, position: Int) {
-                    val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item)
+                    val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieDetailsFragment(item.id)
 
                     navController.navigate(navWithAction)
                 }

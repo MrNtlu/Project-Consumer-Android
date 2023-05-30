@@ -33,7 +33,7 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
-import com.mrntlu.projectconsumer.viewmodels.movie.MovieViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -189,7 +189,7 @@ class MovieListFragment: BaseFragment<FragmentMovieListBinding>() {
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<Movie> {
                     override fun onItemSelected(item: Movie, position: Int) {
-                        val navWithAction = MovieListFragmentDirections.actionMovieListFragmentToMovieDetailsFragment(item)
+                        val navWithAction = MovieListFragmentDirections.actionMovieListFragmentToMovieDetailsFragment(item.id)
 
                         isNavigatingBack = true
                         navController.navigate(navWithAction)

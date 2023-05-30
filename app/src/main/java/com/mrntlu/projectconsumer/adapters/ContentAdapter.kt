@@ -19,7 +19,6 @@ import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
-import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -45,17 +44,17 @@ class ContentAdapter<T: ContentModel>(
         return when(viewType) {
             RecyclerViewEnum.Empty.value -> EmptyViewHolder(CellEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.Loading.value -> LoadingViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            RecyclerViewEnum.Error.value -> ErrorViewHolder<Movie>(CellErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.Error.value -> ErrorViewHolder<T>(CellErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.PaginationLoading.value -> PaginationLoadingViewHolder(CellPaginationLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.PaginationExhaust.value -> PaginationExhaustViewHolder(CellPaginationExhaustBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else -> return ItemViewHolder(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            else -> return ItemViewHolder<T>(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
-    inner class ItemViewHolder(
+    inner class ItemViewHolder<T: ContentModel>(
         private val binding: CellPreviewItemBinding,
-    ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<Movie> {
-        override fun bind(item: Movie, position: Int, interaction: Interaction<Movie>) {
+    ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
+        override fun bind(item: T, position: Int, interaction: Interaction<T>) {
             binding.apply {
                 previewCard.setGone()
                 previewIVProgress.setVisible()

@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -316,8 +317,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         sharedViewModel.isAuthenticated.observe(this) {
-            binding.navView.menu.clear()
-            binding.navView.inflateMenu(if (it) R.menu.bottom_nav_auth_menu else R.menu.bottom_nav_menu)
+            if (it && binding.navView.menu[2].itemId != R.id.navigation_profile) {
+                binding.navView.menu.clear()
+                binding.navView.inflateMenu(R.menu.bottom_nav_auth_menu)
+            } else if (!it && binding.navView.menu[2].itemId != R.id.navigation_settings) {
+                binding.navView.menu.clear()
+                binding.navView.inflateMenu(R.menu.bottom_nav_menu)
+            }
             setAppBarConfiguration()
 
             if (!it) {

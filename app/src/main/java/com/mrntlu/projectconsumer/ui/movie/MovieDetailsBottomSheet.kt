@@ -28,7 +28,7 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
-import com.mrntlu.projectconsumer.viewmodels.movie.MovieDetailsViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

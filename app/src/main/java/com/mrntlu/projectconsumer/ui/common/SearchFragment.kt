@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui.movie
+package com.mrntlu.projectconsumer.ui.common
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,24 +29,21 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isSuccessful
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
-import com.mrntlu.projectconsumer.viewmodels.movie.MovieSearchViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
+class SearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
-    // TODO Convert it to generic search class, pass tag & searchQuery
-    // Change movie details, pass ID only.
-    // Change MovieSearchViewModel, implement contentType
+    private val args: SearchFragmentArgs by navArgs()
 
-    private val args: MovieSearchFragmentArgs by navArgs()
-
-    @Inject lateinit var viewModelFactory: MovieSearchViewModel.Factory
-    private val viewModel: MovieSearchViewModel by viewModels {
-        MovieSearchViewModel.provideMovieViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
+    @Inject lateinit var viewModelFactory: SearchViewModel.Factory
+    private val viewModel: SearchViewModel by viewModels {
+        SearchViewModel.provideMovieViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
     }
 
     private lateinit var searchQuery: String
@@ -54,6 +51,11 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
     private var contentAdapter: ContentAdapter<ContentModel>? = null
     private var gridCount = 3
+
+    /* TODO!!!!
+    * TODO Check for process death
+    *  TODO!!!!!
+     */
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -125,7 +127,7 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
             viewModel.isNetworkAvailable = it
         }
 
-        viewModel.movies.observe(viewLifecycleOwner) { response ->
+        viewModel.searchResults.observe(viewLifecycleOwner) { response ->
             if (response.isFailed()) {
                 contentAdapter?.setErrorView(response.errorMessage!!)
             } else if (response.isLoading) {
@@ -174,8 +176,17 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
-//                        val navWithAction = MovieSearchFragmentDirections.actionMovieSearchFragmentToMovieDetailsFragment(item)
-//                        navController.navigate(navWithAction)
+                        when(args.searchType) {
+                            Constants.ContentType.ANIME -> TODO()
+                            Constants.ContentType.MOVIE -> {
+                                val navWithAction = SearchFragmentDirections.actionMovieSearchFragmentToMovieDetailsFragment(item.id)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.TV -> {
+                                printLog("TV Clicked ${item.id}")
+                            }
+                            Constants.ContentType.GAME -> TODO()
+                        }
                     }
 
                     override fun onErrorRefreshPressed() {
@@ -220,7 +231,7 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
                             it.canPaginate &&
                             !it.isPaginating
                         ) {
-                            viewModel.searchMoviesByTitle()
+                            viewModel.searchContentByTitle()
                         }
                     }
                 }
@@ -235,7 +246,7 @@ class MovieSearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
-            viewModel.movies.removeObservers(this)
+            viewModel.searchResults.removeObservers(this)
             sharedViewModel.windowSize.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }

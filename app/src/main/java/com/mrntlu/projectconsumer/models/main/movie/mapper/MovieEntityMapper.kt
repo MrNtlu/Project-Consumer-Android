@@ -1,12 +1,12 @@
 package com.mrntlu.projectconsumer.models.main.movie.mapper
 
 import com.mrntlu.projectconsumer.interfaces.EntityMapper
+import com.mrntlu.projectconsumer.models.common.TmdbGenre
+import com.mrntlu.projectconsumer.models.common.Translation
+import com.mrntlu.projectconsumer.models.common.entity.TmdbGenreEntity
+import com.mrntlu.projectconsumer.models.common.entity.TranslationEntity
 import com.mrntlu.projectconsumer.models.main.movie.Movie
-import com.mrntlu.projectconsumer.models.main.movie.MovieGenre
-import com.mrntlu.projectconsumer.models.main.movie.Translation
 import com.mrntlu.projectconsumer.models.main.movie.entity.MovieEntity
-import com.mrntlu.projectconsumer.models.main.movie.entity.MovieGenreEntity
-import com.mrntlu.projectconsumer.models.main.movie.entity.TranslationEntity
 
 object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
     override fun asEntity(
@@ -18,7 +18,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
             MovieEntity(
                 movie.id,
                 movie.description,
-                movie.genres.map { MovieGenreEntity(it.name, it.tmdbID) },
+                movie.genres.map { TmdbGenreEntity(it.name, it.tmdbID) },
                 movie.streaming,
                 movie.actors,
                 movie.translations?.map { TranslationEntity(it.lanCode, it.lanName, it.lanNameEn, it.title, it.description) },
@@ -47,7 +47,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
             Movie(
                 movieEntity.id,
                 movieEntity.description,
-                movieEntity.genres.map { MovieGenre(it.name, it.tmdbID) },
+                movieEntity.genres.map { TmdbGenre(it.name, it.tmdbID) },
                 movieEntity.streaming,
                 movieEntity.actors,
                 movieEntity.translations?.map { Translation(it.lanCode, it.lanName, it.lanNameEn, it.title, it.description) },

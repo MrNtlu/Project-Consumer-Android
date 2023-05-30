@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.viewmodels.movie
+package com.mrntlu.projectconsumer.viewmodels.main
 
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.mrntlu.projectconsumer.interfaces.ContentModel
-import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.repository.MovieRepository
+import com.mrntlu.projectconsumer.repository.TVRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.isSuccessful
@@ -28,15 +28,16 @@ const val SEARCH_MOVIE_SCROLL_POSITION_KEY = "rv.movie.search.scroll_position"
 const val SEARCH_MOVIE_TEXT_KEY = "rv.movie.search.text"
 const val SEARCH_CONTENT_TYPE_KEY = "rv.search.content_type"
 
-class MovieSearchViewModel @AssistedInject constructor(
+class SearchViewModel @AssistedInject constructor(
     private val movieRepository: MovieRepository,
+    private val tvRepository: TVRepository,
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val vmSearch: String,
     @Assisted private val vmContentType: Constants.ContentType,
     @Assisted var isNetworkAvailable: Boolean
 ): ViewModel() {
-    private val _movieList = MutableLiveData<NetworkListResponse<List<ContentModel>>>()
-    val movies: LiveData<NetworkListResponse<List<ContentModel>>> = _movieList
+    private val _searchList = MutableLiveData<NetworkListResponse<List<ContentModel>>>()
+    val searchResults: LiveData<NetworkListResponse<List<ContentModel>>> = _searchList
 
     // Process Death variables
     var isRestoringData = false
@@ -67,33 +68,40 @@ class MovieSearchViewModel @AssistedInject constructor(
         } else if (refreshAnyway)
             setPagePosition(1)
 
-        searchMoviesByTitle()
+        searchContentByTitle()
     }
 
-    fun searchMoviesByTitle() {
+    fun searchContentByTitle() {
         val prevList = arrayListOf<ContentModel>()
-        if (_movieList.value?.data != null && page != 1) {
-            prevList.addAll(_movieList.value!!.data!!.toCollection(ArrayList()))
+        if (_searchList.value?.data != null && page != 1) {
+            prevList.addAll(_searchList.value!!.data!!.toCollection(ArrayList()))
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.searchMoviesByTitle(search, page, isNetworkAvailable).collect { response ->
+            val flowCollector = when(contentType) {
+                Constants.ContentType.ANIME -> TODO()
+                Constants.ContentType.MOVIE -> movieRepository.searchMoviesByTitle(search, page, isNetworkAvailable)
+                Constants.ContentType.TV -> tvRepository.searchTVSeriesByTitle(search, page, isNetworkAvailable)
+                Constants.ContentType.GAME -> TODO()
+            }
+
+            flowCollector.collect { response ->
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful()) {
                         prevList.addAll(response.data!!)
 
-                        _movieList.value = setData(prevList, response.isPaginationData, response.isPaginationExhausted)
+                        _searchList.value = setData(prevList, response.isPaginationData, response.isPaginationExhausted)
 
                         if (!response.isPaginationExhausted)
                             setPagePosition(page.plus(1))
                     } else if (response.isPaginating) {
-                        _movieList.value = setPaginationLoading(prevList)
+                        _searchList.value = setPaginationLoading(prevList)
                     } else {
                         val contentResponse: NetworkListResponse<List<ContentModel>> = NetworkListResponse(
                             response.data, response.isLoading, response.isPaginating, response.isFailed,
                             response.isPaginationData, response.isPaginationExhausted, response.errorMessage
                         )
-                        _movieList.value = contentResponse
+                        _searchList.value = contentResponse
                     }
                 }
             }
@@ -104,11 +112,18 @@ class MovieSearchViewModel @AssistedInject constructor(
         isRestoringData = true
 
         var isPaginationExhausted = false
-        val tempList = arrayListOf<Movie>()
+        val tempList = arrayListOf<ContentModel>()
 
         viewModelScope.launch(Dispatchers.IO) {
             launch(Dispatchers.IO) {
-                movieRepository.searchMoviesByTitle(search, page, isNetworkAvailable, isRestoringData = true).collect { response ->
+                val flowCollector = when(contentType) {
+                    Constants.ContentType.ANIME -> TODO()
+                    Constants.ContentType.MOVIE -> movieRepository.searchMoviesByTitle(search, page, isNetworkAvailable, isRestoringData = true)
+                    Constants.ContentType.TV -> tvRepository.searchTVSeriesByTitle(search, page, isNetworkAvailable, isRestoringData = true)
+                    Constants.ContentType.GAME -> TODO()
+                }
+
+                flowCollector.collect { response ->
                     if (response.isSuccessful()) {
                         tempList.addAll(response.data!!)
                         isPaginationExhausted = response.isPaginationExhausted
@@ -117,7 +132,7 @@ class MovieSearchViewModel @AssistedInject constructor(
             }
 
             withContext(Dispatchers.Main) {
-                _movieList.value = setData(
+                _searchList.value = setData(
                     tempList,
                     isPaginationData = false,
                     isPaginationExhausted = if (isNetworkAvailable) false else isPaginationExhausted
@@ -150,7 +165,7 @@ class MovieSearchViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(savedStateHandle: SavedStateHandle, vmSearch: String, vmContentType: Constants.ContentType, isNetworkAvailable: Boolean): MovieSearchViewModel
+        fun create(savedStateHandle: SavedStateHandle, vmSearch: String, vmContentType: Constants.ContentType, isNetworkAvailable: Boolean): SearchViewModel
     }
 
     companion object {

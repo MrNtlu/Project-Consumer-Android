@@ -1,8 +1,8 @@
-package com.mrntlu.projectconsumer.models.main.movie.entity
+package com.mrntlu.projectconsumer.models.common.entity
 
 import androidx.room.ColumnInfo
 
-data class MovieGenreEntity(
+data class TmdbGenreEntity(
     val name: String,
     @ColumnInfo("tmdb_id")
     val tmdbID: Int,

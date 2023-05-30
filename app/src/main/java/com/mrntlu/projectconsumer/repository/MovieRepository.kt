@@ -7,6 +7,7 @@ import com.mrntlu.projectconsumer.models.main.movie.mapper.asModel
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
@@ -29,7 +30,10 @@ class MovieRepository @Inject constructor(
         fetchNetwork = {
             when(tag) {
                 FetchType.UPCOMING.tag -> movieApiService.getUpcomingMovies(page, sort)
-                else -> movieApiService.getMovieBySortFilter(page, sort, "released", null, null, null, null)
+                else -> movieApiService.getMovieBySortFilter(
+                    page, sort, Constants.MovieStatusRequests[1].request,
+                    null, null, null, null
+                )
             }
         },
         mapper = {

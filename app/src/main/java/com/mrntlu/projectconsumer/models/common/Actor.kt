@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.models.main.movie
+package com.mrntlu.projectconsumer.models.common
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
