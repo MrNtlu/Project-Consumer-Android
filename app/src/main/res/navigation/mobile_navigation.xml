@@ -91,6 +91,13 @@
             android:name="searchType"
             app:argType="com.mrntlu.projectconsumer.utils.Constants$ContentType"
             android:defaultValue="MOVIE" />
+        <action
+            android:id="@+id/action_searchFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -147,6 +154,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_home_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -178,4 +192,13 @@
         app:popExitAnim="@anim/slide_out_right"
         app:popUpTo="@id/navigation_home"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/tvDetailsFragment"
+        android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragment"
+        android:label="fragment_tv_details"
+        tools:layout="@layout/fragment_tv_details" >
+        <argument
+            android:name="tvId"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -9,6 +9,7 @@ import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.TVSeriesDao
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
+import com.mrntlu.projectconsumer.utils.networkResponseFlow
 import javax.inject.Inject
 
 class TVRepository @Inject constructor(
@@ -105,4 +106,8 @@ class TVRepository @Inject constructor(
             )
         }
     )
+
+    fun getTVSeriesDetails(id: String) = networkResponseFlow {
+        tvSeriesApiService.getTVSeriesDetails(id)
+    }
 }

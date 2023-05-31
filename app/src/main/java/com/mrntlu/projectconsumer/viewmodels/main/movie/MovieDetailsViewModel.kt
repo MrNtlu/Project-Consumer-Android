@@ -28,15 +28,11 @@ import javax.inject.Inject
 @HiltViewModel
 class MovieDetailsViewModel @Inject constructor(
     private val repository: UserListRepository,
-    private val userInteractionRepository: UserInteractionRepository,
     private val movieRepository: MovieRepository,
 ): ViewModel() {
 
     private val _movieWatchList = MutableLiveData<NetworkResponse<DataResponse<MovieWatchList>>>()
     val movieWatchList: LiveData<NetworkResponse<DataResponse<MovieWatchList>>> = _movieWatchList
-
-    private val _consumeLater = MutableLiveData<NetworkResponse<DataResponse<ConsumeLater>>>()
-    val consumeLater: LiveData<NetworkResponse<DataResponse<ConsumeLater>>> = _consumeLater
 
     private val _movieDetails = MutableLiveData<NetworkResponse<DataResponse<MovieDetails>>>()
     val movieDetails: LiveData<NetworkResponse<DataResponse<MovieDetails>>> = _movieDetails
@@ -58,26 +54,6 @@ class MovieDetailsViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteUserList(body).collect { response ->
-                withContext(Dispatchers.Main) {
-                    liveData.value = response
-                }
-            }
-        }
-
-        return liveData
-    }
-
-    fun createConsumeLater(body: ConsumeLaterBody) = networkResponseFlowCollector(
-        userInteractionRepository.createConsumeLater(body)
-    ) { response ->
-        _consumeLater.value = response
-    }
-
-    fun deleteConsumeLater(body: IDBody): LiveData<NetworkResponse<MessageResponse>> {
-        val liveData = MutableLiveData<NetworkResponse<MessageResponse>>()
-
-        viewModelScope.launch(Dispatchers.IO) {
-            userInteractionRepository.deleteConsumeLater(body).collect { response ->
                 withContext(Dispatchers.Main) {
                     liveData.value = response
                 }

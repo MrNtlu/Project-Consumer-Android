@@ -135,7 +135,7 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
                 GenreGrid(
                     !sharedViewModel.isLightTheme(),
                     when(contentType) {
-                        Constants.ContentType.ANIME -> TODO()
+                        Constants.ContentType.ANIME -> Constants.AnimeGenreList
                         Constants.ContentType.MOVIE -> Constants.MovieGenreList
                         Constants.ContentType.TV -> Constants.TVGenreList
                         Constants.ContentType.GAME -> TODO()
@@ -155,10 +155,5 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
         super.onSaveInstanceState(outState)
 
         outState.putString(KEY_VALUE, contentType.value)
-    }
-
-    override fun onDestroyView() {
-
-        super.onDestroyView()
     }
 }

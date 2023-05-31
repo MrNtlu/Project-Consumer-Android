@@ -43,6 +43,7 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
+import com.mrntlu.projectconsumer.viewmodels.main.ConsumeLaterViewModel
 import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -51,6 +52,7 @@ import java.util.Locale
 class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
+    private val consumeLaterViewModel: ConsumeLaterViewModel by viewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
 
     private var actorAdapter: DetailsAdapter? = null
@@ -104,6 +106,57 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         setObservers()
     }
 
+    private fun setObservers() {
+        if (!viewModel.movieDetails.hasObservers())
+            viewModel.getMovieDetails(args.movieId)
+
+        viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
+            binding.detailsInclude.apply {
+                isResponseFailed = response is NetworkResponse.Failure
+                toggleLayoutScroll(response !is NetworkResponse.Loading)
+                binding.loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
+
+                when(response) {
+                    is NetworkResponse.Failure -> TODO()
+                    is NetworkResponse.Success -> {
+                        movieDetails = response.data.data
+
+                        setUI()
+                        setLottieUI()
+                        setListeners()
+                        setRecyclerView()
+
+                        if (movieDetails?.movieWatchList != null)
+                            handleWatchListLottie()
+
+                        if (movieDetails?.watchLater != null)
+                            handleWatchLaterLottie()
+                    }
+                    else -> {}
+                }
+                //TODO Loading
+            }
+        }
+
+        consumeLaterViewModel.consumeLater.observe(viewLifecycleOwner) { response ->
+            handleUserInteractionLoading(response)
+
+            if (response is NetworkResponse.Success)
+                movieDetails?.watchLater = response.data.data
+
+            if (movieDetails?.watchLater != null)
+                handleWatchLaterLottie()
+
+            if (response is NetworkResponse.Failure)
+                context?.showErrorDialog(response.errorMessage)
+        }
+
+        sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
+            if (isResponseFailed && it)
+                viewModel.getMovieDetails(args.movieId)
+        }
+    }
+
     private fun setLottieUI() {
         binding.detailsInclude.watchLaterLottie.apply {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
@@ -112,7 +165,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                 if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
                     if (movieDetails != null && movieDetails?.watchLater == null) {
                         movieDetails!!.apply {
-                            viewModel.createConsumeLater(
+                            consumeLaterViewModel.createConsumeLater(
                                 ConsumeLaterBody(id, tmdbID, null, "movie", null)
                             )
                         }
@@ -121,7 +174,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                             consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
                         consumeLaterDeleteLiveData =
-                            viewModel.deleteConsumeLater(IDBody(movieDetails!!.watchLater!!.id))
+                            consumeLaterViewModel.deleteConsumeLater(IDBody(movieDetails!!.watchLater!!.id))
 
 
                         consumeLaterDeleteLiveData?.observe(viewLifecycleOwner) { response ->
@@ -243,8 +296,18 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     binding.detailsToolbarProgress.setGone()
                     binding.detailsAppBarLayout.setExpanded(false)
+
+                    val params = binding.detailsNestedSV.layoutParams as ViewGroup.MarginLayoutParams
+                    params.topMargin = 0
+                    binding.detailsNestedSV.layoutParams = params
+
+                    toggleLayoutScroll(false)
+                    binding.detailsNestedSV.isNestedScrollingEnabled = false
+
                     val collapsingLayoutParams: LayoutParams = binding.detailsCollapsingToolbar.layoutParams as LayoutParams
                     collapsingLayoutParams.scrollFlags = -1
+                    binding.detailsCollapsingToolbar.layoutParams = collapsingLayoutParams
+
                     return false
                 }
 
@@ -430,61 +493,10 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
     }
 
-    private fun setObservers() {
-        if (!viewModel.movieDetails.hasObservers())
-            viewModel.getMovieDetails(args.movieId)
-
-        viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
-            binding.detailsInclude.apply {
-                isResponseFailed = response is NetworkResponse.Failure
-                toggleLayoutScroll(response !is NetworkResponse.Loading)
-                binding.loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
-
-                when(response) {
-                    is NetworkResponse.Failure -> TODO()
-                    is NetworkResponse.Success -> {
-                        movieDetails = response.data.data
-
-                        setUI()
-                        setLottieUI()
-                        setListeners()
-                        setRecyclerView()
-
-                        if (movieDetails?.movieWatchList != null)
-                            handleWatchListLottie()
-
-                        if (movieDetails?.watchLater != null)
-                            handleWatchLaterLottie()
-                    }
-                    else -> {}
-                }
-                //TODO Loading
-            }
-        }
-
-        viewModel.consumeLater.observe(viewLifecycleOwner) { response ->
-            handleUserInteractionLoading(response)
-
-            if (response is NetworkResponse.Success)
-                movieDetails?.watchLater = response.data.data
-
-            if (movieDetails?.watchLater != null)
-                handleWatchLaterLottie()
-
-            if (response is NetworkResponse.Failure)
-                context?.showErrorDialog(response.errorMessage)
-        }
-
-        sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
-            if (isResponseFailed && it)
-                viewModel.getMovieDetails(args.movieId)
-        }
-    }
-
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
             viewModel.movieDetails.removeObservers(this)
-            viewModel.consumeLater.removeObservers(this)
+            consumeLaterViewModel.consumeLater.removeObservers(this)
             consumeLaterDeleteLiveData?.removeObservers(this)
         }
         activity?.let {

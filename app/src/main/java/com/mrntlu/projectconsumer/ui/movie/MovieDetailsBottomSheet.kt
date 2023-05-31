@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import com.airbnb.lottie.LottieDrawable
@@ -27,6 +28,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,6 +44,8 @@ class MovieDetailsBottomSheet(
     companion object {
         const val TAG = "ListBottomSheet"
     }
+
+    //TODO Hide show animate
 
     private var _binding: LayoutListBottomSheetBinding? = null
     private val binding get() = _binding!!
@@ -162,7 +166,8 @@ class MovieDetailsBottomSheet(
                     else
                         layoutEditInc.timesFinishedTextInputET.text = null
 
-                    layoutEditInc.timesFinishedTextLayout.setVisibilityByCondition(checkedId != R.id.secondToggleGroupButton)
+                    layoutEditInc.timesFinishedTextLayout.isErrorEnabled = checkedId == R.id.secondToggleGroupButton
+                    layoutEditInc.timesFinishedTextLayout.setVisibilityByConditionWithAnimation(checkedId != R.id.secondToggleGroupButton)
                 }
             }
 

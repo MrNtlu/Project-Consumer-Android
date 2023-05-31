@@ -1,5 +1,7 @@
 package com.mrntlu.projectconsumer.utils
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -85,19 +87,39 @@ fun String.isEmailValid(): Boolean {
 
 fun String.isEmptyOrBlank() = this.isEmpty() || this.isBlank()
 
-fun String.isNotEmptyOrBlank(): Boolean{
+fun String.isNotEmptyOrBlank(): Boolean {
     return this.trim().isNotEmpty() && this.trim().isNotBlank()
 }
 
-fun View.setVisibilityByCondition(shouldHide: Boolean){
+fun View.setVisibilityByConditionWithAnimation(shouldHide: Boolean) {
+    if (shouldHide) {
+        animate()
+            .alpha(0f)
+            .setDuration(250)
+            .setListener(object: AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    visibility = View.GONE
+                }
+            })
+    } else {
+        visibility = View.VISIBLE
+        alpha = 0f
+        animate()
+            .alpha(1f)
+            .setDuration(250)
+            .setListener(null)
+    }
+}
+
+fun View.setVisibilityByCondition(shouldHide: Boolean) {
     this.visibility = if (shouldHide) View.GONE else View.VISIBLE
 }
 
-fun View.setGone(){
+fun View.setGone() {
     this.visibility = View.GONE
 }
 
-fun View.setVisible(){
+fun View.setVisible() {
     this.visibility = View.VISIBLE
 }
 
