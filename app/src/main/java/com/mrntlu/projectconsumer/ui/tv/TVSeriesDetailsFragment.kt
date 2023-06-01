@@ -2,35 +2,27 @@ package com.mrntlu.projectconsumer.ui.tv
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.navArgs
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
-import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.databinding.FragmentTvDetailsBinding
-import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.tv.TVSeriesDetails
-import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
-import com.mrntlu.projectconsumer.viewmodels.main.ConsumeLaterViewModel
 import com.mrntlu.projectconsumer.viewmodels.main.tv.TVDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Locale
 
 @AndroidEntryPoint
-class TVSeriesDetailsFragment : BaseFragment<FragmentTvDetailsBinding>() {
+class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() {
 
     private val viewModel: TVDetailsViewModel by viewModels()
-    private val consumeLaterViewModel: ConsumeLaterViewModel by viewModels()
     private val args: TVSeriesDetailsFragmentArgs by navArgs()
 
     //TODO Season adapter
@@ -44,18 +36,6 @@ class TVSeriesDetailsFragment : BaseFragment<FragmentTvDetailsBinding>() {
 
     private var tvDetails: TVSeriesDetails? = null
 
-    private var isResponseFailed = false
-    private lateinit var countryCode: String
-
-    private var consumeLaterDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
-
-    private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
-        val locale = Locale("", it)
-        Pair(locale.displayCountry, locale.country.uppercase())
-    }.sortedBy {
-        it.first
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,8 +46,6 @@ class TVSeriesDetailsFragment : BaseFragment<FragmentTvDetailsBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.statusBarColor = Color.TRANSPARENT
-        countryCode = sharedViewModel.getCountryCode()
 
         setObservers()
     }

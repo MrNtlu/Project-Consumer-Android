@@ -1,17 +1,12 @@
 package com.mrntlu.projectconsumer.ui.movie
 
-import android.animation.ValueAnimator
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -20,7 +15,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.material.appbar.AppBarLayout.LayoutParams
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
@@ -30,11 +24,10 @@ import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
 import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
-import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.movie.MovieDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
-import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
@@ -43,16 +36,13 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
-import com.mrntlu.projectconsumer.viewmodels.main.ConsumeLaterViewModel
 import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Locale
 
 @AndroidEntryPoint
-class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
+class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() {
 
     private val viewModel: MovieDetailsViewModel by viewModels()
-    private val consumeLaterViewModel: ConsumeLaterViewModel by viewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
 
     private var actorAdapter: DetailsAdapter? = null
@@ -64,18 +54,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private var movieDetails: MovieDetails? = null
 
-    private var isResponseFailed = false
-    private lateinit var countryCode: String
-
-    private var consumeLaterDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
-
-    private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
-        val locale = Locale("", it)
-        Pair(locale.displayCountry, locale.country.uppercase())
-    }.sortedBy {
-        it.first
-    }
-
     /* TODO!!!!
     * TODO Check for process death
     *  TODO!!!!!
@@ -86,7 +64,10 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             movieDetails?.movieWatchList = data
 
             if (operation != BottomSheetOperation.UPDATE)
-                handleWatchListLottie()
+                handleWatchListLottie(
+                    binding.detailsInclude,
+                    movieDetails?.movieWatchList == null
+                )
         }
     }
 
@@ -100,8 +81,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.statusBarColor = Color.TRANSPARENT
-        countryCode = sharedViewModel.getCountryCode()
 
         setObservers()
     }
@@ -113,7 +92,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
             binding.detailsInclude.apply {
                 isResponseFailed = response is NetworkResponse.Failure
-                toggleLayoutScroll(response !is NetworkResponse.Loading)
+                toggleCollapsingLayoutScroll(binding.detailsCollapsingToolbar, response !is NetworkResponse.Loading)
                 binding.loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
 
                 when(response) {
@@ -127,10 +106,16 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                         setRecyclerView()
 
                         if (movieDetails?.movieWatchList != null)
-                            handleWatchListLottie()
+                            handleWatchListLottie(
+                                binding.detailsInclude,
+                                movieDetails?.movieWatchList == null
+                            )
 
                         if (movieDetails?.watchLater != null)
-                            handleWatchLaterLottie()
+                            handleWatchLaterLottie(
+                                binding.detailsInclude,
+                                movieDetails?.watchLater == null
+                            )
                     }
                     else -> {}
                 }
@@ -139,13 +124,16 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
 
         consumeLaterViewModel.consumeLater.observe(viewLifecycleOwner) { response ->
-            handleUserInteractionLoading(response)
+            handleUserInteractionLoading(response, binding.detailsInclude)
 
             if (response is NetworkResponse.Success)
                 movieDetails?.watchLater = response.data.data
 
             if (movieDetails?.watchLater != null)
-                handleWatchLaterLottie()
+                handleWatchLaterLottie(
+                    binding.detailsInclude,
+                    movieDetails?.watchLater == null
+                )
 
             if (response is NetworkResponse.Failure)
                 context?.showErrorDialog(response.errorMessage)
@@ -173,18 +161,22 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                         if (consumeLaterDeleteLiveData != null && consumeLaterDeleteLiveData?.hasActiveObservers() == true)
                             consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
-                        consumeLaterDeleteLiveData =
-                            consumeLaterViewModel.deleteConsumeLater(IDBody(movieDetails!!.watchLater!!.id))
+                        consumeLaterDeleteLiveData = consumeLaterViewModel.deleteConsumeLater(
+                            IDBody(movieDetails!!.watchLater!!.id)
+                        )
 
 
                         consumeLaterDeleteLiveData?.observe(viewLifecycleOwner) { response ->
-                            handleUserInteractionLoading(response)
+                            handleUserInteractionLoading(response, binding.detailsInclude)
 
                             if (response is NetworkResponse.Success)
                                 movieDetails!!.watchLater = null
 
                             if (movieDetails!!.watchLater == null)
-                                handleWatchLaterLottie()
+                                handleWatchLaterLottie(
+                                    binding.detailsInclude,
+                                    movieDetails?.watchLater == null
+                                )
 
                             if (response is NetworkResponse.Failure)
                                 context?.showErrorDialog(response.errorMessage)
@@ -225,69 +217,8 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
     }
 
-    private fun handleWatchListLottie() {
-        binding.detailsInclude.addListLottie.apply {
-            frame = if (movieDetails?.movieWatchList == null) 130 else 0
-
-            if (frame != 0) {
-                setMinAndMaxFrame(75, 129)
-            } else {
-                setMinAndMaxFrame(0, 75)
-            }
-            playAnimation()
-        }
-    }
-
-    private fun handleWatchLaterLottie() {
-        binding.detailsInclude.watchLaterLottie.apply {
-            frame = if (movieDetails?.watchLater == null) 60 else 0
-
-            if (frame != 0) {
-                reverseAnimationSpeed()
-                setMinAndMaxFrame(0, 60)
-            } else {
-                speed = 1.4f
-                setMinAndMaxFrame(0, 120)
-            }
-            playAnimation()
-        }
-    }
-
-    private fun handleUserInteractionLoading(response: NetworkResponse<*>) {
-        isResponseFailed = response is NetworkResponse.Failure
-
-        binding.detailsInclude.apply {
-            userInteractionLoading.setAnimation(if (response is NetworkResponse.Failure) R.raw.error_small else R.raw.loading)
-            userInteractionLoadingLayout.setVisibilityByCondition(shouldHide = response is NetworkResponse.Success)
-
-            userInteractionLoading.apply {
-                if (response is NetworkResponse.Failure) {
-                    repeatCount = 1
-                    scaleX = 1.2f
-                    scaleY = 1.2f
-                } else if (response == NetworkResponse.Loading) {
-                    repeatCount = ValueAnimator.INFINITE
-                    scaleX = 1.7f
-                    scaleY = 1.7f
-                }
-
-                if (response != NetworkResponse.Loading)
-                    cancelAnimation()
-                else
-                    playAnimation()
-            }
-        }
-    }
-
     private fun setUI() {
-        val spinnerAdapter = ArrayAdapter(binding.root.context, android.R.layout.simple_spinner_item, countryList.map { it.first })
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.detailsStreamingCountrySpinner.adapter = spinnerAdapter
-        binding.detailsStreamingCountrySpinner.setSelection(
-            countryList.indexOfFirst {
-                it.second == countryCode
-            }
-        )
+        setSpinner(binding.detailsStreamingCountrySpinner)
 
         movieDetails!!.apply {
             binding.detailsToolbarProgress.setVisible()
@@ -297,16 +228,10 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                     binding.detailsToolbarProgress.setGone()
                     binding.detailsAppBarLayout.setExpanded(false)
 
-                    val params = binding.detailsNestedSV.layoutParams as ViewGroup.MarginLayoutParams
-                    params.topMargin = 0
-                    binding.detailsNestedSV.layoutParams = params
-
-                    toggleLayoutScroll(false)
-                    binding.detailsNestedSV.isNestedScrollingEnabled = false
-
-                    val collapsingLayoutParams: LayoutParams = binding.detailsCollapsingToolbar.layoutParams as LayoutParams
-                    collapsingLayoutParams.scrollFlags = -1
-                    binding.detailsCollapsingToolbar.layoutParams = collapsingLayoutParams
+                    onImageFailedHandler(
+                        binding.detailsCollapsingToolbar,
+                        binding.detailsNestedSV
+                    )
 
                     return false
                 }
@@ -389,10 +314,9 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
 
     private fun setRecyclerView() {
         if (!movieDetails?.actors.isNullOrEmpty()) {
-            binding.detailsActorsRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-                actorAdapter = DetailsAdapter(detailsList = movieDetails!!.actors!!.filter {
+            createDetailsAdapter(
+                recyclerView = binding.detailsActorsRV,
+                detailsList = movieDetails!!.actors!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -400,8 +324,10 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                         it.image,
                         it.character
                     )
-                })
-                adapter = actorAdapter
+                }
+            ) {
+                actorAdapter = it
+                it
             }
         } else {
             binding.detailsActorsTV.setGone()
@@ -409,11 +335,9 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         }
 
         if (!movieDetails?.productionCompanies.isNullOrEmpty()) {
-            binding.detailsProductionRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-
-                actorAdapter = DetailsAdapter(R.drawable.ic_company_75, 18F, movieDetails!!.productionCompanies!!.filter {
+            createDetailsAdapter(
+                recyclerView = binding.detailsProductionRV,
+                detailsList = movieDetails!!.productionCompanies!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -421,10 +345,12 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
                         it.logo ?: "",
                         it.originCountry
                     )
-                }) {
-                    centerCrop().transform(RoundedCorners(12))
-                }
-                adapter = actorAdapter
+                },
+                placeHolderImage = R.drawable.ic_company_75, cardCornerRadius = 18F,
+                transformImage = { centerCrop().transform(RoundedCorners(12)) }
+            ) {
+                companiesAdapter = it
+                it
             }
         } else {
             binding.detailsProductionTV.setGone()
@@ -449,47 +375,26 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
         if (!movieDetails?.streaming.isNullOrEmpty()) {
             val streaming = movieDetails!!.streaming!!
 
-            binding.detailsStreamingRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-
-                streamingAdapter = StreamingAdapter(
-                    streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms ?: listOf()
-                )
-                adapter = streamingAdapter
+            createStreamingAdapter(
+                binding.detailsStreamingRV, streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
+            ) {
+                streamingAdapter = it
+                it
             }
 
-            binding.detailsBuyRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-
-                buyAdapter = StreamingAdapter(
-                    streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions ?: listOf()
-                )
-                adapter = buyAdapter
+            createStreamingAdapter(
+                binding.detailsBuyRV, streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions
+            ) {
+                buyAdapter = it
+                it
             }
 
-            binding.detailsRentRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-
-                rentAdapter = StreamingAdapter(
-                    streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions ?: listOf()
-                )
-                adapter = rentAdapter
+            createStreamingAdapter(
+                binding.detailsRentRV, streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions
+            ) {
+                rentAdapter = it
+                it
             }
-        }
-    }
-
-    private fun toggleLayoutScroll(isEnabled: Boolean) {
-        binding.detailsCollapsingToolbar.apply {
-            val layoutParams = layoutParams as LayoutParams
-            if (isEnabled)
-                layoutParams.scrollFlags = layoutParams.scrollFlags or LayoutParams.SCROLL_FLAG_SCROLL
-            else
-                layoutParams.scrollFlags = layoutParams.scrollFlags and LayoutParams.SCROLL_FLAG_SCROLL.inv()
-
-            binding.detailsCollapsingToolbar.layoutParams = layoutParams
         }
     }
 
@@ -498,9 +403,6 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             viewModel.movieDetails.removeObservers(this)
             consumeLaterViewModel.consumeLater.removeObservers(this)
             consumeLaterDeleteLiveData?.removeObservers(this)
-        }
-        activity?.let {
-            it.window.statusBarColor = ContextCompat.getColor(it, if (sharedViewModel.isLightTheme()) R.color.darkWhite else R.color.androidBlack)
         }
         actorAdapter = null
         companiesAdapter = null
