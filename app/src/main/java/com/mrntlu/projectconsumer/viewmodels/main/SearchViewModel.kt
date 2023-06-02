@@ -23,9 +23,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-const val SEARCH_MOVIE_PAGE_KEY = "rv.movie.search.page"
-const val SEARCH_MOVIE_SCROLL_POSITION_KEY = "rv.movie.search.scroll_position"
-const val SEARCH_MOVIE_TEXT_KEY = "rv.movie.search.text"
+const val SEARCH_MOVIE_PAGE_KEY = "rv.search.page"
+const val SEARCH_MOVIE_SCROLL_POSITION_KEY = "rv.search.scroll_position"
+const val SEARCH_MOVIE_TEXT_KEY = "rv.search.text"
 const val SEARCH_CONTENT_TYPE_KEY = "rv.search.content_type"
 
 class SearchViewModel @AssistedInject constructor(

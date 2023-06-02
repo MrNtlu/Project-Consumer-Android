@@ -9,7 +9,7 @@
     android:background="?attr/mainBackgroundColor">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/upcomingRV"
+        android:id="@+id/listRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

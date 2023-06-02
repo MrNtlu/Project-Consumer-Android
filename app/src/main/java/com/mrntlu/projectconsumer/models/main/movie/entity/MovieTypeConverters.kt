@@ -3,7 +3,7 @@ package com.mrntlu.projectconsumer.models.main.movie.entity
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.mrntlu.projectconsumer.models.main.movie.Streaming
+import com.mrntlu.projectconsumer.models.common.Streaming
 
 class MovieTypeConverters {
     @TypeConverter

@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.models.main.movie
+package com.mrntlu.projectconsumer.models.common
 
 import com.google.gson.annotations.SerializedName
 

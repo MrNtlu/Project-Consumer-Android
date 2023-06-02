@@ -28,6 +28,11 @@ interface TVSeriesApiService {
         @Query("sort") sort: String,
     ): Response<DataPaginationResponse<TVSeries>>
 
+    @GET("tv/popular")
+    suspend fun getPopularTVSeries(
+        @Query("page") page: Int,
+    ): Response<DataPaginationResponse<TVSeries>>
+
     @GET("tv/search")
     suspend fun searchTVSeriesByTitle(
         @Query("search") search: String,

@@ -179,11 +179,12 @@ class SearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
                         when(args.searchType) {
                             Constants.ContentType.ANIME -> TODO()
                             Constants.ContentType.MOVIE -> {
-                                val navWithAction = SearchFragmentDirections.actionMovieSearchFragmentToMovieDetailsFragment(item.id)
+                                val navWithAction = SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment(item.id)
                                 navController.navigate(navWithAction)
                             }
                             Constants.ContentType.TV -> {
-                                printLog("TV Clicked ${item.id}")
+                                val navWithAction = SearchFragmentDirections.actionSearchFragmentToTvDetailsFragment(item.id)
+                                navController.navigate(navWithAction)
                             }
                             Constants.ContentType.GAME -> TODO()
                         }

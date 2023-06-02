@@ -194,8 +194,8 @@
                 android:id="@+id/tvDetailsSeasonTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:text="@string/seasons"
-                android:layout_marginTop="16dp"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -229,7 +229,7 @@
                 android:id="@+id/tvDetailsGenreTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/genres"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
@@ -250,7 +250,7 @@
                 android:id="@+id/tvDetailsActorsTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/actors"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
@@ -271,7 +271,7 @@
                 android:id="@+id/tvDetailsNetworkTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/network"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
@@ -292,7 +292,7 @@
                 android:id="@+id/tvDetailsProductionTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/production"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
@@ -313,7 +313,7 @@
                 android:id="@+id/tvDetailsAvailableTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/streaming"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
@@ -354,7 +354,7 @@
                 android:id="@+id/tvDetailsRentTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/rent"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
@@ -375,7 +375,7 @@
                 android:id="@+id/tvDetailsStreamingTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="12dp"
                 android:text="@string/streaming"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
@@ -397,16 +397,16 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-<!--    <FrameLayout-->
-<!--        android:id="@+id/loadingLayout"-->
-<!--        android:elevation="9dp"-->
-<!--        android:background="?attr/mainBackgroundColor"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:visibility="gone">-->
-<!--        <include-->
-<!--            layout="@layout/layout_shimmer_movie_details"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"/>-->
-<!--    </FrameLayout>-->
+    <FrameLayout
+        android:id="@+id/loadingLayout"
+        android:elevation="9dp"
+        android:background="?attr/mainBackgroundColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <include
+            layout="@layout/layout_shimmer_movie_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

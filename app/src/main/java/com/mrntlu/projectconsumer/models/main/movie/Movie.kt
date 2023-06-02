@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
+import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
 

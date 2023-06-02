@@ -7,7 +7,7 @@ import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.entity.TmdbGenreEntity
 import com.mrntlu.projectconsumer.models.common.entity.TranslationEntity
-import com.mrntlu.projectconsumer.models.main.movie.Streaming
+import com.mrntlu.projectconsumer.models.common.Streaming
 
 @Entity(tableName = "movies")
 data class MovieEntity(

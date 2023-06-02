@@ -10,13 +10,13 @@
         android:id="@+id/navigation_movie"
         android:name="com.mrntlu.projectconsumer.ui.movie.MovieFragment"
         android:label="@string/title_movie"
-        tools:layout="@layout/fragment_movie"/>
+        tools:layout="@layout/fragment_preview"/>
 
     <fragment
         android:id="@+id/navigation_tv"
         android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesFragment"
         android:label="@string/title_tv"
-        tools:layout="@layout/fragment_tv_series" />
+        tools:layout="@layout/fragment_preview" />
 
     <fragment
         android:id="@+id/navigation_anime"
@@ -34,7 +34,7 @@
         android:id="@+id/movieListFragment"
         android:name="com.mrntlu.projectconsumer.ui.movie.MovieListFragment"
         android:label="fragment_movie_list"
-        tools:layout="@layout/fragment_movie_list" >
+        tools:layout="@layout/fragment_list" >
         <argument
             android:name="fetchType"
             app:argType="string"
@@ -81,7 +81,7 @@
             android:name="searchQuery"
             app:argType="string" />
         <action
-            android:id="@+id/action_movieSearchFragment_to_movieDetailsFragment"
+            android:id="@+id/action_searchFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -200,5 +200,22 @@
         <argument
             android:name="tvId"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/TVSeriesListFragment"
+        android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesListFragment"
+        android:label="fragment_tv_list"
+        tools:layout="@layout/fragment_list">
+        <argument
+            android:name="fetchType"
+            app:argType="string"
+            android:defaultValue="popular" />
+        <action
+            android:id="@+id/action_TVSeriesListFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 </navigation>

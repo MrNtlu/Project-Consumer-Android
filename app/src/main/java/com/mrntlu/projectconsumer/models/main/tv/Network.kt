@@ -7,7 +7,7 @@ data class Network(
     val name: String,
 
     @SerializedName("origin_country")
-    val originCountry: String
+    val originCountry: String?
 ) {
     constructor(): this("", "", "")
 }

@@ -6,7 +6,7 @@ import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
-import com.mrntlu.projectconsumer.models.main.movie.Streaming
+import com.mrntlu.projectconsumer.models.common.Streaming
 
 data class TVSeries(
     @SerializedName("_id")

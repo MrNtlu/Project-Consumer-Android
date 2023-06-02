@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
-import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import com.airbnb.lottie.LottieDrawable
@@ -18,7 +17,7 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.LayoutListBottomSheetBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
-import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
+import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
@@ -35,7 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MovieDetailsBottomSheet(
-    private val onBottomSheetClosed: OnButtomSheetClosed<MovieWatchList>,
+    private val onBottomSheetClosed: OnBottomSheetClosed<MovieWatchList>,
     private var watchList: MovieWatchList?,
     private val movieId: String,
     private val movieTMDBId: String,

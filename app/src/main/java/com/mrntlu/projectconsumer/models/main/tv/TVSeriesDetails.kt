@@ -1,11 +1,12 @@
 package com.mrntlu.projectconsumer.models.main.tv
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
-import com.mrntlu.projectconsumer.models.main.movie.Streaming
+import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 
@@ -59,8 +60,8 @@ data class TVSeriesDetails(
     val productionCompanies: List<ProductionAndCompany>,
 
     @SerializedName("tv_list")
-    val tvWatchList: TVSeriesWatchList?,
+    override var watchList: TVSeriesWatchList?,
 
     @SerializedName("watch_later")
-    val watchLater: ConsumeLater?,
-)
+    override var consumeLater: ConsumeLater?,
+): DetailsModel<TVSeriesWatchList>()

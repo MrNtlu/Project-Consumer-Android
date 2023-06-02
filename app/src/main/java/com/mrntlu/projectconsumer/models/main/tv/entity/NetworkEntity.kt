@@ -7,7 +7,7 @@ data class NetworkEntity(
     val name: String,
 
     @ColumnInfo("origin_country")
-    val originCountry: String
+    val originCountry: String?
 ) {
     constructor(): this("", "", "")
 }

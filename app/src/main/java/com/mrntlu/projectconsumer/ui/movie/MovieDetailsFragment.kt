@@ -21,9 +21,8 @@ import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
-import com.mrntlu.projectconsumer.interfaces.OnButtomSheetClosed
+import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.models.common.DetailsUI
-import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.main.movie.MovieDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
@@ -54,19 +53,14 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
     private var movieDetails: MovieDetails? = null
 
-    /* TODO!!!!
-    * TODO Check for process death
-    *  TODO!!!!!
-     */
-
-    private val onBottomSheetClosedCallback = object: OnButtomSheetClosed<MovieWatchList> {
+    private val onBottomSheetClosedCallback = object: OnBottomSheetClosed<MovieWatchList> {
         override fun onSuccess(data: MovieWatchList?, operation: BottomSheetOperation) {
-            movieDetails?.movieWatchList = data
+            movieDetails?.watchList = data
 
             if (operation != BottomSheetOperation.UPDATE)
                 handleWatchListLottie(
                     binding.detailsInclude,
-                    movieDetails?.movieWatchList == null
+                    movieDetails?.watchList == null
                 )
         }
     }
@@ -86,7 +80,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
     }
 
     private fun setObservers() {
-        if (!viewModel.movieDetails.hasObservers())
+        if (!(viewModel.movieDetails.hasObservers() || viewModel.movieDetails.value is NetworkResponse.Success || viewModel.movieDetails.value is NetworkResponse.Loading))
             viewModel.getMovieDetails(args.movieId)
 
         viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
@@ -101,20 +95,41 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         movieDetails = response.data.data
 
                         setUI()
-                        setLottieUI()
+                        setLottieUI(
+                            binding.detailsInclude,
+                            movieDetails,
+                            createConsumeLater = {
+                                movieDetails!!.apply {
+                                    consumeLaterViewModel.createConsumeLater(
+                                        ConsumeLaterBody(id, tmdbID, null, "movie", null)
+                                    )
+                                }
+                            },
+                            showBottomSheet = {
+                                activity?.let {
+                                    val listBottomSheet = MovieDetailsBottomSheet(
+                                        onBottomSheetClosedCallback,
+                                        movieDetails!!.watchList,
+                                        args.movieId,
+                                        movieDetails!!.tmdbID,
+                                    )
+                                    listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
+                                }
+                            }
+                        )
                         setListeners()
                         setRecyclerView()
 
-                        if (movieDetails?.movieWatchList != null)
+                        if (movieDetails?.watchList != null)
                             handleWatchListLottie(
                                 binding.detailsInclude,
-                                movieDetails?.movieWatchList == null
+                                movieDetails?.watchList == null
                             )
 
-                        if (movieDetails?.watchLater != null)
-                            handleWatchLaterLottie(
+                        if (movieDetails?.consumeLater != null)
+                            handleConsumeLaterLottie(
                                 binding.detailsInclude,
-                                movieDetails?.watchLater == null
+                                movieDetails?.consumeLater == null
                             )
                     }
                     else -> {}
@@ -127,12 +142,12 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             handleUserInteractionLoading(response, binding.detailsInclude)
 
             if (response is NetworkResponse.Success)
-                movieDetails?.watchLater = response.data.data
+                movieDetails?.consumeLater = response.data.data
 
-            if (movieDetails?.watchLater != null)
-                handleWatchLaterLottie(
+            if (movieDetails?.consumeLater != null)
+                handleConsumeLaterLottie(
                     binding.detailsInclude,
-                    movieDetails?.watchLater == null
+                    movieDetails?.consumeLater == null
                 )
 
             if (response is NetworkResponse.Failure)
@@ -142,78 +157,6 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
             if (isResponseFailed && it)
                 viewModel.getMovieDetails(args.movieId)
-        }
-    }
-
-    private fun setLottieUI() {
-        binding.detailsInclude.watchLaterLottie.apply {
-            setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
-
-            setOnClickListener {
-                if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
-                    if (movieDetails != null && movieDetails?.watchLater == null) {
-                        movieDetails!!.apply {
-                            consumeLaterViewModel.createConsumeLater(
-                                ConsumeLaterBody(id, tmdbID, null, "movie", null)
-                            )
-                        }
-                    } else if (movieDetails != null) {
-                        if (consumeLaterDeleteLiveData != null && consumeLaterDeleteLiveData?.hasActiveObservers() == true)
-                            consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
-
-                        consumeLaterDeleteLiveData = consumeLaterViewModel.deleteConsumeLater(
-                            IDBody(movieDetails!!.watchLater!!.id)
-                        )
-
-
-                        consumeLaterDeleteLiveData?.observe(viewLifecycleOwner) { response ->
-                            handleUserInteractionLoading(response, binding.detailsInclude)
-
-                            if (response is NetworkResponse.Success)
-                                movieDetails!!.watchLater = null
-
-                            if (movieDetails!!.watchLater == null)
-                                handleWatchLaterLottie(
-                                    binding.detailsInclude,
-                                    movieDetails?.watchLater == null
-                                )
-
-                            if (response is NetworkResponse.Failure)
-                                context?.showErrorDialog(response.errorMessage)
-                        }
-                    }
-                } else {
-                    if (!sharedViewModel.isNetworkAvailable())
-                        context?.showErrorDialog(getString(R.string.no_internet_connection))
-
-                    //TODO Else show login/register dialog!
-                }
-            }
-        }
-
-        binding.detailsInclude.addListLottie.apply {
-            setAnimation(if(sharedViewModel.isLightTheme()) R.raw.like else R.raw.like_night)
-
-            setOnClickListener {
-                if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
-                    if (movieDetails != null) {
-                        activity?.let {
-                            val listBottomSheet = MovieDetailsBottomSheet(
-                                onBottomSheetClosedCallback,
-                                movieDetails!!.movieWatchList,
-                                args.movieId,
-                                movieDetails!!.tmdbID,
-                            )
-                            listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
-                        }
-                    }
-                } else {
-                    if (!sharedViewModel.isNetworkAvailable())
-                        context?.showErrorDialog(getString(R.string.no_internet_connection))
-
-                    //TODO Else show login/register dialog!
-                }
-            }
         }
     }
 
@@ -298,13 +241,10 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
             detailsStreamingCountrySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    countryCode = countryList[position].second
-                    val streaming = movieDetails?.streaming
-                    val streamingList = streaming?.firstOrNull { it.countryCode == countryCode }
-
-                    streamingAdapter?.setNewList(streamingList?.streamingPlatforms ?: listOf())
-                    buyAdapter?.setNewList(streamingList?.buyOptions ?: listOf())
-                    rentAdapter?.setNewList(streamingList?.rentOptions ?: listOf())
+                    onCountrySpinnerSelected(
+                        position, movieDetails?.streaming,
+                        streamingAdapter, buyAdapter, rentAdapter
+                    )
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -402,7 +342,6 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         viewLifecycleOwner.apply {
             viewModel.movieDetails.removeObservers(this)
             consumeLaterViewModel.consumeLater.removeObservers(this)
-            consumeLaterDeleteLiveData?.removeObservers(this)
         }
         actorAdapter = null
         companiesAdapter = null

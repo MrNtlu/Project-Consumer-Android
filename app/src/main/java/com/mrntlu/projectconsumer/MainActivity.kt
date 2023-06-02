@@ -27,6 +27,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -172,7 +173,7 @@ class MainActivity : AppCompatActivity() {
                     binding.navView.setVisible()
                     handleUserIncVisibility(true)
                 }
-                R.id.movieDetailsFragment -> {
+                R.id.movieDetailsFragment, R.id.tvDetailsFragment -> {
                     binding.toolbar.setGone()
                     binding.navView.setGone()
                     handleUserIncVisibility(true)

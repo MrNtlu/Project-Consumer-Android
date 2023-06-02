@@ -2,7 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/movieScrollView"
+    android:id="@+id/previewScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -27,7 +27,7 @@
             app:layout_constraintGuide_percent="0.04" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/firstRVTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -47,9 +47,9 @@
             android:padding="4dp"
             app:tint="?attr/mainTextColor"
             android:contentDescription="@string/see_all_cd"
-            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintBottom_toBottomOf="@+id/firstRVTV"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/textView" />
+            app:layout_constraintTop_toTopOf="@+id/firstRVTV" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/upcomingPreviewRV"
@@ -61,7 +61,7 @@
             app:layout_constraintTop_toBottomOf="@+id/seeAllButtonFirst" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/secondRVTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -81,18 +81,21 @@
             android:src="@drawable/ic_arrow_right_24"
             app:tint="?attr/mainTextColor"
             android:contentDescription="@string/see_all_popular_cd"
-            app:layout_constraintBottom_toBottomOf="@+id/textView4"
+            app:layout_constraintBottom_toBottomOf="@+id/secondRVTV"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="@+id/textView4" />
+            app:layout_constraintTop_toTopOf="@+id/secondRVTV" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/popularPreviewRV"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginTop="6dp"
+            android:layout_marginBottom="72dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/seeAllButtonSecond" />
+            app:layout_constraintTop_toBottomOf="@+id/seeAllButtonSecond"
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

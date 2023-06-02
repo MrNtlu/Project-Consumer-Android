@@ -1,6 +1,6 @@
 package com.mrntlu.projectconsumer.interfaces
 
-interface OnButtomSheetClosed<T> {
+interface OnBottomSheetClosed<T> {
     fun onSuccess(data: T?, operation: BottomSheetOperation)
 }
 

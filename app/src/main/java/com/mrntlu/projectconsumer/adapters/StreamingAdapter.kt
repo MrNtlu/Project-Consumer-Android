@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.databinding.CellStreamingBinding
 import com.mrntlu.projectconsumer.databinding.CellStreamingEmptyBinding
-import com.mrntlu.projectconsumer.models.main.movie.StreamingPlatform
+import com.mrntlu.projectconsumer.models.common.StreamingPlatform
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setVisible

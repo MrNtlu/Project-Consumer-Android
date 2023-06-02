@@ -13,9 +13,6 @@ class TVPreviewRepository @Inject constructor(
     }
 
     fun fetchPopularTVSeries() = networkResponseFlow {
-        tvSeriesApiService.getTVSeriesBySortFilter(
-            1, "popularity",
-            null, null, null, null, null, null
-        )
+        tvSeriesApiService.getPopularTVSeries(1)
     }
 }

@@ -1,8 +1,10 @@
 package com.mrntlu.projectconsumer.models.main.movie
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
+import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
@@ -54,8 +56,8 @@ data class MovieDetails(
     val productionCompanies: List<ProductionAndCompany>?,
 
     @SerializedName("watch_list")
-    var movieWatchList: MovieWatchList?,
+    override var watchList: MovieWatchList?,
 
     @SerializedName("watch_later")
-    var watchLater: ConsumeLater?,
-)
+    override var consumeLater: ConsumeLater?,
+): DetailsModel<MovieWatchList>()

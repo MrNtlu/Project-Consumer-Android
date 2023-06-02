@@ -21,11 +21,15 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.databinding.LayoutUserInteractionBinding
+import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.DetailsUI
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
-import com.mrntlu.projectconsumer.models.main.movie.StreamingPlatform
+import com.mrntlu.projectconsumer.models.common.Streaming
+import com.mrntlu.projectconsumer.models.common.StreamingPlatform
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.ConsumeLaterViewModel
 import java.util.Locale
 
@@ -36,9 +40,9 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
     protected var isResponseFailed = false
     protected lateinit var countryCode: String
 
-    protected var consumeLaterDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
+    private var consumeLaterDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
 
-    protected val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
+    private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
         val locale = Locale("", it)
         Pair(locale.displayCountry, locale.country.uppercase())
     }.sortedBy {
@@ -49,6 +53,85 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.statusBarColor = Color.TRANSPARENT
         countryCode = sharedViewModel.getCountryCode()
+    }
+
+    protected fun <WatchList> setLottieUI(
+        binding: LayoutUserInteractionBinding,
+        details: DetailsModel<WatchList>?,
+        createConsumeLater: () -> Unit,
+        showBottomSheet: () -> Unit,
+    ) {
+        binding.watchLaterLottie.apply {
+            setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
+
+            setOnClickListener {
+                if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
+                    if (details != null && details.consumeLater == null) {
+                        createConsumeLater()
+                    } else if (details != null) {
+                        if (consumeLaterDeleteLiveData != null && consumeLaterDeleteLiveData?.hasActiveObservers() == true)
+                            consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
+
+                        consumeLaterDeleteLiveData = consumeLaterViewModel.deleteConsumeLater(
+                            IDBody(details.consumeLater!!.id)
+                        )
+
+                        consumeLaterDeleteLiveData?.observe(viewLifecycleOwner) { response ->
+                            handleUserInteractionLoading(response, binding)
+
+                            if (response is NetworkResponse.Success)
+                                details.consumeLater = null
+
+                            if (details.consumeLater == null)
+                                handleConsumeLaterLottie(
+                                    binding,
+                                    details.consumeLater == null
+                                )
+
+                            if (response is NetworkResponse.Failure)
+                                context?.showErrorDialog(response.errorMessage)
+                        }
+                    }
+                } else {
+                    if (!sharedViewModel.isNetworkAvailable())
+                        context?.showErrorDialog(getString(R.string.no_internet_connection))
+
+                    //TODO Else show login/register dialog!
+                }
+            }
+        }
+
+        binding.addListLottie.apply {
+            setAnimation(if(sharedViewModel.isLightTheme()) R.raw.like else R.raw.like_night)
+
+            setOnClickListener {
+                if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
+                    if (details != null) {
+                        showBottomSheet()
+                    }
+                } else {
+                    if (!sharedViewModel.isNetworkAvailable())
+                        context?.showErrorDialog(getString(R.string.no_internet_connection))
+
+                    //TODO Else show login/register dialog!
+                }
+            }
+        }
+    }
+
+    protected fun onCountrySpinnerSelected(
+        position: Int,
+        streaming: List<Streaming>?,
+        streamingAdapter: StreamingAdapter?,
+        buyAdapter: StreamingAdapter?,
+        rentAdapter: StreamingAdapter?,
+    ) {
+        countryCode = countryList[position].second
+        val streamingList = streaming?.firstOrNull { it.countryCode == countryCode }
+
+        streamingAdapter?.setNewList(streamingList?.streamingPlatforms ?: listOf())
+        buyAdapter?.setNewList(streamingList?.buyOptions ?: listOf())
+        rentAdapter?.setNewList(streamingList?.rentOptions ?: listOf())
     }
 
     protected fun handleWatchListLottie(binding: LayoutUserInteractionBinding, isDetailsNull: Boolean) {
@@ -64,7 +147,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         }
     }
 
-    protected fun handleWatchLaterLottie(binding: LayoutUserInteractionBinding, isDetailsNull: Boolean) {
+    protected fun handleConsumeLaterLottie(binding: LayoutUserInteractionBinding, isDetailsNull: Boolean) {
         binding.watchLaterLottie.apply {
             frame = if (isDetailsNull) 60 else 0
 
@@ -171,6 +254,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
     }
 
     override fun onDestroyView() {
+        consumeLaterDeleteLiveData?.removeObservers(this)
         activity?.let {
             it.window.statusBarColor = ContextCompat.getColor(it, if (sharedViewModel.isLightTheme()) R.color.darkWhite else R.color.androidBlack)
         }
