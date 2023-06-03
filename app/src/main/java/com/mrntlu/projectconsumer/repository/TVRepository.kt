@@ -7,6 +7,7 @@ import com.mrntlu.projectconsumer.models.main.tv.mapper.asModel
 import com.mrntlu.projectconsumer.service.retrofit.TVSeriesApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.TVSeriesDao
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
@@ -29,10 +30,15 @@ class TVRepository @Inject constructor(
         fetchNetwork = {
             when(tag) {
                 FetchType.UPCOMING.tag -> tvSeriesApiService.getUpcomingTVSeries(page, sort)
-                else -> tvSeriesApiService.getTVSeriesBySortFilter(
-                    page, sort, "released",
-                    null, null, null, null, null
-                )
+                else -> {
+                    if (sort == Constants.SortRequests[0].request)
+                        tvSeriesApiService.getPopularTVSeries(page)
+                    else
+                        tvSeriesApiService.getTVSeriesBySortFilter(
+                            page, sort, null,
+                            null, null, null, null, null
+                        )
+                }
             }
         },
         mapper = {

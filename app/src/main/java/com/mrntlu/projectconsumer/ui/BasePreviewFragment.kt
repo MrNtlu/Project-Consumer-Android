@@ -4,23 +4,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewbinding.ViewBinding
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
+import com.mrntlu.projectconsumer.adapters.PreviewSlideAdapter
+import com.mrntlu.projectconsumer.databinding.CellSlideLoadingBinding
+import com.mrntlu.projectconsumer.databinding.CellSlidePreviewBinding
 import com.mrntlu.projectconsumer.databinding.FragmentPreviewBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
-import com.mrntlu.projectconsumer.models.main.movie.Movie
+import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
+import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 
 abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPreviewBinding>() {
 
     private val viewPagerSharedViewModel: ViewPagerSharedViewModel by activityViewModels()
 
+    protected var viewPagerAdapter: PreviewSlideAdapter<T>? = null
     protected var upcomingAdapter: PreviewAdapter<T>? = null
     protected var popularAdapter: PreviewAdapter<T>? = null
+
+    private var pagerListener: CarouselListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +50,86 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     protected fun setScrollListener() {
         binding.previewScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             viewPagerSharedViewModel.setScrollYPosition(scrollY)
+        }
+    }
+
+    protected fun setLoadingViewPager() {
+        binding.loadingViewPager.apply {
+            carouselListener = object: CarouselListener {
+                override fun onCreateViewHolder(
+                    layoutInflater: LayoutInflater,
+                    parent: ViewGroup
+                ): ViewBinding {
+                    return CellSlideLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                }
+
+                override fun onBindViewHolder(
+                    binding: ViewBinding,
+                    item: CarouselItem,
+                    position: Int
+                ) {
+                    val currentBinding = binding as CellSlideLoadingBinding
+
+                    currentBinding.loadingComposeView.apply {
+                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                        setContent {
+                            LoadingShimmer(isDarkTheme = !sharedViewModel.isLightTheme()) {
+                                fillMaxWidth()
+                                padding(4.dp)
+                            }
+                        }
+                    }
+                }
+            }
+
+            val emptyList = arrayListOf<CarouselItem>()
+            repeat(10) {
+                emptyList.add(CarouselItem())
+            }
+            setData(emptyList)
+        }
+    }
+
+    protected fun setViewPager(
+        imageList: List<CarouselItem>,
+        onClick: (String?) -> Unit
+    ) {
+        binding.previewViewPager.apply {
+            registerLifecycle(viewLifecycleOwner)
+
+            pagerListener = object: CarouselListener {
+                override fun onCreateViewHolder(
+                    layoutInflater: LayoutInflater,
+                    parent: ViewGroup
+                ): ViewBinding {
+                    return CellSlidePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                }
+
+                override fun onBindViewHolder(
+                    binding: ViewBinding,
+                    item: CarouselItem,
+                    position: Int
+                ) {
+                    val currentBinding = binding as CellSlidePreviewBinding
+
+                    currentBinding.apply {
+                        previewCard.setGone()
+                        previewIVProgress.setVisible()
+                        previewIV.loadWithGlide(item.imageUrl ?: "", previewCard, previewIVProgress) {
+                            centerCrop().transform(RoundedCorners(18))
+                        }
+
+                        previewTV.text = item.caption
+
+                        root.setOnClickListener {
+                            onClick(item.headers?.get("id"))
+                        }
+                    }
+                }
+            }
+            carouselListener = pagerListener
+
+            setData(imageList)
         }
     }
 
@@ -96,6 +193,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     override fun onDestroyView() {
         sharedViewModel.networkStatus.removeObservers(this)
         binding.previewScrollView.setOnScrollChangeListener(null)
+        pagerListener = null
         upcomingAdapter = null
         popularAdapter = null
         super.onDestroyView()

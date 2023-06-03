@@ -27,7 +27,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -191,6 +190,13 @@ class MainActivity : AppCompatActivity() {
                         "Upcoming Movies"
                     else if (args?.getString("fetchType") == FetchType.POPULAR.tag)
                         "Popular Movies"
+                    else ""
+                }
+                R.id.tvListFragment -> {
+                    if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
+                        "Upcoming TV Series"
+                    else if (args?.getString("fetchType") == FetchType.POPULAR.tag)
+                        "Popular TV Series"
                     else ""
                 }
                 R.id.navigation_settings -> {

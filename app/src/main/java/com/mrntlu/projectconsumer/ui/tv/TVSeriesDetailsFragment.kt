@@ -296,7 +296,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 }.map {
                     DetailsUI(
                         it.name,
-                        it.logo,
+                        it.logo ?: "",
                         it.originCountry ?: ""
                     )
                 },

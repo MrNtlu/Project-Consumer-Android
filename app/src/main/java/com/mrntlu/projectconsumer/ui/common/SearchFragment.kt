@@ -29,7 +29,6 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isSuccessful
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
 import com.mrntlu.projectconsumer.viewmodels.main.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint

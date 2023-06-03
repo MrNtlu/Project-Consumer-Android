@@ -134,29 +134,29 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_navigation_movie_to_movieListFragment"
+            android:id="@+id/action_navigation_home_to_movieListFragment"
             app:destination="@id/movieListFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_navigation_movie_to_movieDetailsFragment"
+            android:id="@+id/action_navigation_home_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_navigation_movie_to_movieSearchFragment"
-            app:destination="@id/searchFragment"
+            android:id="@+id/action_navigation_home_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
         <action
-            android:id="@+id/action_navigation_home_to_tvDetailsFragment"
-            app:destination="@id/tvDetailsFragment"
+            android:id="@+id/action_navigation_home_to_tvListFragment"
+            app:destination="@id/tvListFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -202,7 +202,7 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/TVSeriesListFragment"
+        android:id="@+id/tvListFragment"
         android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesListFragment"
         android:label="fragment_tv_list"
         tools:layout="@layout/fragment_list">
@@ -211,7 +211,7 @@
             app:argType="string"
             android:defaultValue="popular" />
         <action
-            android:id="@+id/action_TVSeriesListFragment_to_tvDetailsFragment"
+            android:id="@+id/action_tvListFragment_to_tvDetailsFragment"
             app:destination="@id/tvDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"

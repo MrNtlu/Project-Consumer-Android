@@ -56,8 +56,7 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
         val menuHost: MenuHost = requireActivity()
 
         menuHost.addMenuProvider(object: MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {
-            }
+            override fun onPrepareMenu(menu: Menu) {}
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.sort_toolbar_menu, menu)

@@ -15,7 +15,6 @@ import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
-import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -35,7 +34,7 @@ class PreviewAdapter<T: ContentModel>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            RecyclerViewEnum.Error.value -> PreviewErrorViewHolder<Movie>(CellPreviewErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.Error.value -> PreviewErrorViewHolder<T>(CellPreviewErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.Loading.value -> LoadingPreviewViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> return ItemPreviewHolder<T>(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
@@ -110,7 +109,7 @@ class PreviewAdapter<T: ContentModel>(
         }
     }
 
-    inner class ItemPreviewHolder<T: ContentModel>(
+    class ItemPreviewHolder<T: ContentModel>(
         private val binding: CellPreviewItemBinding,
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
         override fun bind(item: T, position: Int, interaction: Interaction<T>) {

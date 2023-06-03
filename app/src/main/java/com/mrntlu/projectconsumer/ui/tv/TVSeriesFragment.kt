@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import com.mrntlu.projectconsumer.models.main.tv.TVSeries
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
+import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.viewmodels.main.tv.TVPreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,15 +41,15 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
             setScrollListener()
 
             seeAllButtonFirst.setOnClickListener {
-//                val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.UPCOMING.tag)
-//
-//                navController.navigate(navWithAction)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.UPCOMING.tag)
+
+                navController.navigate(navWithAction)
             }
 
             seeAllButtonSecond.setOnClickListener {
-//                val navWithAction = HomeFragmentDirections.actionNavigationMovieToMovieListFragment(FetchType.POPULAR.tag)
-//
-//                navController.navigate(navWithAction)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.POPULAR.tag)
+
+                navController.navigate(navWithAction)
             }
         }
     }

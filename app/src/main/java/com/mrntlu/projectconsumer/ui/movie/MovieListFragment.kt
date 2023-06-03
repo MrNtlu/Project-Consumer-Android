@@ -1,13 +1,10 @@
 package com.mrntlu.projectconsumer.ui.movie
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.mrntlu.projectconsumer.WindowSizeClass
-import com.mrntlu.projectconsumer.databinding.FragmentListBinding
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BaseListFragment
 import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieViewModel
