@@ -30,6 +30,7 @@ class TVRepository @Inject constructor(
         fetchNetwork = {
             when(tag) {
                 FetchType.UPCOMING.tag -> tvSeriesApiService.getUpcomingTVSeries(page, sort)
+                FetchType.TOP.tag -> tvSeriesApiService.getTopRatedTVSeries(page)
                 else -> {
                     if (sort == Constants.SortRequests[0].request)
                         tvSeriesApiService.getPopularTVSeries(page)

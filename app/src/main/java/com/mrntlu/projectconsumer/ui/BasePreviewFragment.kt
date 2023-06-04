@@ -4,40 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.unit.dp
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewbinding.ViewBinding
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import androidx.recyclerview.widget.PagerSnapHelper
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
 import com.mrntlu.projectconsumer.adapters.PreviewSlideAdapter
-import com.mrntlu.projectconsumer.databinding.CellSlideLoadingBinding
-import com.mrntlu.projectconsumer.databinding.CellSlidePreviewBinding
+import com.mrntlu.projectconsumer.adapters.ProminentLayoutManager
+import com.mrntlu.projectconsumer.adapters.decorations.LinearHorizontalSpacingDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentPreviewBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
-import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
-import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
+import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.loadWithGlide
-import com.mrntlu.projectconsumer.utils.setGone
-import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
-import org.imaginativeworld.whynotimagecarousel.listener.CarouselListener
-import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 
 abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPreviewBinding>() {
 
     private val viewPagerSharedViewModel: ViewPagerSharedViewModel by activityViewModels()
 
-    protected var viewPagerAdapter: PreviewSlideAdapter<T>? = null
     protected var upcomingAdapter: PreviewAdapter<T>? = null
-    protected var popularAdapter: PreviewAdapter<T>? = null
+    protected var topRatedAdapter: PreviewAdapter<T>? = null
+    private var showCaseAdapter: PreviewSlideAdapter<T>? = null
 
-    private var pagerListener: CarouselListener? = null
+    private var snapHelper: PagerSnapHelper? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,83 +44,47 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
         }
     }
 
-    protected fun setLoadingViewPager() {
-        binding.loadingViewPager.apply {
-            carouselListener = object: CarouselListener {
-                override fun onCreateViewHolder(
-                    layoutInflater: LayoutInflater,
-                    parent: ViewGroup
-                ): ViewBinding {
-                    return CellSlideLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    protected fun setShowcaseRecyclerView(
+        onItemClicked: (String) -> Unit,
+        onRefreshPressed: () -> Unit,
+    ) {
+        binding.previewShowcaseRV.apply {
+            val linearLayoutManager = ProminentLayoutManager(context)
+            layoutManager = linearLayoutManager
+
+            showCaseAdapter = PreviewSlideAdapter(object: Interaction<T> {
+                override fun onItemSelected(item: T, position: Int) {
+                    onItemClicked(item.id)
                 }
 
-                override fun onBindViewHolder(
-                    binding: ViewBinding,
-                    item: CarouselItem,
-                    position: Int
-                ) {
-                    val currentBinding = binding as CellSlideLoadingBinding
-
-                    currentBinding.loadingComposeView.apply {
-                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                        setContent {
-                            LoadingShimmer(isDarkTheme = !sharedViewModel.isLightTheme()) {
-                                fillMaxWidth()
-                                padding(4.dp)
-                            }
-                        }
-                    }
+                override fun onErrorRefreshPressed() {
+                    onRefreshPressed()
                 }
-            }
 
-            val emptyList = arrayListOf<CarouselItem>()
-            repeat(10) {
-                emptyList.add(CarouselItem())
-            }
-            setData(emptyList)
+                override fun onCancelPressed() {}
+
+                override fun onExhaustButtonPressed() {}
+            }, !sharedViewModel.isLightTheme())
+            adapter = showCaseAdapter
+
+            val spacing = resources.getDimensionPixelSize(R.dimen.carousel_spacing)
+            addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
+
+            snapHelper = PagerSnapHelper()
+            snapHelper?.attachToRecyclerView(this)
+
+            initRecyclerViewPosition(linearLayoutManager)
         }
     }
 
-    protected fun setViewPager(
-        imageList: List<CarouselItem>,
-        onClick: (String?) -> Unit
-    ) {
-        binding.previewViewPager.apply {
-            registerLifecycle(viewLifecycleOwner)
+    private fun initRecyclerViewPosition(layoutManager: LinearLayoutManager) {
+        layoutManager.scrollToPosition(1)
 
-            pagerListener = object: CarouselListener {
-                override fun onCreateViewHolder(
-                    layoutInflater: LayoutInflater,
-                    parent: ViewGroup
-                ): ViewBinding {
-                    return CellSlidePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                }
+        binding.previewShowcaseRV.doOnPreDraw {
+            val targetView = layoutManager.findViewByPosition(1) ?: return@doOnPreDraw
+            val distanceToFinalSnap = snapHelper?.calculateDistanceToFinalSnap(layoutManager, targetView) ?: return@doOnPreDraw
 
-                override fun onBindViewHolder(
-                    binding: ViewBinding,
-                    item: CarouselItem,
-                    position: Int
-                ) {
-                    val currentBinding = binding as CellSlidePreviewBinding
-
-                    currentBinding.apply {
-                        previewCard.setGone()
-                        previewIVProgress.setVisible()
-                        previewIV.loadWithGlide(item.imageUrl ?: "", previewCard, previewIVProgress) {
-                            centerCrop().transform(RoundedCorners(18))
-                        }
-
-                        previewTV.text = item.caption
-
-                        root.setOnClickListener {
-                            onClick(item.headers?.get("id"))
-                        }
-                    }
-                }
-            }
-            carouselListener = pagerListener
-
-            setData(imageList)
+            layoutManager.scrollToPositionWithOffset(1, -distanceToFinalSnap[0])
         }
     }
 
@@ -159,9 +114,9 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
             adapter = upcomingAdapter
         }
 
-        binding.popularPreviewRV.apply {
+        binding.topRatedPreviewRV.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
-            popularAdapter = PreviewAdapter(object: Interaction<T> {
+            topRatedAdapter = PreviewAdapter(object: Interaction<T> {
                 override fun onItemSelected(item: T, position: Int) {
                     secondOnItemSelected(item.id)
                 }
@@ -176,16 +131,26 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
 
                 override fun onExhaustButtonPressed() {}
             }, isDarkTheme = !sharedViewModel.isLightTheme())
-            adapter = popularAdapter
+            adapter = topRatedAdapter
         }
     }
 
-    protected fun handleObserver(response: NetworkResponse<DataPaginationResponse<T>>, adapter: PreviewAdapter<T>?) {
+    protected fun handleObserver(response: NetworkResponse<PreviewResponse<T>>) {
         when(response) {
-            is NetworkResponse.Failure -> adapter?.setErrorView(response.errorMessage)
-            NetworkResponse.Loading -> adapter?.setLoadingView()
+            is NetworkResponse.Failure -> {
+                upcomingAdapter?.setErrorView(response.errorMessage)
+                showCaseAdapter?.setErrorView(response.errorMessage)
+                topRatedAdapter?.setErrorView(response.errorMessage)
+            }
+            NetworkResponse.Loading -> {
+                upcomingAdapter?.setLoadingView()
+                showCaseAdapter?.setLoadingView()
+                topRatedAdapter?.setLoadingView()
+            }
             is NetworkResponse.Success -> {
-                adapter?.setData(response.data.data)
+                upcomingAdapter?.setData(response.data.upcoming)
+                showCaseAdapter?.setData(response.data.popular)
+                topRatedAdapter?.setData(response.data.top)
             }
         }
     }
@@ -193,9 +158,10 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     override fun onDestroyView() {
         sharedViewModel.networkStatus.removeObservers(this)
         binding.previewScrollView.setOnScrollChangeListener(null)
-        pagerListener = null
+        snapHelper = null
+        showCaseAdapter = null
         upcomingAdapter = null
-        popularAdapter = null
+        topRatedAdapter = null
         super.onDestroyView()
     }
 }

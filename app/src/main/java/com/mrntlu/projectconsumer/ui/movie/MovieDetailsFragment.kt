@@ -180,7 +180,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 }
 
                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    binding.detailsToolbarProgress.setGone()
+                    _binding?.detailsToolbarProgress?.setGone()
                     return false
                 }
             }).into(binding.detailsToolbarIV)

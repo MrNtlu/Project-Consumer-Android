@@ -7,12 +7,8 @@ import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
-import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.setGone
-import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.viewmodels.main.movie.MoviePreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import org.imaginativeworld.whynotimagecarousel.model.CarouselItem
 
 
 @AndroidEntryPoint
@@ -24,21 +20,27 @@ class MovieFragment: BasePreviewFragment<Movie>() {
         super.onViewCreated(view, savedInstanceState)
 
         setListeners()
-//        setViewPager()
-        setLoadingViewPager()
+        setShowcaseRecyclerView(
+            onItemClicked = { id ->
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
+
+                navController.navigate(navWithAction)
+            },
+            onRefreshPressed = { viewModel.fetchPreviewMovies() }
+        )
         setRecyclerView(
             firstOnItemSelected = { id ->
                 val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
 
                 navController.navigate(navWithAction)
             },
-            firstOnRefreshPressed = { viewModel.fetchUpcomingMovies() },
+            firstOnRefreshPressed = { viewModel.fetchPreviewMovies() },
             secondOnItemSelected = { id ->
                 val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
 
                 navController.navigate(navWithAction)
             },
-            secondOnRefreshPressed = { viewModel.fetchPopularMovies() }
+            secondOnRefreshPressed = { viewModel.fetchPreviewMovies() }
         )
         setObservers()
     }
@@ -62,57 +64,19 @@ class MovieFragment: BasePreviewFragment<Movie>() {
     }
 
     private fun setObservers() {
-        viewModel.upcomingMovies.observe(viewLifecycleOwner) { handleObserver(it, upcomingAdapter) }
-
-        viewModel.popularMovies.observe(viewLifecycleOwner) {
-            binding.loadingViewPager.setVisibilityByCondition(it != NetworkResponse.Loading)
-
-            //TODO Error layout
-
-            when(it) {
-                is NetworkResponse.Success -> {
-                    setViewPager(it.data.data.map { movie ->
-                        val headers = mutableMapOf<String, String>()
-                        headers["id"] = movie.id
-
-                        CarouselItem(
-                            imageUrl = movie.imageURL,
-                            caption = movie.title,
-                            headers = headers
-                        )
-                    }) { id ->
-                        if (id != null) {
-                            val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
-
-                            navController.navigate(navWithAction)
-                        }
-                    }
-                }
-                is NetworkResponse.Failure -> {
-                    binding.previewViewPager.setGone()
-                }
-                else -> {}
-            }
-
-            handleObserver(it, popularAdapter)
-        }
+        viewModel.previewList.observe(viewLifecycleOwner) { handleObserver(it) }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
-            if (upcomingAdapter?.errorMessage != null && it) {
-                viewModel.fetchUpcomingMovies()
-            }
-
-            if (popularAdapter?.errorMessage != null && it) {
-                viewModel.fetchPopularMovies()
+            if (
+                (upcomingAdapter?.errorMessage != null && topRatedAdapter?.errorMessage != null) && it
+            ) {
+                viewModel.fetchPreviewMovies()
             }
         }
     }
 
     override fun onDestroyView() {
-        viewLifecycleOwner.apply {
-            viewModel.upcomingMovies.removeObservers(this)
-            viewModel.popularMovies.removeObservers(this)
-        }
+        viewModel.previewList.removeObservers(viewLifecycleOwner)
         super.onDestroyView()
     }
 }

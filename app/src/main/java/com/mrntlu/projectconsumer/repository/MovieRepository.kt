@@ -30,6 +30,7 @@ class MovieRepository @Inject constructor(
         fetchNetwork = {
             when(tag) {
                 FetchType.UPCOMING.tag -> movieApiService.getUpcomingMovies(page, sort)
+                FetchType.TOP.tag -> movieApiService.getTopRatedMovies(page)
                 else -> movieApiService.getMovieBySortFilter(
                     page, sort, Constants.MovieStatusRequests[1].request,
                     null, null, null, null

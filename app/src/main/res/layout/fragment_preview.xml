@@ -32,71 +32,28 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.3" />
 
-        <org.imaginativeworld.whynotimagecarousel.ImageCarousel
-            android:id="@+id/previewViewPager"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/previewShowcaseRV"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            app:autoPlay="false"
-            app:autoWidthFixing="true"
-            app:carouselBackground="?attr/mainBackgroundColor"
-            app:carouselGravity="CENTER"
-
-            app:carouselType="SHOWCASE"
-            app:imageScaleType="fitXY"
-            app:infiniteCarousel="true"
+            android:clipToPadding="false"
             app:layout_constraintBottom_toTopOf="@+id/guideline14"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:scaleOnScroll="true"
-
-            app:scalingFactor="0.15"
-            app:showBottomShadow="false"
-            app:showCaption="false"
-            app:showIndicator="false"
-            app:showNavigationButtons="false"
-            app:showTopShadow="false" />
-
-        <org.imaginativeworld.whynotimagecarousel.ImageCarousel
-            android:id="@+id/loadingViewPager"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            app:autoPlay="false"
-            app:autoWidthFixing="true"
-            app:carouselBackground="?attr/mainBackgroundColor"
-            app:carouselGravity="CENTER"
-
-            app:carouselType="SHOWCASE"
-            app:imageScaleType="fitXY"
-            app:infiniteCarousel="true"
-            app:layout_constraintBottom_toTopOf="@+id/guideline14"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:scaleOnScroll="true"
-
-            app:scalingFactor="0.15"
-            app:showBottomShadow="false"
-            app:showCaption="false"
-            app:showIndicator="false"
-            app:showNavigationButtons="false"
-            app:showTopShadow="false" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/firstRVTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="46dp"
             android:text="@string/upcoming"
             android:textColor="?attr/mainTextColor"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/previewViewPager" />
+            app:layout_constraintTop_toBottomOf="@+id/previewShowcaseRV" />
 
         <ImageButton
             android:id="@+id/seeAllButtonFirst"
@@ -125,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="@string/popular"
+            android:text="@string/top_rated"
             android:textColor="?attr/mainTextColor"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -146,7 +103,7 @@
             app:tint="?attr/mainTextColor" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/popularPreviewRV"
+            android:id="@+id/topRatedPreviewRV"
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginTop="6dp"

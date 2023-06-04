@@ -23,7 +23,6 @@ abstract class BaseFragment<T>: Fragment() {
         } catch (_: Exception) {
             Navigation.findNavController(view)
         }
-
     }
 
     // To prevent memory leak

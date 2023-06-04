@@ -3,7 +3,7 @@ package com.mrntlu.projectconsumer.viewmodels.main.movie
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.repository.MoviePreviewRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
@@ -15,26 +15,16 @@ import javax.inject.Inject
 class MoviePreviewViewModel @Inject constructor(
     private val moviePreviewRepository: MoviePreviewRepository,
 ): ViewModel() {
-    private val _upcomingList = MutableLiveData<NetworkResponse<DataPaginationResponse<Movie>>>()
-    val upcomingMovies: LiveData<NetworkResponse<DataPaginationResponse<Movie>>> = _upcomingList
-
-    private val _popularList = MutableLiveData<NetworkResponse<DataPaginationResponse<Movie>>>()
-    val popularMovies: LiveData<NetworkResponse<DataPaginationResponse<Movie>>> = _popularList
+    private val _previewList = MutableLiveData<NetworkResponse<PreviewResponse<Movie>>>()
+    val previewList: LiveData<NetworkResponse<PreviewResponse<Movie>>> = _previewList
 
     init {
-        fetchUpcomingMovies()
-        fetchPopularMovies()
+        fetchPreviewMovies()
     }
 
-    fun fetchUpcomingMovies() = networkResponseFlowCollector(
-        moviePreviewRepository.fetchUpcomingMovies()
+    fun fetchPreviewMovies() = networkResponseFlowCollector(
+        moviePreviewRepository.fetchPreviewMovies()
     ) { response ->
-        _upcomingList.value = response
-    }
-
-    fun fetchPopularMovies() = networkResponseFlowCollector(
-        moviePreviewRepository.fetchPopularMovies()
-    ) { response ->
-        _popularList.value = response
+        _previewList.value = response
     }
 }

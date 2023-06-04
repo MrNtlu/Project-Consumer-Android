@@ -21,7 +21,6 @@
     <string name="login_register_toolbar">Login/Register</string>
     <string name="refresh_cd">Refresh</string>
     <string name="no_poster">No Poster</string>
-    <string name="upcoming">Upcoming</string>
     <string name="genres">Genres</string>
     <string name="dismiss">Dismiss</string>
     <string name="sort">Sort</string>
@@ -67,6 +66,13 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
     <string name="username">Username</string>
+    <string name="network">Network</string>
+    <string name="seasons">Seasons</string>
+    <string name="home">Home</string>
+    <string name="discover">Discover</string>
+    <string name="profile">Profile</string>
+    <string name="upcoming">📅 Upcoming</string>
+    <string name="top_rated">🔥Top Rated</string>
 
     <string name="back_to_top">Back to Top</string>
     <string name="no_internet_connection">No internet connection!</string>
@@ -89,8 +95,6 @@
     <string name="password_too_short">Password is too short. Min 6.</string>
     <string name="passwords_dont_match">Passwords don\'t match.</string>
     <string name="please_fill_the_form">Please fill the form.</string>
-    <string name="network">Network</string>
-    <string name="seasons">Seasons</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

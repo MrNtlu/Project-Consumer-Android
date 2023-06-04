@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         //Granted or not
     }
 
+    private var isUserInfoFailed = false
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,7 +128,8 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             if (sharedViewModel.isLoggedIn())
                 setOf(
-                    R.id.navigation_home, R.id.navigation_discover, R.id.navigation_profile
+                    R.id.navigation_home, R.id.navigation_discover,
+                    R.id.navigation_profile, R.id.navigation_later,
                 )
             else
                 setOf(
@@ -157,7 +159,7 @@ class MainActivity : AppCompatActivity() {
             invalidateOptionsMenu()
 
             when(destination.id) {
-                R.id.navigation_home, R.id.navigation_discover -> {
+                R.id.navigation_home, R.id.navigation_discover, R.id.navigation_later -> {
                     binding.toolbar.setVisible()
                     binding.navView.setVisible()
                     handleUserIncVisibility(false)
@@ -244,7 +246,8 @@ class MainActivity : AppCompatActivity() {
         menu?.findItem(R.id.settingsMenu)?.isVisible = !(
                 currentItem != R.id.navigation_home &&
                 currentItem != R.id.navigation_discover &&
-                currentItem != R.id.navigation_profile) &&
+                currentItem != R.id.navigation_profile &&
+                currentItem != R.id.navigation_later) &&
                 sharedViewModel.isLoggedIn()
 
         return true
@@ -291,6 +294,9 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     ConnectivityObserver.Status.Available -> {
+                        if (sharedViewModel.isLoggedIn() && isUserInfoFailed && userSharedViewModel.userInfo == null)
+                            userSharedViewModel.getUserInfo()
+
                         sharedViewModel.setNetworkStatus(true)
 
                         sharedViewModel.setMessageBox(Triple(MessageBoxType.NOTHING, null, null))
@@ -309,6 +315,8 @@ class MainActivity : AppCompatActivity() {
                 userLoadingProgressBar.setVisibilityByCondition(!(response == NetworkResponse.Loading && shouldShow))
                 userInc.root.setVisibilityByCondition(!(response is NetworkResponse.Success && shouldShow))
             }
+
+            isUserInfoFailed = !(response !is NetworkResponse.Failure)
 
             if (response is NetworkResponse.Success) {
                 userSharedViewModel.userInfo = response.data.data

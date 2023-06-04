@@ -8,6 +8,7 @@
   <li> Leak Canary
   <li> Coroutines
   <li> Firebase Crashlytics & Analytics
+  <li> Firebase Cloud Messaging
   <li> Room - SQLite Caching
   <li> Retrofit
   <li> Shimmer
@@ -20,11 +21,6 @@
 
 ## Design TODO
 
-* Auth Login
-  * Google Signin
-  * Twitter Signin
-  * https://dribbble.com/shots/15196515-Abda-The-Beginning
-  * https://dribbble.com/shots/19203933-Movgul-Mobile-App
 * Main Screen
   * If not logged in same as now
   * If logged in https://dribbble.com/shots/21244070-Movie-Streaming-App
@@ -32,17 +28,30 @@
     * Search will act like discovery. Genres should be there.
     * BottomNav (Home, Search, List, Profile)
 
-## TODO
+## Level
 
-* All contents should be unified and bottom bar should be used for easier access to bottom nav etc.
-* Better implementation and usage of logs both analytics and on backend.
-* Details Page Design
-    * NOTE
-        * Watchlist/Userlist should be simple. By default, user should be able to simply click the button and add.
-        * If needed, user can open extra interface/dialog/bottomsheet etc. and rate/comment/times finished etc.
-* Boarding/Introduction Page
-* Google/Apple Sign-in etc.
-* Deep Linking, Sharing, Notification Redirection & Share on Instagram.
+- No Max Level
+- Score required to level up
+
+$Level = \sqrt{Score} * 0.2$
+
+```
+e.g. If user has 3600 Score, their level is 12,
+
+3600 = (Level / 0.2) ^ 2
+√3600 = Level / 0.2
+Level = 60 * 0.2
+Level = 12
+```
+
+## Scores
+
+| Type   |      Score      |  Extra |
+|----------|:-------------:|------:|
+| Consume Later |  +25 | - |
+| User List Watching |    +50   |   - |
+| User List Dropped | +50 |    Score +50 |
+| User List Watched | +100 |    Score +25 |
 
 ## Features
 ### Table of Contents

@@ -19,19 +19,27 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
         super.onViewCreated(view, savedInstanceState)
 
         setListeners()
+        setShowcaseRecyclerView(
+            onItemClicked = { id ->
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
+
+                navController.navigate(navWithAction)
+            },
+            onRefreshPressed = { viewModel.fetchPreviewTVSeries() }
+        )
         setRecyclerView(
             firstOnItemSelected = { id ->
                 val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
 
                 navController.navigate(navWithAction)
             },
-            firstOnRefreshPressed = { viewModel.fetchUpcomingTVSeries() },
+            firstOnRefreshPressed = { viewModel.fetchPreviewTVSeries() },
             secondOnItemSelected = { id ->
                 val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
 
                 navController.navigate(navWithAction)
             },
-            secondOnRefreshPressed = { viewModel.fetchPopularTVSeries() }
+            secondOnRefreshPressed = { viewModel.fetchPreviewTVSeries() }
         )
         setObservers()
     }
@@ -55,26 +63,19 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
     }
 
     private fun setObservers() {
-        viewModel.upcomingTV.observe(viewLifecycleOwner) { handleObserver(it, upcomingAdapter) }
-
-        viewModel.popularTV.observe(viewLifecycleOwner) { handleObserver(it, popularAdapter) }
+        viewModel.previewList.observe(viewLifecycleOwner) { handleObserver(it) }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
-            if (upcomingAdapter?.errorMessage != null && it) {
-                viewModel.fetchUpcomingTVSeries()
-            }
-
-            if (popularAdapter?.errorMessage != null && it) {
-                viewModel.fetchPopularTVSeries()
+            if (
+                (upcomingAdapter?.errorMessage != null || topRatedAdapter?.errorMessage != null) && it
+            ) {
+                viewModel.fetchPreviewTVSeries()
             }
         }
     }
 
     override fun onDestroyView() {
-        viewLifecycleOwner.apply {
-            viewModel.upcomingTV.removeObservers(this)
-            viewModel.popularTV.removeObservers(this)
-        }
+        viewModel.previewList.removeObservers(viewLifecycleOwner)
         super.onDestroyView()
     }
 }

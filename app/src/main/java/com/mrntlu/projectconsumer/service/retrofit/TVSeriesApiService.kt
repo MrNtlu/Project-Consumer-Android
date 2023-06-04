@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.service.retrofit
 import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataSearchPaginationResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.models.main.tv.TVSeries
 import com.mrntlu.projectconsumer.models.main.tv.TVSeriesDetails
 import retrofit2.Response
@@ -22,6 +23,9 @@ interface TVSeriesApiService {
         @Query("to") releaseDateTo: Int?,
     ): Response<DataPaginationResponse<TVSeries>>
 
+    @GET("tv/preview")
+    suspend fun getPreviewTVSeries(): Response<PreviewResponse<TVSeries>>
+
     @GET("tv/upcoming")
     suspend fun getUpcomingTVSeries(
         @Query("page") page: Int,
@@ -30,6 +34,11 @@ interface TVSeriesApiService {
 
     @GET("tv/popular")
     suspend fun getPopularTVSeries(
+        @Query("page") page: Int,
+    ): Response<DataPaginationResponse<TVSeries>>
+
+    @GET("tv/top")
+    suspend fun getTopRatedTVSeries(
         @Query("page") page: Int,
     ): Response<DataPaginationResponse<TVSeries>>
 
