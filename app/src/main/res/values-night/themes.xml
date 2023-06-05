@@ -50,22 +50,6 @@
         <item name="floatingActionButtonSmallStyle">@style/Theme.ProjectConsumer.SmallFAB</item>
     </style>
 
-<!--   Segmented Button Style   -->
-    <style name="Theme.ProjectConsumer.FirstSegmentedButton" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="backgroundTint">@drawable/segmented_button_background_first</item>
-        <item name="android:textColor">@drawable/segmented_button_text</item>
-    </style>
-
-    <style name="Theme.ProjectConsumer.SecondSegmentedButton" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="backgroundTint">@drawable/segmented_button_background_second</item>
-        <item name="android:textColor">@drawable/segmented_button_text</item>
-    </style>
-
-    <style name="Theme.ProjectConsumer.ThirdSegmentedButton" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="backgroundTint">@drawable/segmented_button_background_third</item>
-        <item name="android:textColor">@drawable/segmented_button_text</item>
-    </style>
-
 <!--   Custom Popup Menu Style   -->
     <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">
         <item name="android:popupBackground">@drawable/custom_popup_background</item>
@@ -93,6 +77,7 @@
         <item name="materialAlertDialogTitleTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorTitleText</item>
         <item name="materialAlertDialogBodyTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorBodyText</item>
         <item name="buttonBarPositiveButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.ErrorButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.ErrorNegativeButton</item>
     </style>
 
     <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorTitleText" parent="MaterialAlertDialog.Material3.Title.Text">
@@ -105,6 +90,10 @@
 
     <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.ErrorButton" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textColor">@color/red700</item>
+    </style>
+
+    <style name="Theme.ProjectConsumer.MaterialAlertDialog.App.ErrorNegativeButton" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="Theme.ProjectConsumer.InfoMaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">

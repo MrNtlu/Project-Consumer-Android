@@ -1,57 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
-    <com.google.android.material.button.MaterialButtonToggleGroup
-        android:id="@+id/toggleButtonGroup"
-        android:layout_width="wrap_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/toggleTabLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:checkedButton="@id/firstToggleGroupButton"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?attr/mainBackgroundColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:selectionRequired="true"
-        app:singleSelection="true">
-
-        <Button
-            android:id="@+id/firstToggleGroupButton"
-            style="@style/Theme.ProjectConsumer.FirstSegmentedButton"
-            tools:text="Active"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/secondToggleGroupButton"
-            style="@style/Theme.ProjectConsumer.SecondSegmentedButton"
-            tools:text="Dropped"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/thirdToggleGroupButton"
-            style="@style/Theme.ProjectConsumer.ThirdSegmentedButton"
-            tools:text="Finished"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </com.google.android.material.button.MaterialButtonToggleGroup>
+        app:tabBackground="?attr/mainBackgroundColor"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="2dp"
+        app:tabMinWidth="0dp"
+        app:tabMode="fixed"
+        app:tabRippleColor="@null"
+        app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
+        app:tabTextColor="?attr/mainTextColor" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/scoreSelection"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="32dp"
         android:hint="@string/select_score"
-        app:layout_constraintEnd_toEndOf="@+id/toggleButtonGroup"
-        app:layout_constraintStart_toStartOf="@+id/toggleButtonGroup"
-        app:layout_constraintTop_toBottomOf="@+id/toggleButtonGroup"
+        app:layout_constraintEnd_toStartOf="@+id/guideline17"
+        app:layout_constraintStart_toStartOf="@+id/guideline16"
+        app:layout_constraintTop_toBottomOf="@+id/toggleTabLayout"
         app:startIconDrawable="@drawable/ic_star_36"
         app:startIconTint="#F5C518">
 
@@ -65,7 +47,6 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/timesFinishedTextLayout"
-        tools:visibility="visible"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -73,7 +54,8 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/scoreSelection"
         app:layout_constraintStart_toStartOf="@+id/scoreSelection"
-        app:layout_constraintTop_toBottomOf="@+id/scoreSelection">
+        app:layout_constraintTop_toBottomOf="@+id/scoreSelection"
+        tools:visibility="visible">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/timesFinishedTextInputET"
@@ -81,4 +63,18 @@
             android:layout_height="wrap_content"
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.17" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.83" />
 </androidx.constraintlayout.widget.ConstraintLayout>

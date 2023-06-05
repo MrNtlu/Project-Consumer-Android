@@ -7,12 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import com.airbnb.lottie.LottieDrawable
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.LayoutListBottomSheetBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
@@ -23,7 +26,7 @@ import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.UserListStatus
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -78,15 +81,15 @@ class MovieDetailsBottomSheet(
             bottomSheetOperation = BottomSheetOperation.DELETE
 
             binding.layoutViewInc.apply {
-                val userListStatus = Constants.UserListStatus.firstOrNull { it.request == watchList?.status }
+                val userListStatus = UserListStatus.firstOrNull { it.request == watchList?.status }
 
                 scoreTV.text = watchList?.score?.toString() ?: "*"
                 statusTV.text = userListStatus?.name
                 timesFinishedCountTV.text = watchList?.timesFinished?.toString()
 
                 val attrColor = when(userListStatus?.request) {
-                    Constants.UserListStatus[0].request -> R.attr.statusActiveColor
-                    Constants.UserListStatus[1].request -> R.attr.statusFinishedColor
+                    UserListStatus[0].request -> R.attr.statusActiveColor
+                    UserListStatus[1].request -> R.attr.statusFinishedColor
                     else -> R.attr.statusDroppedColor
                 }
 
@@ -94,8 +97,8 @@ class MovieDetailsBottomSheet(
                 root.context.theme.resolveAttribute(attrColor, typedValue, true)
 
                 statusColorDivider.dividerColor = ContextCompat.getColor(root.context, typedValue.resourceId)
-                timesFinishedTV.setVisibilityByCondition(userListStatus?.request != Constants.UserListStatus[1].request)
-                timesFinishedCountTV.setVisibilityByCondition(userListStatus?.request != Constants.UserListStatus[1].request)
+                timesFinishedTV.setVisibilityByCondition(userListStatus?.request != UserListStatus[1].request)
+                timesFinishedCountTV.setVisibilityByCondition(userListStatus?.request != UserListStatus[1].request)
             }
 
             binding.saveButton.text = getString(R.string.edit)
@@ -104,29 +107,53 @@ class MovieDetailsBottomSheet(
             bottomSheetOperation = BottomSheetOperation.INSERT
 
             binding.layoutEditInc.apply {
-                firstToggleGroupButton.text = Constants.UserListStatus[0].name
-                secondToggleGroupButton.text = Constants.UserListStatus[1].name
-                thirdToggleGroupButton.text = Constants.UserListStatus[2].name
+                toggleTabLayout.apply {
+                    for (tab in UserListStatus) {
+                        val customTab = newTab().setCustomView(R.layout.cell_status_tab_layout)
+                        addTab(customTab)
+                        customTab.customView?.findViewById<TextView>(R.id.tabTV)?.text = tab.name
+                    }
+                }
 
                 watchList?.let {
                     bottomSheetOperation = BottomSheetOperation.UPDATE
 
-                    toggleButtonGroup.check(
+                    toggleTabLayout.getTabAt(
                         when (it.status) {
-                            Constants.UserListStatus[0].request -> firstToggleGroupButton.id
-                            Constants.UserListStatus[1].request -> secondToggleGroupButton.id
-                            else -> thirdToggleGroupButton.id
+                            UserListStatus[0].request -> 0
+                            UserListStatus[1].request -> 1
+                            else -> 2
                         }
-                    )
+                    )?.select()
 
                     setACTVSelection(it.score?.plus(1) ?: 0)
                     timesFinishedTextInputET.setText(it.timesFinished.toString())
                 }
+
+                setSelectedTabColors(toggleTabLayout.getTabAt(toggleTabLayout.selectedTabPosition))
             }
 
             binding.saveButton.text = getString(if (watchList == null) R.string.save else R.string.update)
             binding.cancelButton.text = getString(R.string.cancel)
         }
+    }
+
+    private fun setSelectedTabColors(tab: TabLayout.Tab?) {
+        val tv = tab?.customView?.findViewById<TextView>(R.id.tabTV)
+
+        val attrColor = when(tv?.text) {
+            UserListStatus[0].name -> R.attr.statusActiveColor
+            UserListStatus[1].name -> R.attr.statusFinishedColor
+            else -> R.attr.statusDroppedColor
+        }
+
+        val typedValue = TypedValue()
+        binding.root.context.theme.resolveAttribute(attrColor, typedValue, true)
+
+        val color = ContextCompat.getColor(binding.root.context, typedValue.resourceId)
+        tv?.setTextColor(color)
+        binding.layoutEditInc.toggleTabLayout.setSelectedTabIndicatorColor(color)
+
     }
 
     private fun setListeners() {
@@ -156,19 +183,31 @@ class MovieDetailsBottomSheet(
                 }
             }
 
-            layoutEditInc.toggleButtonGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
-                if (isChecked) {
-                    if (checkedId == R.id.secondToggleGroupButton)
+            layoutEditInc.toggleTabLayout.addOnTabSelectedListener(object: OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    val tv = tab?.customView?.findViewById<TextView>(R.id.tabTV)
+                    setSelectedTabColors(tab)
+
+                    if (tv?.text == UserListStatus[1].name)
                         layoutEditInc.timesFinishedTextInputET.setText(
                             if (watchList != null && watchList!!.timesFinished > 0) watchList!!.timesFinished.toString() else "1"
                         )
                     else
                         layoutEditInc.timesFinishedTextInputET.text = null
 
-                    layoutEditInc.timesFinishedTextLayout.isErrorEnabled = checkedId == R.id.secondToggleGroupButton
-                    layoutEditInc.timesFinishedTextLayout.setVisibilityByConditionWithAnimation(checkedId != R.id.secondToggleGroupButton)
+                    layoutEditInc.timesFinishedTextLayout.isErrorEnabled = tv?.text == UserListStatus[1].name
+                    layoutEditInc.timesFinishedTextLayout.setVisibilityByConditionWithAnimation(tv?.text != UserListStatus[1].name)
                 }
-            }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    val typedValue = TypedValue()
+                    root.context.theme.resolveAttribute(R.attr.mainTextColor, typedValue, true)
+
+                    tab?.customView?.findViewById<TextView>(R.id.tabTV)?.setTextColor(ContextCompat.getColor(binding.root.context, typedValue.resourceId))
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
 
             layoutEditInc.scoreSelectionACTV.setOnDismissListener {
                 if (layoutEditInc.scoreSelectionACTV.text.toString().run { isEmpty() || isBlank() })
@@ -184,14 +223,7 @@ class MovieDetailsBottomSheet(
             saveButton.setOnClickListener {
                 if (bottomSheetState == BottomSheetState.EDIT) {
                     val score: Int? = layoutEditInc.scoreSelectionACTV.text.toString().toIntOrNull()
-                    val status = Constants.UserListStatus[
-                            when (layoutEditInc.toggleButtonGroup.checkedButtonId) {
-                                R.id.firstToggleGroupButton -> 0
-                                R.id.secondToggleGroupButton -> 1
-                                R.id.thirdToggleGroupButton -> 2
-                                else -> 0
-                            }
-                    ].request
+                    val status = UserListStatus[layoutEditInc.toggleTabLayout.selectedTabPosition].request
                     val timesFinished = layoutEditInc.timesFinishedTextInputET.text?.toString()?.toIntOrNull()
 
                     if (watchList == null) {

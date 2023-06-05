@@ -30,6 +30,7 @@ import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showErrorDialog
+import com.mrntlu.projectconsumer.utils.showLoginRegisterDialog
 import com.mrntlu.projectconsumer.viewmodels.main.ConsumeLaterViewModel
 import java.util.Locale
 
@@ -96,7 +97,9 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
                     if (!sharedViewModel.isNetworkAvailable())
                         context?.showErrorDialog(getString(R.string.no_internet_connection))
 
-                    //TODO Else show login/register dialog!
+                    context?.showLoginRegisterDialog(true) {
+                        navController.navigate(R.id.action_global_authFragment)
+                    }
                 }
             }
         }
@@ -113,7 +116,9 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
                     if (!sharedViewModel.isNetworkAvailable())
                         context?.showErrorDialog(getString(R.string.no_internet_connection))
 
-                    //TODO Else show login/register dialog!
+                    context?.showLoginRegisterDialog(false) {
+                        navController.navigate(R.id.action_global_authFragment)
+                    }
                 }
             }
         }
@@ -136,6 +141,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
 
     protected fun handleWatchListLottie(binding: LayoutUserInteractionBinding, isDetailsNull: Boolean) {
         binding.addListLottie.apply {
+            setMinAndMaxFrame(0, 130)
             frame = if (isDetailsNull) 130 else 0
 
             if (frame != 0) {

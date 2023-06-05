@@ -2,6 +2,9 @@ package com.mrntlu.projectconsumer.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -19,6 +22,7 @@ import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
+import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -56,9 +60,18 @@ class ContentAdapter<T: ContentModel>(
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
         override fun bind(item: T, position: Int, interaction: Interaction<T>) {
             binding.apply {
+                previewComposeView.apply {
+                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                    setContent {
+                        LoadingShimmer(isDarkTheme = false, roundedCornerSize = 6.dp) {
+                            fillMaxHeight()
+                        }
+                    }
+                }
+
                 previewCard.setGone()
-                previewIVProgress.setVisible()
-                previewIV.loadWithGlide(item.imageURL, previewCard, previewIVProgress) {
+                previewComposeView.setVisible()
+                previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
                     centerCrop().transform(RoundedCorners(24))
                 }
 

@@ -9,7 +9,6 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +28,6 @@ import kotlinx.coroutines.android.awaitFrame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -60,6 +58,20 @@ fun Context.showInfoDialog(message: String, onPositive: () -> Unit) {
             dialog.dismiss()
         }
         .setNegativeButton(getString(R.string.no_thanks_)) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
+}
+
+fun Context.showLoginRegisterDialog(isConsumeLater: Boolean, onPositive: () -> Unit,) {
+    MaterialAlertDialogBuilder(this)
+        .setTitle(getString(R.string.error))
+        .setMessage("Unauthorized access. You need to login to add this to your ${if (isConsumeLater) "watch later queue" else "list"}.")
+        .setPositiveButton(getString(R.string.sign_in)) { dialog, _ ->
+            onPositive()
+            dialog.dismiss()
+        }
+        .setNegativeButton(R.string.dismiss) { dialog, _ ->
             dialog.dismiss()
         }
         .show()
@@ -135,7 +147,7 @@ fun Double.roundSingleDecimal(): Double {
     return df.format(this).toDouble()
 }
 
-fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: ProgressBar, transformImage: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable>) =
+fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: View, transformImage: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable>) =
     Glide.with(context).load(imageUrl).addListener(object: RequestListener<Drawable> {
         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
             progressBar.setGone()

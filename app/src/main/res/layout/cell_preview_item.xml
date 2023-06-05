@@ -70,12 +70,11 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <ProgressBar
-        android:id="@+id/previewIVProgress"
-        style="?android:attr/progressBarStyle"
-        android:indeterminateTint="?attr/mainTextColor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/previewComposeView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="2:3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

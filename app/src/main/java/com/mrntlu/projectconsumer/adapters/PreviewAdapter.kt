@@ -3,6 +3,10 @@ package com.mrntlu.projectconsumer.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -15,6 +19,7 @@ import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
+import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -124,13 +129,23 @@ class PreviewAdapter<T: ContentModel>(
 
                 binding.root.layoutParams = params
 
+                previewComposeView.apply {
+                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                    setContent {
+                        LoadingShimmer(isDarkTheme = false, roundedCornerSize = 6.dp) {
+                            fillMaxHeight()
+                        }
+                    }
+                }
+
                 previewCard.setGone()
-                previewIVProgress.setVisible()
-                previewIV.loadWithGlide(item.imageURL, previewCard, previewIVProgress) {
+                previewComposeView.setVisible()
+                previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
                     centerCrop().transform(RoundedCorners(18))
                 }
 
                 previewTV.text = item.title
+
 
                 root.setOnClickListener {
                     interaction.onItemSelected(item, position)
