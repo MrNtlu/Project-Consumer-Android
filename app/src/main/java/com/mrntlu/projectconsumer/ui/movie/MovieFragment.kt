@@ -56,7 +56,7 @@ class MovieFragment: BasePreviewFragment<Movie>() {
             }
 
             seeAllButtonSecond.setOnClickListener {
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieListFragment(FetchType.POPULAR.tag)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieListFragment(FetchType.TOP.tag)
 
                 navController.navigate(navWithAction)
             }

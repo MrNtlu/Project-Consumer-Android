@@ -190,15 +190,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.movieListFragment -> {
                     if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
                         "Upcoming Movies"
-                    else if (args?.getString("fetchType") == FetchType.POPULAR.tag)
-                        "Popular Movies"
+                    else if (args?.getString("fetchType") == FetchType.TOP.tag)
+                        "Top Movies"
                     else ""
                 }
                 R.id.tvListFragment -> {
                     if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
                         "Upcoming TV Series"
-                    else if (args?.getString("fetchType") == FetchType.POPULAR.tag)
-                        "Popular TV Series"
+                    else if (args?.getString("fetchType") == FetchType.TOP.tag)
+                        "Top TV Series"
                     else ""
                 }
                 R.id.navigation_settings -> {

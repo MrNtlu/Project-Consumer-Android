@@ -55,7 +55,7 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
             }
 
             seeAllButtonSecond.setOnClickListener {
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.POPULAR.tag)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.TOP.tag)
 
                 navController.navigate(navWithAction)
             }
