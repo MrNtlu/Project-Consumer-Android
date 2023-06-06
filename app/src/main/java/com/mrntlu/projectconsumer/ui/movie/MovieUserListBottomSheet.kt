@@ -1,6 +1,5 @@
 package com.mrntlu.projectconsumer.ui.movie
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -11,95 +10,58 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.LiveData
-import com.airbnb.lottie.LottieDrawable
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.mrntlu.projectconsumer.R
-import com.mrntlu.projectconsumer.databinding.LayoutListBottomSheetBinding
+import com.mrntlu.projectconsumer.databinding.LayoutMovieUlBottomSheetBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
-import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
+import com.mrntlu.projectconsumer.ui.BaseDetailsBottomSheet
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Constants.UserListStatus
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
-import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MovieDetailsBottomSheet(
-    private val onBottomSheetClosed: OnBottomSheetClosed<MovieWatchList>,
-    private var watchList: MovieWatchList?,
+class MovieUserListBottomSheet(
+    onBottomSheetClosed: OnBottomSheetClosed<MovieWatchList>,
+    watchList: MovieWatchList?,
     private val movieId: String,
     private val movieTMDBId: String,
-): BottomSheetDialogFragment() {
+): BaseDetailsBottomSheet<LayoutMovieUlBottomSheetBinding, MovieWatchList>(onBottomSheetClosed, watchList) {
 
     companion object {
-        const val TAG = "ListBottomSheet"
+        const val TAG = "MovieULBottomSheet"
     }
-
-    //TODO Hide show animate
-
-    private var _binding: LayoutListBottomSheetBinding? = null
-    private val binding get() = _binding!!
 
     private val viewModel: MovieDetailsViewModel by viewModels()
 
-    private var bottomSheetState = if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW
-    private var bottomSheetOperation = if (watchList == null) BottomSheetOperation.INSERT else BottomSheetOperation.DELETE
-
-    private var userListDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = LayoutListBottomSheetBinding.inflate(inflater, container, false)
+        _binding = LayoutMovieUlBottomSheetBinding.inflate(inflater, container, false)
         dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setUI()
-        setListeners()
-        setObservers()
-    }
-
-    private fun setUI() {
+    override fun setUI() {
         binding.layoutViewInc.root.setVisibilityByCondition(bottomSheetState != BottomSheetState.VIEW)
         binding.layoutEditInc.root.setVisibilityByCondition(bottomSheetState != BottomSheetState.EDIT)
 
         if (bottomSheetState == BottomSheetState.VIEW) {
             bottomSheetOperation = BottomSheetOperation.DELETE
 
-            binding.layoutViewInc.apply {
-                val userListStatus = UserListStatus.firstOrNull { it.request == watchList?.status }
-
-                scoreTV.text = watchList?.score?.toString() ?: "*"
-                statusTV.text = userListStatus?.name
-                timesFinishedCountTV.text = watchList?.timesFinished?.toString()
-
-                val attrColor = when(userListStatus?.request) {
-                    UserListStatus[0].request -> R.attr.statusActiveColor
-                    UserListStatus[1].request -> R.attr.statusFinishedColor
-                    else -> R.attr.statusDroppedColor
-                }
-
-                val typedValue = TypedValue()
-                root.context.theme.resolveAttribute(attrColor, typedValue, true)
-
-                statusColorDivider.dividerColor = ContextCompat.getColor(root.context, typedValue.resourceId)
-                timesFinishedTV.setVisibilityByCondition(userListStatus?.request != UserListStatus[1].request)
-                timesFinishedCountTV.setVisibilityByCondition(userListStatus?.request != UserListStatus[1].request)
-            }
+            setViewLayout(
+                Constants.ContentType.MOVIE, watchList?.status, watchList?.score,
+                watchList?.timesFinished, null, null, binding.layoutViewInc
+            )
 
             binding.saveButton.text = getString(R.string.edit)
             binding.cancelButton.text = getString(R.string.dismiss)
@@ -107,13 +69,7 @@ class MovieDetailsBottomSheet(
             bottomSheetOperation = BottomSheetOperation.INSERT
 
             binding.layoutEditInc.apply {
-                toggleTabLayout.apply {
-                    for (tab in UserListStatus) {
-                        val customTab = newTab().setCustomView(R.layout.cell_status_tab_layout)
-                        addTab(customTab)
-                        customTab.customView?.findViewById<TextView>(R.id.tabTV)?.text = tab.name
-                    }
-                }
+                setTabLayout(toggleTabLayout)
 
                 watchList?.let {
                     bottomSheetOperation = BottomSheetOperation.UPDATE
@@ -130,7 +86,11 @@ class MovieDetailsBottomSheet(
                     timesFinishedTextInputET.setText(it.timesFinished.toString())
                 }
 
-                setSelectedTabColors(toggleTabLayout.getTabAt(toggleTabLayout.selectedTabPosition))
+                setSelectedTabColors(
+                    binding.root.context,
+                    toggleTabLayout.getTabAt(toggleTabLayout.selectedTabPosition),
+                    toggleTabLayout,
+                )
             }
 
             binding.saveButton.text = getString(if (watchList == null) R.string.save else R.string.update)
@@ -138,25 +98,7 @@ class MovieDetailsBottomSheet(
         }
     }
 
-    private fun setSelectedTabColors(tab: TabLayout.Tab?) {
-        val tv = tab?.customView?.findViewById<TextView>(R.id.tabTV)
-
-        val attrColor = when(tv?.text) {
-            UserListStatus[0].name -> R.attr.statusActiveColor
-            UserListStatus[1].name -> R.attr.statusFinishedColor
-            else -> R.attr.statusDroppedColor
-        }
-
-        val typedValue = TypedValue()
-        binding.root.context.theme.resolveAttribute(attrColor, typedValue, true)
-
-        val color = ContextCompat.getColor(binding.root.context, typedValue.resourceId)
-        tv?.setTextColor(color)
-        binding.layoutEditInc.toggleTabLayout.setSelectedTabIndicatorColor(color)
-
-    }
-
-    private fun setListeners() {
+    override fun setListeners() {
         binding.apply {
             layoutViewInc.deleteButton.setOnClickListener {
                 if (watchList != null) {
@@ -166,19 +108,19 @@ class MovieDetailsBottomSheet(
                     userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(watchList!!.id, "movie"))
 
                     userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
-                        isCancelable = response != NetworkResponse.Loading
+                        handleBottomSheetState(response)
 
-                        bottomSheetState = when(response) {
-                            is NetworkResponse.Success -> BottomSheetState.SUCCESS
-                            is NetworkResponse.Failure -> BottomSheetState.FAILURE
-                            else -> BottomSheetState.VIEW
-                        }
-
-                        if (response is NetworkResponse.Success){
+                        if (response is NetworkResponse.Success) {
                             watchList = null
                         }
 
-                        handleResponseStatusLayout(response)
+                        handleResponseStatusLayout(
+                            binding.responseStatusLayout.root,
+                            binding.responseStatusLayout.responseStatusLottie,
+                            binding.responseStatusLayout.responseStatusTV,
+                            binding.responseStatusLayout.responseCloseButton,
+                            response
+                        )
                     }
                 }
             }
@@ -186,7 +128,12 @@ class MovieDetailsBottomSheet(
             layoutEditInc.toggleTabLayout.addOnTabSelectedListener(object: OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val tv = tab?.customView?.findViewById<TextView>(R.id.tabTV)
-                    setSelectedTabColors(tab)
+
+                    setSelectedTabColors(
+                        binding.root.context,
+                        tab,
+                        layoutEditInc.toggleTabLayout,
+                    )
 
                     if (tv?.text == UserListStatus[1].name)
                         layoutEditInc.timesFinishedTextInputET.setText(
@@ -224,7 +171,8 @@ class MovieDetailsBottomSheet(
                 if (bottomSheetState == BottomSheetState.EDIT) {
                     val score: Int? = layoutEditInc.scoreSelectionACTV.text.toString().toIntOrNull()
                     val status = UserListStatus[layoutEditInc.toggleTabLayout.selectedTabPosition].request
-                    val timesFinished = layoutEditInc.timesFinishedTextInputET.text?.toString()?.toIntOrNull()
+                    val timesFinished = if (status != UserListStatus[1].request) null
+                        else layoutEditInc.timesFinishedTextInputET.text?.toString()?.toIntOrNull()
 
                     if (watchList == null) {
                         val watchListBody = MovieWatchListBody(movieId, movieTMDBId, timesFinished, score, status)
@@ -248,11 +196,11 @@ class MovieDetailsBottomSheet(
                 dismiss()
             }
 
-            responseCloseButton.setOnClickListener {
+            responseStatusLayout.responseCloseButton.setOnClickListener {
                 if (bottomSheetState != BottomSheetState.FAILURE)
                     dismiss()
                 else {
-                    responseStatusLayout.setGone()
+                    responseStatusLayout.root.setGone()
                     bottomSheetState = BottomSheetState.EDIT
                 }
             }
@@ -266,71 +214,27 @@ class MovieDetailsBottomSheet(
         }
     }
 
-    private fun setObservers() {
+    override fun setObservers() {
         viewModel.movieWatchList.observe(viewLifecycleOwner) { response ->
-            isCancelable = response != NetworkResponse.Loading
-
-            bottomSheetState = when (response) {
-                is NetworkResponse.Success -> BottomSheetState.SUCCESS
-                is NetworkResponse.Failure -> BottomSheetState.FAILURE
-                else -> BottomSheetState.EDIT
-            }
+            handleBottomSheetState(response)
 
             if (response is NetworkResponse.Success) {
                 watchList = response.data.data
             }
 
-            handleResponseStatusLayout(response)
-        }
-    }
-
-    private fun handleResponseStatusLayout(response: NetworkResponse<*>) {
-        binding.apply {
-            responseStatusLayout.setVisible()
-
-            responseStatusLottie.apply {
-                repeatMode = LottieDrawable.RESTART
-
-                scaleX = if (response == NetworkResponse.Loading) 1.5f else 1f
-                scaleY = if (response == NetworkResponse.Loading) 1.5f else 1f
-
-                setAnimation(
-                    when(response) {
-                        is NetworkResponse.Failure -> R.raw.error
-                        NetworkResponse.Loading -> R.raw.loading
-                        is NetworkResponse.Success -> R.raw.success
-                    }
-                )
-
-                repeatCount = when(response) {
-                    is NetworkResponse.Failure, NetworkResponse.Loading -> ValueAnimator.INFINITE
-                    else -> 0
-                }
-
-                playAnimation()
-            }
-
-            responseStatusTV.text = when(response) {
-                is NetworkResponse.Failure -> response.errorMessage
-                NetworkResponse.Loading -> getString(R.string.please_wait_)
-                is NetworkResponse.Success -> "${getString(R.string.successfully)} ${when(bottomSheetOperation){
-                    BottomSheetOperation.INSERT -> getString(R.string.created)
-                    BottomSheetOperation.UPDATE -> getString(R.string.updated)
-                    BottomSheetOperation.DELETE -> getString(R.string.deleted)
-                }}."
-            }
-
-            responseCloseButton.setVisibilityByCondition(response == NetworkResponse.Loading)
+            handleResponseStatusLayout(
+                binding.responseStatusLayout.root,
+                binding.responseStatusLayout.responseStatusLottie,
+                binding.responseStatusLayout.responseStatusTV,
+                binding.responseStatusLayout.responseCloseButton,
+                response
+            )
         }
     }
 
     override fun onDestroyView() {
         viewModel.movieWatchList.removeObservers(viewLifecycleOwner)
 
-        if (bottomSheetState == BottomSheetState.SUCCESS)
-            onBottomSheetClosed.onSuccess(watchList, bottomSheetOperation)
-
         super.onDestroyView()
-        _binding = null
     }
 }

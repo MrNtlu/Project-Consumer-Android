@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.utils
 
 import com.google.gson.Gson
+import com.mrntlu.projectconsumer.models.common.retrofit.ErrorAltResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.ErrorResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -19,11 +20,18 @@ fun<T> networkResponseFlow(call: suspend () -> Response<T>): Flow<NetworkRespons
                 emit(NetworkResponse.Success(data))
             }
         } else {
-            val error = if (response.errorBody() != null) {
-                val errorJson = Gson().fromJson(response.errorBody()!!.string(), ErrorResponse::class.java)
-                errorJson.message
-            } else
-                response.message()
+            val errorBody = response.errorBody()!!.string()
+
+            val error = try {
+                if (response.errorBody() != null) {
+                    val errorJson = Gson().fromJson(response.errorBody()!!.string(), ErrorResponse::class.java)
+                    errorJson.message
+                } else
+                    response.message()
+            }catch (e: Exception) {
+                val errorJson = Gson().fromJson(errorBody, ErrorAltResponse::class.java)
+                errorJson.error
+            }
 
             emit(NetworkResponse.Failure(errorMessage = error))
         }

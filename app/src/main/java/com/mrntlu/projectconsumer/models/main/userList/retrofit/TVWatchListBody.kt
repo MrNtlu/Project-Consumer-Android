@@ -12,7 +12,10 @@ data class TVWatchListBody(
     @SerializedName("times_finished")
     val timesFinished: Int?,
 
+    @SerializedName("watched_episodes")
     val watchedEpisodes: Int?,
+
+    @SerializedName("watched_seasons")
     val watchedSeasons: Int?,
 
     val score: Int?,

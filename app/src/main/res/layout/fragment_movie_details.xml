@@ -69,7 +69,7 @@
 
         <include
             android:id="@+id/listBottomSheet"
-            layout="@layout/layout_list_bottom_sheet"/>
+            layout="@layout/layout_movie_ul_bottom_sheet"/>
 
     </FrameLayout>
     

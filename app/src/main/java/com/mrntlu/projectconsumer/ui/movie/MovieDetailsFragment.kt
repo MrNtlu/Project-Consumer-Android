@@ -107,13 +107,13 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                             },
                             showBottomSheet = {
                                 activity?.let {
-                                    val listBottomSheet = MovieDetailsBottomSheet(
+                                    val listBottomSheet = MovieUserListBottomSheet(
                                         onBottomSheetClosedCallback,
                                         movieDetails!!.watchList,
                                         args.movieId,
                                         movieDetails!!.tmdbID,
                                     )
-                                    listBottomSheet.show(it.supportFragmentManager, MovieDetailsBottomSheet.TAG)
+                                    listBottomSheet.show(it.supportFragmentManager, MovieUserListBottomSheet.TAG)
                                 }
                             }
                         )
@@ -134,7 +134,6 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     }
                     else -> {}
                 }
-                //TODO Loading
             }
         }
 

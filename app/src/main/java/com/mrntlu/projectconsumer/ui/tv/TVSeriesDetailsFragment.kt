@@ -107,13 +107,19 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                             createConsumeLater = {
                                 tvDetails!!.apply {
                                     consumeLaterViewModel.createConsumeLater(
-                                        ConsumeLaterBody(id, tmdbID, null, "movie", null)
+                                        ConsumeLaterBody(id, tmdbID, null, "tvseries", null)
                                     )
                                 }
                             },
                             showBottomSheet = {
                                 activity?.let {
-                                    //TODO TVDetailsBottomSheet
+                                    val listBottomSheet = TVSeriesUserListBottomSheet(
+                                        onBottomSheetClosedCallback,
+                                        tvDetails!!.watchList,
+                                        args.tvId,
+                                        tvDetails!!.tmdbID
+                                    )
+                                    listBottomSheet.show(it.supportFragmentManager, TVSeriesUserListBottomSheet.TAG)
                                 }
                             }
                         )
