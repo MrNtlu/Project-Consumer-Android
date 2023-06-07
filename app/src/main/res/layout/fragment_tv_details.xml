@@ -30,7 +30,8 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="parallax"
+                android:contentDescription="@string/tv_series_backdrop_cd"/>
 
             <ProgressBar
                 android:id="@+id/tvDetailsToolbarProgress"
@@ -54,7 +55,8 @@
                     android:backgroundTint="?attr/toolbarBackButtonColor"
                     android:elevation="0dp"
                     android:src="@drawable/ic_arrow_back_24"
-                    app:tint="?attr/toolbarTintColor" />
+                    app:tint="?attr/toolbarTintColor"
+                    android:contentDescription="@string/back_cd" />
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -403,9 +405,25 @@
         android:background="?attr/mainBackgroundColor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:visibility="gone">
         <include
             layout="@layout/layout_shimmer_movie_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/errorLayout"
+        android:elevation="9dp"
+        android:background="?attr/mainBackgroundColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:visibility="gone">
+        <include
+            android:id="@+id/errorLayoutInc"
+            layout="@layout/cell_error"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </FrameLayout>

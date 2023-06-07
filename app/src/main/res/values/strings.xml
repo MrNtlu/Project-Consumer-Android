@@ -15,6 +15,10 @@
     <string name="genre_image_cd">Genre Image</string>
     <string name="message_icon_cd">Message Icon</string>
     <string name="scroll_to_top_button_cd">Scroll to top</string>
+    <string name="back_cd">Back</string>
+    <string name="rate_star_cd">Rate Star</string>
+    <string name="tv_series_backdrop_cd">TV Series Backdrop</string>
+    <string name="movie_backdrop_cd">Movie Backdrop</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -73,6 +77,9 @@
     <string name="profile">Profile</string>
     <string name="upcoming">📅 Upcoming</string>
     <string name="top_rated">🔥 Top Rated</string>
+    <string name="episodes">Episodes</string>
+    <string name="watched_seasons">Watched Seasons</string>
+    <string name="watched_episodes">Watched Episodes</string>
 
     <string name="back_to_top">Back to Top</string>
     <string name="no_internet_connection">No internet connection!</string>
@@ -95,7 +102,6 @@
     <string name="password_too_short">Password is too short. Min 6.</string>
     <string name="passwords_dont_match">Passwords don\'t match.</string>
     <string name="please_fill_the_form">Please fill the form.</string>
-    <string name="episodes">Episodes</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

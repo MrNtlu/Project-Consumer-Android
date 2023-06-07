@@ -18,9 +18,7 @@ import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
-import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.TVWatchListBody
-import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateTVWatchListBody
 import com.mrntlu.projectconsumer.ui.BaseDetailsBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
@@ -37,6 +35,8 @@ class TVSeriesUserListBottomSheet(
     watchList: TVSeriesWatchList?,
     private val tvId: String,
     private val tvTMDBId: String,
+    private val seasonSuffix: Int?,
+    private val episodeSuffix: Int?,
 ): BaseDetailsBottomSheet<LayoutTvUlBottomSheetBinding, TVSeriesWatchList>(onBottomSheetClosed, watchList) {
 
     companion object {
@@ -87,6 +87,8 @@ class TVSeriesUserListBottomSheet(
                     timesFinishedTextInputET.setText(it.timesFinished.toString())
                     watchedSeasonTextInputET.setText(it.watchedSeasons.toString())
                     watchedEpisodeTextInputET.setText(it.watchedEpisodes.toString())
+                    watchedSeasonTextLayout.suffixText = if (seasonSuffix != null) "/$seasonSuffix" else null
+                    watchedEpisodeTextLayout.suffixText = if (seasonSuffix != null) "/$episodeSuffix" else null
                 }
 
                 setSelectedTabColors(
@@ -108,7 +110,7 @@ class TVSeriesUserListBottomSheet(
                     if (userListDeleteLiveData != null && userListDeleteLiveData?.hasActiveObservers() == true)
                         userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
-                    userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(watchList!!.id, "movie"))
+                    userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(watchList!!.id, TVSeriesDetailsFragment.TYPE))
 
                     userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
                         handleBottomSheetState(response)

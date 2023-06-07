@@ -105,7 +105,7 @@ class MovieUserListBottomSheet(
                     if (userListDeleteLiveData != null && userListDeleteLiveData?.hasActiveObservers() == true)
                         userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
-                    userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(watchList!!.id, "movie"))
+                    userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(watchList!!.id, MovieDetailsFragment.TYPE))
 
                     userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
                         handleBottomSheetState(response)

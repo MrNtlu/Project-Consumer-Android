@@ -69,9 +69,13 @@ abstract class BaseDetailsBottomSheet<Binding, WatchList>(
             root.context.theme.resolveAttribute(attrColor, typedValue, true)
 
             statusColorDivider.dividerColor = ContextCompat.getColor(root.context, typedValue.resourceId)
+            statusTV.setTextColor(ContextCompat.getColor(root.context, typedValue.resourceId))
 
             val shouldHideSeason = contentType == Constants.ContentType.MOVIE || contentType == Constants.ContentType.GAME
             val shouldHideEpisodes = shouldHideSeason || contentType == Constants.ContentType.ANIME
+
+            timesFinishedTV.setVisibilityByCondition(userListStatus?.request != Constants.UserListStatus[1].request)
+            timesFinishedCountTV.setVisibilityByCondition(userListStatus?.request != Constants.UserListStatus[1].request)
 
             seasonTitleTV.setVisibilityByCondition(shouldHideSeason)
             seasonTV.setVisibilityByCondition(shouldHideSeason)

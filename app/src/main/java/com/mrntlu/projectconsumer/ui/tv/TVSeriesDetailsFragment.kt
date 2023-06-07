@@ -42,6 +42,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() {
 
+    companion object {
+        const val TYPE = "tv"
+    }
+
     private val viewModel: TVDetailsViewModel by viewModels()
     private val args: TVSeriesDetailsFragmentArgs by navArgs()
 
@@ -91,11 +95,15 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 isResponseFailed = response is NetworkResponse.Failure
                 toggleCollapsingLayoutScroll(binding.tvDetailsCollapsingToolbar, response !is NetworkResponse.Loading)
                 binding.loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
+                binding.errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
                     is NetworkResponse.Failure -> {
-                        //TODO Implement
-                        printLog("Error occured ${response.errorMessage}")
+                        binding.errorLayoutInc.apply {
+                            errorText.text = response.errorMessage
+
+                            setListeners()
+                        }
                     }
                     is NetworkResponse.Success -> {
                         tvDetails = response.data.data
@@ -107,7 +115,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                             createConsumeLater = {
                                 tvDetails!!.apply {
                                     consumeLaterViewModel.createConsumeLater(
-                                        ConsumeLaterBody(id, tmdbID, null, "tvseries", null)
+                                        ConsumeLaterBody(id, tmdbID, null, TYPE, null)
                                     )
                                 }
                             },
@@ -117,7 +125,9 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                                         onBottomSheetClosedCallback,
                                         tvDetails!!.watchList,
                                         args.tvId,
-                                        tvDetails!!.tmdbID
+                                        tvDetails!!.tmdbID,
+                                        tvDetails?.totalSeasons,
+                                        tvDetails?.totalEpisodes,
                                     )
                                     listBottomSheet.show(it.supportFragmentManager, TVSeriesUserListBottomSheet.TAG)
                                 }
@@ -247,6 +257,14 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            errorLayoutInc.refreshButton.setOnClickListener {
+                viewModel.getTVDetails(args.tvId)
+            }
+
+            errorLayoutInc.cancelButton.setOnClickListener {
+                navController.popBackStack()
             }
         }
     }

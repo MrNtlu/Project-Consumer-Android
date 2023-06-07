@@ -41,6 +41,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() {
 
+    companion object {
+        const val TYPE = "movie"
+    }
+
     private val viewModel: MovieDetailsViewModel by viewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
 
@@ -88,9 +92,16 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 isResponseFailed = response is NetworkResponse.Failure
                 toggleCollapsingLayoutScroll(binding.detailsCollapsingToolbar, response !is NetworkResponse.Loading)
                 binding.loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
+                binding.errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
-                    is NetworkResponse.Failure -> TODO()
+                    is NetworkResponse.Failure -> {
+                        binding.errorLayoutInc.apply {
+                            errorText.text = response.errorMessage
+
+                            setListeners()
+                        }
+                    }
                     is NetworkResponse.Success -> {
                         movieDetails = response.data.data
 
@@ -101,7 +112,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                             createConsumeLater = {
                                 movieDetails!!.apply {
                                     consumeLaterViewModel.createConsumeLater(
-                                        ConsumeLaterBody(id, tmdbID, null, "movie", null)
+                                        ConsumeLaterBody(id, tmdbID, null, TYPE, null)
                                     )
                                 }
                             },
@@ -247,6 +258,14 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            errorLayoutInc.refreshButton.setOnClickListener {
+                viewModel.getMovieDetails(args.movieId)
+            }
+
+            errorLayoutInc.cancelButton.setOnClickListener {
+                navController.popBackStack()
             }
         }
     }
