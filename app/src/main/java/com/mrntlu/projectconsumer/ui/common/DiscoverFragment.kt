@@ -15,7 +15,6 @@ import com.mrntlu.projectconsumer.ui.compose.GenreGrid
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.printLog
 
 class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
@@ -38,7 +37,7 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
         savedInstanceState?.let {
             contentType = Constants.ContentType.fromStringValue(
-                savedInstanceState.getString(KEY_VALUE, Constants.ContentType.MOVIE.value)
+                it.getString(KEY_VALUE, Constants.ContentType.MOVIE.value)
             )
         }
 
@@ -141,10 +140,18 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
                         Constants.ContentType.GAME -> TODO()
                     },
                     onDiscoveryClicked = {
-                        printLog("Discover")
+                        val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
+                            contentType, null
+                        )
+
+                        navController.navigate(navWithAction)
                     },
                     onGenreClicked = {
-                        printLog("Genre clicked $it")
+                        val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
+                            contentType, it
+                        )
+
+                        navController.navigate(navWithAction)
                     }
                 )
             }

@@ -134,7 +134,7 @@ class PreviewSlideAdapter<T: ContentModel>(
                 previewCard.setGone()
                 previewComposeView.setVisible()
                 previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
-                    centerCrop().transform(RoundedCorners(18))
+                    transform(RoundedCorners(18))
                 }
 
                 previewTV.text = item.title

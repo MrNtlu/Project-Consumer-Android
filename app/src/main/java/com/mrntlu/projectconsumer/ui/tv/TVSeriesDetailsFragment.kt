@@ -19,6 +19,7 @@ import com.bumptech.glide.request.target.Target
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
+import com.mrntlu.projectconsumer.adapters.SeasonAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentTvDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
@@ -49,7 +50,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
     private val viewModel: TVDetailsViewModel by viewModels()
     private val args: TVSeriesDetailsFragmentArgs by navArgs()
 
-    //TODO Season adapter
+    private var seasonAdapter: SeasonAdapter? = null
     private var genreAdapter: GenreAdapter? = null
     private var actorAdapter: DetailsAdapter? = null
     private var networkAdapter: DetailsAdapter? = null
@@ -271,7 +272,13 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     private fun setRecyclerView() {
         if (!tvDetails?.seasons.isNullOrEmpty()) {
-            //TODO Season adapter
+            binding.tvDetailsSeasonRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                seasonAdapter = SeasonAdapter(tvDetails!!.seasons)
+                adapter = seasonAdapter
+            }
         } else {
             binding.tvDetailsSeasonRV.setGone()
         }
