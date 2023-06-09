@@ -23,9 +23,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-const val SEARCH_MOVIE_PAGE_KEY = "rv.search.page"
-const val SEARCH_MOVIE_SCROLL_POSITION_KEY = "rv.search.scroll_position"
-const val SEARCH_MOVIE_TEXT_KEY = "rv.search.text"
+const val SEARCH_PAGE_KEY = "rv.search.page"
+const val SEARCH_SCROLL_POSITION_KEY = "rv.search.scroll_position"
+const val SEARCH_TEXT_KEY = "rv.search.text"
 const val SEARCH_CONTENT_TYPE_KEY = "rv.search.content_type"
 
 class SearchViewModel @AssistedInject constructor(
@@ -42,9 +42,9 @@ class SearchViewModel @AssistedInject constructor(
     // Process Death variables
     var isRestoringData = false
     private var contentType: Constants.ContentType = savedStateHandle[SEARCH_CONTENT_TYPE_KEY] ?: vmContentType
-    private var page: Int = savedStateHandle[SEARCH_MOVIE_PAGE_KEY] ?: 1
-    private var search: String = savedStateHandle[SEARCH_MOVIE_TEXT_KEY] ?: vmSearch
-    var scrollPosition: Int = savedStateHandle[SEARCH_MOVIE_SCROLL_POSITION_KEY] ?: 0
+    private var page: Int = savedStateHandle[SEARCH_PAGE_KEY] ?: 1
+    private var search: String = savedStateHandle[SEARCH_TEXT_KEY] ?: vmSearch
+    var scrollPosition: Int = savedStateHandle[SEARCH_SCROLL_POSITION_KEY] ?: 0
         private set
 
     // Variable for detecting orientation change
@@ -148,18 +148,18 @@ class SearchViewModel @AssistedInject constructor(
 
     private fun setPagePosition(newPage: Int) {
         page = newPage
-        savedStateHandle[SEARCH_MOVIE_PAGE_KEY] = page
+        savedStateHandle[SEARCH_PAGE_KEY] = page
     }
 
     private fun setSearch(newSearch: String) {
         search = newSearch
-        savedStateHandle[SEARCH_MOVIE_TEXT_KEY] = newSearch
+        savedStateHandle[SEARCH_TEXT_KEY] = newSearch
     }
 
     fun setScrollPosition(newPosition: Int) {
         if (!isRestoringData && !didOrientationChange) {
             scrollPosition = newPosition
-            savedStateHandle[SEARCH_MOVIE_SCROLL_POSITION_KEY] = scrollPosition
+            savedStateHandle[SEARCH_SCROLL_POSITION_KEY] = scrollPosition
         }
     }
 
@@ -169,7 +169,7 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     companion object {
-        fun provideMovieViewModelFactory(factory: Factory, owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null, vmSearch: String, vmContentType: Constants.ContentType, isNetworkAvailable: Boolean): AbstractSavedStateViewModelFactory {
+        fun provideSearchViewModelFactory(factory: Factory, owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null, vmSearch: String, vmContentType: Constants.ContentType, isNetworkAvailable: Boolean): AbstractSavedStateViewModelFactory {
             return object: AbstractSavedStateViewModelFactory(owner, defaultArgs) {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {

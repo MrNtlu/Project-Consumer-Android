@@ -42,7 +42,7 @@ class SearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
 
     @Inject lateinit var viewModelFactory: SearchViewModel.Factory
     private val viewModel: SearchViewModel by viewModels {
-        SearchViewModel.provideMovieViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
+        SearchViewModel.provideSearchViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
     }
 
     private lateinit var searchQuery: String
@@ -69,11 +69,11 @@ class SearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
         searchQuery = args.searchQuery
         searchType = args.searchType
 
-        setUI()
+        setMenu()
         setObservers()
     }
 
-    private fun setUI() {
+    private fun setMenu() {
         val menuHost: MenuHost = requireActivity()
 
         menuHost.addMenuProvider(object: MenuProvider {

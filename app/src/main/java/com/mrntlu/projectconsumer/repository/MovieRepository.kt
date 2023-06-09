@@ -18,6 +18,10 @@ class MovieRepository @Inject constructor(
     private val movieDao: MovieDao,
     private val cacheDatabase: CacheDatabase,
 ) {
+    private companion object {
+        private const val SearchTag = "search:movie"
+        private const val DiscoverTag = "discover:movie"
+    }
 
     fun fetchMovies(page: Int, sort: String, tag: String, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
@@ -45,9 +49,8 @@ class MovieRepository @Inject constructor(
         },
         saveAndQueryResult = { movieResponse ->
             cacheDatabase.withTransaction {
-                if (page == 1) {
+                if (page == 1)
                     movieDao.deleteMoviesByTag(tag)
-                }
 
                 movieDao.insertMovieList(movieResponse.data.asEntity(tag, page))
                 Pair(
@@ -71,9 +74,9 @@ class MovieRepository @Inject constructor(
         isPaginating = page != 1,
         cacheQuery = {
             if (isRestoringData)
-                movieDao.getAllSearchMovies("search:movie", page)
+                movieDao.getAllSearchMovies(SearchTag, page)
             else
-                movieDao.getSearchMovies("search:movie", page)
+                movieDao.getSearchMovies(SearchTag, page)
         },
         fetchNetwork = {
             movieApiService.searchMoviesByTitle(search, page)
@@ -86,20 +89,19 @@ class MovieRepository @Inject constructor(
         },
         saveAndQueryResult = { movieResponse ->
             cacheDatabase.withTransaction {
-                if (page == 1) {
-                    movieDao.deleteMoviesByTag("search:movie")
-                }
+                if (page == 1)
+                    movieDao.deleteMoviesByTag(SearchTag)
 
                 if (movieResponse.data != null)
-                    movieDao.insertMovieList(movieResponse.data.asEntity("search:movie", page))
+                    movieDao.insertMovieList(movieResponse.data.asEntity(SearchTag, page))
                 Pair(
-                    movieDao.getSearchMovies("search:movie", page),
+                    movieDao.getSearchMovies(SearchTag, page),
                     page >= movieResponse.pagination.totalPage
                 )
             }
         },
         isCachePaginationExhausted = {
-            !movieDao.isMoviePageExist("search:movie", page.plus(1))
+            !movieDao.isMoviePageExist(SearchTag, page.plus(1))
         },
         shouldFetch = {
             !(
@@ -112,4 +114,54 @@ class MovieRepository @Inject constructor(
     fun getMovieDetails(id: String) = networkResponseFlow {
         movieApiService.getMovieDetails(id)
     }
+
+    fun getMovieBySortFilter(
+        page: Int,
+        sort: String,
+        status: String?,
+        productionCompanies: String?,
+        genres: String?,
+        releaseDateFrom: Int?,
+        releaseDateTo: Int?,
+        isNetworkAvailable: Boolean,
+        isRestoringData: Boolean = false
+    ) = networkBoundResource(
+        isPaginating = page != 1,
+        cacheQuery = {
+            if (isRestoringData)
+                movieDao.getAllMoviesByTag(DiscoverTag, page, sort)
+            else
+                movieDao.getMoviesByTag(DiscoverTag, page, sort)
+        },
+        fetchNetwork = {
+            movieApiService.getMovieBySortFilter(page, sort, status, productionCompanies, genres, releaseDateFrom, releaseDateTo)
+        },
+        mapper = {
+            it!!.asModel()
+        },
+        emptyObjectCreator = {
+            listOf<Movie>()
+        },
+        saveAndQueryResult = { movieResponse ->
+            cacheDatabase.withTransaction {
+                if (page == 1)
+                    movieDao.deleteMoviesByTag(DiscoverTag)
+
+                movieDao.insertMovieList(movieResponse.data.asEntity(DiscoverTag, page))
+                Pair(
+                    movieDao.getMoviesByTag(DiscoverTag, page, sort),
+                    page >= movieResponse.pagination.totalPage
+                )
+            }
+        },
+        isCachePaginationExhausted = {
+            !movieDao.isMoviePageExist(DiscoverTag, page.plus(1))
+        },
+        shouldFetch = {
+            !(
+                (isRestoringData && !it.isNullOrEmpty()) ||
+                (!isNetworkAvailable && !it.isNullOrEmpty())
+            )
+        }
+    )
 }

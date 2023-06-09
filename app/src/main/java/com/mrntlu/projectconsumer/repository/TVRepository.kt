@@ -19,6 +19,11 @@ class TVRepository @Inject constructor(
     private val cacheDatabase: CacheDatabase,
 ) {
 
+    private companion object {
+        private const val SearchTag = "search:tv"
+        private const val DiscoverTag = "discover:tv"
+    }
+
     fun fetchTVSeries(page: Int, sort: String, tag: String, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
         cacheQuery = {
@@ -50,9 +55,8 @@ class TVRepository @Inject constructor(
         },
         saveAndQueryResult = { tvResponse ->
             cacheDatabase.withTransaction {
-                if (page == 1) {
+                if (page == 1)
                     tvSeriesDao.deleteTVSeriesByTag(tag)
-                }
 
                 tvSeriesDao.insertTVSeriesList(tvResponse.data.asEntity(tag, page))
                 Pair(
@@ -76,9 +80,9 @@ class TVRepository @Inject constructor(
         isPaginating = page != 1,
         cacheQuery = {
             if (isRestoringData)
-                tvSeriesDao.getAllSearchTVSeries("search:tv", page)
+                tvSeriesDao.getAllSearchTVSeries(SearchTag, page)
             else
-                tvSeriesDao.getSearchTVSeries("search:tv", page)
+                tvSeriesDao.getSearchTVSeries(SearchTag, page)
         },
         fetchNetwork = {
             tvSeriesApiService.searchTVSeriesByTitle(search, page)
@@ -92,19 +96,19 @@ class TVRepository @Inject constructor(
         saveAndQueryResult = { tvResponse ->
             cacheDatabase.withTransaction {
                 if (page == 1) {
-                    tvSeriesDao.deleteTVSeriesByTag("search:tv")
+                    tvSeriesDao.deleteTVSeriesByTag(SearchTag)
                 }
 
                 if (tvResponse.data != null)
-                    tvSeriesDao.insertTVSeriesList(tvResponse.data.asEntity("search:tv", page))
+                    tvSeriesDao.insertTVSeriesList(tvResponse.data.asEntity(SearchTag, page))
                 Pair(
-                    tvSeriesDao.getSearchTVSeries("search:tv", page),
+                    tvSeriesDao.getSearchTVSeries(SearchTag, page),
                     page >= tvResponse.pagination.totalPage
                 )
             }
         },
         isCachePaginationExhausted = {
-            !tvSeriesDao.isTVSeriesPageExist("search:tv", page.plus(1))
+            !tvSeriesDao.isTVSeriesPageExist(SearchTag, page.plus(1))
         },
         shouldFetch = {
             !(
@@ -117,4 +121,55 @@ class TVRepository @Inject constructor(
     fun getTVSeriesDetails(id: String) = networkResponseFlow {
         tvSeriesApiService.getTVSeriesDetails(id)
     }
+
+    fun getTVSeriesBySortFilter(
+        page: Int,
+        sort: String,
+        status: String?,
+        numOfSeason: String?,
+        productionCompanies: String?,
+        genres: String?,
+        releaseDateFrom: Int?,
+        releaseDateTo: Int?,
+        isNetworkAvailable: Boolean,
+        isRestoringData: Boolean = false
+    ) = networkBoundResource(
+        isPaginating = page != 1,
+        cacheQuery = {
+             if (isRestoringData)
+                 tvSeriesDao.getAllTVSeriesByTag(DiscoverTag, page, sort)
+            else
+                tvSeriesDao.getTVSeriesByTag(DiscoverTag, page, sort)
+        },
+        fetchNetwork = {
+            tvSeriesApiService.getTVSeriesBySortFilter(page, sort, status, numOfSeason, productionCompanies, genres, releaseDateFrom, releaseDateTo)
+        },
+        mapper = {
+             it!!.asModel()
+        },
+        emptyObjectCreator = {
+             listOf<TVSeries>()
+        },
+        saveAndQueryResult = { tvResponse ->
+            cacheDatabase.withTransaction {
+                if (page == 1)
+                    tvSeriesDao.deleteTVSeriesByTag(DiscoverTag)
+
+                tvSeriesDao.insertTVSeriesList(tvResponse.data.asEntity(DiscoverTag, page))
+                Pair(
+                    tvSeriesDao.getTVSeriesByTag(DiscoverTag, page, sort),
+                    page >= tvResponse.pagination.totalPage
+                )
+            }
+        },
+        isCachePaginationExhausted = {
+            !tvSeriesDao.isTVSeriesPageExist(DiscoverTag, page.plus(1))
+        },
+        shouldFetch = {
+            !(
+                (isRestoringData && !it.isNullOrEmpty()) ||
+                (!isNetworkAvailable && !it.isNullOrEmpty())
+            )
+        }
+    )
 }
