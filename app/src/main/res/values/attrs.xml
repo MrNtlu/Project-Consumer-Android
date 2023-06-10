@@ -8,6 +8,9 @@
         <attr name="mainBackgroundColor" format="color"/>
         <attr name="subBackgroundColor" format="color"/>
 
+        <attr name="mainButtonBackgroundColor" format="color"/>
+        <attr name="subButtonBackgroundColor" format="color"/>
+
         <attr name="progressColor" format="color"/>
         <attr name="accessoryTextColor" format="color"/>
 

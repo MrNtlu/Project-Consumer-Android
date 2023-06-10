@@ -24,7 +24,7 @@ import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
 abstract class BaseDetailsBottomSheet<Binding, WatchList>(
-    protected val onBottomSheetClosed: OnBottomSheetClosed<WatchList>,
+    private val onBottomSheetClosed: OnBottomSheetClosed<WatchList>,
     protected var watchList: WatchList?,
 ): BottomSheetDialogFragment() {
 

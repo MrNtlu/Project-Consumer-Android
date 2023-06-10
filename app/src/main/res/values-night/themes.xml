@@ -23,6 +23,9 @@
         <item name="mainBackgroundColor">@color/androidBlack</item>
         <item name="subBackgroundColor">@color/materialBlack</item>
 
+        <item name="mainButtonBackgroundColor">@color/blue700</item>
+        <item name="subButtonBackgroundColor">@color/blue300</item>
+
         <item name="messageBoxBackgroundColor">@color/redDark</item>
         <item name="messageBoxTextColor">@color/black</item>
 

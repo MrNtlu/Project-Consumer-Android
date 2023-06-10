@@ -19,8 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
-import com.mrntlu.projectconsumer.databinding.FragmentDiscoverListBinding
+import com.mrntlu.projectconsumer.databinding.FragmentListBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
+import com.mrntlu.projectconsumer.interfaces.DiscoverOnBottomSheet
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.Constants
@@ -34,7 +35,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DiscoverListFragment : BaseFragment<FragmentDiscoverListBinding>() {
+class DiscoverListFragment : BaseFragment<FragmentListBinding>() {
     private companion object {
         private const val GENRE_KEY = "discover.genre"
         private const val STATUS_KEY = "discover.status"
@@ -63,6 +64,25 @@ class DiscoverListFragment : BaseFragment<FragmentDiscoverListBinding>() {
     private var from: Int? = null
     private var to: Int? = null
 
+    private val discoverOnBottomSheet = object: DiscoverOnBottomSheet {
+        override fun onApply(genre: String?, status: String?, sort: String, from: Int?, to: Int?) {
+            this@DiscoverListFragment.genre = genre
+            this@DiscoverListFragment.status = status
+            this@DiscoverListFragment.sort = sort
+
+            //todo make request
+        }
+
+        override fun onReset() {
+            genre = null
+            status = null
+            sort = Constants.SortRequests[0].request
+
+            //todo make request
+        }
+
+    }
+
     /* TODO!!!!
     * TODO Check for process death
     *  TODO!!!!!
@@ -72,16 +92,15 @@ class DiscoverListFragment : BaseFragment<FragmentDiscoverListBinding>() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDiscoverListBinding.inflate(inflater, container, false)
+        _binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (args.genre != null) {
+        if (args.genre != null)
             genre = args.genre
-            contentType = args.contentType
-        }
+        contentType = args.contentType
 
         savedInstanceState?.let {
             genre = it.getString(GENRE_KEY, args.genre)
@@ -104,7 +123,13 @@ class DiscoverListFragment : BaseFragment<FragmentDiscoverListBinding>() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
-                        //TODO Show bottom sheet
+                        activity?.let {
+                            val bottomSheet = DiscoverBottomSheet(
+                                contentType,
+                                discoverOnBottomSheet
+                            )
+                            bottomSheet.show(it.supportFragmentManager, DiscoverBottomSheet.TAG)
+                        }
                     }
                 }
                 return true
@@ -145,7 +170,7 @@ class DiscoverListFragment : BaseFragment<FragmentDiscoverListBinding>() {
                 )
 
                 if (viewModel.isRestoringData || viewModel.didOrientationChange) {
-                    binding.genreRV.scrollToPosition(viewModel.scrollPosition - 1)
+                    binding.listRV.scrollToPosition(viewModel.scrollPosition - 1)
 
                     if (viewModel.isRestoringData) {
                         viewModel.isRestoringData = false
@@ -153,14 +178,14 @@ class DiscoverListFragment : BaseFragment<FragmentDiscoverListBinding>() {
                         viewModel.didOrientationChange = false
                     }
                 } else if (!response.isPaginating) {
-                    binding.genreRV.scrollToPosition(viewModel.scrollPosition - 1)
+                    binding.listRV.scrollToPosition(viewModel.scrollPosition - 1)
                 }
             }
         }
     }
 
     private fun setRecyclerView() {
-        binding.genreRV.apply {
+        binding.listRV.apply {
             val gridLayoutManager = GridLayoutManager(this.context, gridCount)
 
             gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
@@ -220,6 +245,15 @@ class DiscoverListFragment : BaseFragment<FragmentDiscoverListBinding>() {
                         val centerScrollPosition = (gridLayoutManager.findLastCompletelyVisibleItemPosition() + gridLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
                         viewModel.setScrollPosition(centerScrollPosition)
                     }
+
+                    val isScrollingUp = dy <= -90
+                    val isScrollingDown = dy >= 10
+                    val isThresholdPassed = lastVisibleItemPosition > Constants.PAGINATION_LIMIT.div(gridCount)
+
+                    if (isThresholdPassed && isScrollingUp)
+                        binding.topFAB.show()
+                    else if (!isThresholdPassed || isScrollingDown)
+                        binding.topFAB.hide()
 
                     contentAdapter?.let {
                         if (

@@ -20,6 +20,9 @@
         <item name="subTextColor">@color/grey700</item>
         <item name="descriptionTitleTextColor">@color/deep_purple_700</item>
 
+        <item name="mainButtonBackgroundColor">@color/blue500</item>
+        <item name="subButtonBackgroundColor">@color/blue200</item>
+
         <item name="mainBackgroundColor">@color/darkWhite</item>
         <item name="subBackgroundColor">@color/white</item>
 

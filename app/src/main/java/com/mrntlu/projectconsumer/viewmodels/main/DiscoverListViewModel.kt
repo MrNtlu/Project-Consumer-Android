@@ -20,11 +20,9 @@ import com.mrntlu.projectconsumer.utils.setPaginationLoading
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 const val DISCOVER_PAGE_KEY = "rv.discover.page"
 const val DISCOVER_SCROLL_POSITION_KEY = "rv.discover.scroll_position"
