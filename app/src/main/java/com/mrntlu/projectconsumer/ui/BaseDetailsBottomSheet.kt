@@ -3,10 +3,8 @@ package com.mrntlu.projectconsumer.ui
 import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
@@ -20,6 +18,7 @@ import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
@@ -65,11 +64,8 @@ abstract class BaseDetailsBottomSheet<Binding, WatchList>(
                 else -> R.attr.statusDroppedColor
             }
 
-            val typedValue = TypedValue()
-            root.context.theme.resolveAttribute(attrColor, typedValue, true)
-
-            statusColorDivider.dividerColor = ContextCompat.getColor(root.context, typedValue.resourceId)
-            statusTV.setTextColor(ContextCompat.getColor(root.context, typedValue.resourceId))
+            statusColorDivider.dividerColor = root.context.getColorFromAttr(attrColor)
+            statusTV.setTextColor(root.context.getColorFromAttr(attrColor))
 
             val shouldHideSeason = contentType == Constants.ContentType.MOVIE || contentType == Constants.ContentType.GAME
             val shouldHideEpisodes = shouldHideSeason || contentType == Constants.ContentType.ANIME
@@ -107,10 +103,7 @@ abstract class BaseDetailsBottomSheet<Binding, WatchList>(
             else -> R.attr.statusDroppedColor
         }
 
-        val typedValue = TypedValue()
-        context.theme.resolveAttribute(attrColor, typedValue, true)
-
-        val color = ContextCompat.getColor(context, typedValue.resourceId)
+        val color = context.getColorFromAttr(attrColor)
         tv?.setTextColor(color)
         tabLayout.setSelectedTabIndicatorColor(color)
     }

@@ -125,8 +125,9 @@ class DiscoverListFragment : BaseFragment<FragmentListBinding>() {
                     R.id.sortMenu -> {
                         activity?.let {
                             val bottomSheet = DiscoverBottomSheet(
-                                contentType,
-                                discoverOnBottomSheet
+                                initialGenre = genre,
+                                contentType = contentType,
+                                discoverOnBottomSheet = discoverOnBottomSheet
                             )
                             bottomSheet.show(it.supportFragmentManager, DiscoverBottomSheet.TAG)
                         }

@@ -13,12 +13,19 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mrntlu.projectconsumer.adapters.FilterAdapter
 import com.mrntlu.projectconsumer.databinding.LayoutDiscoverBottomSheetBinding
 import com.mrntlu.projectconsumer.interfaces.DiscoverOnBottomSheet
+import com.mrntlu.projectconsumer.models.common.BackendRequestMapper
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.AnimeGenreList
+import com.mrntlu.projectconsumer.utils.Constants.MovieGenreList
+import com.mrntlu.projectconsumer.utils.Constants.MovieStatusRequests
 import com.mrntlu.projectconsumer.utils.Constants.SortRequests
+import com.mrntlu.projectconsumer.utils.Constants.TVGenreList
+import com.mrntlu.projectconsumer.utils.Constants.TVSeriesStatusRequests
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class DiscoverBottomSheet(
+    private val initialGenre: String? = null,
     private val contentType: Constants.ContentType,
     private val discoverOnBottomSheet: DiscoverOnBottomSheet,
 ): BottomSheetDialogFragment() {
@@ -105,14 +112,39 @@ class DiscoverBottomSheet(
             val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayout
 
+            val list = when(contentType) {
+                Constants.ContentType.ANIME -> AnimeGenreList.subList(1, AnimeGenreList.size).map { BackendRequestMapper(it.genre, it.genre.lowercase()) }
+                Constants.ContentType.MOVIE -> MovieGenreList.subList(1, MovieGenreList.size).map { BackendRequestMapper(it.genre, it.genre.lowercase()) }
+                Constants.ContentType.TV -> TVGenreList.subList(1, TVGenreList.size).map { BackendRequestMapper(it.genre, it.genre.lowercase()) }
+                Constants.ContentType.GAME -> TODO()
+            }
 
+            genreAdapter = FilterAdapter(list)
+            adapter = genreAdapter
+
+            if (initialGenre != null) {
+                val index = list.indexOfFirst {
+                    it.name == initialGenre
+                }
+
+                genreAdapter?.setSelectedIndex(index)
+                scrollToPosition(index)
+            }
         }
 
         binding.statusRV.apply {
             val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayout
 
-
+            statusAdapter = FilterAdapter(
+                when(contentType) {
+                    Constants.ContentType.ANIME -> TODO()
+                    Constants.ContentType.MOVIE -> MovieStatusRequests
+                    Constants.ContentType.TV -> TVSeriesStatusRequests
+                    Constants.ContentType.GAME -> TODO()
+                }
+            )
+            adapter = statusAdapter
         }
 
         binding.releaseDateRV.apply {

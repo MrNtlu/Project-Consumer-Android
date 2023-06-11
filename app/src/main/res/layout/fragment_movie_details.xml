@@ -74,7 +74,7 @@
             layout="@layout/layout_movie_ul_bottom_sheet"/>
 
     </FrameLayout>
-    
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/detailsNestedSV"
         android:layout_width="match_parent"
@@ -100,6 +100,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.96" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
             <include
                 android:id="@+id/detailsInclude"
@@ -143,50 +150,82 @@
                 android:id="@+id/detailsReleaseTV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginTop="24dp"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imdbButton"
-                app:layout_constraintEnd_toStartOf="@+id/tmdbButton"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toTopOf="@+id/imdbButton"
+                app:layout_constraintTop_toBottomOf="@+id/detailsOriginalTV"
                 tools:text="2023" />
 
-            <Button
-                android:id="@+id/tmdbButton"
-                android:layout_width="55dp"
-                android:layout_height="45dp"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="#04243f"
-                android:padding="0dp"
-                android:text="@string/tmdb"
-                android:textColor="#58bab0"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imdbButton"
-                app:layout_constraintEnd_toStartOf="@+id/imdbButton"
-                app:layout_constraintTop_toTopOf="@+id/imdbButton" />
-
-            <Button
-                android:id="@+id/imdbButton"
-                android:layout_width="55dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="#f6c800"
-                android:padding="0dp"
-                android:text="@string/imdb"
-                android:textColor="@color/black"
-                android:textSize="12sp"
+            <TextView
+                android:id="@+id/detailsStatusTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Airing"
+                android:textColor="?attr/statusActiveColor"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/detailsReleaseTV"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintTop_toBottomOf="@+id/detailsOriginalTV" />
+                app:layout_constraintTop_toTopOf="@+id/detailsReleaseTV" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline18"
+                app:layout_constraintStart_toStartOf="@+id/guideline18"
+                app:layout_constraintTop_toBottomOf="@+id/detailsStreamingRV">
+
+                <Button
+                    android:id="@+id/tmdbButton"
+                    android:layout_width="55dp"
+                    android:layout_height="45dp"
+                    android:backgroundTint="#04243f"
+                    android:padding="0dp"
+                    android:text="@string/tmdb"
+                    android:textColor="#58bab0"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imdbButton"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline18"
+                    app:layout_constraintTop_toTopOf="@+id/imdbButton" />
+
+                <Button
+                    android:id="@+id/imdbButton"
+                    android:layout_width="55dp"
+                    android:layout_height="45dp"
+                    android:backgroundTint="#f6c800"
+                    android:padding="0dp"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/imdb"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline18"
+                    app:layout_constraintTop_toBottomOf="@+id/detailsStreamingRV" />
+            </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/materialDivider"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsReleaseTV" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/genreDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imdbButton" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsGenreRV" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -198,7 +237,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
+                app:layout_constraintTop_toBottomOf="@+id/genreDivider" />
 
             <io.github.glailton.expandabletextview.ExpandableTextView
                 android:id="@+id/detailsDescriptionTV"
@@ -220,26 +259,15 @@
                 app:textMode="line"
                 tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
 
-            <TextView
-                android:id="@+id/detailsGenreTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="@string/genres"
-                android:textColor="?attr/descriptionTitleTextColor"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detailsGenreRV"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsGenreTV" />
+                app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
 
             <TextView
                 android:id="@+id/detailsActorsTV"
@@ -251,7 +279,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsGenreRV" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detailsActorsRV"
@@ -287,7 +315,7 @@
                 android:id="@+id/detailsAvailableTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/streaming"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
@@ -322,13 +350,13 @@
                 android:layout_marginTop="4dp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsBuyTV"/>
+                app:layout_constraintTop_toBottomOf="@+id/detailsBuyTV" />
 
             <TextView
                 android:id="@+id/detailsRentTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/rent"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
@@ -349,7 +377,7 @@
                 android:id="@+id/detailsStreamingTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/streaming"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
@@ -362,8 +390,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
                 app:layout_constraintTop_toBottomOf="@+id/detailsStreamingTV" />

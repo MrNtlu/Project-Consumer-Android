@@ -19,6 +19,7 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
+import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
@@ -219,8 +220,9 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 String.format("%02dh %02dm • ", hours, minutes)
             } else null
 
-            val releaseText = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.take(4) else status}"
+            val releaseText = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.take(4) else ""}"
             binding.detailsReleaseTV.text = releaseText
+            binding.detailsStatusTV.text = status
 
             binding.imdbButton.setVisibilityByCondition(imdbID == null)
             binding.detailsAvailableTV.setVisibilityByCondition(streaming.isNullOrEmpty())
@@ -319,6 +321,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             binding.detailsGenreRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
+                val bulletDecoration = BulletItemDecoration(context)
+                addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(movieDetails!!.genres.map { it.name }) {
                     printLog("Genre ${movieDetails!!.genres[it]}")
@@ -326,7 +330,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 adapter = genreAdapter
             }
         } else {
-            binding.detailsGenreTV.setGone()
+            binding.genreDivider.setGone()
             binding.detailsGenreRV.setGone()
         }
 

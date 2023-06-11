@@ -2,15 +2,14 @@ package com.mrntlu.projectconsumer.adapters
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.CellFilterBinding
 import com.mrntlu.projectconsumer.models.common.BackendRequestMapper
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
 
 class FilterAdapter(
     private val filterList: List<BackendRequestMapper>,
@@ -22,6 +21,7 @@ class FilterAdapter(
     private val borderSize = 6
     private val cornerRadius = 16f
     private val borderColor = R.attr.mainButtonBackgroundColor
+    private val backgroundColor = R.attr.subBackgroundColor
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         return ItemHolder(CellFilterBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -42,23 +42,17 @@ class FilterAdapter(
     }
 
     private fun addBorder(context: Context, linearLayout: LinearLayout, isSelected: Boolean) {
-        val typedValue = TypedValue()
-        context.theme.resolveAttribute(
-            if (isSelected) borderColor else R.attr.subBackgroundColor,
-            typedValue, true
-        )
-
         val borderDrawable = GradientDrawable()
         if (isSelected)
-            borderDrawable.setStroke(borderSize, ContextCompat.getColor(context, typedValue.resourceId))
+            borderDrawable.setStroke(borderSize, context.getColorFromAttr(borderColor))
         else
-            borderDrawable.setColor(ContextCompat.getColor(context, typedValue.resourceId))
+            borderDrawable.setColor(context.getColorFromAttr(backgroundColor))
         borderDrawable.cornerRadius = cornerRadius
 
         linearLayout.background = borderDrawable
     }
 
-    private fun setSelectedIndex(newIndex: Int) {
+    fun setSelectedIndex(newIndex: Int) {
         val oldIndex = selectedIndex
 
         selectedIndex = if (isDeselectable && selectedIndex == newIndex) null else newIndex

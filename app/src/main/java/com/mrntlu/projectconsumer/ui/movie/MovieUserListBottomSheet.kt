@@ -1,13 +1,11 @@
 package com.mrntlu.projectconsumer.ui.movie
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
@@ -25,6 +23,7 @@ import com.mrntlu.projectconsumer.ui.BaseDetailsBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Constants.UserListStatus
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
@@ -147,10 +146,7 @@ class MovieUserListBottomSheet(
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
-                    val typedValue = TypedValue()
-                    root.context.theme.resolveAttribute(R.attr.mainTextColor, typedValue, true)
-
-                    tab?.customView?.findViewById<TextView>(R.id.tabTV)?.setTextColor(ContextCompat.getColor(binding.root.context, typedValue.resourceId))
+                    tab?.customView?.findViewById<TextView>(R.id.tabTV)?.setTextColor(root.context.getColorFromAttr(R.attr.mainTextColor))
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}

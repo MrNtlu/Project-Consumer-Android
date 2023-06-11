@@ -21,6 +21,7 @@ import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.SeasonAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
+import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentTvDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
@@ -219,8 +220,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 interactionsRateCountTV.text = rateCountText
             }
 
-            val releaseText = "${firstAirDate.take(4)} • $status"
-            binding.tvDetailsInfoTV.text = releaseText
+            binding.tvDetailsInfoTV.text = firstAirDate.take(4)
+            binding.tvDetailsStatusTV.text = status
 
             val totalSeasonsStr = "$totalSeasons Season${if (totalSeasons > 1) "s" else ""}"
             val totalEpisodesStr = "$totalEpisodes Episode${if (totalEpisodes > 1) "s" else ""}"
@@ -287,6 +288,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             binding.tvDetailsGenreRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
+                val bulletDecoration = BulletItemDecoration(context)
+                addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(tvDetails!!.genres.map { it.name }) {
                     printLog("Genre ${tvDetails!!.genres[it]}")
@@ -294,7 +297,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 adapter = genreAdapter
             }
         } else {
-            binding.tvDetailsGenreTV.setGone()
+            binding.genreDivider.setGone()
             binding.tvDetailsGenreRV.setGone()
         }
 

@@ -6,9 +6,11 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,6 +44,13 @@ fun Fragment.hideKeyboard() {
 
 fun Activity.hideKeyboard() {
     hideKeyboard(currentFocus ?: View(this))
+}
+
+fun Context.getColorFromAttr(color: Int): Int {
+    val typedValue = TypedValue()
+
+    theme.resolveAttribute(color, typedValue, true)
+    return ContextCompat.getColor(this, typedValue.resourceId)
 }
 
 fun Context.hideKeyboard(view: View) {
