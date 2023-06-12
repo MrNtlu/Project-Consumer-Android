@@ -201,9 +201,8 @@ class MainActivity : AppCompatActivity() {
                         "Top TV Series"
                     else ""
                 }
-                R.id.navigation_settings -> {
-                    "Settings"
-                }
+                R.id.navigation_settings -> "Settings"
+                R.id.discoverListFragment -> "Discover"
                 else -> ""
             }
         }

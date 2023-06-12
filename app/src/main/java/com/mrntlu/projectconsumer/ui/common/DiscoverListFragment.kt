@@ -35,14 +35,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class DiscoverListFragment : BaseFragment<FragmentListBinding>() {
-    private companion object {
-        private const val GENRE_KEY = "discover.genre"
-        private const val STATUS_KEY = "discover.status"
-        private const val SORT_KEY = "discover.sort"
-        private const val FROM_KEY = "discover.from"
-        private const val TO_KEY = "discover.to"
-    }
+class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
 
     private val args: DiscoverListFragmentArgs by navArgs()
 
@@ -58,35 +51,16 @@ class DiscoverListFragment : BaseFragment<FragmentListBinding>() {
     private lateinit var contentType: Constants.ContentType
     private var gridCount = 3
 
-    private var genre: String? = null
-    private var status: String? = null
-    private var sort: String = Constants.SortRequests[0].request
-    private var from: Int? = null
-    private var to: Int? = null
-
     private val discoverOnBottomSheet = object: DiscoverOnBottomSheet {
-        override fun onApply(genre: String?, status: String?, sort: String, from: Int?, to: Int?) {
-            this@DiscoverListFragment.genre = genre
-            this@DiscoverListFragment.status = status
-            this@DiscoverListFragment.sort = sort
-
-            //todo make request
+        override fun onApply(
+            genre: String?, status: String?, sort: String, from: Int?, to: Int?,
+            animeTheme: String?, gameTBA: Boolean?, gamePlatform: String?
+        ) {
+            viewModel.startDiscoveryFetch(
+                contentType, sort, status, genre, from, to, animeTheme, gameTBA, gamePlatform
+            )
         }
-
-        override fun onReset() {
-            genre = null
-            status = null
-            sort = Constants.SortRequests[0].request
-
-            //todo make request
-        }
-
     }
-
-    /* TODO!!!!
-    * TODO Check for process death
-    *  TODO!!!!!
-     */
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,13 +72,7 @@ class DiscoverListFragment : BaseFragment<FragmentListBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (args.genre != null)
-            genre = args.genre
         contentType = args.contentType
-
-        savedInstanceState?.let {
-            genre = it.getString(GENRE_KEY, args.genre)
-        }
 
         setMenu()
         setObservers()
@@ -124,12 +92,20 @@ class DiscoverListFragment : BaseFragment<FragmentListBinding>() {
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
                         activity?.let {
-                            val bottomSheet = DiscoverBottomSheet(
-                                initialGenre = genre,
-                                contentType = contentType,
-                                discoverOnBottomSheet = discoverOnBottomSheet
-                            )
-                            bottomSheet.show(it.supportFragmentManager, DiscoverBottomSheet.TAG)
+                            viewModel.apply {
+                                val bottomSheet = DiscoverBottomSheet(
+                                    initialSort = sort,
+                                    initialGenre = genre,
+                                    initialStatus = status,
+                                    initialDecade = from?.toString(),
+                                    initialAnimeTheme = animeTheme,
+                                    initialGameTBA = gameTBA,
+                                    initialGamePlatform = gamePlatform,
+                                    contentType = contentType,
+                                    discoverOnBottomSheet = discoverOnBottomSheet
+                                )
+                                bottomSheet.show(it.supportFragmentManager, DiscoverBottomSheet.TAG)
+                            }
                         }
                     }
                 }
@@ -205,16 +181,20 @@ class DiscoverListFragment : BaseFragment<FragmentListBinding>() {
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
-                        when(args.contentType) {
+                         val navWithAction = when(args.contentType) {
                             Constants.ContentType.ANIME -> TODO()
-                            Constants.ContentType.MOVIE -> TODO()
-                            Constants.ContentType.TV -> TODO()
+                            Constants.ContentType.MOVIE -> DiscoverListFragmentDirections.actionDiscoverListFragmentToMovieDetailsFragment(item.id)
+                            Constants.ContentType.TV -> DiscoverListFragmentDirections.actionDiscoverListFragmentToTvDetailsFragment(item.id)
                             Constants.ContentType.GAME -> TODO()
                         }
+
+                        navController.navigate(navWithAction)
                     }
 
                     override fun onErrorRefreshPressed() {
-                        viewModel.startDiscoveryFetch(args.contentType, sort, status, genre, from, to)
+                        viewModel.apply {
+                            viewModel.startDiscoveryFetch(args.contentType, sort, status, genre, from, to)
+                        }
                     }
 
                     override fun onCancelPressed() {
@@ -275,10 +255,6 @@ class DiscoverListFragment : BaseFragment<FragmentListBinding>() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         viewModel.didOrientationChange = true
-
-        outState.apply {
-            putString(GENRE_KEY, genre)
-        }
     }
 
     override fun onDestroyView() {

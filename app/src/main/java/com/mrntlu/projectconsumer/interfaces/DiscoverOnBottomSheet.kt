@@ -7,6 +7,8 @@ interface DiscoverOnBottomSheet {
         sort: String,
         from: Int?,
         to: Int?,
+        animeTheme: String?,
+        gameTBA: Boolean?,
+        gamePlatform: String?,
     )
-    fun onReset()
 }

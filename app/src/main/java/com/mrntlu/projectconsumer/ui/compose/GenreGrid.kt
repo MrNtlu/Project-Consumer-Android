@@ -39,7 +39,6 @@ import com.mrntlu.projectconsumer.utils.Constants
 
 @Composable
 fun GenreGrid(
-    isDarkTheme: Boolean = false,
     genreList: List<GenreUI>,
     onDiscoveryClicked: () -> Unit,
     onGenreClicked: (String) -> Unit,
@@ -97,10 +96,7 @@ fun GenreGrid(
                 Box(
                     modifier = Modifier
                         .background(
-                            (if (isDarkTheme)
-                                Color.White
-                            else
-                                Color.Black).copy(alpha = 0.4f),
+                            Color.Black.copy(alpha = 0.4f),
                             shape = RoundedCornerShape(8.dp)
                         )
                         .fillMaxSize(),
@@ -111,13 +107,12 @@ fun GenreGrid(
                         textAlign = TextAlign.Center,
                         style = TextStyle(
                             fontSize = 22.sp,
-                            color = if (isDarkTheme) Color(0xFF212121) else Color.White,
+                            color = Color.White,
                             fontWeight = FontWeight.Bold,
                         )
                     )
                 }
             }
-
         }
     }
 }
@@ -140,7 +135,7 @@ private fun calculateGridLayoutHeight(size: Int, gridColumnCount: Int, cellHeigh
 fun GenreGridPreview() {
     MaterialTheme {
         Scaffold {
-            GenreGrid(false, Constants.MovieGenreList, {}, {})
+            GenreGrid(Constants.MovieGenreList, {}, {})
         }
     }
 }

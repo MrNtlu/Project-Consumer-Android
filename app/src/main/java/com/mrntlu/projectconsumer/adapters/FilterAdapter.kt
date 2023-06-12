@@ -52,6 +52,18 @@ class FilterAdapter(
         linearLayout.background = borderDrawable
     }
 
+    fun deselect() {
+        if (isDeselectable) {
+            val oldIndex = selectedIndex
+
+            selectedIndex = null
+
+            if (oldIndex != null)
+                notifyItemChanged(oldIndex)
+        } else
+            setSelectedIndex(0)
+    }
+
     fun setSelectedIndex(newIndex: Int) {
         val oldIndex = selectedIndex
 

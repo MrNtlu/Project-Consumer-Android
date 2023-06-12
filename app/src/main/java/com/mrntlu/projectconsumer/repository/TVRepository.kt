@@ -155,7 +155,9 @@ class TVRepository @Inject constructor(
                 if (page == 1)
                     tvSeriesDao.deleteTVSeriesByTag(DiscoverTag)
 
-                tvSeriesDao.insertTVSeriesList(tvResponse.data.asEntity(DiscoverTag, page))
+                try {
+                    tvSeriesDao.insertTVSeriesList(tvResponse.data.asEntity(DiscoverTag, page))
+                } catch (_: Exception){}
                 Pair(
                     tvSeriesDao.getTVSeriesByTag(DiscoverTag, page, sort),
                     page >= tvResponse.pagination.totalPage

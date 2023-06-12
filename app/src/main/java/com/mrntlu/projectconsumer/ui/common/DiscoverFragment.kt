@@ -43,7 +43,7 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
         setUI()
         setListeners()
-        setGridLayout()
+//        setGridLayout()
     }
 
     private fun setUI() {
@@ -132,12 +132,11 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 GenreGrid(
-                    !sharedViewModel.isLightTheme(),
                     when(contentType) {
                         Constants.ContentType.ANIME -> Constants.AnimeGenreList
                         Constants.ContentType.MOVIE -> Constants.MovieGenreList
                         Constants.ContentType.TV -> Constants.TVGenreList
-                        Constants.ContentType.GAME -> TODO()
+                        Constants.ContentType.GAME -> Constants.GameGenreList
                     },
                     onDiscoveryClicked = {
                         val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(

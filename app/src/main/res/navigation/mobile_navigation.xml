@@ -234,7 +234,7 @@
         android:id="@+id/discoverListFragment"
         android:name="com.mrntlu.projectconsumer.ui.common.DiscoverListFragment"
         android:label="fragment_discover_list"
-        tools:layout="@layout/fragment_discover_list" >
+        tools:layout="@layout/fragment_list" >
         <argument
             android:name="contentType"
             app:argType="com.mrntlu.projectconsumer.utils.Constants$ContentType" />
@@ -242,5 +242,19 @@
             android:name="genre"
             app:argType="string"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_discoverListFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_discoverListFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 </navigation>

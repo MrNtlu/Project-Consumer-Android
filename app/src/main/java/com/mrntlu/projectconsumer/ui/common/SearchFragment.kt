@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SearchFragment : BaseFragment<FragmentMovieSearchBinding>() {
+class SearchFragment: BaseFragment<FragmentMovieSearchBinding>() {
 
     private val args: SearchFragmentArgs by navArgs()
 

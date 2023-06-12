@@ -102,6 +102,9 @@
     <string name="password_too_short">Password is too short. Min 6.</string>
     <string name="passwords_dont_match">Passwords don\'t match.</string>
     <string name="please_fill_the_form">Please fill the form.</string>
+    <string name="platforms">Platforms</string>
+    <string name="release_date">Release Date</string>
+    <string name="themes">Themes</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

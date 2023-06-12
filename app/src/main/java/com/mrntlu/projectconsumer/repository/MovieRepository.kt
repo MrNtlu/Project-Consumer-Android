@@ -147,7 +147,10 @@ class MovieRepository @Inject constructor(
                 if (page == 1)
                     movieDao.deleteMoviesByTag(DiscoverTag)
 
-                movieDao.insertMovieList(movieResponse.data.asEntity(DiscoverTag, page))
+                try {
+                    movieDao.insertMovieList(movieResponse.data.asEntity(DiscoverTag, page))
+                } catch (_: Exception){}
+
                 Pair(
                     movieDao.getMoviesByTag(DiscoverTag, page, sort),
                     page >= movieResponse.pagination.totalPage
