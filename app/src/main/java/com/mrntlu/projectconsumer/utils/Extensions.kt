@@ -46,6 +46,11 @@ fun Activity.hideKeyboard() {
     hideKeyboard(currentFocus ?: View(this))
 }
 
+fun Context.dpToPx(dp: Float): Int {
+    val displayMetrics = resources.displayMetrics
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, displayMetrics).toInt()
+}
+
 fun Context.getColorFromAttr(color: Int): Int {
     val typedValue = TypedValue()
 

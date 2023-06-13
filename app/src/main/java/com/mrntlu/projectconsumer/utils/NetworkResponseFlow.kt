@@ -20,14 +20,15 @@ fun<T> networkResponseFlow(call: suspend () -> Response<T>): Flow<NetworkRespons
                 emit(NetworkResponse.Success(data))
             }
         } else {
-            val errorBody = response.errorBody()!!.string()
+            val errorBody = response.errorBody()?.string()
 
             val error = try {
-                if (response.errorBody() != null) {
-                    val errorJson = Gson().fromJson(response.errorBody()!!.string(), ErrorResponse::class.java)
+                if (errorBody != null) {
+                    val errorJson = Gson().fromJson(errorBody, ErrorResponse::class.java)
                     errorJson.message
-                } else
+                } else {
                     response.message()
+                }
             }catch (e: Exception) {
                 val errorJson = Gson().fromJson(errorBody, ErrorAltResponse::class.java)
                 errorJson.error

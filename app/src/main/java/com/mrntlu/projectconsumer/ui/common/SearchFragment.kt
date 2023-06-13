@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
-import com.mrntlu.projectconsumer.databinding.FragmentMovieSearchBinding
+import com.mrntlu.projectconsumer.databinding.FragmentSearchBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.ui.BaseFragment
@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SearchFragment: BaseFragment<FragmentMovieSearchBinding>() {
+class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
     private val args: SearchFragmentArgs by navArgs()
 
@@ -60,7 +60,7 @@ class SearchFragment: BaseFragment<FragmentMovieSearchBinding>() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMovieSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 

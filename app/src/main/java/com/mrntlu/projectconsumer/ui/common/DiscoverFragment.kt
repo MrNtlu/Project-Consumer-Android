@@ -1,18 +1,19 @@
 package com.mrntlu.projectconsumer.ui.common
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.google.android.material.tabs.TabLayout
+import com.mrntlu.projectconsumer.adapters.GridAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiscoverBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
-import com.mrntlu.projectconsumer.ui.compose.GenreGrid
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 
@@ -22,6 +23,7 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
         private const val KEY_VALUE = "content_type"
     }
 
+    private var gridAdapter: GridAdapter? = null
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
 
     override fun onCreateView(
@@ -43,7 +45,7 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
         setUI()
         setListeners()
-//        setGridLayout()
+        setXMLGridLayout()
     }
 
     private fun setUI() {
@@ -80,7 +82,7 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
                        else -> {}
                     }
 
-                    setGridLayout()
+                    setXMLGridLayout()
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -127,39 +129,57 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
         }
     }
 
-    private fun setGridLayout() {
-        binding.gridLayoutCompose.apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                GenreGrid(
-                    when(contentType) {
-                        Constants.ContentType.ANIME -> Constants.AnimeGenreList
-                        Constants.ContentType.MOVIE -> Constants.MovieGenreList
-                        Constants.ContentType.TV -> Constants.TVGenreList
-                        Constants.ContentType.GAME -> Constants.GameGenreList
-                    },
-                    onDiscoveryClicked = {
-                        val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
-                            contentType, null
-                        )
+    private fun setXMLGridLayout() {
+        val cellHeight = 100f
+        val padding = 3
 
-                        navController.navigate(navWithAction)
-                    },
-                    onGenreClicked = {
-                        val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
-                            contentType, it
-                        )
-
-                        navController.navigate(navWithAction)
-                    }
-                )
-            }
+        val list = when(contentType) {
+            Constants.ContentType.ANIME -> Constants.AnimeGenreList
+            Constants.ContentType.MOVIE -> Constants.MovieGenreList
+            Constants.ContentType.TV -> Constants.TVGenreList
+            Constants.ContentType.GAME -> Constants.GameGenreList
         }
+
+        val layoutParams = binding.gridView.layoutParams
+        val columnCount = if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+
+        layoutParams.height = list.size.div(columnCount).plus(
+            if (list.size.rem(columnCount) > 0) 1 else 0
+        ).times(
+            binding.root.context.dpToPx(cellHeight).plus(padding.times(2))
+        ).plus(12)
+
+        binding.gridView.layoutParams = layoutParams
+
+        gridAdapter = GridAdapter(
+            requireContext(), list,
+            onDiscoveryClicked = {
+                val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
+                    contentType, null
+                )
+
+                navController.navigate(navWithAction)
+            },
+            onGenreClicked = {
+                val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
+                    contentType, it
+                )
+
+                navController.navigate(navWithAction)
+            }
+        )
+        binding.gridView.numColumns = if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+        binding.gridView.adapter = gridAdapter
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
         outState.putString(KEY_VALUE, contentType.value)
+    }
+
+    override fun onDestroyView() {
+        gridAdapter = null
+        super.onDestroyView()
     }
 }

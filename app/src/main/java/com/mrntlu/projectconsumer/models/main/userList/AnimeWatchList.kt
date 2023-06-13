@@ -2,15 +2,18 @@ package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
 
-data class MovieWatchList(
+data class AnimeWatchList(
     @SerializedName("_id")
     val id: String,
 
-    @SerializedName("movie_id")
-    val movieId: String,
+    @SerializedName("anime_id")
+    val animeID: String,
 
-    @SerializedName("movie_tmdb_id")
-    val movieTmdbId: String,
+    @SerializedName("anime_mal_id")
+    val animeMalID: String,
+
+    @SerializedName("watched_episodes")
+    val watchedEpisodes: Int,
 
     @SerializedName("times_finished")
     val timesFinished: Int,
