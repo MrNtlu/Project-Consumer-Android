@@ -31,12 +31,12 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showLoginRegisterDialog
-import com.mrntlu.projectconsumer.viewmodels.main.ConsumeLaterViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.DetailsConsumeLaterViewModel
 import java.util.Locale
 
 abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
 
-    protected val consumeLaterViewModel: ConsumeLaterViewModel by viewModels()
+    protected val detailsConsumeLaterViewModel: DetailsConsumeLaterViewModel by viewModels()
 
     protected var isResponseFailed = false
     protected lateinit var countryCode: String
@@ -73,7 +73,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
                         if (consumeLaterDeleteLiveData != null && consumeLaterDeleteLiveData?.hasActiveObservers() == true)
                             consumeLaterDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
-                        consumeLaterDeleteLiveData = consumeLaterViewModel.deleteConsumeLater(
+                        consumeLaterDeleteLiveData = detailsConsumeLaterViewModel.deleteConsumeLater(
                             IDBody(details.consumeLater!!.id)
                         )
 

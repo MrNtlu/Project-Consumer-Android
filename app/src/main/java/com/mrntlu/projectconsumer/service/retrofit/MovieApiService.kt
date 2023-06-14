@@ -42,16 +42,6 @@ interface MovieApiService {
         @Query("page") page: Int,
     ): Response<DataSearchPaginationResponse<Movie>>
 
-    @GET("movie/decade")
-    suspend fun getPopularMoviesByDecade(
-        @Query("page") page: Int,
-    )
-
-    @GET("movie/genre")
-    suspend fun getPopularMoviesByGenre(
-        @Query("page") page: Int,
-    )
-
     @GET("movie/details")
     suspend fun getMovieDetails(
         @Query("id") id: String,

@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ConsumeLaterViewModel @Inject constructor(
+class DetailsConsumeLaterViewModel @Inject constructor(
     private val userInteractionRepository: UserInteractionRepository,
 ): ViewModel() {
 

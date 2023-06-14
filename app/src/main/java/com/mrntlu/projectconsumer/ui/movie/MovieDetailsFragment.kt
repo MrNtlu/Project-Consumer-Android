@@ -112,7 +112,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                             movieDetails,
                             createConsumeLater = {
                                 movieDetails!!.apply {
-                                    consumeLaterViewModel.createConsumeLater(
+                                    detailsConsumeLaterViewModel.createConsumeLater(
                                         ConsumeLaterBody(id, tmdbID, null, TYPE, null)
                                     )
                                 }
@@ -149,7 +149,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             }
         }
 
-        consumeLaterViewModel.consumeLater.observe(viewLifecycleOwner) { response ->
+        detailsConsumeLaterViewModel.consumeLater.observe(viewLifecycleOwner) { response ->
             handleUserInteractionLoading(response, binding.detailsInclude)
 
             if (response is NetworkResponse.Success)
@@ -363,7 +363,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
             viewModel.movieDetails.removeObservers(this)
-            consumeLaterViewModel.consumeLater.removeObservers(this)
+            detailsConsumeLaterViewModel.consumeLater.removeObservers(this)
         }
         actorAdapter = null
         companiesAdapter = null

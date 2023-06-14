@@ -116,7 +116,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                             tvDetails,
                             createConsumeLater = {
                                 tvDetails!!.apply {
-                                    consumeLaterViewModel.createConsumeLater(
+                                    detailsConsumeLaterViewModel.createConsumeLater(
                                         ConsumeLaterBody(id, tmdbID, null, TYPE, null)
                                     )
                                 }
@@ -155,7 +155,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             }
         }
 
-        consumeLaterViewModel.consumeLater.observe(viewLifecycleOwner) { response ->
+        detailsConsumeLaterViewModel.consumeLater.observe(viewLifecycleOwner) { response ->
             handleUserInteractionLoading(response, binding.tvDetailsInclude)
 
             if (response is NetworkResponse.Success)
@@ -396,7 +396,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
-            consumeLaterViewModel.consumeLater.removeObservers(this)
+            detailsConsumeLaterViewModel.consumeLater.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
         activity?.let {
