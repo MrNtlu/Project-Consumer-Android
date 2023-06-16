@@ -8,9 +8,10 @@ import com.mrntlu.projectconsumer.models.main.movie.entity.MovieEntity
 import com.mrntlu.projectconsumer.models.main.movie.entity.MovieTypeConverters
 import com.mrntlu.projectconsumer.models.main.tv.entity.TVSeriesEntity
 import com.mrntlu.projectconsumer.models.main.tv.entity.TVSeriesTypeConverters
+import com.mrntlu.projectconsumer.models.main.userInteraction.entity.ConsumeLaterEntity
 
 @Database(
-    entities = [MovieEntity::class, TVSeriesEntity::class],
+    entities = [MovieEntity::class, TVSeriesEntity::class, ConsumeLaterEntity::class,],
     version = 1,
     exportSchema = false,
 )
@@ -19,4 +20,6 @@ abstract class CacheDatabase: RoomDatabase() {
     abstract fun getMovieDao(): MovieDao
 
     abstract fun getTVSeriesDao(): TVSeriesDao
+
+    abstract fun getUserInteractionDao(): UserInteractionDao
 }

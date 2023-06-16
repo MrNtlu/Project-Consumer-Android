@@ -13,16 +13,16 @@ data class ConsumeLaterResponse(
     val contentID: String,
 
     @SerializedName("content_external_id")
-    val contentExternalID: String,
+    val contentExternalID: String?,
 
     @SerializedName("content_external_int_id")
-    val contentExternalIntID: Int,
+    val contentExternalIntID: Int?,
 
     @SerializedName("content_type")
     val contentType: String,
 
     @SerializedName("self_note")
-    val selfNote: String,
+    val selfNote: String?,
 
     @SerializedName("created_at")
     val createdAt: String,

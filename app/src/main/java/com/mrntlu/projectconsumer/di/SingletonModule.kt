@@ -14,6 +14,7 @@ import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.service.room.TVSeriesDao
+import com.mrntlu.projectconsumer.service.room.UserInteractionDao
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
 import dagger.Module
@@ -147,4 +148,8 @@ class SingletonModule {
     @Singleton
     @Provides
     fun provideTVSeriesDao(cacheDB: CacheDatabase): TVSeriesDao = cacheDB.getTVSeriesDao()
+
+    @Singleton
+    @Provides
+    fun provideUserInteractionDao(cacheDB: CacheDatabase): UserInteractionDao = cacheDB.getUserInteractionDao()
 }

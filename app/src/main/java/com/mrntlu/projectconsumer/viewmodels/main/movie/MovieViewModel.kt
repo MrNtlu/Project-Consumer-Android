@@ -99,12 +99,10 @@ class MovieViewModel @AssistedInject constructor(
         var isPaginationExhausted = false
         val tempList = arrayListOf<Movie>()
         viewModelScope.launch(Dispatchers.IO) {
-            launch(Dispatchers.IO) {
-                movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
-                    if (response.isSuccessful()) {
-                        tempList.addAll(response.data!!)
-                        isPaginationExhausted = response.isPaginationExhausted
-                    }
+            movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
+                if (response.isSuccessful()) {
+                    tempList.addAll(response.data!!)
+                    isPaginationExhausted = response.isPaginationExhausted
                 }
             }
 
