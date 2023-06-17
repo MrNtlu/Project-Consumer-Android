@@ -5,10 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
+import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 import com.mrntlu.projectconsumer.repository.UserInteractionRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
+import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.setData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -53,6 +56,20 @@ class ConsumeLaterViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun deleteConsumeLater(body: IDBody): LiveData<NetworkResponse<MessageResponse>> {
+        val liveData = MutableLiveData<NetworkResponse<MessageResponse>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            userInteractionRepository.deleteConsumeLater(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
     }
 
     private fun restoreData() {

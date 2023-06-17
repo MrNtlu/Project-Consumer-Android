@@ -159,7 +159,7 @@ class MainActivity : AppCompatActivity() {
             invalidateOptionsMenu()
 
             when(destination.id) {
-                R.id.navigation_home, R.id.navigation_discover, R.id.navigation_later -> {
+                R.id.navigation_home, R.id.navigation_discover -> {
                     binding.toolbar.setVisible()
                     binding.navView.setVisible()
                     handleUserIncVisibility(false)
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                     binding.navView.setVisibilityByCondition(sharedViewModel.isLoggedIn())
                     handleUserIncVisibility(true)
                 }
-                R.id.navigation_profile -> {
+                R.id.navigation_profile, R.id.navigation_later -> {
                     binding.toolbar.setVisible()
                     binding.navView.setVisible()
                     handleUserIncVisibility(true)

@@ -229,7 +229,7 @@
         android:id="@+id/navigation_later"
         android:name="com.mrntlu.projectconsumer.ui.common.ConsumeLaterFragment"
         android:label="fragment_consume_later"
-        tools:layout="@layout/fragment_consume_later" />
+        tools:layout="@layout/fragment_list" />
     <fragment
         android:id="@+id/discoverListFragment"
         android:name="com.mrntlu.projectconsumer.ui.common.DiscoverListFragment"

@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.models.main.userInteraction.entity
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -30,6 +31,7 @@ data class ConsumeLaterEntity(
     @ColumnInfo("created_at")
     val createdAt: String,
 
+    @Embedded
     val content: ConsumeLaterContentEntity,
 
     val tag: String,
