@@ -1,6 +1,8 @@
 package com.mrntlu.projectconsumer.models.main.userInteraction
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.ContentModel
+import com.mrntlu.projectconsumer.interfaces.DiffUtilComparison
 
 data class ConsumeLaterResponse(
     @SerializedName("_id")
@@ -28,7 +30,23 @@ data class ConsumeLaterResponse(
     val createdAt: String,
 
     val content: ConsumeLaterContent,
-)
+): DiffUtilComparison<ConsumeLaterResponse> {
+
+    override fun areItemsTheSame(newItem: ConsumeLaterResponse): Boolean {
+        return id == newItem.id
+    }
+
+    override fun areContentsTheSame(newItem: ConsumeLaterResponse): Boolean {
+        return when {
+            id != newItem.id -> false
+            contentID != newItem.contentID -> false
+            contentExternalID != newItem.contentExternalID -> false
+            contentExternalIntID != newItem.contentExternalIntID -> false
+            selfNote != newItem.selfNote -> false
+            else -> true
+        }
+    }
+}
 
 data class ConsumeLaterContent(
 

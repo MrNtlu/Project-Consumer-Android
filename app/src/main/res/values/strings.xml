@@ -105,6 +105,8 @@
     <string name="platforms">Platforms</string>
     <string name="release_date">Release Date</string>
     <string name="themes">Themes</string>
+    <string name="finished">Finished</string>
+    <string name="empty_list_consume_later">Empty list? Explore new content with a single tap!</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

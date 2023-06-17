@@ -8,7 +8,7 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
-abstract class BaseAdapter<T>(open val interaction: Interaction<T>, private val gridCount: Int, private val isDarkTheme: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class BaseGridPaginationAdapter<T>(open val interaction: Interaction<T>, private val gridCount: Int, private val isDarkTheme: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
     var isLoading = true
     var isPaginating = false

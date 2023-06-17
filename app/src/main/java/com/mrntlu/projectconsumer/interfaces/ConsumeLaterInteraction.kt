@@ -4,6 +4,7 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterRespon
 
 interface ConsumeLaterInteraction: Interaction<ConsumeLaterResponse> {
     //TODO Add variables
-    fun onRemovePressed()
-    fun onAddToListPressed()
+    fun onDeletePressed(item: ConsumeLaterResponse, position: Int)
+    fun onAddToListPressed(item: ConsumeLaterResponse, position: Int)
+    fun onDiscoverButtonPressed()
 }

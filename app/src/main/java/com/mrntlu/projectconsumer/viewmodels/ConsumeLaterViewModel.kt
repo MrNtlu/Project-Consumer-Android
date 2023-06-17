@@ -46,6 +46,8 @@ class ConsumeLaterViewModel @Inject constructor(
     init {
         if (scrollPosition != 0)
             restoreData()
+        else
+            getConsumeLater()
     }
 
     fun getConsumeLater() {

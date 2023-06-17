@@ -145,7 +145,6 @@ class PreviewAdapter<T: ContentModel>(
 
                 previewTV.text = item.title
 
-
                 root.setOnClickListener {
                     interaction.onItemSelected(item, position)
                 }

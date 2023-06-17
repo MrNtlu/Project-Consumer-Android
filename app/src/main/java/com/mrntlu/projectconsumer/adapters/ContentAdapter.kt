@@ -30,14 +30,13 @@ import com.mrntlu.projectconsumer.utils.setVisible
 
 class ContentAdapter<T: ContentModel>(
     override val interaction: Interaction<T>, gridCount: Int, isDarkTheme: Boolean
-): BaseAdapter<T>(interaction, gridCount, isDarkTheme) {
+): BaseGridPaginationAdapter<T>(interaction, gridCount, isDarkTheme) {
 
     override fun handleDiffUtil(newList: ArrayList<T>) {
         val diffUtil = DiffUtilCallback(
             arrayList,
             newList
         )
-
         val diffResults = DiffUtil.calculateDiff(diffUtil, true)
 
         arrayList = newList.toList() as ArrayList<T>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/mainBackgroundColor"
+    app:shimmer_auto_start="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/shimmerImageCV"
+            android:layout_width="73dp"
+            android:layout_height="110dp"
+            app:cardBackgroundColor="@color/shimmer_color"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/shimmerTitleTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="20sp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/shimmerImageCV"
+            app:layout_constraintTop_toTopOf="@+id/shimmerImageCV" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="shimmerImageCV, shimmerTitleTV" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@color/shimmer_color"
+            app:layout_constraintBottom_toBottomOf="@+id/shimmerFinishedButton"
+            app:layout_constraintStart_toStartOf="@+id/shimmerImageCV"
+            app:layout_constraintTop_toTopOf="@+id/shimmerFinishedButton"
+            app:layout_constraintVertical_bias="0.5" />
+
+        <View
+            android:id="@+id/shimmerDeleteButton"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/shimmerFinishedButton"
+            app:layout_constraintTop_toBottomOf="@+id/barrier2" />
+
+        <View
+            android:id="@+id/shimmerFinishedButton"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/shimmerTitleTV"
+            app:layout_constraintTop_toBottomOf="@+id/barrier2" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.facebook.shimmer.ShimmerFrameLayout>
