@@ -11,8 +11,8 @@
         android:id="@+id/imageInclude"
         layout="@layout/cell_preview_item"
         android:layout_width="wrap_content"
-        android:layout_height="110dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,48 +21,38 @@
         android:id="@+id/titleTV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="textStart"
         android:textColor="?attr/mainTextColor"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageInclude"
         app:layout_constraintTop_toTopOf="@+id/imageInclude"
         tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier2"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/contentTypeCV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="imageInclude, titleTV" />
+        app:cardBackgroundColor="?attr/colorSecondary"
+        app:cardCornerRadius="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/titleTV"
+        app:layout_constraintTop_toTopOf="@+id/finishedButton">
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Created at"
-        android:textColor="?attr/mainTextColor"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/finishedButton"
-        app:layout_constraintStart_toStartOf="@+id/imageInclude"
-        app:layout_constraintTop_toTopOf="@+id/finishedButton"
-        app:layout_constraintVertical_bias="0.5" />
-
-    <TextView
-        android:id="@+id/createdAtTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textColor="?attr/mainTextColor"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/textView12"
-        app:layout_constraintStart_toEndOf="@+id/textView12"
-        app:layout_constraintTop_toTopOf="@+id/textView12"
-        tools:text="24/06/2022" />
+        <TextView
+            android:id="@+id/contentTypeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="6dp"
+            android:layout_marginVertical="3dp"
+            android:textColor="?attr/mainBackgroundColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="TV Series" />
+    </androidx.cardview.widget.CardView>
 
     <Button
         android:id="@+id/deleteButton"
@@ -70,26 +60,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textColor="?attr/descriptionTitleTextColor"
         android:minHeight="0dp"
+        android:padding="2dp"
         android:text="@string/delete"
+        android:textColor="?attr/descriptionTitleTextColor"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/finishedButton"
-        app:layout_constraintTop_toBottomOf="@+id/barrier2" />
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/titleTV"
+        app:layout_constraintTop_toBottomOf="@+id/titleTV"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/finishedButton"
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:textColor="?attr/descriptionTitleTextColor"
+        android:layout_marginStart="4dp"
         android:minHeight="0dp"
+        android:padding="2dp"
         android:text="@string/finished"
+        android:textColor="?attr/descriptionTitleTextColor"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/titleTV"
-        app:layout_constraintTop_toBottomOf="@+id/barrier2" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/deleteButton"
+        app:layout_constraintTop_toTopOf="@+id/deleteButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

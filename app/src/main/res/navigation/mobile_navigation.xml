@@ -229,7 +229,17 @@
         android:id="@+id/navigation_later"
         android:name="com.mrntlu.projectconsumer.ui.common.ConsumeLaterFragment"
         android:label="fragment_consume_later"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/fragment_list" >
+        <action
+            android:id="@+id/action_navigation_later_to_navigation_discover"
+            app:destination="@id/navigation_discover"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/navigation_later"
+            app:popUpToInclusive="true"/>
+    </fragment>
     <fragment
         android:id="@+id/discoverListFragment"
         android:name="com.mrntlu.projectconsumer.ui.common.DiscoverListFragment"
@@ -258,11 +268,4 @@
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
-    <action
-        android:id="@+id/action_global_navigation_discover"
-        app:destination="@id/navigation_discover"
-        app:enterAnim="@anim/slide_in_right"
-        app:exitAnim="@anim/slide_out_left"
-        app:popEnterAnim="@anim/slide_in_left"
-        app:popExitAnim="@anim/slide_out_right" />
 </navigation>

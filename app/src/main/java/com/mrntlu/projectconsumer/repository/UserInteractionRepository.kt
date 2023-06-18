@@ -43,7 +43,8 @@ class UserInteractionRepository @Inject constructor(
             cacheDatabase.withTransaction {
                 userInteractionDao.deleteConsumeLatersByTag(ConsumeLaterTag)
 
-                userInteractionDao.insertConsumeLaterList(response.data.asEntity(ConsumeLaterTag, 1))
+                if (response.data != null)
+                    userInteractionDao.insertConsumeLaterList(response.data.asEntity(ConsumeLaterTag, 1))
                 Pair(
                     userInteractionDao.getConsumeLatersByTag(ConsumeLaterTag, 1, sort),
                     false
@@ -52,10 +53,7 @@ class UserInteractionRepository @Inject constructor(
         },
         isCachePaginationExhausted = { true },
         shouldFetch = {
-            !(
-                    (isRestoringData && !it.isNullOrEmpty()) ||
-                    !it.isNullOrEmpty()
-            )
+            !(isRestoringData && !it.isNullOrEmpty())
         }
     )
 

@@ -55,6 +55,13 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         setObservers()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        if (!viewModel.isRestoringData && !viewModel.didOrientationChange)
+            viewModel.getConsumeLater()
+    }
+
     private fun setMenu() {
         val menuHost: MenuHost = requireActivity()
 
@@ -135,8 +142,6 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                             consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
 
                         //TODO handle loading and failure
-
-                        deleteConsumerLiveData.removeObservers(viewLifecycleOwner)
                     }
                 }
 
@@ -166,7 +171,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                 }
 
                 override fun onDiscoverButtonPressed() {
-                    navController.navigate(R.id.action_global_settingsFragment)
+                    navController.navigate(R.id.action_navigation_later_to_navigation_discover)
                 }
             })
             adapter = consumeLaterAdapter

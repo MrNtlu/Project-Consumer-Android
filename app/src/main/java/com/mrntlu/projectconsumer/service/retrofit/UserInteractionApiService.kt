@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.service.retrofit
 
+import com.mrntlu.projectconsumer.models.common.retrofit.DataNullableResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
@@ -22,7 +23,7 @@ interface UserInteractionApiService {
     suspend fun getConsumeLater(
         @Query("type") type: String?,
         @Query("sort") sort: String,
-    ): Response<DataResponse<List<ConsumeLaterResponse>>>
+    ): Response<DataNullableResponse<List<ConsumeLaterResponse>>>
 
     @HTTP(method = "DELETE", path = "consume", hasBody = true)
     suspend fun deleteConsumeLater(@Body body: IDBody): Response<MessageResponse>

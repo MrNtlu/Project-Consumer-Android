@@ -18,10 +18,10 @@ import com.mrntlu.projectconsumer.interfaces.ConsumeLaterInteraction
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.convertToFormattedDate
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -43,7 +43,7 @@ class ConsumeLaterAdapter(
         )
         val diffResults = DiffUtil.calculateDiff(diffUtil, true)
 
-        arrayList = newList.toList() as ArrayList<ConsumeLaterResponse>
+        arrayList = newList.toCollection(ArrayList())
         diffResults.dispatchUpdatesTo(this)
     }
 
@@ -60,6 +60,9 @@ class ConsumeLaterAdapter(
         when(getItemViewType(position)) {
             RecyclerViewEnum.View.value -> {
                 (holder as ItemViewHolder).bind(arrayList[position], position, interaction)
+            }
+            RecyclerViewEnum.Empty.value -> {
+                (holder as EmptyViewHolder).bind()
             }
             RecyclerViewEnum.Error.value -> {
                 (holder as ErrorViewHolderBind<ConsumeLaterResponse>).bind(errorMessage, interaction)
@@ -106,13 +109,11 @@ class ConsumeLaterAdapter(
             else RecyclerViewEnum.View
         )
 
-        if (newList.isNotEmpty()) {
-            if (arrayList.isNotEmpty())
-                arrayList.clear()
+        if (arrayList.isNotEmpty())
+            arrayList.clear()
 
-            arrayList.addAll(newList)
-            notifyDataSetChanged()
-        }
+        arrayList.addAll(newList)
+        notifyDataSetChanged()
     }
 
     private fun setState(rvEnum: RecyclerViewEnum) {
@@ -175,12 +176,12 @@ class ConsumeLaterAdapter(
                     previewCard.setGone()
                     previewComposeView.setVisible()
                     previewIV.loadWithGlide(item.content.imageURL, previewCard, previewComposeView) {
-                        transform(RoundedCorners(18))
+                        transform(RoundedCorners(12))
                     }
                 }
 
                 titleTV.text = item.content.titleOriginal
-                createdAtTV.text = item.createdAt.convertToFormattedDate() ?: item.createdAt
+                contentTypeTV.text = Constants.ContentType.fromStringRequest(item.contentType).value
 
                 deleteButton.setOnClickListener {
                     interaction.onDeletePressed(item, position)
@@ -200,7 +201,7 @@ class ConsumeLaterAdapter(
     inner class EmptyViewHolder(private val binding: CellConsumeLaterEmptyBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind() {
             binding.discoverButton.setOnClickListener {
-
+                interaction.onDiscoverButtonPressed()
             }
         }
     }
