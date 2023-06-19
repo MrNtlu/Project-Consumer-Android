@@ -1,7 +1,6 @@
 package com.mrntlu.projectconsumer.models.main.userInteraction
 
 import com.google.gson.annotations.SerializedName
-import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.DiffUtilComparison
 
 data class ConsumeLaterResponse(
@@ -43,6 +42,7 @@ data class ConsumeLaterResponse(
             contentExternalID != newItem.contentExternalID -> false
             contentExternalIntID != newItem.contentExternalIntID -> false
             selfNote != newItem.selfNote -> false
+            content.titleOriginal != newItem.content.titleOriginal -> false
             else -> true
         }
     }

@@ -25,8 +25,8 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
+import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
-import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.viewmodels.ConsumeLaterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,8 +58,10 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
     override fun onStart() {
         super.onStart()
 
-        if (!viewModel.isRestoringData && !viewModel.didOrientationChange)
+        if (!viewModel.isRestoringData && !viewModel.didOrientationChange) {
+            consumeLaterAdapter?.setLoadingView()
             viewModel.getConsumeLater()
+        }
     }
 
     private fun setMenu() {
@@ -79,17 +81,16 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
                 searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        if (query?.isNotEmptyOrBlank() == true) {
-                            searchView.clearFocus()
-
-                            searchQuery = query
-                            //TODO Adapter search filter
-                        }
+                        context?.hideKeyboard(searchView)
 
                         return true
                     }
 
-                    override fun onQueryTextChange(newText: String?) = true
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        consumeLaterAdapter?.search(newText)
+
+                        return true
+                    }
                 })
             }
 
@@ -142,6 +143,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                             consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
 
                         //TODO handle loading and failure
+                        //use dialog
                     }
                 }
 
