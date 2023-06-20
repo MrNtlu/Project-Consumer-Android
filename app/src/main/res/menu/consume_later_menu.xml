@@ -11,8 +11,14 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/sortMenu"
+        android:icon="@drawable/ic_sort_48"
+        app:showAsAction="ifRoom"
+        android:title="@string/sort" />
+
+    <item
         android:id="@+id/filterMenu"
         android:icon="@drawable/ic_filter_48"
         app:showAsAction="ifRoom"
-        android:title="@string/sort" />
+        android:title="@string/filter" />
 </menu>

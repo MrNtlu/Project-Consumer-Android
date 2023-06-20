@@ -22,17 +22,14 @@ fun<T> networkResponseFlow(call: suspend () -> Response<T>): Flow<NetworkRespons
         } else {
             val errorBody = response.errorBody()?.string()
 
-            val error = try {
-                if (errorBody != null) {
-                    val errorJson = Gson().fromJson(errorBody, ErrorResponse::class.java)
-                    errorJson.message
-                } else {
-                    response.message()
-                }
-            }catch (e: Exception) {
-                val errorJson = Gson().fromJson(errorBody, ErrorAltResponse::class.java)
-                errorJson.error
-            }
+            val error = if (errorBody != null) {
+                var errorJson: String? = Gson().fromJson(errorBody, ErrorResponse::class.java)?.message
+                if (errorJson == null)
+                   errorJson = Gson().fromJson(errorBody, ErrorAltResponse::class.java)?.error
+
+                errorJson ?: "Unknown error!"
+            } else
+                response.message()
 
             emit(NetworkResponse.Failure(errorMessage = error))
         }

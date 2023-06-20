@@ -231,14 +231,19 @@
         android:label="fragment_consume_later"
         tools:layout="@layout/fragment_list" >
         <action
-            android:id="@+id/action_navigation_later_to_navigation_discover"
-            app:destination="@id/navigation_discover"
+            android:id="@+id/action_navigation_later_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/navigation_later"
-            app:popUpToInclusive="true"/>
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_later_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/discoverListFragment"
@@ -267,5 +272,14 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
+    <action
+        android:id="@+id/action_global_navigation_discover"
+        app:destination="@id/navigation_discover"
+        app:popUpTo="@id/navigation_later"
+        app:popUpToInclusive="true"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"/>
 
 </navigation>

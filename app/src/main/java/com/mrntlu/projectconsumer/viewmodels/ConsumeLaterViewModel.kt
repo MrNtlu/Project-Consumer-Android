@@ -38,8 +38,10 @@ class ConsumeLaterViewModel @Inject constructor(
     // Variable for detecting orientation change
     var didOrientationChange = false
 
-    private var sort: String = savedStateHandle[CONSUME_LATER_SORT_KEY] ?: Constants.SortConsumeLaterRequests[0].request
-    private var filter: String? = savedStateHandle[CONSUME_LATER_FILTER_KEY]
+    var sort: String = savedStateHandle[CONSUME_LATER_SORT_KEY] ?: Constants.SortConsumeLaterRequests[0].request
+        private set
+    var filter: String? = savedStateHandle[CONSUME_LATER_FILTER_KEY]
+        private set
     var scrollPosition: Int = savedStateHandle[CONSUME_LATER_SCROLL_POSITION_KEY] ?: 0
         private set
 
@@ -95,12 +97,12 @@ class ConsumeLaterViewModel @Inject constructor(
         }
     }
 
-    private fun setSort(newSort: String) {
+    fun setSort(newSort: String) {
         sort = newSort
         savedStateHandle[CONSUME_LATER_SORT_KEY] = sort
     }
 
-    private fun setFilter(newFilter: String?) {
+    fun setFilter(newFilter: String?) {
         filter = newFilter
         savedStateHandle[CONSUME_LATER_FILTER_KEY] = filter
     }

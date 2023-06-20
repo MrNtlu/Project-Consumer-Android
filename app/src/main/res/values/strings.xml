@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Watch\'n List</string>
     <string name="title_movie">Movies</string>
-    <string name="title_tv">Series</string>
+    <string name="title_tv">TV Series</string>
     <string name="title_anime">Anime</string>
     <string name="title_game">Games</string>
     <string name="settings">Settings</string>
@@ -107,6 +107,7 @@
     <string name="themes">Themes</string>
     <string name="finished">Finished</string>
     <string name="empty_list_consume_later">Discover new content with a single tap!</string>
+    <string name="filter">Filter</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

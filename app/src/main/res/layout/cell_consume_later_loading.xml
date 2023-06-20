@@ -12,11 +12,11 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/shimmerImageCV"
-            android:layout_width="73dp"
-            android:layout_height="110dp"
-            app:cardBackgroundColor="@color/shimmer_color"
+            android:layout_width="50dp"
+            android:layout_height="75dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/shimmer_color"
             app:cardCornerRadius="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -46,7 +46,7 @@
         <View
             android:id="@+id/shimmerDeleteButton"
             android:layout_width="100dp"
-            android:layout_height="35dp"
+            android:layout_height="30dp"
             android:background="@color/shimmer_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/shimmerTitleTV" />
@@ -54,7 +54,7 @@
         <View
             android:id="@+id/shimmerFinishedButton"
             android:layout_width="100dp"
-            android:layout_height="35dp"
+            android:layout_height="30dp"
             android:layout_marginStart="8dp"
             android:background="@color/shimmer_color"
             app:layout_constraintBottom_toBottomOf="parent"
