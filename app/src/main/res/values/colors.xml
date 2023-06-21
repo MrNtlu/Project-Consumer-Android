@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="profileButtonLight">#fffffbfe</color>
+    <color name="profileButtonDark">#ff1c1b1f</color>
+
     <color name="blue200">#90CAF9</color>
     <color name="blue300">#64B5F6</color>
     <color name="blue500">#2196F3</color>
@@ -31,6 +34,7 @@
     <color name="materialBlack">#212121</color>
     <color name="androidBlack">#FF121212</color>
 
+    <color name="grey300">#E0E0E0</color>
     <color name="grey400">#BDBDBD</color>
     <color name="grey500">#9E9E9E</color>
     <color name="grey600">#757575</color>

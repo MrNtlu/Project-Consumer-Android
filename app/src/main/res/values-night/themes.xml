@@ -39,6 +39,9 @@
         <item name="themeTrackTint">@color/yellow500</item>
         <item name="themeTrackDecorationTint">@color/darkWhite</item>
 
+        <item name="levelTrackTint">@color/darkWhite</item>
+        <item name="profileButtonTint">@color/profileButtonDark</item>
+
         <item name="statusActiveColor">@color/green700</item>
         <item name="statusFinishedColor">@color/blue700</item>
         <item name="statusDroppedColor">@color/red700</item>

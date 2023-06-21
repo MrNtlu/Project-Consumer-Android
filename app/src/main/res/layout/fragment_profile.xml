@@ -1,14 +1,301 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/mainBackgroundColor"
     tools:context=".ui.common.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <ImageView
+            android:id="@+id/profileIV"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/profile_image_cd"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <ProgressBar
+            android:id="@+id/profileImageProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="?attr/mainTextColor"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/profileIV"
+            app:layout_constraintEnd_toEndOf="@+id/profileIV"
+            app:layout_constraintStart_toStartOf="@+id/profileIV"
+            app:layout_constraintTop_toTopOf="@+id/profileIV" />
+
+        <TextView
+            android:id="@+id/profileUsernameTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileIV"
+            tools:text="MrNtlu" />
+
+        <LinearLayout
+            android:id="@+id/profileLevelLayout"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileUsernameTV">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/profileLevelBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:indeterminate="false"
+                android:progress="35"
+                app:indicatorColor="?attr/colorPrimaryDark"
+                app:trackColor="?attr/levelTrackTint"
+                app:trackCornerRadius="8dp"
+                app:trackThickness="5dp" />
+
+            <TextView
+                android:id="@+id/profileLevelTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="35 lv." />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/profileMyListButton"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="?attr/profileButtonTint"
+            android:text="@string/my_list"
+            android:textColor="?attr/colorPrimary"
+            app:icon="@drawable/ic_list"
+            app:iconTint="?attr/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
+
+        <Button
+            android:id="@+id/profileDiaryButton"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="?attr/profileButtonTint"
+            android:text="@string/diary"
+            android:textColor="?attr/colorPrimary"
+            app:icon="@drawable/ic_diary"
+            app:iconTint="?attr/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
+            app:layout_constraintTop_toTopOf="@+id/profileMyListButton" />
+
+        <TextView
+            android:id="@+id/movieStatTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tvStatTV"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileMyListButton"
+            tools:text="200" />
+
+        <TextView
+            android:id="@+id/tvStatTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toEndOf="@+id/movieStatTV"
+            app:layout_constraintTop_toTopOf="@+id/movieStatTV"
+            tools:text="200" />
+
+        <TextView
+            android:id="@+id/animeStatTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/gameStatTV"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
+            app:layout_constraintTop_toTopOf="@+id/movieStatTV"
+            tools:text="200" />
+
+        <TextView
+            android:id="@+id/gameStatTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toEndOf="@+id/animeStatTV"
+            app:layout_constraintTop_toTopOf="@+id/movieStatTV"
+            tools:text="200" />
+
+        <TextView
+            android:id="@+id/movieStatTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/title_movie"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/movieStatTV"
+            app:layout_constraintStart_toStartOf="@+id/movieStatTV"
+            app:layout_constraintTop_toBottomOf="@+id/movieStatTV" />
+
+        <TextView
+            android:id="@+id/tvStatTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/title_tv"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/tvStatTV"
+            app:layout_constraintStart_toStartOf="@+id/tvStatTV"
+            app:layout_constraintTop_toBottomOf="@+id/tvStatTV" />
+
+        <TextView
+            android:id="@+id/animeStatTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/title_anime"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/animeStatTV"
+            app:layout_constraintStart_toStartOf="@+id/animeStatTV"
+            app:layout_constraintTop_toBottomOf="@+id/animeStatTV" />
+
+        <TextView
+            android:id="@+id/gameStatTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/title_game"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/gameStatTV"
+            app:layout_constraintStart_toStartOf="@+id/gameStatTV"
+            app:layout_constraintTop_toBottomOf="@+id/gameStatTV" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/textView20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movieStatTitleTV" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="@string/profile_content_title"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/movieStatTitleTV" />
+
+        <Button
+            android:id="@+id/legendInfoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?attr/materialIconButtonStyle"
+            app:icon="@drawable/ic_info_24"
+            app:iconTint="?attr/mainTextColor"
+            app:layout_constraintBottom_toBottomOf="@+id/textView20"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintTop_toTopOf="@+id/textView20" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/profileContentTabLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="?attr/mainBackgroundColor"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/textView20"
+            app:tabBackground="?attr/mainBackgroundColor"
+            app:tabGravity="start"
+            app:tabIndicatorHeight="0dp"
+            app:tabMinWidth="0dp"
+            app:tabMode="scrollable"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
+            app:tabTextColor="?attr/mainTextColor" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/legendContentRV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:minHeight="350dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileContentTabLayout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

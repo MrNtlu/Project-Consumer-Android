@@ -31,6 +31,9 @@
         <attr name="themeTrackTint" format="color"/>
         <attr name="themeTrackDecorationTint" format="color"/>
 
+        <attr name="levelTrackTint" format="color"/>
+        <attr name="profileButtonTint" format="color"/>
+
         <attr name="bottomNavBackgroundColor" format="color"/>
         <attr name="bottomNavSelectedColor" format="color"/>
         <attr name="bottomNavUnselectedColor" format="color"/>

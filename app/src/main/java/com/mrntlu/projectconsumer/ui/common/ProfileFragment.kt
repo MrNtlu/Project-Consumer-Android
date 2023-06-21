@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.mrntlu.projectconsumer.databinding.FragmentProfileBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     override fun onCreateView(
@@ -20,6 +22,36 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+    }
+
+    private fun setObservers() {
+
+    }
+
+    private fun setUI() {
+        binding.apply {
+
+        }
+    }
+
+    private fun setListeners() {
+        binding.apply {
+            profileMyListButton.setOnClickListener {
+
+            }
+
+            profileDiaryButton.setOnClickListener {
+
+            }
+
+            legendInfoButton.setOnClickListener {
+
+            }
+        }
+    }
+
+    private fun setRecyclerView() {
 
     }
 
