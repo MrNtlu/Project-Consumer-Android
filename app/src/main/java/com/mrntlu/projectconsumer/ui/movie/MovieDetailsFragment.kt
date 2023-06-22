@@ -89,15 +89,15 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             viewModel.getMovieDetails(args.movieId)
 
         viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
-            binding.detailsInclude.apply {
+            binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
-                toggleCollapsingLayoutScroll(binding.detailsCollapsingToolbar, response !is NetworkResponse.Loading)
-                binding.loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
-                binding.errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
+                toggleCollapsingLayoutScroll(detailsCollapsingToolbar, response !is NetworkResponse.Loading)
+                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
+                errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
                     is NetworkResponse.Failure -> {
-                        binding.errorLayoutInc.apply {
+                        errorLayoutInc.apply {
                             errorText.text = response.errorMessage
 
                             setListeners()
@@ -108,7 +108,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
                         setUI()
                         setLottieUI(
-                            binding.detailsInclude,
+                            detailsInclude,
                             movieDetails,
                             createConsumeLater = {
                                 movieDetails!!.apply {

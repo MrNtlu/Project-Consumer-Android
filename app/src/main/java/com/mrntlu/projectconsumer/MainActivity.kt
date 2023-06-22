@@ -294,7 +294,7 @@ class MainActivity : AppCompatActivity() {
 
                     ConnectivityObserver.Status.Available -> {
                         if (sharedViewModel.isLoggedIn() && isUserInfoFailed && userSharedViewModel.userInfo == null)
-                            userSharedViewModel.getUserInfo()
+                            userSharedViewModel.getBasicInfo()
 
                         sharedViewModel.setNetworkStatus(true)
 
@@ -315,7 +315,7 @@ class MainActivity : AppCompatActivity() {
                 userInc.root.setVisibilityByCondition(!(response is NetworkResponse.Success && shouldShow))
             }
 
-            isUserInfoFailed = !(response !is NetworkResponse.Failure)
+            isUserInfoFailed = response is NetworkResponse.Failure
 
             if (response is NetworkResponse.Success) {
                 userSharedViewModel.userInfo = response.data.data
@@ -348,7 +348,7 @@ class MainActivity : AppCompatActivity() {
 
             if (it) {
                 if (userSharedViewModel.userInfo == null) {
-                    userSharedViewModel.getUserInfo()
+                    userSharedViewModel.getBasicInfo()
                 }
             } else {
                 userSharedViewModel.userInfo = null

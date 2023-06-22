@@ -8,6 +8,10 @@ class UserRepository @Inject constructor(
     private val userApiService: UserApiService,
 ) {
 
+    fun getBasicUserInfo() = networkResponseFlow {
+        userApiService.getBasicUserInfo()
+    }
+
     fun getUserInfo() = networkResponseFlow {
         userApiService.getUserInfo()
     }

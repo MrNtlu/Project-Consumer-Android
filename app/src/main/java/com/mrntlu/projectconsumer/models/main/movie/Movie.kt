@@ -11,7 +11,7 @@ import com.mrntlu.projectconsumer.models.common.Translation
 data class Movie(
     @SerializedName("_id")
     override val id: String,
-    override val description: String,
+    val description: String,
     val genres: List<TmdbGenre>,
     val streaming: List<Streaming>?,
     val actors: List<Actor>?,

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:shimmer_auto_start="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/shimmerProfileIV"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="55dp"
+            app:cardBackgroundColor="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/shimmerProfileUsernameTV"
+            android:layout_width="85dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerProfileIV"/>
+
+        <LinearLayout
+            android:id="@+id/profileLevelLayout"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerProfileUsernameTV">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/shimmerProfileLevelBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:indeterminate="false"
+                android:progress="35"
+                android:background="@color/shimmer_color"
+                app:indicatorColor="@color/shimmer_color"
+                app:trackCornerRadius="8dp"
+                app:trackThickness="5dp" />
+
+            <TextView
+                android:id="@+id/shimmerProfileLevelTV"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:background="@color/shimmer_color"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/shimmerProfileMyListButton"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
+
+        <Button
+            android:id="@+id/shimmeProfileDiaryButton"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
+            app:layout_constraintTop_toTopOf="@+id/shimmerProfileMyListButton" />
+
+        <TextView
+            android:id="@+id/shimmerMovieStatTV"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/shimmerTvStatTV"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerProfileMyListButton"/>
+
+        <TextView
+            android:id="@+id/shimmerTvStatTV"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toEndOf="@+id/shimmerMovieStatTV"
+            app:layout_constraintTop_toTopOf="@+id/shimmerMovieStatTV" />
+
+        <TextView
+            android:id="@+id/shimmerAnimeStatTV"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/shimmerGameStatTV"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
+            app:layout_constraintTop_toTopOf="@+id/shimmerMovieStatTV" />
+
+        <TextView
+            android:id="@+id/shimmerGameStatTV"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toEndOf="@+id/shimmerAnimeStatTV"
+            app:layout_constraintTop_toTopOf="@+id/shimmerMovieStatTV" />
+
+        <TextView
+            android:id="@+id/shimmerMovieStatTitleTV"
+            android:layout_width="30dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toEndOf="@+id/shimmerMovieStatTV"
+            app:layout_constraintStart_toStartOf="@+id/shimmerMovieStatTV"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerMovieStatTV" />
+
+        <TextView
+            android:id="@+id/shimmerTvStatTitleTV"
+            android:layout_width="30dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toEndOf="@+id/shimmerTvStatTV"
+            app:layout_constraintStart_toStartOf="@+id/shimmerTvStatTV"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerTvStatTV" />
+
+        <TextView
+            android:id="@+id/shimmerAnimeStatTitleTV"
+            android:layout_width="30dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toEndOf="@+id/shimmerAnimeStatTV"
+            app:layout_constraintStart_toStartOf="@+id/shimmerAnimeStatTV"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerAnimeStatTV" />
+
+        <TextView
+            android:id="@+id/shimmerGameStatTitleTV"
+            android:layout_width="30dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="6dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toEndOf="@+id/shimmerGameStatTV"
+            app:layout_constraintStart_toStartOf="@+id/shimmerGameStatTV"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerGameStatTV" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/textView20"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerMovieStatTitleTV" />
+
+        <TextView
+            android:id="@+id/textView20"
+            android:layout_width="170dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="48dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerMovieStatTitleTV" />
+
+        <View
+            android:id="@+id/shimmerLegendInfoButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintBottom_toBottomOf="@+id/textView20"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintTop_toTopOf="@+id/textView20" />
+
+        <View
+            android:id="@+id/shimmerProfileContentTabLayout"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:background="@color/shimmer_color"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+        <View
+            android:id="@+id/shimmerLegendContentRV"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/shimmer_color"
+            android:minHeight="350dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerProfileContentTabLayout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.facebook.shimmer.ShimmerFrameLayout>

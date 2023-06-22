@@ -5,7 +5,6 @@ abstract class ContentModel: DiffUtilComparison<ContentModel> {
     abstract val imageURL: String
     abstract val title: String
     abstract val titleOriginal: String
-    abstract val description: String
 
     override fun areItemsTheSame(newItem: ContentModel): Boolean {
         return id == newItem.id
@@ -17,7 +16,6 @@ abstract class ContentModel: DiffUtilComparison<ContentModel> {
             imageURL != newItem.imageURL -> false
             title != newItem.title -> false
             titleOriginal != newItem.titleOriginal -> false
-            description != newItem.description -> false
             else -> true
         }
     }

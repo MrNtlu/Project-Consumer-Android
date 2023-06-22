@@ -6,7 +6,7 @@ import com.mrntlu.projectconsumer.interfaces.ContentModel
 data class Anime(
     @SerializedName("_id")
     override val id: String,
-    override val description: String,
+    val description: String,
 
     @SerializedName("image_url")
     override val imageURL: String,

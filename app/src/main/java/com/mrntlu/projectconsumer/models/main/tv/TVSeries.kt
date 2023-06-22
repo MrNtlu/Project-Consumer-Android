@@ -11,7 +11,7 @@ import com.mrntlu.projectconsumer.models.common.Translation
 data class TVSeries(
     @SerializedName("_id")
     override val id: String,
-    override val description: String,
+    val description: String,
     val actors: List<Actor>?,
     val genres: List<TmdbGenre>,
     val networks: List<Network>?,

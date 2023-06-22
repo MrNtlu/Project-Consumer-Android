@@ -2,9 +2,7 @@ package com.mrntlu.projectconsumer.models.auth
 
 import com.google.gson.annotations.SerializedName
 
-data class User(
-//    val app_notification: Boolean,
-//    val mail_notification: Boolean,
+data class BasicUserInfo(
     @SerializedName("fcm_token")
     val fcmToken: String,
 

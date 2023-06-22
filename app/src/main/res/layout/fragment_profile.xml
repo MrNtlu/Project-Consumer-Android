@@ -33,27 +33,39 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
-        <ImageView
-            android:id="@+id/profileIV"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profileCV"
             android:layout_width="110dp"
             android:layout_height="110dp"
             android:layout_marginTop="16dp"
-            android:contentDescription="@string/profile_image_cd"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:cardCornerRadius="55dp">
+            <ImageView
+                android:id="@+id/profileIV"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:contentDescription="@string/profile_image_cd"
+                tools:src="@tools:sample/avatars" />
 
-        <ProgressBar
-            android:id="@+id/profileImageProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="?attr/mainTextColor"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/profileIV"
-            app:layout_constraintEnd_toEndOf="@+id/profileIV"
-            app:layout_constraintStart_toStartOf="@+id/profileIV"
-            app:layout_constraintTop_toTopOf="@+id/profileIV" />
+            <ImageView
+                android:id="@+id/profilePlaceHolderIV"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:tint="?attr/toolbarTintColor"
+                android:src="@drawable/ic_person_64"
+                android:visibility="gone"
+                android:contentDescription="@string/profile_image_cd" />
+
+            <ProgressBar
+                android:id="@+id/profileImageProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="?attr/mainTextColor"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/profileUsernameTV"
@@ -67,7 +79,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
-            app:layout_constraintTop_toBottomOf="@+id/profileIV"
+            app:layout_constraintTop_toBottomOf="@+id/profileCV"
             tools:text="MrNtlu" />
 
         <LinearLayout
@@ -154,10 +166,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:textColor="?attr/mainTextColor"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintEnd_toStartOf="@+id/animeStatTV"
             app:layout_constraintStart_toEndOf="@+id/movieStatTV"
             app:layout_constraintTop_toTopOf="@+id/movieStatTV"
             tools:text="200" />
@@ -166,12 +179,13 @@
             android:id="@+id/animeStatTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:textColor="?attr/mainTextColor"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/gameStatTV"
-            app:layout_constraintStart_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toEndOf="@+id/tvStatTV"
             app:layout_constraintTop_toTopOf="@+id/movieStatTV"
             tools:text="200" />
 
@@ -297,5 +311,34 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toBottomOf="@+id/profileContentTabLayout" />
+
+        <FrameLayout
+            android:id="@+id/loadingLayout"
+            android:elevation="9dp"
+            android:background="?attr/mainBackgroundColor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:visibility="gone">
+            <include
+                layout="@layout/layout_shimmer_profile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/errorLayout"
+            android:elevation="9dp"
+            android:background="?attr/mainBackgroundColor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:visibility="gone">
+            <include
+                android:id="@+id/errorLayoutInc"
+                layout="@layout/cell_error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
