@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -33,6 +33,22 @@
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.5" />
 
+        <Button
+            android:id="@+id/profileChangeImageButton"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-32dp"
+            android:layout_marginBottom="-12dp"
+            android:backgroundTint="?attr/subButtonBackgroundColor"
+            android:elevation="3dp"
+            app:icon="@drawable/ic_edit"
+            app:iconTint="@color/white"
+            android:padding="6dp"
+            android:minHeight="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/profileCV"
+            app:layout_constraintStart_toEndOf="@+id/profileCV" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/profileCV"
             android:layout_width="110dp"
@@ -41,6 +57,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toTopOf="parent"
+            app:cardElevation="2dp"
             app:cardCornerRadius="55dp">
             <ImageView
                 android:id="@+id/profileIV"
@@ -86,7 +103,7 @@
             android:id="@+id/profileLevelLayout"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
@@ -255,8 +272,10 @@
             app:layout_constraintTop_toBottomOf="@+id/gameStatTV" />
 
         <com.google.android.material.divider.MaterialDivider
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
             app:layout_constraintBottom_toTopOf="@+id/textView20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -266,10 +285,10 @@
             android:id="@+id/textView20"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="52dp"
             android:text="@string/profile_content_title"
             android:textColor="?attr/mainTextColor"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toBottomOf="@+id/movieStatTitleTV" />
@@ -281,6 +300,8 @@
             style="?attr/materialIconButtonStyle"
             app:icon="@drawable/ic_info_24"
             app:iconTint="?attr/mainTextColor"
+            android:padding="8dp"
+            android:minHeight="0dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView20"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintTop_toTopOf="@+id/textView20" />
@@ -307,38 +328,52 @@
             android:id="@+id/legendContentRV"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="64dp"
             android:minHeight="350dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toBottomOf="@+id/profileContentTabLayout" />
 
         <FrameLayout
             android:id="@+id/loadingLayout"
-            android:elevation="9dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="?attr/mainBackgroundColor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:elevation="9dp"
             android:fitsSystemWindows="true"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <include
                 layout="@layout/layout_shimmer_profile"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/errorLayout"
-            android:elevation="9dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="?attr/mainBackgroundColor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:elevation="9dp"
             android:fitsSystemWindows="true"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <include
                 android:id="@+id/errorLayoutInc"
                 layout="@layout/cell_error"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

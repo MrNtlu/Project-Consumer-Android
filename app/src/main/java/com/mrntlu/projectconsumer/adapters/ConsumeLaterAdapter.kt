@@ -68,7 +68,7 @@ class ConsumeLaterAdapter(
                 (holder as EmptyViewHolder).bind()
             }
             RecyclerViewEnum.Error.value -> {
-                (holder as ErrorViewHolderBind<ConsumeLaterResponse>).bind(errorMessage, interaction)
+                (holder as ErrorViewHolderBind<ConsumeLaterResponse>).bind(errorMessage, interaction, true)
             }
         }
     }

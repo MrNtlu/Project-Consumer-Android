@@ -5,7 +5,7 @@ interface ItemViewHolderBind<T> {
 }
 
 interface ErrorViewHolderBind<T> {
-    fun bind(errorMessage: String?, interaction: Interaction<T>)
+    fun bind(errorMessage: String?, interaction: Interaction<T>, shouldHideCancelButton: Boolean = false)
 }
 
 interface LoadingViewHolderBind {

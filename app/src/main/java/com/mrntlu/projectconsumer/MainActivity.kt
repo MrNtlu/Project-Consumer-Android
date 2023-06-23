@@ -41,10 +41,11 @@ import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
-import com.mrntlu.projectconsumer.utils.showInfoDialog
+import com.mrntlu.projectconsumer.utils.showNotificationInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.shared.ActivitySharedViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -308,8 +309,7 @@ class MainActivity : AppCompatActivity() {
             binding.apply {
                 val currentItem = navController.currentDestination?.id
                 val shouldShow = currentItem == R.id.navigation_home ||
-                        currentItem == R.id.navigation_discover ||
-                        currentItem == R.id.navigation_profile
+                        currentItem == R.id.navigation_discover
 
                 userLoadingProgressBar.setVisibilityByCondition(!(response == NetworkResponse.Loading && shouldShow))
                 userInc.root.setVisibilityByCondition(!(response is NetworkResponse.Success && shouldShow))
@@ -390,7 +390,7 @@ class MainActivity : AppCompatActivity() {
             } else if (shouldShowRequestPermissionRationale(POST_NOTIFICATIONS)) {
 
                 //TODO If no, save via pref and don't show again!
-                showInfoDialog("Enable notifications to receive personalized recommendations, updates, and news about movies, tv shows, games and anime.") {
+                showNotificationInfoDialog(getString(R.string.notification_permission_info)) {
                     requestPermissionLauncher.launch(POST_NOTIFICATIONS)
                 }
             } else {
@@ -403,8 +403,12 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             if (sharedViewModel.isLoggedIn()) {
                 anonymousInc.root.setGone()
-                userInc.root.setVisibilityByCondition(shouldHide)
                 userLoadingProgressBar.setGone()
+
+                if (userSharedViewModel.userInfo != null || sharedViewModel.isNetworkAvailable())
+                    userInc.root.setVisibilityByCondition(shouldHide)
+                else
+                    userInc.root.setGone()
             } else {
                 anonymousInc.root.setVisibilityByCondition(shouldHide)
                 userInc.root.setGone()

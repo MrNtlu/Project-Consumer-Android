@@ -63,7 +63,7 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun Context.showInfoDialog(message: String, onPositive: () -> Unit) {
+fun Context.showNotificationInfoDialog(message: String, onPositive: () -> Unit) {
     MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
         .setTitle(getString(R.string.info))
         .setMessage(message)
@@ -72,6 +72,16 @@ fun Context.showInfoDialog(message: String, onPositive: () -> Unit) {
             dialog.dismiss()
         }
         .setNegativeButton(getString(R.string.no_thanks_)) { dialog, _ ->
+            dialog.dismiss()
+        }
+        .show()
+}
+
+fun Context.showInfoDialog(message: String) {
+    MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
+        .setTitle(getString(R.string.info))
+        .setMessage(message)
+        .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
             dialog.dismiss()
         }
         .show()

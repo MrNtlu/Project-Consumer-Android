@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:shimmer_auto_start="true">
+    app:shimmer_auto_start="true"
+    app:shimmer_duration="2250">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -200,7 +201,7 @@
         <TextView
             android:id="@+id/textView20"
             android:layout_width="170dp"
-            android:layout_height="30dp"
+            android:layout_height="27dp"
             android:layout_marginTop="48dp"
             android:background="@color/shimmer_color"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
@@ -208,8 +209,8 @@
 
         <View
             android:id="@+id/shimmerLegendInfoButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
             android:background="@color/shimmer_color"
             app:layout_constraintBottom_toBottomOf="@+id/textView20"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"

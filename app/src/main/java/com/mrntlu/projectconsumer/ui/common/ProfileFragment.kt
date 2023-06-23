@@ -5,15 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.google.android.material.tabs.TabLayout
+import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.WindowSizeClass
+import com.mrntlu.projectconsumer.adapters.ContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentProfileBinding
+import com.mrntlu.projectconsumer.interfaces.ContentModel
+import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.auth.UserInfo
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,9 +36,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private val viewModel: ProfileViewModel by viewModels()
 
+    private var gridCount = 3
     private var isResponseFailed = false
     private var userInfo: UserInfo? = null
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
+    private var contentAdapter: ContentAdapter<ContentModel>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +62,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         setObservers()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        binding.loadingLayout.setVisible()
+        viewModel.getUserInfo()
+    }
+
     private fun setObservers() {
         if (!(viewModel.userInfoResponse.hasObservers() || viewModel.userInfoResponse.value is NetworkResponse.Success || viewModel.userInfoResponse.value is NetworkResponse.Loading))
             viewModel.getUserInfo()
@@ -59,10 +78,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 isResponseFailed = response is NetworkResponse.Failure
                 loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
+                legendContentRV.setVisibilityByCondition(response is NetworkResponse.Failure)
 
                 when(response) {
                     is NetworkResponse.Failure -> {
                         errorLayoutInc.apply {
+                            errorLayoutInc.cancelButton.setGone()
+
                             errorText.text = response.errorMessage
 
                             setListeners()
@@ -73,13 +95,37 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
                         setUI()
                         setListeners()
-                        setRecyclerView()
+                        contentAdapter?.setData(getLegendContentList())
                     }
                     else -> {}
                 }
             }
         }
+
+        sharedViewModel.windowSize.observe(viewLifecycleOwner) {
+            val widthSize: WindowSizeClass = it
+
+            gridCount = when(widthSize) {
+                WindowSizeClass.COMPACT -> 2
+                WindowSizeClass.MEDIUM -> 3
+                WindowSizeClass.EXPANDED -> 5
+            }
+
+            setRecyclerView()
+        }
+
+        sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
+            if (isResponseFailed && it)
+                viewModel.getUserInfo()
+        }
     }
+
+    private fun getLegendContentList() = when(contentType) {
+        Constants.ContentType.ANIME -> userInfo!!.legendAnimeList
+        Constants.ContentType.MOVIE -> userInfo!!.legendMovieList
+        Constants.ContentType.TV -> userInfo!!.legendTVList
+        Constants.ContentType.GAME -> userInfo!!.legendGameList
+    }.toCollection(ArrayList())
 
     private fun setUI() {
         userInfo?.let {
@@ -101,19 +147,30 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 animeStatTV.text = it.animeCount.toString()
 
                 profileContentTabLayout.apply {
-                    for (tab in Constants.TabList) {
-                        addTab(
-                            profileContentTabLayout.newTab().setText(tab),
-                            tab == contentType.value
-                        )
+                    if (profileContentTabLayout.tabCount < Constants.TabList.size) {
+                        for (tab in Constants.TabList) {
+                            addTab(
+                                profileContentTabLayout.newTab().setText(tab),
+                                tab == contentType.value
+                            )
+                        }
                     }
                 }
+
+
+                val levelStr = "${it.level} lv."
+                profileLevelBar.progress = it.level
+                profileLevelTV.text = levelStr
             }
         }
     }
 
     private fun setListeners() {
         binding.apply {
+            profileChangeImageButton.setOnClickListener {
+                //TODO BottomSheet
+            }
+
             profileMyListButton.setOnClickListener {
 
             }
@@ -123,7 +180,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
 
             legendInfoButton.setOnClickListener {
-
+                context?.showInfoDialog(getString(R.string.legend_content_info))
             }
 
             profileContentTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
@@ -144,7 +201,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                         else -> {}
                     }
 
-                    //Change recyclerview
+                    contentAdapter?.setLoadingView()
+                    contentAdapter?.setData(getLegendContentList())
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -155,7 +213,51 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun setRecyclerView() {
+        binding.legendContentRV.apply {
+            val gridLayoutManager = GridLayoutManager(this.context, gridCount)
 
+            gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    val itemViewType = contentAdapter?.getItemViewType(position)
+                    return if (
+                        itemViewType == RecyclerViewEnum.View.value ||
+                        itemViewType == RecyclerViewEnum.Loading.value
+                    ) 1 else gridCount
+                }
+            }
+
+            layoutManager = gridLayoutManager
+            contentAdapter = ContentAdapter(
+                gridCount = gridCount,
+                isDarkTheme = !sharedViewModel.isLightTheme(),
+                interaction = object: Interaction<ContentModel> {
+                    override fun onItemSelected(item: ContentModel, position: Int) {
+                        when(contentType) {
+                            Constants.ContentType.ANIME -> TODO()
+                            Constants.ContentType.MOVIE -> {
+                                val navWithAction = ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.id)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.TV -> {
+                                val navWithAction = ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.id)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.GAME -> TODO()
+                        }
+                    }
+
+                    override fun onErrorRefreshPressed() {
+                        viewModel.getUserInfo()
+                    }
+
+                    override fun onCancelPressed() {}
+
+                    override fun onExhaustButtonPressed() {}
+
+                }
+            )
+            adapter = contentAdapter
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -165,7 +267,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     override fun onDestroyView() {
-        viewModel.userInfoResponse.removeObservers(viewLifecycleOwner)
+        contentAdapter = null
+        viewLifecycleOwner.apply {
+            sharedViewModel.networkStatus.removeObservers(this)
+            sharedViewModel.windowSize.removeObservers(this)
+            viewModel.userInfoResponse.removeObservers(this)
+        }
 
         super.onDestroyView()
     }

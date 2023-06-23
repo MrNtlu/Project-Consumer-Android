@@ -36,4 +36,5 @@ data class UserInfo(
     val username: String,
     val email: String,
     val image: String?,
+    val level: Int,
 )

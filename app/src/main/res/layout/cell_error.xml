@@ -38,36 +38,39 @@
         app:layout_constraintVertical_bias="0.499"
         tools:text="Error" />
 
-    <Button
-        android:id="@+id/refreshButton"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:contentDescription="@string/refresh_cd"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="12dp"
-        android:scaleType="fitCenter"
-        android:text="@string/try_again"
-        android:textColor="@color/white"
-        app:icon="@drawable/ic_refresh"
-        app:iconPadding="4dp"
-        app:iconTint="@color/white"
-        app:iconSize="24dp"
-        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toBottomOf="@+id/errorText" />
-
-    <Button
-        android:id="@+id/cancelButton"
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/dismiss"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/guideline9"
-        app:layout_constraintTop_toTopOf="@+id/refreshButton" />
+        app:layout_constraintTop_toBottomOf="@+id/errorText">
+
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/refresh_cd"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="12dp"
+            android:scaleType="fitCenter"
+            android:text="@string/try_again"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:icon="@drawable/ic_refresh"
+            app:iconPadding="4dp"
+            app:iconSize="24dp"
+            app:iconTint="@color/white"/>
+
+        <Button
+            android:id="@+id/cancelButton"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/dismiss"
+            android:textSize="16sp"/>
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline9"
