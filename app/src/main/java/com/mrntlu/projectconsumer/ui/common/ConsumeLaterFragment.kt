@@ -7,6 +7,10 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.AbsListView
+import android.widget.AutoCompleteTextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -18,12 +22,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ConsumeLaterAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentListBinding
 import com.mrntlu.projectconsumer.interfaces.ConsumeLaterInteraction
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
+import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.MarkConsumeLaterBody
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
@@ -43,6 +49,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     private val viewModel: ConsumeLaterViewModel by viewModels()
 
+    private var scoreDialog: AlertDialog? = null
     private lateinit var dialog: LoadingDialog
     private lateinit var popupMenu: PopupMenu
     private lateinit var sortPopupMenu: PopupMenu
@@ -283,6 +290,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction{
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
                     val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
+
                     deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
                         when(response) {
                             is NetworkResponse.Failure -> {
@@ -306,7 +314,57 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                 }
 
                 override fun onAddToListPressed(item: ConsumeLaterResponse, position: Int) {
-                    TODO("Not yet implemented")
+                    activity?.let {
+                        val builder = AlertDialog.Builder(it, R.style.WrapContentDialog)
+
+                        builder.apply {
+                            val dialogView = it.layoutInflater.inflate(R.layout.layout_score_dialog, null)
+                            setView(dialogView)
+                            setCancelable(true)
+                            setPositiveButton(getString(R.string.save)) { sDialog, _ ->
+                                val moveConsumerLiveData = viewModel.moveConsumeLaterAsUserList(MarkConsumeLaterBody(
+                                    id = item.id,
+                                    score = dialogView.findViewById<AutoCompleteTextView>(R.id.scoreSelectionACTV).text.toString().toIntOrNull()
+                                ))
+
+                                moveConsumerLiveData.observe(viewLifecycleOwner) { response ->
+                                    when(response) {
+                                        is NetworkResponse.Failure -> {
+                                            if (::dialog.isInitialized)
+                                                dialog.dismissDialog()
+
+                                            context.showErrorDialog(response.errorMessage)
+                                        }
+                                        NetworkResponse.Loading -> {
+                                            if (::dialog.isInitialized)
+                                                dialog.showLoadingDialog()
+                                        }
+                                        is NetworkResponse.Success -> {
+                                            if (::dialog.isInitialized)
+                                                dialog.dismissDialog()
+
+                                            consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                        }
+                                    }
+                                }
+
+                                sDialog.dismiss()
+                            }
+                            setNegativeButton(getString(R.string.cancel)) { sDialog, _ ->
+                                sDialog.dismiss()
+                            }
+                            scoreDialog = create()
+                        }
+
+                        scoreDialog?.window?.setBackgroundDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.custom_popup_background))
+                        val layoutParams = WindowManager.LayoutParams().apply {
+                            copyFrom(scoreDialog?.window?.attributes)
+                            width = WindowManager.LayoutParams.WRAP_CONTENT
+                            height = WindowManager.LayoutParams.WRAP_CONTENT
+                        }
+                        scoreDialog?.window?.attributes = layoutParams
+                        scoreDialog?.show()
+                    }
                 }
 
                 override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {
@@ -339,6 +397,23 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                 }
             })
             adapter = consumeLaterAdapter
+
+            var isScrolling = false
+            addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    isScrolling = newState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if (isScrolling) {
+                        val centerScrollPosition = (linearLayout.findLastCompletelyVisibleItemPosition() + linearLayout.findFirstCompletelyVisibleItemPosition()) / 2
+                        viewModel.setScrollPosition(centerScrollPosition)
+                    }
+                }
+            })
         }
     }
 

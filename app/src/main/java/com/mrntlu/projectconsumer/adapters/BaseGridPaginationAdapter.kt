@@ -111,7 +111,8 @@ abstract class BaseGridPaginationAdapter<T>(open val interaction: Interaction<T>
 
                 handleDiffUtil(newList)
             }
-        }
+        } else if (arrayList.isEmpty() && newList.isEmpty())
+            notifyDataSetChanged()
     }
 
     private fun setState(rvEnum: RecyclerViewEnum) {

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
+import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.MarkConsumeLaterBody
 import com.mrntlu.projectconsumer.repository.UserInteractionRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
@@ -60,6 +61,20 @@ class ConsumeLaterViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun moveConsumeLaterAsUserList(body: MarkConsumeLaterBody): LiveData<NetworkResponse<MessageResponse>> {
+        val liveData = MutableLiveData<NetworkResponse<MessageResponse>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            userInteractionRepository.moveConsumeLaterAsUserList(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
     }
 
     fun deleteConsumeLater(body: IDBody): LiveData<NetworkResponse<MessageResponse>> {

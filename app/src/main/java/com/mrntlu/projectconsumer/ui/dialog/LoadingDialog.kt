@@ -10,7 +10,6 @@ import com.mrntlu.projectconsumer.R
 class LoadingDialog(
     private val activity: Activity
 ) {
-
     lateinit var dialog: AlertDialog
 
     fun showLoadingDialog() {

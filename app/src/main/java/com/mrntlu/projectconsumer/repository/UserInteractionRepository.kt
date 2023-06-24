@@ -6,6 +6,7 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterRespon
 import com.mrntlu.projectconsumer.models.main.userInteraction.mapper.asEntity
 import com.mrntlu.projectconsumer.models.main.userInteraction.mapper.asModel
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
+import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.MarkConsumeLaterBody
 import com.mrntlu.projectconsumer.service.retrofit.UserInteractionApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.UserInteractionDao
@@ -59,6 +60,10 @@ class UserInteractionRepository @Inject constructor(
 
     fun createConsumeLater(body: ConsumeLaterBody) = networkResponseFlow {
         userInteractionApiService.createConsumeLater(body)
+    }
+
+    fun moveConsumeLaterAsUserList(body: MarkConsumeLaterBody) = networkResponseFlow {
+        userInteractionApiService.moveConsumeLaterAsUserList(body)
     }
 
     fun deleteConsumeLater(body: IDBody) = networkResponseFlow {

@@ -7,6 +7,7 @@ import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
+import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.MarkConsumeLaterBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -18,6 +19,9 @@ import retrofit2.http.Query
 interface UserInteractionApiService {
     @POST("consume")
     suspend fun createConsumeLater(@Body body: ConsumeLaterBody): Response<DataResponse<ConsumeLater>>
+
+    @POST("consume/move")
+    suspend fun moveConsumeLaterAsUserList(@Body body: MarkConsumeLaterBody): Response<MessageResponse>
 
     @GET("consume")
     suspend fun getConsumeLater(

@@ -115,6 +115,7 @@
 
     <string name="notification_permission_info">Enable notifications to receive personalized recommendations, updates, and news about movies, tv shows, games and anime.</string>
     <string name="legend_content_info">Legend content refers to movies, animes, games and TV series that users have watched multiple times.</string>
+    <string name="move_consume_later_info">You\'ll move this content to your list and mark it as finished.</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -3,6 +3,7 @@
     <color name="profileButtonLight">#fffffbfe</color>
     <color name="profileButtonDark">#ff1c1b1f</color>
 
+    <color name="blueLight">#edf3fd</color>
     <color name="blue200">#90CAF9</color>
     <color name="blue300">#64B5F6</color>
     <color name="blue500">#2196F3</color>
