@@ -31,15 +31,28 @@ class ProfileImageAdapter: RecyclerView.Adapter<ProfileImageAdapter.ItemHolder>(
         }
 
         holder.binding.root.setOnClickListener {
-            val oldPosition = selectedItemIndex
-            selectedItemIndex = holder.adapterPosition
-
-            notifyItemChanged(oldPosition)
-            notifyItemChanged(selectedItemIndex)
+            onClick(holder.adapterPosition)
         }
     }
 
     fun getSelectedImage() = Constants.ProfileImageList[selectedItemIndex]
+
+    fun setSelectedImage(newImage: String) {
+        val index = Constants.ProfileImageList.indexOfFirst {
+            it == newImage
+        }
+
+        if (index >= 0 && index < Constants.ProfileImageList.size)
+            onClick(index)
+    }
+
+    private fun onClick(adapterPosition: Int) {
+        val oldPosition = selectedItemIndex
+        selectedItemIndex = adapterPosition
+
+        notifyItemChanged(oldPosition)
+        notifyItemChanged(selectedItemIndex)
+    }
 
     inner class ItemHolder(
         val binding: CellProfileImageBinding

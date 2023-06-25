@@ -34,10 +34,10 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/shimmerProfileIV"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="16dp"
-            app:cardCornerRadius="55dp"
+            app:cardCornerRadius="50dp"
             app:cardBackgroundColor="@color/shimmer_color"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"

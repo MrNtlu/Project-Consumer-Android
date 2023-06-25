@@ -111,7 +111,6 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
                 }
                 return true
             }
-
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 

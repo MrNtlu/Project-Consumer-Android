@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="profileButtonLight">#fffffbfe</color>
-    <color name="profileButtonDark">#ff1c1b1f</color>
+    <color name="profileButtonLight">#edf3fd</color>
+    <color name="profileButtonDark">#1c2129</color>
 
-    <color name="blueLight">#edf3fd</color>
+    <color name="blueLightAlt">#f3f5fd</color>
+
     <color name="blue200">#90CAF9</color>
     <color name="blue300">#64B5F6</color>
     <color name="blue500">#2196F3</color>

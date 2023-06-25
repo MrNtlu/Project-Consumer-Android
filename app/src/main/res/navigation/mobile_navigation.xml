@@ -70,6 +70,13 @@
         <argument
             android:name="movieId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_discoverListFragment"
+            app:destination="@id/discoverListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -222,6 +229,13 @@
         <argument
             android:name="tvId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_discoverListFragment"
+            app:destination="@id/discoverListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/tvListFragment"

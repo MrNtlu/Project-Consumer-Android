@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -14,16 +17,22 @@ import com.mrntlu.projectconsumer.databinding.FragmentProfileBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.auth.UserInfo
+import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.Operation
+import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.ProfileViewModel
+import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,12 +43,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private val viewModel: ProfileViewModel by viewModels()
+    private val userSharedViewModel: UserSharedViewModel by activityViewModels()
 
     private var gridCount = 3
     private var isResponseFailed = false
     private var userInfo: UserInfo? = null
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
     private var contentAdapter: ContentAdapter<ContentModel>? = null
+    private lateinit var dialog: LoadingDialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +62,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let {
+            dialog = LoadingDialog(it)
+        }
 
         savedInstanceState?.let {
             contentType = Constants.ContentType.fromStringValue(
@@ -137,8 +151,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     centerCrop()
                 }
 
-                val username = "@${it.username}"
-                profileUsernameTV.text = username
+                profileUsernameTV.text = it.username
 
                 movieStatTV.text = it.movieCount.toString()
                 tvStatTV.text = it.tvCount.toString()
@@ -167,7 +180,32 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private fun setListeners() {
         binding.apply {
             profileChangeImageButton.setOnClickListener {
-                //TODO BottomSheet
+                activity?.let {
+                    val bottomSheet = ProfileEditBottomSheet(userInfo?.image ?: "") { image ->
+                        userSharedViewModel.updateUserImage(UpdateUserImageBody(image)).observe(viewLifecycleOwner) { response ->
+                            when(response) {
+                                is NetworkResponse.Failure -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    context?.showErrorDialog(response.errorMessage)
+                                }
+                                NetworkResponse.Loading -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.showLoadingDialog()
+                                }
+                                is NetworkResponse.Success -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    userSharedViewModel.getBasicInfo()
+                                    viewModel.getUserInfo()
+                                }
+                            }
+                        }
+                    }
+                    bottomSheet.show(it.supportFragmentManager, ProfileEditBottomSheet.TAG)
+                }
             }
 
             profileMyListButton.setOnClickListener {

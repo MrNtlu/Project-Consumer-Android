@@ -30,9 +30,9 @@ import com.mrntlu.projectconsumer.models.main.tv.TVSeriesDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -292,7 +292,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(tvDetails!!.genres.map { it.name }) {
-                    printLog("Genre ${tvDetails!!.genres[it]}")
+                    val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToDiscoverListFragment(Constants.ContentType.TV, tvDetails?.genres?.get(it)?.name)
+                    navController.navigate(navWithAction)
                 }
                 adapter = genreAdapter
             }

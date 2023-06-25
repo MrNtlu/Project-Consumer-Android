@@ -28,6 +28,7 @@ import com.mrntlu.projectconsumer.models.main.movie.MovieDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.printLog
@@ -325,7 +326,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(movieDetails!!.genres.map { it.name }) {
-                    printLog("Genre ${movieDetails!!.genres[it]}")
+                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it)?.name)
+                    navController.navigate(navWithAction)
                 }
                 adapter = genreAdapter
             }

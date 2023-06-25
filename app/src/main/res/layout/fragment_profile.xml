@@ -41,7 +41,7 @@
             android:layout_marginStart="-32dp"
             android:layout_marginBottom="-12dp"
             android:backgroundTint="?attr/subButtonBackgroundColor"
-            android:elevation="3dp"
+            android:elevation="7dp"
             app:icon="@drawable/ic_edit"
             app:iconTint="@color/white"
             android:padding="6dp"
@@ -51,18 +51,18 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/profileCV"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toTopOf="parent"
-            app:cardElevation="2dp"
-            app:cardCornerRadius="55dp">
+            app:cardElevation="6dp"
+            app:cardCornerRadius="50dp">
             <ImageView
                 android:id="@+id/profileIV"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:contentDescription="@string/profile_image_cd"
                 tools:src="@tools:sample/avatars" />
 
@@ -276,6 +276,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
             android:layout_marginEnd="3dp"
+            app:dividerColor="?attr/profileButtonTint"
             app:layout_constraintBottom_toTopOf="@+id/textView20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
