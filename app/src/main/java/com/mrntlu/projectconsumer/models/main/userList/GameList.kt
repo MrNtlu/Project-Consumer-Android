@@ -6,21 +6,36 @@ data class GameList(
     @SerializedName("_id")
     val id: String,
 
-    @SerializedName("game_id")
-    val gameId: String,
+    @SerializedName("content_status")
+    val contentStatus: String,
 
-    @SerializedName("game_rawg_id")
-    val gameRawgId: String,
+    val score: Int?,
 
     @SerializedName("achievement_status")
     val achievementStatus: Float?,
 
-    @SerializedName("times_finished")
-    val timesFinished: Int,
-
     @SerializedName("hours_played")
     val hoursPlayer: Int?,
 
-    val score: Int?,
-    val status: String
+    @SerializedName("times_finished")
+    val timesFinished: Int,
+
+    @SerializedName("game_id")
+    val gameId: String,
+
+    @SerializedName("rawg_id")
+    val gameRawgId: String,
+
+    val status: String,
+
+    @SerializedName("title")
+    val title: String,
+
+    @SerializedName("title_original")
+    val titleOriginal: String,
+
+    @SerializedName("image_url")
+    val imageUrl: String?,
+
+    val tba: Boolean,
 )

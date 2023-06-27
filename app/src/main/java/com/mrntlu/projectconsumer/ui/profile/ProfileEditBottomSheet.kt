@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui.common
+package com.mrntlu.projectconsumer.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mrntlu.projectconsumer.adapters.ProfileImageAdapter
 import com.mrntlu.projectconsumer.databinding.LayoutEditProfileBottomSheetBinding
 import com.mrntlu.projectconsumer.utils.Constants
-import dagger.hilt.android.AndroidEntryPoint
 
 class ProfileEditBottomSheet(
     private val selectedImage: String,

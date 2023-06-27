@@ -39,7 +39,6 @@ import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.ConsumeLaterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -167,7 +166,6 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
                                 item.isChecked = true
 
-                                printLog("Sort $newSortType")
                                 if (newSortType != viewModel.sort) {
                                     viewModel.setSort(newSortType)
                                     viewModel.getConsumeLater()
@@ -415,6 +413,11 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                 }
             })
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.didOrientationChange = true
     }
 
     override fun onDestroyView() {

@@ -1,14 +1,12 @@
-package com.mrntlu.projectconsumer.ui.common
+package com.mrntlu.projectconsumer.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -22,8 +20,6 @@ import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.Operation
-import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -31,7 +27,7 @@ import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
-import com.mrntlu.projectconsumer.viewmodels.main.ProfileViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -169,7 +165,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     }
                 }
 
-
                 val levelStr = "${it.level} lv."
                 profileLevelBar.progress = it.level
                 profileLevelTV.text = levelStr
@@ -209,7 +204,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
 
             profileMyListButton.setOnClickListener {
-
+                navController.navigate(R.id.action_navigation_profile_to_userListFragment)
             }
 
             profileDiaryButton.setOnClickListener {
@@ -272,11 +267,17 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                         when(contentType) {
                             Constants.ContentType.ANIME -> TODO()
                             Constants.ContentType.MOVIE -> {
-                                val navWithAction = ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.id)
+                                val navWithAction =
+                                    ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(
+                                        item.id
+                                    )
                                 navController.navigate(navWithAction)
                             }
                             Constants.ContentType.TV -> {
-                                val navWithAction = ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.id)
+                                val navWithAction =
+                                    ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(
+                                        item.id
+                                    )
                                 navController.navigate(navWithAction)
                             }
                             Constants.ContentType.GAME -> TODO()

@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.common.DiscoverFragment"
+    tools:context=".ui.discover.DiscoverFragment"
     android:id="@+id/discoverScrollView"
     android:fillViewport="true"
     android:background="?attr/mainBackgroundColor">

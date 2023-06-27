@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/statusColor"
+        android:layout_width="5dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="?attr/statusActiveColor" />
+
+    <include
+        android:id="@+id/imageInclude"
+        layout="@layout/cell_preview_item"
+        android:layout_width="wrap_content"
+        android:layout_height="115dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/statusColor"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/titleTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="textStart"
+        android:textColor="?attr/mainTextColor"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/userListButton"
+        app:layout_constraintStart_toEndOf="@+id/imageInclude"
+        app:layout_constraintTop_toTopOf="@+id/imageInclude"
+        tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
+
+    <Button
+        android:id="@+id/userListButton"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/more_cd"
+        android:padding="6dp"
+        app:icon="@drawable/ic_more"
+        app:iconTint="?attr/mainTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageInclude" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/contentProgress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="6dp"
+        android:layout_weight="1"
+        android:indeterminate="false"
+        app:indicatorColor="?attr/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/scoreStarIV"
+        app:layout_constraintEnd_toEndOf="@+id/userListButton"
+        app:layout_constraintStart_toStartOf="@+id/titleTV"
+        app:trackColor="?attr/levelTrackTint"
+        app:trackCornerRadius="5dp"
+        app:trackThickness="10dp"
+        tools:max="12"
+        tools:progress="3" />
+
+    <ImageView
+        android:id="@+id/scoreStarIV"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_star_36"
+        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
+        app:layout_constraintStart_toStartOf="@+id/titleTV"
+        app:tint="#F5C518" />
+
+    <TextView
+        android:id="@+id/scoreTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:textColor="?attr/mainTextColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/scoreStarIV"
+        app:layout_constraintStart_toEndOf="@+id/scoreStarIV"
+        app:layout_constraintTop_toTopOf="@+id/scoreStarIV"
+        tools:text="4" />
+
+    <TextView
+        android:id="@+id/totalEpisodeTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/mainTextColor"
+        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
+        app:layout_constraintEnd_toEndOf="@+id/contentProgress"
+        tools:text="/? eps" />
+
+    <TextView
+        android:id="@+id/watchedEpisodeTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:textColor="?attr/mainTextColor"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
+        app:layout_constraintEnd_toStartOf="@+id/totalEpisodeTV"
+        tools:text="13" />
+
+    <TextView
+        android:id="@+id/totalSeasonTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textColor="?attr/mainTextColor"
+        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
+        app:layout_constraintEnd_toStartOf="@+id/watchedEpisodeTV"
+        tools:text="/10 season" />
+
+    <TextView
+        android:id="@+id/watchedSeasonTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:textColor="?attr/mainTextColor"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
+        app:layout_constraintEnd_toStartOf="@+id/totalSeasonTV"
+        tools:text="7" />
+</androidx.constraintlayout.widget.ConstraintLayout>

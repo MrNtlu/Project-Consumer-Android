@@ -172,7 +172,7 @@
 
     <fragment
         android:id="@+id/navigation_discover"
-        android:name="com.mrntlu.projectconsumer.ui.common.DiscoverFragment"
+        android:name="com.mrntlu.projectconsumer.ui.discover.DiscoverFragment"
         android:label="fragment_discover"
         tools:layout="@layout/fragment_discover" >
         <action
@@ -193,7 +193,7 @@
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.mrntlu.projectconsumer.ui.common.ProfileFragment"
+        android:name="com.mrntlu.projectconsumer.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -206,6 +206,13 @@
         <action
             android:id="@+id/action_navigation_profile_to_tvDetailsFragment"
             app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_profile_to_userListFragment"
+            app:destination="@id/userListFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -276,7 +283,7 @@
     </fragment>
     <fragment
         android:id="@+id/discoverListFragment"
-        android:name="com.mrntlu.projectconsumer.ui.common.DiscoverListFragment"
+        android:name="com.mrntlu.projectconsumer.ui.discover.DiscoverListFragment"
         android:label="fragment_discover_list"
         tools:layout="@layout/fragment_list" >
         <argument
@@ -310,5 +317,10 @@
         app:exitAnim="@anim/slide_out_left"
         app:popEnterAnim="@anim/slide_in_left"
         app:popExitAnim="@anim/slide_out_right"/>
+    <fragment
+        android:id="@+id/userListFragment"
+        android:name="com.mrntlu.projectconsumer.ui.profile.UserListFragment"
+        android:label="UserListFragment"
+        tools:layout="@layout/fragment_user_list" />
 
 </navigation>

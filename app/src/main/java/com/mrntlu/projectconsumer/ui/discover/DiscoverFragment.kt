@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui.common
+package com.mrntlu.projectconsumer.ui.discover
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
@@ -154,16 +154,18 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
         gridAdapter = GridAdapter(
             requireContext(), list,
             onDiscoveryClicked = {
-                val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
-                    contentType, null
-                )
+                val navWithAction =
+                    DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
+                        contentType, null
+                    )
 
                 navController.navigate(navWithAction)
             },
             onGenreClicked = {
-                val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
-                    contentType, it
-                )
+                val navWithAction =
+                    DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
+                        contentType, it
+                    )
 
                 navController.navigate(navWithAction)
             }

@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui.common
+package com.mrntlu.projectconsumer.ui.discover
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,7 +29,7 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
-import com.mrntlu.projectconsumer.viewmodels.main.DiscoverListViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.discover.DiscoverListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -182,8 +182,12 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
                     override fun onItemSelected(item: ContentModel, position: Int) {
                          val navWithAction = when(args.contentType) {
                             Constants.ContentType.ANIME -> TODO()
-                            Constants.ContentType.MOVIE -> DiscoverListFragmentDirections.actionDiscoverListFragmentToMovieDetailsFragment(item.id)
-                            Constants.ContentType.TV -> DiscoverListFragmentDirections.actionDiscoverListFragmentToTvDetailsFragment(item.id)
+                            Constants.ContentType.MOVIE -> DiscoverListFragmentDirections.actionDiscoverListFragmentToMovieDetailsFragment(
+                                item.id
+                            )
+                            Constants.ContentType.TV -> DiscoverListFragmentDirections.actionDiscoverListFragmentToTvDetailsFragment(
+                                item.id
+                            )
                             Constants.ContentType.GAME -> TODO()
                         }
 

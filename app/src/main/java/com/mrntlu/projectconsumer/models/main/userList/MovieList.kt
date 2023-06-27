@@ -2,7 +2,7 @@ package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
 
-data class AnimeList(
+data class MovieList(
     @SerializedName("_id")
     val id: String,
 
@@ -14,14 +14,11 @@ data class AnimeList(
     @SerializedName("times_finished")
     val timesFinished: Int,
 
-    @SerializedName("watched_episodes")
-    val watchedEpisodes: Int,
+    @SerializedName("movie_id")
+    val movieId: String,
 
-    @SerializedName("anime_id")
-    val animeId: String,
-
-    @SerializedName("mal_id")
-    val animeMALId: String,
+    @SerializedName("tmdb_id")
+    val movieTmdbId: String,
 
     val status: String,
 
@@ -33,12 +30,4 @@ data class AnimeList(
 
     @SerializedName("image_url")
     val imageUrl: String?,
-
-    @SerializedName("total_episodes")
-    val totalEpisodes: Int?,
-
-    val type: String,
-
-    @SerializedName("is_airing")
-    val isAiring: Boolean,
 )

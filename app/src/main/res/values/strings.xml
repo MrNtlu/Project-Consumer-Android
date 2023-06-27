@@ -118,6 +118,7 @@
     <string name="move_consume_later_info">You\'ll move this content to your list and mark it as finished.</string>
     <string name="reset">Reset</string>
     <string name="apply">Apply</string>
+    <string name="more_cd">More</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

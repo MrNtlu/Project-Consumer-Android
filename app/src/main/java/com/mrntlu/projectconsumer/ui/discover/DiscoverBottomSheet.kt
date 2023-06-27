@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui.common
+package com.mrntlu.projectconsumer.ui.discover
 
 import android.os.Bundle
 import android.view.LayoutInflater

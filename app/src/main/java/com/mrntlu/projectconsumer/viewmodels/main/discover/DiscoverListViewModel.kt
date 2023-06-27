@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.viewmodels.main
+package com.mrntlu.projectconsumer.viewmodels.main.discover
 
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory

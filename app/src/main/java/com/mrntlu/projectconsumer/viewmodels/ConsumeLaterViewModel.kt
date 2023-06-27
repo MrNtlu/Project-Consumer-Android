@@ -35,16 +35,15 @@ class ConsumeLaterViewModel @Inject constructor(
 
     // Process Death variables
     var isRestoringData = false
-
-    // Variable for detecting orientation change
-    var didOrientationChange = false
-
     var sort: String = savedStateHandle[CONSUME_LATER_SORT_KEY] ?: Constants.SortConsumeLaterRequests[0].request
         private set
     var filter: String? = savedStateHandle[CONSUME_LATER_FILTER_KEY]
         private set
     var scrollPosition: Int = savedStateHandle[CONSUME_LATER_SCROLL_POSITION_KEY] ?: 0
         private set
+
+    // Variable for detecting orientation change
+    var didOrientationChange = false
 
     init {
         if (scrollPosition != 0)

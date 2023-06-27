@@ -229,6 +229,8 @@ class ConsumeLaterAdapter(
                     previewIV.loadWithGlide(item.content.imageURL, previewCard, previewComposeView) {
                         transform(RoundedCorners(12))
                     }
+
+                    previewTV.text = item.content.titleOriginal
                 }
 
                 titleTV.text = item.content.titleOriginal

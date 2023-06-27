@@ -19,15 +19,6 @@
 
 # [Wiki Page](https://github.com/MrNtlu/Project-Consumer)
 
-## Design TODO
-
-* Main Screen
-  * If not logged in same as now
-  * If logged in https://dribbble.com/shots/21244070-Movie-Streaming-App
-    * Like the design, combine all in home.
-    * Search will act like discovery. Genres should be there.
-    * BottomNav (Home, Search, List, Profile)
-
 ## Level
 
 - No Max Level

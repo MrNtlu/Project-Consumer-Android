@@ -22,5 +22,5 @@ data class TVSeriesWatchList(
     val watchedSeasons: Int,
 
     val score: Int?,
-    val status: String
+    val status: String,
 )
