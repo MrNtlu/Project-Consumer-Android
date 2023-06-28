@@ -1,44 +1,47 @@
 package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.UserListContentModel
 
 data class AnimeList(
     @SerializedName("_id")
-    val id: String,
+    override val id: String,
 
     @SerializedName("content_status")
-    val contentStatus: String,
+    override val contentStatus: String,
 
-    val score: Int?,
+    override val score: Int?,
 
     @SerializedName("times_finished")
-    val timesFinished: Int,
+    override val timesFinished: Int,
 
     @SerializedName("watched_episodes")
-    val watchedEpisodes: Int,
+    override val watchedEpisodes: Int,
+
+    override val watchedSeasons: Int? = null,
 
     @SerializedName("anime_id")
-    val animeId: String,
+    override val contentId: String,
 
     @SerializedName("mal_id")
-    val animeMALId: String,
+    override val contentExternalId: String,
 
     val status: String,
 
     @SerializedName("title_en")
-    val titleEn: String,
+    override val title: String,
 
     @SerializedName("title_original")
-    val titleOriginal: String,
+    override val titleOriginal: String,
 
     @SerializedName("image_url")
-    val imageUrl: String?,
+    override val imageUrl: String?,
 
     @SerializedName("total_episodes")
-    val totalEpisodes: Int?,
+    override val totalEpisodes: Int?,
 
     val type: String,
 
     @SerializedName("is_airing")
     val isAiring: Boolean,
-)
+): UserListContentModel()

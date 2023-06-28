@@ -6,13 +6,24 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.adapters.viewholders.EmptyViewHolder
+import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
+import com.mrntlu.projectconsumer.databinding.CellEmptyBinding
+import com.mrntlu.projectconsumer.databinding.CellErrorBinding
 import com.mrntlu.projectconsumer.databinding.CellUserListBinding
+import com.mrntlu.projectconsumer.databinding.CellUserListLoadingBinding
+import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
+import com.mrntlu.projectconsumer.interfaces.UserListInteraction
+import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -21,7 +32,7 @@ import com.mrntlu.projectconsumer.utils.setVisible
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
 class UserListAdapter(
-
+    val interaction: UserListInteraction,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
     var isLoading = true
@@ -29,8 +40,23 @@ class UserListAdapter(
     private lateinit var userList: UserList
     var contentType: Constants.ContentType = Constants.ContentType.MOVIE
 
+    private fun handleDiffUtil(newList: ArrayList<ConsumeLaterResponse>) {
+        val diffUtil = DiffUtilCallback(
+            arrayList,
+            newList
+        )
+        val diffResults = DiffUtil.calculateDiff(diffUtil, true)
+
+        arrayList = newList.toCollection(ArrayList())
+
+        diffResults.dispatchUpdatesTo(this)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
+            RecyclerViewEnum.Empty.value -> EmptyViewHolder(CellEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.Error.value -> ErrorViewHolder<UserList>(CellErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.Loading.value -> LoadingViewHolder(CellUserListLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> return ItemViewHolder(CellUserListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
@@ -40,13 +66,8 @@ class UserListAdapter(
             RecyclerViewEnum.View.value -> {
                 (holder as ItemViewHolder).bind(contentType, userList, position)
             }
-            RecyclerViewEnum.Empty.value -> {
-                //TODO Empty view
-//                (holder as EmptyViewHolder).bind()
-            }
             RecyclerViewEnum.Error.value -> {
-                //TODO Error view
-//                (holder as ErrorViewHolderBind<ConsumeLaterResponse>).bind(errorMessage, interaction, true)
+                (holder as ErrorViewHolderBind<UserList>).bind(errorMessage, interaction, true)
             }
         }
     }
@@ -107,6 +128,8 @@ class UserListAdapter(
     }
 
     //TODO Search & Handle Interaction
+
+    inner class LoadingViewHolder(binding: CellUserListLoadingBinding): RecyclerView.ViewHolder(binding.root)
 
     inner class ItemViewHolder(
         private val binding: CellUserListBinding,
@@ -182,6 +205,13 @@ class UserListAdapter(
                     previewTV.text = title
                 }
 
+                val attrColor = when(contentStatus) {
+                    Constants.UserListStatus[0].request -> R.attr.statusActiveColor
+                    Constants.UserListStatus[1].request -> R.attr.statusFinishedColor
+                    else -> R.attr.statusDroppedColor
+                }
+
+                statusColor.dividerColor = root.context.getColorFromAttr(attrColor)
                 titleTV.text = title
 
                 contentProgress.apply {
@@ -217,7 +247,7 @@ class UserListAdapter(
                         val hoursPlayedStr = "hours played"
                         totalEpisodeTV.text = hoursPlayedStr
 
-                        watchedEpisodeTV.text = userList.gameList[position].hoursPlayer?.toString() ?: "?"
+                        watchedEpisodeTV.text = userList.gameList[position].hoursPlayed?.toString() ?: "?"
                     }
                     else -> {
                         val totalEpsStr = "/${totalEps ?: "?"} eps"

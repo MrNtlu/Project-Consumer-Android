@@ -15,7 +15,7 @@ data class GameList(
     val achievementStatus: Float?,
 
     @SerializedName("hours_played")
-    val hoursPlayer: Int?,
+    val hoursPlayed: Int?,
 
     @SerializedName("times_finished")
     val timesFinished: Int,
