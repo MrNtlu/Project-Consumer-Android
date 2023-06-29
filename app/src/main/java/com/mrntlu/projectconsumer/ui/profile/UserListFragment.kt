@@ -16,8 +16,14 @@ import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.adapters.UserListAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentUserListBinding
+import com.mrntlu.projectconsumer.interfaces.UserListInteraction
+import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
@@ -29,12 +35,20 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
+    private companion object {
+        private const val KEY_VALUE = "content_type"
+    }
+
     private val viewModel: UserListViewModel by viewModels()
 
     private var searchQuery: String? = null
+    private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
+
     private lateinit var dialog: LoadingDialog
     private lateinit var popupMenu: PopupMenu
     private lateinit var sortPopupMenu: PopupMenu
+
+    private var userListAdapter: UserListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,35 +58,132 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         return binding.root
     }
 
+    //TODO Add content status, right now there is only colors for the indication.
+    //TODO Increment button for tv series(season + episode) and anime.
+    //TODO Menu set status quick menu, open dialog let them select and save.
+    //TODO This can be expanded into status + score and implement it to consume later too.
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.let {
             dialog = LoadingDialog(it)
         }
 
-        setObservers()
+        savedInstanceState?.let {
+            contentType = Constants.ContentType.fromStringValue(
+                it.getString(KEY_VALUE, Constants.ContentType.MOVIE.value)
+            )
+        }
+
+        setUI()
         setMenu()
+        setListeners()
+        setRecyclerView()
+        setObservers()
     }
 
     private fun setUI() {
         binding.apply {
+            userListTabLayout.apply {
+                if (userListTabLayout.tabCount < Constants.TabList.size) {
+                    for (tab in Constants.TabList) {
+                        addTab(
+                            userListTabLayout.newTab().setText(tab),
+                            tab == contentType.value
+                        )
+                    }
+                }
+            }
+        }
+    }
 
+    private fun setListeners() {
+        binding.apply {
+            userListTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    when(tab?.position) {
+                        0 -> {
+                            contentType = Constants.ContentType.MOVIE
+                        }
+                        1 -> {
+                            contentType = Constants.ContentType.TV
+                        }
+                        2 -> {
+                            contentType = Constants.ContentType.ANIME
+                        }
+                        3 -> {
+                            contentType = Constants.ContentType.GAME
+                        }
+                        else -> {}
+                    }
+
+                    userListAdapter?.changeContentType(contentType)
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
         }
     }
 
     private fun setRecyclerView() {
         binding.userListRV.apply {
+            val linearLayout = LinearLayoutManager(context)
+            layoutManager = linearLayout
 
+            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL))
+
+            userListAdapter = UserListAdapter(object: UserListInteraction {
+                override fun onDeletePressed(
+                    item: UserList,
+                    contentType: Constants.ContentType,
+                    position: Int
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onUpdatePressed(
+                    item: UserList,
+                    contentType: Constants.ContentType,
+                    position: Int
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onDetailsPressed(
+                    item: UserList,
+                    contentType: Constants.ContentType,
+                    position: Int
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onItemSelected(item: UserList, position: Int) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onErrorRefreshPressed() {
+                    viewModel.getUserList()
+                }
+
+                override fun onCancelPressed() {
+                    navController.popBackStack()
+                }
+
+                override fun onExhaustButtonPressed() {}
+            })
+            adapter = userListAdapter
         }
     }
 
     private fun setObservers() {
         viewModel.userList.observe(viewLifecycleOwner) { response ->
             when(response) {
-                is NetworkResponse.Failure -> TODO()
-                NetworkResponse.Loading -> TODO()
+                is NetworkResponse.Failure -> userListAdapter?.setErrorView(response.errorMessage)
+                NetworkResponse.Loading -> userListAdapter?.setLoadingView()
                 is NetworkResponse.Success -> {
-
+                    userListAdapter?.setData(response.data.data)
                 }
             }
         }
@@ -249,12 +360,15 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         viewModel.didOrientationChange = true
+
+        outState.putString(KEY_VALUE, contentType.value)
     }
 
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
             viewModel.userList.removeObservers(this)
         }
+        userListAdapter = null
         super.onDestroyView()
     }
 }

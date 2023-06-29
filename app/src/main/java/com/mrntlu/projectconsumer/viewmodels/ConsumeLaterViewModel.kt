@@ -29,7 +29,7 @@ const val CONSUME_LATER_FILTER_KEY = "rv.cl.scroll_position"
 class ConsumeLaterViewModel @Inject constructor(
     private val userInteractionRepository: UserInteractionRepository,
     private val savedStateHandle: SavedStateHandle,
-): ViewModel(){
+): ViewModel() {
     private val _consumeLaterList = MutableLiveData<NetworkListResponse<List<ConsumeLaterResponse>>>()
     val consumeLaterList: LiveData<NetworkListResponse<List<ConsumeLaterResponse>>> = _consumeLaterList
 

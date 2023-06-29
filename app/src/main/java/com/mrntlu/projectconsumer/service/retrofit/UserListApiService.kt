@@ -2,7 +2,6 @@ package com.mrntlu.projectconsumer.service.retrofit
 
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
-import com.mrntlu.projectconsumer.models.common.retrofit.SortBody
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 import com.mrntlu.projectconsumer.models.main.userList.UserList
@@ -17,11 +16,11 @@ import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface UserListApiService {
-
     @GET("list")
-    suspend fun getUserList(@Body body: SortBody): Response<DataResponse<UserList>>
+    suspend fun getUserList(@Query("sort") sort: String): Response<DataResponse<UserList>>
 
     @POST("list/movie")
     suspend fun createMovieWatchList(@Body body: MovieWatchListBody): Response<DataResponse<MovieWatchList>>

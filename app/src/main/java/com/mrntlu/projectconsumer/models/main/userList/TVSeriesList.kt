@@ -1,45 +1,54 @@
 package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.UserListContentModel
 
 data class TVSeriesList(
     @SerializedName("_id")
-    val id: String,
+    override val id: String,
 
     @SerializedName("content_status")
-    val contentStatus: String,
+    override val contentStatus: String,
 
-    val score: Int?,
-
-    @SerializedName("watched_episodes")
-    val watchedEpisodes: Int,
-
-    @SerializedName("watched_seasons")
-    val watchedSeasons: Int,
+    override val score: Int?,
 
     @SerializedName("times_finished")
-    val timesFinished: Int,
+    override val timesFinished: Int,
+
+    @SerializedName("watched_episodes")
+    override val mainAttribute: Int?,
+
+    @SerializedName("watched_seasons")
+    override val watchedSeasons: Int?,
 
     @SerializedName("tv_id")
-    val tvId: String,
+    override val contentId: String,
 
     @SerializedName("tmdb_id")
-    val tvTmdbId: String,
-
-    val status: String,
+    override val contentExternalId: String,
 
     @SerializedName("title_en")
-    val titleEn: String,
+    override val title: String,
 
     @SerializedName("title_original")
-    val titleOriginal: String,
+    override val titleOriginal: String,
 
     @SerializedName("image_url")
-    val imageUrl: String?,
+    override val imageUrl: String?,
 
     @SerializedName("total_episodes")
-    val totalEpisodes: Int?,
+    override val totalEpisodes: Int?,
 
     @SerializedName("total_seasons")
-    val totalSeasons: Int?,
-)
+    override val totalSeasons: Int?,
+): UserListContentModel()
+
+fun UserListContentModel.convertToTVSeriesList(): TVSeriesList {
+    return this.run {
+        TVSeriesList(
+            id, contentStatus, score, timesFinished, mainAttribute,
+            watchedSeasons, contentId, contentExternalId, title, titleOriginal,
+            imageUrl, totalEpisodes, totalSeasons,
+        )
+    }
+}

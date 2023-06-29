@@ -72,7 +72,6 @@
             android:progress="35"
             app:trackCornerRadius="5dp"
             app:trackThickness="10dp"
-            android:background="@color/shimmer_color"
             app:indicatorColor="@color/shimmer_color"/>
 
         <ImageView

@@ -16,17 +16,13 @@ data class AnimeList(
     override val timesFinished: Int,
 
     @SerializedName("watched_episodes")
-    override val watchedEpisodes: Int,
-
-    override val watchedSeasons: Int? = null,
+    override val mainAttribute: Int,
 
     @SerializedName("anime_id")
     override val contentId: String,
 
     @SerializedName("mal_id")
     override val contentExternalId: String,
-
-    val status: String,
 
     @SerializedName("title_en")
     override val title: String,
@@ -40,8 +36,16 @@ data class AnimeList(
     @SerializedName("total_episodes")
     override val totalEpisodes: Int?,
 
-    val type: String,
-
-    @SerializedName("is_airing")
-    val isAiring: Boolean,
+    override val totalSeasons: Int? = null,
+    override val watchedSeasons: Int? = null,
 ): UserListContentModel()
+
+fun UserListContentModel.convertToAnimeList(): AnimeList {
+    return this.run {
+        AnimeList(
+            id, contentStatus, score, timesFinished,
+            mainAttribute!!, contentId, contentExternalId, title,
+            titleOriginal, imageUrl, totalEpisodes,
+        )
+    }
+}

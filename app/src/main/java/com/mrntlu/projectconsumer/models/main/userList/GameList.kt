@@ -1,41 +1,48 @@
 package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.UserListContentModel
 
 data class GameList(
     @SerializedName("_id")
-    val id: String,
+    override val id: String,
 
     @SerializedName("content_status")
-    val contentStatus: String,
+    override val contentStatus: String,
 
-    val score: Int?,
-
-    @SerializedName("achievement_status")
-    val achievementStatus: Float?,
-
-    @SerializedName("hours_played")
-    val hoursPlayed: Int?,
+    override val score: Int?,
 
     @SerializedName("times_finished")
-    val timesFinished: Int,
+    override val timesFinished: Int,
+
+    @SerializedName("hours_played")
+    override val mainAttribute: Int?,
 
     @SerializedName("game_id")
-    val gameId: String,
+    override val contentId: String,
 
     @SerializedName("rawg_id")
-    val gameRawgId: String,
-
-    val status: String,
+    override val contentExternalId: String,
 
     @SerializedName("title")
-    val title: String,
+    override val title: String,
 
     @SerializedName("title_original")
-    val titleOriginal: String,
+    override val titleOriginal: String,
 
     @SerializedName("image_url")
-    val imageUrl: String?,
+    override val imageUrl: String?,
 
-    val tba: Boolean,
-)
+    override val totalSeasons: Int? = null,
+    override val watchedSeasons: Int? = null,
+    override val totalEpisodes: Int? = null,
+): UserListContentModel()
+
+fun UserListContentModel.convertToGameList(): GameList {
+    return this.run {
+        GameList(
+            id, contentStatus, score, timesFinished, mainAttribute,
+            contentId, contentExternalId, title, titleOriginal, imageUrl,
+        )
+    }
+}

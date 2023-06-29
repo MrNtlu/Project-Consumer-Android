@@ -1,33 +1,47 @@
 package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.UserListContentModel
 
 data class MovieList(
     @SerializedName("_id")
-    val id: String,
+    override val id: String,
 
     @SerializedName("content_status")
-    val contentStatus: String,
+    override val contentStatus: String,
 
-    val score: Int?,
+    override val score: Int?,
 
     @SerializedName("times_finished")
-    val timesFinished: Int,
+    override val timesFinished: Int,
 
     @SerializedName("movie_id")
-    val movieId: String,
+    override val contentId: String,
 
     @SerializedName("tmdb_id")
-    val movieTmdbId: String,
-
-    val status: String,
+    override val contentExternalId: String,
 
     @SerializedName("title_en")
-    val titleEn: String,
+    override val title: String,
 
     @SerializedName("title_original")
-    val titleOriginal: String,
+    override val titleOriginal: String,
 
     @SerializedName("image_url")
-    val imageUrl: String?,
-)
+    override val imageUrl: String?,
+
+    override val mainAttribute: Int = if (contentStatus == "finished") 1 else 0,
+    override val totalSeasons: Int = 1,
+    override val totalEpisodes: Int? = null,
+    override val watchedSeasons: Int? = null,
+): UserListContentModel()
+
+fun UserListContentModel.convertToMovieList(): MovieList {
+    return this.run {
+        MovieList(
+            id, contentStatus, score, timesFinished,
+            contentId, contentExternalId,
+            title, titleOriginal, imageUrl,
+        )
+    }
+}

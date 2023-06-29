@@ -55,17 +55,16 @@ data class UserList(
     val tvAvgScore: Float,
 
     @SerializedName("anime_list")
-    val animeList: List<AnimeList>,
+    var animeList: List<AnimeList>,
 
     @SerializedName("game_list")
-    val gameList: List<GameList>,
+    var gameList: List<GameList>,
 
     @SerializedName("movie_watch_list")
-    val movieList: List<MovieList>,
+    var movieList: List<MovieList>,
 
     @SerializedName("tv_watch_list")
-    val tvList: List<TVSeriesList>,
+    var tvList: List<TVSeriesList>,
 
     val slug: String,
-
 )

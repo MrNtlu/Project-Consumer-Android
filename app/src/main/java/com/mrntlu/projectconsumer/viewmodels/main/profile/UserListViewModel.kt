@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
-import com.mrntlu.projectconsumer.models.common.retrofit.SortBody
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.utils.Constants
@@ -36,11 +35,11 @@ class UserListViewModel @Inject constructor(
     var didOrientationChange = false
 
     init {
-        getUserList(sort)
+        getUserList()
     }
 
-    fun getUserList(sort: String) = networkResponseFlowCollector(
-        repository.getUserList(SortBody(sort))
+    fun getUserList() = networkResponseFlowCollector(
+        repository.getUserList(sort)
     ) { response ->
         _userList.value = response
     }

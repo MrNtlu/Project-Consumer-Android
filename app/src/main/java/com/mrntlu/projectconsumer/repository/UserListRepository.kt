@@ -1,6 +1,5 @@
 package com.mrntlu.projectconsumer.repository
 
-import com.mrntlu.projectconsumer.models.common.retrofit.SortBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.TVWatchListBody
@@ -13,9 +12,8 @@ import javax.inject.Inject
 class UserListRepository @Inject constructor(
     private val userListApiService: UserListApiService,
 ) {
-
-    fun getUserList(body: SortBody) = networkResponseFlow {
-        userListApiService.getUserList(body)
+    fun getUserList(sort: String) = networkResponseFlow {
+        userListApiService.getUserList(sort)
     }
 
     fun createMovieWatchList(body: MovieWatchListBody) = networkResponseFlow {

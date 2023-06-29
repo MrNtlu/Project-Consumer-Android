@@ -285,7 +285,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
             addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL))
 
-            consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction{
+            consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
                     val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
 
@@ -384,9 +384,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                     viewModel.getConsumeLater()
                 }
 
-                override fun onCancelPressed() {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelPressed() {}
 
                 override fun onExhaustButtonPressed() {}
 

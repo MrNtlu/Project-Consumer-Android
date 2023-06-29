@@ -31,7 +31,6 @@ import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition

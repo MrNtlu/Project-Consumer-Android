@@ -208,7 +208,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
 
             profileDiaryButton.setOnClickListener {
-
+                //TODO Diary
             }
 
             legendInfoButton.setOnClickListener {
