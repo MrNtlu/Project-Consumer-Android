@@ -263,6 +263,9 @@ class UserListAdapter(
                 totalSeasonTV.text = totalSeasons
                 watchedSeasonTV.text = watchedSeasons?.toString() ?: "?"
 
+                val contentStatusType = Constants.ContentType.fromStringRequest(contentStatus).value
+                contentStatusTV.text = contentStatusType
+
                 contentProgress.apply {
                     max = when(contentType) {
                         Constants.ContentType.ANIME -> userList.animeList[position].totalEpisodes ?: if (contentStatus == "finished" && watchedEps != null) watchedEps else 100
@@ -285,10 +288,10 @@ class UserListAdapter(
                 totalSeasonTV.setVisibilityByCondition(contentType != Constants.ContentType.TV)
                 watchedSeasonTV.setVisibilityByCondition(contentType != Constants.ContentType.TV)
                 totalEpisodeTV.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
+                watchedEpisodeTV.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
+
                 when(contentType) {
-                    Constants.ContentType.MOVIE -> {
-                        watchedEpisodeTV.text = Constants.ContentType.fromStringRequest(contentStatus).value
-                    }
+                    Constants.ContentType.MOVIE -> {}
                     Constants.ContentType.GAME -> {
                         val hoursPlayedStr = "hours played"
                         totalEpisodeTV.text = hoursPlayedStr

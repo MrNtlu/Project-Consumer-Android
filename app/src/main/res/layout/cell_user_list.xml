@@ -100,16 +100,16 @@
         android:id="@+id/totalEpisodeTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:textColor="?attr/mainTextColor"
         app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
-        app:layout_constraintEnd_toEndOf="@+id/contentProgress"
+        app:layout_constraintEnd_toStartOf="@+id/contentStatusTV"
         tools:text="/? eps" />
 
     <TextView
         android:id="@+id/watchedEpisodeTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
         android:textColor="?attr/mainTextColor"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
@@ -124,16 +124,26 @@
         android:textColor="?attr/mainTextColor"
         app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
         app:layout_constraintEnd_toStartOf="@+id/watchedEpisodeTV"
-        tools:text="/10 season" />
+        tools:text="/10 seasons" />
 
     <TextView
         android:id="@+id/watchedSeasonTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
         android:textColor="?attr/mainTextColor"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
         app:layout_constraintEnd_toStartOf="@+id/totalSeasonTV"
         tools:text="7" />
+
+    <TextView
+        android:id="@+id/contentStatusTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/mainTextColor"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
+        app:layout_constraintEnd_toEndOf="@+id/contentProgress"
+        tools:text="Finished" />
 </androidx.constraintlayout.widget.ConstraintLayout>

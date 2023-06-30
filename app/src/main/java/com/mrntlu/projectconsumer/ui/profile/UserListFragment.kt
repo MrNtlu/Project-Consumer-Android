@@ -59,9 +59,12 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     }
 
     //TODO Add content status, right now there is only colors for the indication.
-    //TODO Increment button for tv series(season + episode) and anime.
+    // Or alternatively, add info for what colors mean and use only colors
+
+    //TODO On edit pressed, incrementing the episode and season should be very easy and 1 tap.
+
     //TODO Menu set status quick menu, open dialog let them select and save.
-    //TODO This can be expanded into status + score and implement it to consume later too.
+    // This can be expanded into status + score and implement it to consume later too.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
