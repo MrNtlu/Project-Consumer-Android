@@ -58,9 +58,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         return binding.root
     }
 
-    //TODO Add content status, right now there is only colors for the indication.
-    // Or alternatively, add info for what colors mean and use only colors
-
     //TODO On edit pressed, incrementing the episode and season should be very easy and 1 tap.
 
     //TODO Menu set status quick menu, open dialog let them select and save.
@@ -143,7 +140,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
-                    TODO("Not yet implemented")
+                    //TODO Show yes no dialog, if yes show loading dialog and call handle operation
                 }
 
                 override fun onUpdatePressed(
@@ -151,7 +148,10 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
-                    TODO("Not yet implemented")
+                    //TODO Open bottom sheet dialog, season and episode should be both text and + button next to it.
+                    // On save loading dialog and handle operation
+                    // Loading and Failure should be similar to DetailsBottomSheet, no need to open dialog.
+                    // Consider making it full screen bottom sheet if necessary.
                 }
 
                 override fun onDetailsPressed(
@@ -159,11 +159,12 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
-                    TODO("Not yet implemented")
+                    //TODO Like details, show UI. There should be edit button and change UI on bottom sheet.
                 }
 
                 override fun onItemSelected(item: UserList, position: Int) {
-                    TODO("Not yet implemented")
+                    //TODO Navigate, change interaction we need content type too.
+                    // OnStart (On Back Pressed), refresh the data.
                 }
 
                 override fun onErrorRefreshPressed() {

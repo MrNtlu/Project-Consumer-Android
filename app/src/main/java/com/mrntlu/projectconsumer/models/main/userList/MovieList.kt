@@ -30,7 +30,7 @@ data class MovieList(
     @SerializedName("image_url")
     override val imageUrl: String?,
 
-    override val mainAttribute: Int = if (contentStatus == "finished") 1 else 0,
+    override val mainAttribute: Int? = null,
     override val totalSeasons: Int = 1,
     override val totalEpisodes: Int? = null,
     override val watchedSeasons: Int? = null,

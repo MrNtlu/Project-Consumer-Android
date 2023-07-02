@@ -42,6 +42,8 @@ class MovieUserListBottomSheet(
         const val TAG = "MovieULBottomSheet"
     }
 
+    //TODO Redesign the details and edit like user list bottom sheet.
+
     private val viewModel: MovieDetailsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

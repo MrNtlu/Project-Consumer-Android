@@ -220,7 +220,7 @@ class UserListAdapter(
 
             binding.apply {
                 userListButton.setOnClickListener {
-                    handlePopupMenu()
+                    handlePopupMenu(position)
                 }
 
                 imageInclude.apply {
@@ -263,7 +263,7 @@ class UserListAdapter(
                 totalSeasonTV.text = totalSeasons
                 watchedSeasonTV.text = watchedSeasons?.toString() ?: "?"
 
-                val contentStatusType = Constants.ContentType.fromStringRequest(contentStatus).value
+                val contentStatusType = Constants.UserListStatus.find { it.request == contentStatus }?.name ?: Constants.UserListStatus[0].name
                 contentStatusTV.text = contentStatusType
 
                 contentProgress.apply {
@@ -278,7 +278,7 @@ class UserListAdapter(
                     }
                     progress = when(contentType) {
                         Constants.ContentType.ANIME -> userList.animeList[position].mainAttribute
-                        Constants.ContentType.MOVIE -> userList.movieList[position].mainAttribute
+                        Constants.ContentType.MOVIE -> if (contentStatus == "finished") 1 else 0
                         Constants.ContentType.TV -> userList.tvList[position].mainAttribute ?: 1
                         Constants.ContentType.GAME -> userList.gameList[position].mainAttribute ?:
                             if (contentStatus == "finished") 1 else 0
@@ -293,7 +293,7 @@ class UserListAdapter(
                 when(contentType) {
                     Constants.ContentType.MOVIE -> {}
                     Constants.ContentType.GAME -> {
-                        val hoursPlayedStr = "hours played"
+                        val hoursPlayedStr = " hours"
                         totalEpisodeTV.text = hoursPlayedStr
 
                         watchedEpisodeTV.text = userList.gameList[position].mainAttribute?.toString() ?: "?"
@@ -308,12 +308,22 @@ class UserListAdapter(
             }
         }
 
-        private fun handlePopupMenu() {
+        private fun handlePopupMenu(position: Int) {
             val popupMenu = PopupMenu(binding.root.context, binding.userListButton)
             popupMenu.menuInflater.inflate(R.menu.user_list_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener { item ->
-
+                when(item.itemId) {
+                    R.id.detailsMenu -> {
+                        interaction.onDetailsPressed(userList, contentType, position)
+                    }
+                    R.id.editMenu -> {
+                        interaction.onUpdatePressed(userList, contentType, position)
+                    }
+                    R.id.deleteMenu -> {
+                        interaction.onDeletePressed(userList, contentType, position)
+                    }
+                }
                 true
             }
 
