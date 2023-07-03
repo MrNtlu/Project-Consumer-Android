@@ -57,9 +57,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         _binding = FragmentUserListBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-    //TODO On edit pressed, incrementing the episode and season should be very easy and 1 tap.
-
+    
     //TODO Menu set status quick menu, open dialog let them select and save.
     // This can be expanded into status + score and implement it to consume later too.
 
