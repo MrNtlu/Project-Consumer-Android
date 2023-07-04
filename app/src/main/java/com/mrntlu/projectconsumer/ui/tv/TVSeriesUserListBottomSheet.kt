@@ -87,7 +87,7 @@ class TVSeriesUserListBottomSheet(
                     watchedSeasonTextInputET.setText(it.watchedSeasons.toString())
                     watchedEpisodeTextInputET.setText(it.watchedEpisodes.toString())
                     watchedSeasonTextLayout.suffixText = if (seasonSuffix != null) "/$seasonSuffix" else null
-                    watchedEpisodeTextLayout.suffixText = if (seasonSuffix != null) "/$episodeSuffix" else null
+                    watchedEpisodeTextLayout.suffixText = if (episodeSuffix != null) "/$episodeSuffix" else null
                 }
 
                 setSelectedTabColors(

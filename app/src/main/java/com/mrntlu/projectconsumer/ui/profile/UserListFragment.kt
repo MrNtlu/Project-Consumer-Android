@@ -22,6 +22,7 @@ import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.UserListAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentUserListBinding
+import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.UserListInteraction
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.ui.BaseFragment
@@ -150,6 +151,20 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     // On save loading dialog and handle operation
                     // Loading and Failure should be similar to DetailsBottomSheet, no need to open dialog.
                     // Consider making it full screen bottom sheet if necessary.
+
+                    activity?.let {
+                        val userListBottomSheet = UserListBottomSheet(
+                            when (contentType) {
+                                Constants.ContentType.ANIME -> item.animeList[position]
+                                Constants.ContentType.MOVIE -> item.movieList[position]
+                                Constants.ContentType.TV -> item.tvList[position]
+                                Constants.ContentType.GAME -> item.gameList[position]
+                            },
+                            contentType,
+                            BottomSheetState.EDIT,
+                        )
+                        userListBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                    }
                 }
 
                 override fun onDetailsPressed(
@@ -158,6 +173,20 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     position: Int
                 ) {
                     //TODO Like details, show UI. There should be edit button and change UI on bottom sheet.
+
+                    activity?.let {
+                        val userListBottomSheet = UserListBottomSheet(
+                            when(contentType) {
+                                Constants.ContentType.ANIME -> item.animeList[position]
+                                Constants.ContentType.MOVIE -> item.movieList[position]
+                                Constants.ContentType.TV -> item.tvList[position]
+                                Constants.ContentType.GAME -> item.gameList[position]
+                            },
+                            contentType,
+                            BottomSheetState.VIEW,
+                        )
+                        userListBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                    }
                 }
 
                 override fun onItemSelected(item: UserList, position: Int) {
