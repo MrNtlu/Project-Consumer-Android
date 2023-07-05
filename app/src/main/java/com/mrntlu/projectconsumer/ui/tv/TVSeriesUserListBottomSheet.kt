@@ -58,8 +58,8 @@ class TVSeriesUserListBottomSheet(
             bottomSheetOperation = BottomSheetOperation.DELETE
 
             setViewLayout(
-                Constants.ContentType.TV, watchList?.status, watchList?.score,
-                watchList?.timesFinished, watchList?.watchedSeasons, watchList?.watchedEpisodes,
+                Constants.ContentType.TV, watchList?.contentStatus, watchList?.score,
+                watchList?.timesFinished, watchList?.subAttribute, watchList?.mainAttribute,
                 binding.layoutViewInc,
             )
 
@@ -75,7 +75,7 @@ class TVSeriesUserListBottomSheet(
                     bottomSheetOperation = BottomSheetOperation.UPDATE
 
                     toggleTabLayout.getTabAt(
-                        when (it.status) {
+                        when (it.contentStatus) {
                             Constants.UserListStatus[0].request -> 0
                             Constants.UserListStatus[1].request -> 1
                             else -> 2
@@ -84,8 +84,8 @@ class TVSeriesUserListBottomSheet(
 
                     setACTVSelection(it.score?.plus(1) ?: 0)
                     timesFinishedTextInputET.setText(it.timesFinished.toString())
-                    watchedSeasonTextInputET.setText(it.watchedSeasons.toString())
-                    watchedEpisodeTextInputET.setText(it.watchedEpisodes.toString())
+                    watchedSeasonTextInputET.setText(it.subAttribute.toString())
+                    watchedEpisodeTextInputET.setText(it.mainAttribute.toString())
                     watchedSeasonTextLayout.suffixText = if (seasonSuffix != null) "/$seasonSuffix" else null
                     watchedEpisodeTextLayout.suffixText = if (episodeSuffix != null) "/$episodeSuffix" else null
                 }
@@ -186,10 +186,10 @@ class TVSeriesUserListBottomSheet(
                         val updateWatchListBody = UpdateTVWatchListBody(
                             watchList!!.id, watchList!!.score != score,
                             if (watchList!!.timesFinished != timesFinished) timesFinished else null,
-                            if (watchList!!.watchedEpisodes != watchedEpisodes) watchedEpisodes else null,
-                            if (watchList!!.watchedSeasons != watchedSeasons) watchedSeasons else null,
+                            if (watchList!!.mainAttribute != watchedEpisodes) watchedEpisodes else null,
+                            if (watchList!!.subAttribute != watchedSeasons) watchedSeasons else null,
                             if (watchList!!.score != score) score else null,
-                            if (watchList!!.status != status) status else null
+                            if (watchList!!.contentStatus != status) status else null
                         )
                         viewModel.updateTVWatchList(updateWatchListBody)
                     }

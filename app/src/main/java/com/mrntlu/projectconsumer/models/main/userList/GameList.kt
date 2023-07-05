@@ -34,7 +34,7 @@ data class GameList(
     override val imageUrl: String?,
 
     override val totalSeasons: Int? = null,
-    override val watchedSeasons: Int? = null,
+    override val subAttribute: Int? = null,
     override val totalEpisodes: Int? = null,
 ): UserListContentModel()
 

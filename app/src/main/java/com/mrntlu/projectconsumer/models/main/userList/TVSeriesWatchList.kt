@@ -1,26 +1,29 @@
 package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.UserListModel
 
 data class TVSeriesWatchList(
     @SerializedName("_id")
-    val id: String,
+    override val id: String,
 
     @SerializedName("tv_id")
-    val tvId: String,
+    override val contentId: String,
 
     @SerializedName("tv_tmdb_id")
-    val tvTmdbId: String,
+    override val contentExternalId: String,
 
     @SerializedName("times_finished")
-    val timesFinished: Int,
+    override val timesFinished: Int,
 
     @SerializedName("watched_episodes")
-    val watchedEpisodes: Int,
+    override val mainAttribute: Int,
 
     @SerializedName("watched_seasons")
-    val watchedSeasons: Int,
+    override val subAttribute: Int,
 
-    val score: Int?,
-    val status: String,
-)
+    @SerializedName("status")
+    override val contentStatus: String,
+
+    override val score: Int?,
+): UserListModel()

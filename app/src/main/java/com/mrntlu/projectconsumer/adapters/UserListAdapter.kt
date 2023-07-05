@@ -209,7 +209,7 @@ class UserListAdapter(
             }
 
             val watchedSeasons = if (contentType == Constants.ContentType.TV)
-                userList.tvList[position].watchedSeasons
+                userList.tvList[position].subAttribute
             else null
 
             val totalSeasons = "/${

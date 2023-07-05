@@ -60,7 +60,7 @@ class MovieUserListBottomSheet(
             bottomSheetOperation = BottomSheetOperation.DELETE
 
             setViewLayout(
-                Constants.ContentType.MOVIE, watchList?.status, watchList?.score,
+                Constants.ContentType.MOVIE, watchList?.contentStatus, watchList?.score,
                 watchList?.timesFinished, null, null, binding.layoutViewInc
             )
 
@@ -76,7 +76,7 @@ class MovieUserListBottomSheet(
                     bottomSheetOperation = BottomSheetOperation.UPDATE
 
                     toggleTabLayout.getTabAt(
-                        when (it.status) {
+                        when (it.contentStatus) {
                             UserListStatus[0].request -> 0
                             UserListStatus[1].request -> 1
                             else -> 2
@@ -180,7 +180,7 @@ class MovieUserListBottomSheet(
                             watchList!!.id, watchList!!.score != score,
                             if (watchList!!.timesFinished != timesFinished) timesFinished else null,
                             if (watchList!!.score != score) score else null,
-                            if (watchList!!.status != status) status else null
+                            if (watchList!!.contentStatus != status) status else null
                         )
                         viewModel.updateMovieWatchList(updateWatchListBody)
                     }

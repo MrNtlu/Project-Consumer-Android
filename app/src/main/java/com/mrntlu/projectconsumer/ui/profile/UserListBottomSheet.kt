@@ -13,17 +13,23 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.LayoutUserListBottomSheetBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
+import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.interfaces.UserListContentModel
+import com.mrntlu.projectconsumer.interfaces.UserListModel
+import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UserListBottomSheet(
-    private val userListContentModel: UserListContentModel,
+class UserListBottomSheet<T: UserListModel>(
+    private val onBottomSheetClosed: OnBottomSheetClosed<T>,
+    private val userListModel: UserListModel,
     private val contentType: Constants.ContentType,
     private var bottomSheetState: BottomSheetState,
+    private val seasonSuffix: Int?,
+    private val episodeSuffix: Int?,
 ): BottomSheetDialogFragment() {
     companion object {
         const val TAG = "UserListBottomSheet"
@@ -50,8 +56,8 @@ class UserListBottomSheet(
         setUI()
         setListeners()
 
-        //TODO Reimplement view and set it for details too
-        // get contenttype
+        //TODO Create this as basesheet and implement for each usage, because we need viewModels to pass.
+        // Or not, just check the viewmodel and if necessary
 
         //TODO On edit pressed, incrementing the episode and season should be very easy and 1 tap.
     }
@@ -71,21 +77,21 @@ class UserListBottomSheet(
                     setTabLayout(toggleTabLayout)
 
                     toggleTabLayout.getTabAt(
-                        when (userListContentModel.contentStatus) {
+                        when (userListModel.contentStatus) {
                             Constants.UserListStatus[0].request -> 0
                             Constants.UserListStatus[1].request -> 1
                             else -> 2
                         }
                     )?.select()
 
-                    userListContentModel.apply {
+                    userListModel.apply {
                         setACTVSelection(score?.plus(1) ?: 0)
 
                         timesFinishedTextInputET.setText(timesFinished.toString())
-                        watchedSeasonTextInputET.setText(watchedSeasons.toString())
+                        watchedSeasonTextInputET.setText(subAttribute.toString())
                         watchedEpisodeTextInputET.setText(mainAttribute.toString())
-                        watchedSeasonTextLayout.suffixText = if (totalSeasons != null) "/$totalSeasons" else null
-                        watchedEpisodeTextLayout.suffixText = if (totalEpisodes != null) "/$totalEpisodes" else null
+                        watchedSeasonTextLayout.suffixText = if (seasonSuffix != null) "/$seasonSuffix" else null
+                        watchedEpisodeTextLayout.suffixText = if (episodeSuffix != null) "/$episodeSuffix" else null
                     }
 
                     setSelectedTabColors(

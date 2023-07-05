@@ -37,7 +37,7 @@ data class AnimeList(
     override val totalEpisodes: Int?,
 
     override val totalSeasons: Int? = null,
-    override val watchedSeasons: Int? = null,
+    override val subAttribute: Int? = null,
 ): UserListContentModel()
 
 fun UserListContentModel.convertToAnimeList(): AnimeList {

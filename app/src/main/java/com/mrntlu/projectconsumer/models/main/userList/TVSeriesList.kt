@@ -19,7 +19,7 @@ data class TVSeriesList(
     override val mainAttribute: Int?,
 
     @SerializedName("watched_seasons")
-    override val watchedSeasons: Int?,
+    override val subAttribute: Int?,
 
     @SerializedName("tv_id")
     override val contentId: String,
@@ -47,7 +47,7 @@ fun UserListContentModel.convertToTVSeriesList(): TVSeriesList {
     return this.run {
         TVSeriesList(
             id, contentStatus, score, timesFinished, mainAttribute,
-            watchedSeasons, contentId, contentExternalId, title, titleOriginal,
+            subAttribute, contentId, contentExternalId, title, titleOriginal,
             imageUrl, totalEpisodes, totalSeasons,
         )
     }

@@ -33,7 +33,7 @@ data class MovieList(
     override val mainAttribute: Int? = null,
     override val totalSeasons: Int = 1,
     override val totalEpisodes: Int? = null,
-    override val watchedSeasons: Int? = null,
+    override val subAttribute: Int? = null,
 ): UserListContentModel()
 
 fun UserListContentModel.convertToMovieList(): MovieList {

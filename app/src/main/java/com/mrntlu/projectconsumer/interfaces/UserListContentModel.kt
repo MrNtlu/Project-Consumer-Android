@@ -1,18 +1,18 @@
 package com.mrntlu.projectconsumer.interfaces
 
-abstract class UserListContentModel: DiffUtilComparison<UserListContentModel> {
-    abstract val id: String
-    abstract val contentStatus: String
-    abstract val score: Int?
-    abstract val timesFinished: Int
+abstract class UserListContentModel: UserListModel(), DiffUtilComparison<UserListContentModel> {
+    abstract override val id: String
+    abstract override val contentStatus: String
+    abstract override val score: Int?
+    abstract override val timesFinished: Int
 
-    abstract val mainAttribute: Int?
+    abstract override val mainAttribute: Int?
+    abstract override val subAttribute: Int?
     abstract val totalEpisodes: Int?
-    abstract val watchedSeasons: Int?
     abstract val totalSeasons: Int?
 
-    abstract val contentId: String
-    abstract val contentExternalId: String
+    abstract override val contentId: String
+    abstract override val contentExternalId: String
 
     abstract val imageUrl: String?
     abstract val title: String
@@ -30,7 +30,7 @@ abstract class UserListContentModel: DiffUtilComparison<UserListContentModel> {
 
             mainAttribute != newItem.mainAttribute -> false
             totalEpisodes != newItem.totalEpisodes -> false
-            watchedSeasons != newItem.watchedSeasons -> false
+            subAttribute != newItem.subAttribute -> false
 
             imageUrl != newItem.imageUrl -> false
             title != newItem.title -> false

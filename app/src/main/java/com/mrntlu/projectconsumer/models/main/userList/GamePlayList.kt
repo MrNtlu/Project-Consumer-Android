@@ -1,26 +1,28 @@
 package com.mrntlu.projectconsumer.models.main.userList
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.interfaces.UserListModel
 
 data class GamePlayList(
     @SerializedName("_id")
-    val id: String,
+    override val id: String,
 
     @SerializedName("game_id")
-    val gameId: String,
+    override val contentId: String,
 
     @SerializedName("game_rawg_id")
-    val gameRawgId: String,
-
-    @SerializedName("achievement_status")
-    val achievementStatus: Float?,
+    override val contentExternalId: String,
 
     @SerializedName("times_finished")
-    val timesFinished: Int,
+    override val timesFinished: Int,
 
     @SerializedName("hours_played")
-    val hoursPlayer: Int?,
+    override val mainAttribute: Int?,
 
-    val score: Int?,
-    val status: String
-)
+    @SerializedName("status")
+    override val contentStatus: String,
+
+    override val score: Int?,
+
+    override val subAttribute: Int? = null,
+): UserListModel()
