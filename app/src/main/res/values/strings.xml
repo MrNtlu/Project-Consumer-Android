@@ -119,6 +119,8 @@
     <string name="reset">Reset</string>
     <string name="apply">Apply</string>
     <string name="more_cd">More</string>
+    <string name="hours_played">Hours Played</string>
+    <string name="hours">Hours</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

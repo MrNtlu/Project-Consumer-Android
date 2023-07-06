@@ -151,17 +151,20 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     // On save loading dialog and handle operation
                     // Loading and Failure should be similar to DetailsBottomSheet, no need to open dialog.
                     // Consider making it full screen bottom sheet if necessary.
+                    val userListModel = when (contentType) {
+                        Constants.ContentType.ANIME -> item.animeList[position]
+                        Constants.ContentType.MOVIE -> item.movieList[position]
+                        Constants.ContentType.TV -> item.tvList[position]
+                        Constants.ContentType.GAME -> item.gameList[position]
+                    }
 
                     activity?.let {
                         val userListBottomSheet = UserListBottomSheet(
-                            when (contentType) {
-                                Constants.ContentType.ANIME -> item.animeList[position]
-                                Constants.ContentType.MOVIE -> item.movieList[position]
-                                Constants.ContentType.TV -> item.tvList[position]
-                                Constants.ContentType.GAME -> item.gameList[position]
-                            },
+                            userListModel,
                             contentType,
                             BottomSheetState.EDIT,
+                            userListModel.totalSeasons,
+                            userListModel.totalEpisodes,
                         )
                         userListBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
                     }
@@ -173,17 +176,20 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     position: Int
                 ) {
                     //TODO Like details, show UI. There should be edit button and change UI on bottom sheet.
+                    val userListModel = when (contentType) {
+                        Constants.ContentType.ANIME -> item.animeList[position]
+                        Constants.ContentType.MOVIE -> item.movieList[position]
+                        Constants.ContentType.TV -> item.tvList[position]
+                        Constants.ContentType.GAME -> item.gameList[position]
+                    }
 
                     activity?.let {
                         val userListBottomSheet = UserListBottomSheet(
-                            when(contentType) {
-                                Constants.ContentType.ANIME -> item.animeList[position]
-                                Constants.ContentType.MOVIE -> item.movieList[position]
-                                Constants.ContentType.TV -> item.tvList[position]
-                                Constants.ContentType.GAME -> item.gameList[position]
-                            },
+                            userListModel,
                             contentType,
                             BottomSheetState.VIEW,
+                            userListModel.totalSeasons,
+                            userListModel.totalEpisodes,
                         )
                         userListBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
                     }

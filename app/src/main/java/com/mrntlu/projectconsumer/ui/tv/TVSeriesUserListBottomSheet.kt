@@ -37,7 +37,6 @@ class TVSeriesUserListBottomSheet(
     private val seasonSuffix: Int?,
     private val episodeSuffix: Int?,
 ): BaseDetailsBottomSheet<LayoutTvUlBottomSheetBinding, TVSeriesWatchList>(onBottomSheetClosed, watchList) {
-
     companion object {
         const val TAG = "TvULBottomSheet"
     }
