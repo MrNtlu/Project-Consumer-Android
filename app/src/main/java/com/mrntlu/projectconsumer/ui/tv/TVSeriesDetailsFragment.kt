@@ -24,12 +24,15 @@ import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentTvDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
+import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
+import com.mrntlu.projectconsumer.interfaces.UserListModel
+import com.mrntlu.projectconsumer.interfaces.toTvWatchList
 import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.models.main.tv.TVSeriesDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
-import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
+import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
@@ -62,9 +65,9 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     private var tvDetails: TVSeriesDetails? = null
 
-    private val onBottomSheetClosedCallback = object: OnBottomSheetClosed<TVSeriesWatchList> {
-        override fun onSuccess(data: TVSeriesWatchList?, operation: BottomSheetOperation) {
-            tvDetails?.watchList = data
+    private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
+        override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
+            tvDetails?.watchList = data?.toTvWatchList()
 
             if (operation != BottomSheetOperation.UPDATE)
                 handleWatchListLottie(
@@ -122,16 +125,20 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                                 }
                             },
                             showBottomSheet = {
+                                val watchList = tvDetails!!.watchList
+
                                 activity?.let {
-                                    val listBottomSheet = TVSeriesUserListBottomSheet(
-                                        onBottomSheetClosedCallback,
-                                        tvDetails!!.watchList,
+                                    val listBottomSheet = UserListBottomSheet(
+                                        watchList,
+                                        Constants.ContentType.TV,
+                                        if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
                                         args.tvId,
                                         tvDetails!!.tmdbID,
                                         tvDetails?.totalSeasons,
                                         tvDetails?.totalEpisodes,
+                                        onBottomSheetClosedCallback,
                                     )
-                                    listBottomSheet.show(it.supportFragmentManager, TVSeriesUserListBottomSheet.TAG)
+                                    listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
                                 }
                             }
                         )

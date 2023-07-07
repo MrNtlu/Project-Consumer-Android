@@ -62,19 +62,6 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/listBottomSheetLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/top_rounded_corners"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-        <include
-            android:id="@+id/listBottomSheet"
-            layout="@layout/layout_movie_ul_bottom_sheet"/>
-
-    </FrameLayout>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/detailsNestedSV"
         android:layout_width="match_parent"

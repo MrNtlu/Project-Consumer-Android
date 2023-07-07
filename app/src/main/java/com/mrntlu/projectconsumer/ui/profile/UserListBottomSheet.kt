@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
@@ -20,7 +21,13 @@ import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.interfaces.UserListModel
+import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.TVWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateTVWatchListBody
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
@@ -28,15 +35,19 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UserListBottomSheet(
-//    private val onBottomSheetClosed: OnBottomSheetClosed<T>,
-    private val userListModel: UserListModel?,
+    private var userListModel: UserListModel?,
     private val contentType: Constants.ContentType,
     private var bottomSheetState: BottomSheetState,
+    private val contentId: String,
+    private val contentExternalId: String,
     private val seasonSuffix: Int?,
     private val episodeSuffix: Int?,
+    private val onBottomSheetClosed: OnBottomSheetClosed,
 ): BottomSheetDialogFragment() {
     companion object {
         const val TAG = "UserListBottomSheet"
@@ -48,6 +59,8 @@ class UserListBottomSheet(
 
     private var _binding: LayoutUserListBottomSheetBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: UserListBottomSheetViewModel by viewModels()
 
     private var userListDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
 
@@ -66,9 +79,7 @@ class UserListBottomSheet(
 
         setUI()
         setListeners()
-
-        //TODO Create this as basesheet and implement for each usage, because we need viewModels to pass.
-        // Or not, just check the viewmodel and if necessary
+        setObservers()
 
         //TODO On edit pressed, incrementing the episode and season should be very easy and 1 tap.
     }
@@ -90,6 +101,7 @@ class UserListBottomSheet(
 
                 binding.layoutEditInc.apply {
                     setTabLayout(toggleTabLayout)
+                    setEditLayout()
 
                     userListModel?.let {
                         toggleTabLayout.getTabAt(
@@ -100,8 +112,7 @@ class UserListBottomSheet(
                             }
                         )?.select()
 
-                        setACTVSelection(userListModel.score?.plus(1) ?: 0)
-                        setEditLayout()
+                        setACTVSelection(userListModel?.score?.plus(1) ?: 0)
                     }
 
                     setSelectedTabColors(
@@ -204,19 +215,35 @@ class UserListBottomSheet(
                     if (userListDeleteLiveData != null && userListDeleteLiveData?.hasActiveObservers() == true)
                         userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
-                    //TODO delete viewmodel
+                    userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(userListModel!!.id, contentType.request))
+
+                    userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
+                        handleBottomSheetState(response)
+
+                        if (response is NetworkResponse.Success) {
+                            userListModel = null
+                        }
+
+                        handleResponseStatusLayout(
+                            binding.responseStatusLayout.root,
+                            binding.responseStatusLayout.responseStatusLottie,
+                            binding.responseStatusLayout.responseStatusTV,
+                            binding.responseStatusLayout.responseCloseButton,
+                            response
+                        )
+                    }
                 }
             }
 
             layoutEditInc.apply {
                 watchedSeasonTextLayout.setEndIconOnClickListener {
-                    val currentSeasonNum = watchedEpisodeTextInputET.text?.toString()?.toIntOrNull()
-                    watchedEpisodeTextInputET.setText(currentSeasonNum?.plus(1) ?: 1)
+                    val currentSeasonNum = watchedSeasonTextInputET.text?.toString()?.toIntOrNull()
+                    watchedSeasonTextInputET.setText((currentSeasonNum?.plus(1) ?: 1).toString())
                 }
 
                 watchedEpisodeTextLayout.setEndIconOnClickListener {
                     val currentEpsNum = watchedEpisodeTextInputET.text?.toString()?.toIntOrNull()
-                    watchedEpisodeTextInputET.setText(currentEpsNum?.plus(1) ?: 1)
+                    watchedEpisodeTextInputET.setText((currentEpsNum?.plus(1) ?: 1).toString())
                 }
 
                 scoreSelectionACTV.setOnDismissListener {
@@ -231,7 +258,57 @@ class UserListBottomSheet(
                 }
 
                 saveButton.setOnClickListener {
-                    //TODO Save
+                    if (bottomSheetState == BottomSheetState.EDIT) {
+                        val score: Int? = layoutEditInc.scoreSelectionACTV.text.toString().toIntOrNull()
+                        val status = Constants.UserListStatus[layoutEditInc.toggleTabLayout.selectedTabPosition].request
+                        val timesFinished = if (status != Constants.UserListStatus[1].request) null
+                            else layoutEditInc.timesFinishedTextInputET.text?.toString()?.toIntOrNull()
+                        val watchedSeasons = layoutEditInc.watchedSeasonTextInputET.text?.toString()?.toIntOrNull()
+                        val watchedEpisodes = layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.toIntOrNull()
+
+                        if (userListModel == null) {
+                            when(contentType) {
+                                Constants.ContentType.ANIME -> TODO()
+                                Constants.ContentType.MOVIE -> {
+                                    val watchListBody = MovieWatchListBody(contentId, contentExternalId, timesFinished, score, status)
+                                    viewModel.createMovieWatchList(watchListBody)
+                                }
+                                Constants.ContentType.TV -> {
+                                    val tvListBody = TVWatchListBody(contentId, contentExternalId, timesFinished, watchedEpisodes, watchedSeasons, score, status)
+                                    viewModel.createTVWatchList(tvListBody)
+                                }
+                                Constants.ContentType.GAME -> TODO()
+                            }
+                        } else {
+                            when(contentType) {
+                                Constants.ContentType.ANIME -> TODO()
+                                Constants.ContentType.MOVIE -> {
+                                    val updateWatchListBody = UpdateMovieWatchListBody(
+                                        userListModel!!.id, userListModel!!.score != score,
+                                        if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
+                                        if (userListModel!!.score != score) score else null,
+                                        if (userListModel!!.contentStatus != status) status else null
+                                    )
+                                    viewModel.updateMovieWatchList(updateWatchListBody)
+                                }
+                                Constants.ContentType.TV -> {
+                                    val updateWatchListBody = UpdateTVWatchListBody(
+                                        userListModel!!.id, userListModel!!.score != score,
+                                        if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
+                                        if (userListModel!!.mainAttribute != watchedEpisodes) watchedEpisodes else null,
+                                        if (userListModel!!.subAttribute != watchedSeasons) watchedSeasons else null,
+                                        if (userListModel!!.score != score) score else null,
+                                        if (userListModel!!.contentStatus != status) status else null
+                                    )
+                                    viewModel.updateTVWatchList(updateWatchListBody)
+                                }
+                                Constants.ContentType.GAME -> TODO()
+                            }
+                        }
+                    } else {
+                        bottomSheetState = BottomSheetState.EDIT
+                        setUI()
+                    }
                 }
 
                 toggleTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
@@ -246,7 +323,7 @@ class UserListBottomSheet(
 
                         if (tv?.text == Constants.UserListStatus[1].name)
                             layoutEditInc.timesFinishedTextInputET.setText(
-                                if (userListModel != null && userListModel.timesFinished > 0) userListModel.timesFinished.toString() else "1"
+                                if (userListModel != null && userListModel!!.timesFinished > 0) userListModel!!.timesFinished.toString() else "1"
                             )
                         else
                             layoutEditInc.timesFinishedTextInputET.text = null
@@ -334,7 +411,43 @@ class UserListBottomSheet(
         button.setVisibilityByCondition(response == NetworkResponse.Loading)
     }
 
+    private fun setObservers() {
+        viewModel.movieWatchList.observe(viewLifecycleOwner) { response ->
+            handleUserListObserver(response)
+        }
+
+        viewModel.tvWatchList.observe(viewLifecycleOwner) { response ->
+            handleUserListObserver(response)
+        }
+    }
+
+    private fun <T: UserListModel> handleUserListObserver(response: NetworkResponse<DataResponse<T>>) {
+        handleBottomSheetState(response)
+
+        if (response is NetworkResponse.Success) {
+            userListModel = response.data.data
+        }
+
+        handleResponseStatusLayout(
+            binding.responseStatusLayout.root,
+            binding.responseStatusLayout.responseStatusLottie,
+            binding.responseStatusLayout.responseStatusTV,
+            binding.responseStatusLayout.responseCloseButton,
+            response
+        )
+    }
+
     override fun onDestroyView() {
+        userListDeleteLiveData = null
+        viewLifecycleOwner.apply {
+            viewModel.movieWatchList.removeObservers(this)
+            viewModel.tvWatchList.removeObservers(this)
+        }
+
+        if (bottomSheetState == BottomSheetState.SUCCESS)
+            onBottomSheetClosed.onSuccess(userListModel, bottomSheetOperation)
+
         super.onDestroyView()
+        _binding = null
     }
 }

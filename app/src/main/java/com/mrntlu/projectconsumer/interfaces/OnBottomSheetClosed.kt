@@ -1,7 +1,7 @@
 package com.mrntlu.projectconsumer.interfaces
 
-interface OnBottomSheetClosed<T> {
-    fun onSuccess(data: T?, operation: BottomSheetOperation)
+interface OnBottomSheetClosed {
+    fun onSuccess(data: UserListModel?, operation: BottomSheetOperation)
 }
 
 enum class BottomSheetOperation {

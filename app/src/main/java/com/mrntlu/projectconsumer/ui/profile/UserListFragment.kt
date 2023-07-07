@@ -22,8 +22,11 @@ import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.UserListAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentUserListBinding
+import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
+import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.interfaces.UserListInteraction
+import com.mrntlu.projectconsumer.interfaces.UserListModel
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
@@ -50,6 +53,12 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private lateinit var sortPopupMenu: PopupMenu
 
     private var userListAdapter: UserListAdapter? = null
+
+    private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
+        override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
+
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -163,8 +172,11 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                             userListModel,
                             contentType,
                             BottomSheetState.EDIT,
+                            userListModel.contentId,
+                            userListModel.contentExternalId,
                             userListModel.totalSeasons,
                             userListModel.totalEpisodes,
+                            onBottomSheetClosedCallback,
                         )
                         userListBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
                     }
@@ -188,8 +200,11 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                             userListModel,
                             contentType,
                             BottomSheetState.VIEW,
+                            userListModel.contentId,
+                            userListModel.contentExternalId,
                             userListModel.totalSeasons,
                             userListModel.totalEpisodes,
+                            onBottomSheetClosedCallback,
                         )
                         userListBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
                     }
