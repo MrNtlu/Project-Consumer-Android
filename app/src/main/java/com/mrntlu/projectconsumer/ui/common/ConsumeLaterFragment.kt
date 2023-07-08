@@ -287,6 +287,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
+                    //TODO Are you sure dialog
                     val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
 
                     deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->

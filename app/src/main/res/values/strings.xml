@@ -121,6 +121,10 @@
     <string name="more_cd">More</string>
     <string name="hours_played">Hours Played</string>
     <string name="hours">Hours</string>
+    <string name="confirm">Confirm</string>
+    <string name="yes">Yes</string>
+    <string name="no_">No!</string>
+    <string name="do_you_want_to_delete">Do you want to delete?</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

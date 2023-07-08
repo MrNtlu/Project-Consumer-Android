@@ -32,6 +32,8 @@ import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.Operation
+import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,7 +58,18 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
+            //TODO Implement handleOperation recyclerview
+            when(operation) {
+                BottomSheetOperation.INSERT -> TODO()
+                BottomSheetOperation.UPDATE -> {
 
+                }
+                BottomSheetOperation.DELETE -> {
+                    userListAdapter?.handleOperation(
+                        Operation(data, -1, OperationEnum.Delete)
+                    )
+                }
+            }
         }
     }
 
@@ -264,7 +277,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
-//                        consumeLaterAdapter?.search(newText)
+                        userListAdapter?.search(newText)
 
                         return true
                     }
@@ -288,10 +301,10 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                             val popupMenuItem = sortPopupMenu.menu[i]
                             val sortType = Constants.SortConsumeLaterRequests[i]
 
-//                            popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-//                                requireContext(),
-//                                if(viewModel.sort == sortType.request) selectedColor else unselectedColor
-//                            )
+                            popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                requireContext(),
+                                if(viewModel.sort == sortType.request) selectedColor else unselectedColor
+                            )
                             popupMenuItem.title = sortType.name
                         }
 
@@ -322,10 +335,10 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                             item.isChecked = true
 
-//                            if (newSortType != viewModel.sort) {
-//                                viewModel.setSort(newSortType)
-//                                viewModel.getConsumeLater()
-//                            }
+                            if (newSortType != viewModel.sort) {
+                                viewModel.setSort(newSortType)
+                                viewModel.getUserList()
+                            }
 
                             true
                         }

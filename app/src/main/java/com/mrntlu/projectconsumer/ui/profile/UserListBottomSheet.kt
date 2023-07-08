@@ -35,6 +35,7 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -212,25 +213,23 @@ class UserListBottomSheet(
         binding.apply {
             layoutViewInc.deleteButton.setOnClickListener {
                 if (userListModel != null) {
-                    if (userListDeleteLiveData != null && userListDeleteLiveData?.hasActiveObservers() == true)
-                        userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
+                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                        if (userListDeleteLiveData != null && userListDeleteLiveData?.hasActiveObservers() == true)
+                            userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
-                    userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(userListModel!!.id, contentType.request))
+                        userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(userListModel!!.id, contentType.request))
 
-                    userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
-                        handleBottomSheetState(response)
+                        userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
+                            handleBottomSheetState(response)
 
-                        if (response is NetworkResponse.Success) {
-                            userListModel = null
+                            handleResponseStatusLayout(
+                                binding.responseStatusLayout.root,
+                                binding.responseStatusLayout.responseStatusLottie,
+                                binding.responseStatusLayout.responseStatusTV,
+                                binding.responseStatusLayout.responseCloseButton,
+                                response
+                            )
                         }
-
-                        handleResponseStatusLayout(
-                            binding.responseStatusLayout.root,
-                            binding.responseStatusLayout.responseStatusLottie,
-                            binding.responseStatusLayout.responseStatusTV,
-                            binding.responseStatusLayout.responseCloseButton,
-                            response
-                        )
                     }
                 }
             }

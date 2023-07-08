@@ -22,6 +22,7 @@ import com.mrntlu.projectconsumer.databinding.CellUserListLoadingBinding
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.UserListContentModel
 import com.mrntlu.projectconsumer.interfaces.UserListInteraction
+import com.mrntlu.projectconsumer.interfaces.UserListModel
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.models.main.userList.convertToAnimeList
 import com.mrntlu.projectconsumer.models.main.userList.convertToGameList
@@ -29,8 +30,11 @@ import com.mrntlu.projectconsumer.models.main.userList.convertToMovieList
 import com.mrntlu.projectconsumer.models.main.userList.convertToTVSeriesList
 import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Operation
+import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -45,6 +49,8 @@ class UserListAdapter(
     var isLoading = true
 
     private lateinit var userList: UserList
+    private var searchListHolder: ArrayList<UserListContentModel> = arrayListOf()
+
     var contentType: Constants.ContentType = Constants.ContentType.MOVIE
 
     private fun handleDiffUtil(newList: ArrayList<UserListContentModel>) {
@@ -160,7 +166,86 @@ class UserListAdapter(
         }
     }
 
-    //TODO Search & Handle Interaction
+    fun handleOperation(operation: Operation<UserListModel>) {
+        val newList = getContentList().toMutableList()
+
+        when(operation.operationEnum) {
+            OperationEnum.Delete -> {
+                if (searchListHolder.size > 0)
+                    searchListHolder.remove(operation.data)
+
+                newList.remove(operation.data)
+            }
+            OperationEnum.Update -> {
+                if (operation.data != null) {
+                    if (searchListHolder.size > 0) {
+                        val index = searchListHolder.indexOfFirst {
+                            it == operation.data
+                        }
+                        searchListHolder[index] = operation.data as UserListContentModel
+                    }
+
+                    val index = newList.indexOfFirst {
+                        it == operation.data
+                    }
+                    newList[index] = operation.data as UserListContentModel
+                }
+            }
+        }
+
+        handleDiffUtil(newList as ArrayList<UserListContentModel>)
+    }
+
+    fun search(search: String?) {
+        if (!isLoading && errorMessage == null) {
+            if (search?.isNotEmptyOrBlank() == true) {
+                val filterList = (
+                        if (searchListHolder.size > getContentList().size) searchListHolder
+                        else getContentList()
+                ).toMutableList().toCollection(ArrayList())
+
+                val searchList = filterList.filter {
+                    it.titleOriginal.startsWith(
+                        search,
+                        ignoreCase = true
+                    ) || it.titleOriginal.contains(search, ignoreCase = true)
+                }.toMutableList().toCollection(ArrayList())
+
+                if (getContentList().size > searchListHolder.size) {
+                    searchListHolder.clear()
+                    searchListHolder.addAll(getContentList())
+                }
+
+                if (getContentList().isEmpty() && searchList.size > 0) {
+                    when(contentType){
+                        Constants.ContentType.ANIME -> userList.animeList = searchList.toList().map { it.convertToAnimeList() }
+                        Constants.ContentType.MOVIE -> userList.movieList = searchList.toList().map { it.convertToMovieList() }
+                        Constants.ContentType.TV -> userList.tvList = searchList.toList().map { it.convertToTVSeriesList() }
+                        Constants.ContentType.GAME -> userList.gameList = searchList.toList().map { it.convertToGameList() }
+                    }
+                    notifyDataSetChanged()
+                } else
+                    handleDiffUtil(searchList)
+            } else {
+                val resetList = getContentList().toMutableList().toCollection(ArrayList())
+
+                resetList.clear()
+                resetList.addAll(searchListHolder)
+                searchListHolder.clear()
+
+                if (getContentList().isEmpty()) {
+                    when(contentType){
+                        Constants.ContentType.ANIME -> userList.animeList = resetList.toList().map { it.convertToAnimeList() }
+                        Constants.ContentType.MOVIE -> userList.movieList = resetList.toList().map { it.convertToMovieList() }
+                        Constants.ContentType.TV -> userList.tvList = resetList.toList().map { it.convertToTVSeriesList() }
+                        Constants.ContentType.GAME -> userList.gameList = resetList.toList().map { it.convertToGameList() }
+                    }
+                    notifyDataSetChanged()
+                } else
+                    handleDiffUtil(resetList)
+            }
+        }
+    }
 
     inner class LoadingViewHolder(binding: CellUserListLoadingBinding): RecyclerView.ViewHolder(binding.root)
 
