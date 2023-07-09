@@ -52,7 +52,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private lateinit var dialog: LoadingDialog
     private lateinit var popupMenu: PopupMenu
-    private lateinit var sortPopupMenu: PopupMenu
 
     private var userListAdapter: UserListAdapter? = null
 
@@ -263,7 +262,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             }
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.consume_later_menu, menu)
+                menuInflater.inflate(R.menu.user_list_menu, menu)
 
                 val searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
                 searchView.setQuery(searchQuery, false)
@@ -287,69 +286,10 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
-                        if (!::sortPopupMenu.isInitialized) {
-                            val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
-                            sortPopupMenu = PopupMenu(requireContext(), menuItemView)
-                            sortPopupMenu.menuInflater.inflate(R.menu.sort_extra_menu, sortPopupMenu.menu)
-                            sortPopupMenu.setForceShowIcon(true)
-                        }
-
-                        val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-                        val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
-
-                        for (i in 0..sortPopupMenu.menu.size.minus(1)) {
-                            val popupMenuItem = sortPopupMenu.menu[i]
-                            val sortType = Constants.SortConsumeLaterRequests[i]
-
-                            popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-                                requireContext(),
-                                if(viewModel.sort == sortType.request) selectedColor else unselectedColor
-                            )
-                            popupMenuItem.title = sortType.name
-                        }
-
-                        sortPopupMenu.setOnMenuItemClickListener { item ->
-                            val newSortType = when(item.itemId) {
-                                R.id.firstSortMenu -> {
-                                    setPopupMenuItemVisibility(sortPopupMenu, 0)
-
-                                    Constants.SortConsumeLaterRequests[0].request
-                                }
-                                R.id.secondSortMenu -> {
-                                    setPopupMenuItemVisibility(sortPopupMenu, 1)
-
-                                    Constants.SortConsumeLaterRequests[1].request
-                                }
-                                R.id.thirdSortMenu -> {
-                                    setPopupMenuItemVisibility(sortPopupMenu, 2)
-
-                                    Constants.SortConsumeLaterRequests[2].request
-                                }
-                                R.id.forthSortMenu -> {
-                                    setPopupMenuItemVisibility(sortPopupMenu, 3)
-
-                                    Constants.SortConsumeLaterRequests[3].request
-                                }
-                                else -> { Constants.SortConsumeLaterRequests[0].request }
-                            }
-
-                            item.isChecked = true
-
-                            if (newSortType != viewModel.sort) {
-                                viewModel.setSort(newSortType)
-                                viewModel.getUserList()
-                            }
-
-                            true
-                        }
-
-                        sortPopupMenu.show()
-                    }
-                    R.id.filterMenu -> {
                         if (!::popupMenu.isInitialized) {
-                            val menuItemView = requireActivity().findViewById<View>(R.id.filterMenu)
+                            val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
                             popupMenu = PopupMenu(requireContext(), menuItemView)
-                            popupMenu.menuInflater.inflate(R.menu.filter_consume_later_menu, popupMenu.menu)
+                            popupMenu.menuInflater.inflate(R.menu.sort_dual_menu, popupMenu.menu)
                             popupMenu.setForceShowIcon(true)
                         }
 
@@ -358,48 +298,36 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                         for (i in 0..popupMenu.menu.size.minus(1)) {
                             val popupMenuItem = popupMenu.menu[i]
-                            val contentType = Constants.ContentType.values()[i]
+                            val sortType = Constants.SortUserListRequests[i]
 
-//                            popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-//                                requireContext(),
-//                                if(viewModel.filter == contentType.request) selectedColor else unselectedColor
-//                            )
-                            popupMenuItem.title = contentType.value
+                            popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                requireContext(),
+                                if(viewModel.sort == sortType.request) selectedColor else unselectedColor
+                            )
+                            popupMenuItem.title = sortType.name
                         }
 
                         popupMenu.setOnMenuItemClickListener { item ->
-                            val newFilterType = when (item.itemId) {
-                                R.id.firstFilterMenu -> {
+                            val newSortType = when(item.itemId) {
+                                R.id.firstSortMenu -> {
                                     setPopupMenuItemVisibility(popupMenu, 0)
 
-                                    Constants.ContentType.values()[0]
+                                    Constants.SortUserListRequests[0].request
                                 }
-                                R.id.secondFilterMenu -> {
+                                R.id.secondSortMenu -> {
                                     setPopupMenuItemVisibility(popupMenu, 1)
 
-                                    Constants.ContentType.values()[1]
+                                    Constants.SortUserListRequests[1].request
                                 }
-                                R.id.thirdFilterMenu -> {
-                                    setPopupMenuItemVisibility(popupMenu, 2)
-
-                                    Constants.ContentType.values()[2]
-                                }
-                                R.id.forthFilterMenu -> {
-                                    setPopupMenuItemVisibility(popupMenu, 3)
-
-                                    Constants.ContentType.values()[3]
-                                }
-                                else -> { Constants.ContentType.values()[0] }
+                                else -> { Constants.SortUserListRequests[0].request }
                             }
 
                             item.isChecked = true
 
-//                            viewModel.setFilter(
-//                                if (newFilterType.request != viewModel.filter)
-//                                    newFilterType.request
-//                                else null
-//                            )
-//                            viewModel.getConsumeLater()
+                            if (newSortType != viewModel.sort) {
+                                viewModel.setSort(newSortType)
+                                viewModel.getUserList()
+                            }
 
                             true
                         }

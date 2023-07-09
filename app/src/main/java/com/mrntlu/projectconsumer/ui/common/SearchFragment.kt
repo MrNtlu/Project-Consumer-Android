@@ -53,6 +53,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
     /* TODO!!!!
     * TODO Check for process death
+    *  Allow change content type while searching
     *  TODO!!!!!
      */
 

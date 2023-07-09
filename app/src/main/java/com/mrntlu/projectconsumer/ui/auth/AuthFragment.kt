@@ -33,6 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -43,7 +44,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
     private val viewModel: LoginViewModel by viewModels()
     @Inject lateinit var tokenManager: TokenManager
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var coroutineScope = CoroutineScope(Dispatchers.IO)
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var fcmToken: String
     private lateinit var dialog: LoadingDialog
@@ -79,6 +80,9 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
         activity?.let {
             dialog = LoadingDialog(it)
         }
+
+        if (!coroutineScope.isActive)
+            coroutineScope = CoroutineScope(Dispatchers.IO)
 
         getFCMToken()
         setGoogleSignIn()

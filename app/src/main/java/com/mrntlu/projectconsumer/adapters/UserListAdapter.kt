@@ -395,7 +395,7 @@ class UserListAdapter(
 
         private fun handlePopupMenu(position: Int) {
             val popupMenu = PopupMenu(binding.root.context, binding.userListButton)
-            popupMenu.menuInflater.inflate(R.menu.user_list_menu, popupMenu.menu)
+            popupMenu.menuInflater.inflate(R.menu.user_list_item_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener { item ->
                 when(item.itemId) {

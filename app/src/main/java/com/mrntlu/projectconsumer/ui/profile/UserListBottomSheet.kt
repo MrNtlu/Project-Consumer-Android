@@ -105,6 +105,8 @@ class UserListBottomSheet(
                     setEditLayout()
 
                     userListModel?.let {
+                        bottomSheetOperation = BottomSheetOperation.UPDATE
+
                         toggleTabLayout.getTabAt(
                             when (it.contentStatus) {
                                 Constants.UserListStatus[0].request -> 0
@@ -172,6 +174,7 @@ class UserListBottomSheet(
 
     private fun setEditLayout() {
         binding.layoutEditInc.apply {
+            timesFinishedTextLayout.setVisibilityByCondition(userListModel?.contentStatus != Constants.UserListStatus[1].request)
             watchedSeasonTextLayout.setVisibilityByCondition(contentType != Constants.ContentType.TV)
             watchedEpisodeTextLayout.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
             watchedEpisodeTextLayout.hint = getString(

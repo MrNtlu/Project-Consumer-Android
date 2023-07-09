@@ -2,18 +2,18 @@
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:title="Details"
-        android:id="@+id/detailsMenu"
-        app:showAsAction="never" />
 
     <item
-        android:title="Edit"
-        android:id="@+id/editMenu"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_search"
+        android:id="@+id/searchMenu"
+        android:iconTint="?attr/mainTextColor"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        android:title="@string/search"
+        app:showAsAction="always" />
 
     <item
-        android:title="Delete"
-        android:id="@+id/deleteMenu"
-        app:showAsAction="never" />
+        android:id="@+id/sortMenu"
+        android:icon="@drawable/ic_sort_48"
+        app:showAsAction="ifRoom"
+        android:title="@string/sort" />
 </menu>
