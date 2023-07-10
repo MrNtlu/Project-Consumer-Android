@@ -23,6 +23,10 @@ import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.UserListContentModel
 import com.mrntlu.projectconsumer.interfaces.UserListInteraction
 import com.mrntlu.projectconsumer.interfaces.UserListModel
+import com.mrntlu.projectconsumer.models.main.userList.AnimeList
+import com.mrntlu.projectconsumer.models.main.userList.GameList
+import com.mrntlu.projectconsumer.models.main.userList.MovieList
+import com.mrntlu.projectconsumer.models.main.userList.TVSeriesList
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.models.main.userList.convertToAnimeList
 import com.mrntlu.projectconsumer.models.main.userList.convertToGameList
@@ -167,7 +171,7 @@ class UserListAdapter(
     }
 
     fun handleOperation(operation: Operation<UserListModel>) {
-        val newList = getContentList().toMutableList()
+        val newList = getContentList().toMutableList().toCollection(ArrayList())
 
         when(operation.operationEnum) {
             OperationEnum.Delete -> {
@@ -182,18 +186,65 @@ class UserListAdapter(
                         val index = searchListHolder.indexOfFirst {
                             it == operation.data
                         }
-                        searchListHolder[index] = operation.data as UserListContentModel
+
+                        val item = searchListHolder[index]
+
+                        operation.data.apply {
+                            searchListHolder[index] = when(contentType) {
+                                Constants.ContentType.ANIME -> AnimeList(
+                                    id, contentStatus, score, timesFinished, mainAttribute!!, contentId, contentExternalId,
+                                    item.title, item.titleOriginal, item.imageUrl, item.totalSeasons,
+                                )
+                                Constants.ContentType.MOVIE -> MovieList(
+                                    id, contentStatus, score, timesFinished, contentId, contentExternalId,
+                                    item.title, item.titleOriginal, item.imageUrl,
+                                )
+                                Constants.ContentType.TV -> TVSeriesList(
+                                    id, contentStatus, score, timesFinished, mainAttribute, subAttribute,
+                                    contentId, contentExternalId, item.title, item.titleOriginal,
+                                    item.imageUrl, item.totalEpisodes, item.totalSeasons,
+                                )
+                                Constants.ContentType.GAME -> GameList(
+                                    id, contentStatus, score, timesFinished, mainAttribute, contentId,
+                                    contentExternalId, item.title, item.titleOriginal, item.imageUrl,
+                                )
+                            }
+                        }
                     }
 
                     val index = newList.indexOfFirst {
-                        it == operation.data
+                        it.contentId == operation.data.contentId ||
+                        it.contentExternalId == operation.data.contentExternalId
                     }
-                    newList[index] = operation.data as UserListContentModel
+
+                    val item = newList[index]
+
+                    operation.data.apply {
+                        newList[index] = when(contentType) {
+                            Constants.ContentType.ANIME -> AnimeList(
+                                id, contentStatus, score, timesFinished, mainAttribute!!, contentId, contentExternalId,
+                                item.title, item.titleOriginal, item.imageUrl, item.totalSeasons,
+                            )
+                            Constants.ContentType.MOVIE -> MovieList(
+                                id, contentStatus, score, timesFinished, contentId, contentExternalId,
+                                item.title, item.titleOriginal, item.imageUrl,
+                            )
+                            Constants.ContentType.TV -> TVSeriesList(
+                                id, contentStatus, score, timesFinished, mainAttribute, subAttribute,
+                                contentId, contentExternalId, item.title, item.titleOriginal,
+                                item.imageUrl, item.totalEpisodes, item.totalSeasons,
+                            )
+                            Constants.ContentType.GAME -> GameList(
+                                id, contentStatus, score, timesFinished, mainAttribute, contentId,
+                                contentExternalId, item.title, item.titleOriginal, item.imageUrl,
+                            )
+                        }
+                    }
                 }
             }
         }
 
-        handleDiffUtil(newList as ArrayList<UserListContentModel>)
+        handleDiffUtil(newList)
     }
 
     fun search(search: String?) {

@@ -126,7 +126,7 @@ class UserListBottomSheet(
                 }
             }
 
-            binding.saveButton.text = getString(if (bottomSheetState == BottomSheetState.EDIT) R.string.save else R.string.update)
+            binding.saveButton.text = getString(if (bottomSheetState == BottomSheetState.EDIT) R.string.save else R.string.edit)
             binding.cancelButton.text = getString(R.string.cancel)
         }
     }

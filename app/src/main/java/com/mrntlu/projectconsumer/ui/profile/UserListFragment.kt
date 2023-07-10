@@ -35,6 +35,7 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
+import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -57,11 +58,12 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
-            //TODO Implement handleOperation recyclerview
             when(operation) {
-                BottomSheetOperation.INSERT -> TODO()
+                BottomSheetOperation.INSERT -> {}
                 BottomSheetOperation.UPDATE -> {
-
+                    userListAdapter?.handleOperation(
+                        Operation(data, -1, OperationEnum.Update)
+                    )
                 }
                 BottomSheetOperation.DELETE -> {
                     userListAdapter?.handleOperation(
@@ -79,9 +81,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         _binding = FragmentUserListBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
-    //TODO Menu set status quick menu, open dialog let them select and save.
-    // This can be expanded into status + score and implement it to consume later too.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -161,6 +160,9 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     position: Int
                 ) {
                     //TODO Show yes no dialog, if yes show loading dialog and call handle operation
+                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+
+                    }
                 }
 
                 override fun onUpdatePressed(
@@ -168,10 +170,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
-                    //TODO Open bottom sheet dialog, season and episode should be both text and + button next to it.
-                    // On save loading dialog and handle operation
-                    // Loading and Failure should be similar to DetailsBottomSheet, no need to open dialog.
-                    // Consider making it full screen bottom sheet if necessary.
                     val userListModel = when (contentType) {
                         Constants.ContentType.ANIME -> item.animeList[position]
                         Constants.ContentType.MOVIE -> item.movieList[position]
@@ -199,7 +197,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
-                    //TODO Like details, show UI. There should be edit button and change UI on bottom sheet.
                     val userListModel = when (contentType) {
                         Constants.ContentType.ANIME -> item.animeList[position]
                         Constants.ContentType.MOVIE -> item.movieList[position]
