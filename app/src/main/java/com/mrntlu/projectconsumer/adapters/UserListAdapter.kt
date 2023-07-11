@@ -355,6 +355,10 @@ class UserListAdapter(
             } season${if ((watchedSeasons ?: 0) > 1) "s" else ""}"
 
             binding.apply {
+                root.setOnClickListener {
+                    interaction.onItemSelected(userList, position)
+                }
+
                 userListButton.setOnClickListener {
                     handlePopupMenu(position)
                 }

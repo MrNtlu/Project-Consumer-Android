@@ -16,6 +16,7 @@ import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
@@ -27,7 +28,9 @@ import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.interfaces.UserListInteraction
 import com.mrntlu.projectconsumer.interfaces.UserListModel
+import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userList.UserList
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
@@ -36,6 +39,7 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
+import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,9 +56,11 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
 
     private lateinit var dialog: LoadingDialog
-    private lateinit var popupMenu: PopupMenu
 
+    private var popupMenu: PopupMenu? = null
     private var userListAdapter: UserListAdapter? = null
+
+    private var userListDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
@@ -101,6 +107,15 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         setObservers()
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        if (!viewModel.didOrientationChange && viewModel.userList.value is NetworkResponse.Success) {
+            userListAdapter?.setLoadingView()
+            viewModel.getUserList()
+        }
+    }
+
     private fun setUI() {
         binding.apply {
             userListTabLayout.apply {
@@ -118,6 +133,10 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            userListStatButton.setOnClickListener {
+                //TODO Show in bottom sheet or dialog
+            }
+
             userListTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     when(tab?.position) {
@@ -159,9 +178,41 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
-                    //TODO Show yes no dialog, if yes show loading dialog and call handle operation
                     context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                        if (userListDeleteLiveData != null && userListDeleteLiveData?.hasActiveObservers() == true)
+                            userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
+                        val userListModel = when (contentType) {
+                            Constants.ContentType.ANIME -> item.animeList[position]
+                            Constants.ContentType.MOVIE -> item.movieList[position]
+                            Constants.ContentType.TV -> item.tvList[position]
+                            Constants.ContentType.GAME -> item.gameList[position]
+                        }
+
+                        userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(userListModel.id, contentType.request))
+
+                        userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
+                            when(response) {
+                                is NetworkResponse.Failure -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    context?.showErrorDialog(response.errorMessage)
+                                }
+                                NetworkResponse.Loading -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.showLoadingDialog()
+                                }
+                                is NetworkResponse.Success -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    userListAdapter?.handleOperation(
+                                        Operation(userListModel, -1, OperationEnum.Delete)
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -220,8 +271,17 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 }
 
                 override fun onItemSelected(item: UserList, position: Int) {
-                    //TODO Navigate, change interaction we need content type too.
-                    // OnStart (On Back Pressed), refresh the data.
+                    val navWithAction = when(contentType) {
+                        Constants.ContentType.ANIME -> TODO()
+                        Constants.ContentType.MOVIE -> UserListFragmentDirections.actionUserListFragmentToMovieDetailsFragment(
+                            item.movieList[position].contentId
+                        )
+                        Constants.ContentType.TV -> UserListFragmentDirections.actionUserListFragmentToTvDetailsFragment(
+                            item.tvList[position].contentId
+                        )
+                        Constants.ContentType.GAME -> TODO()
+                    }
+                    navController.navigate(navWithAction)
                 }
 
                 override fun onErrorRefreshPressed() {
@@ -283,53 +343,55 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
-                        if (!::popupMenu.isInitialized) {
+                        if (popupMenu == null) {
                             val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
                             popupMenu = PopupMenu(requireContext(), menuItemView)
-                            popupMenu.menuInflater.inflate(R.menu.sort_dual_menu, popupMenu.menu)
-                            popupMenu.setForceShowIcon(true)
+                            popupMenu!!.menuInflater.inflate(R.menu.sort_dual_menu, popupMenu!!.menu)
+                            popupMenu!!.setForceShowIcon(true)
                         }
 
-                        val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-                        val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+                        popupMenu?.let {
+                            val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+                            val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
 
-                        for (i in 0..popupMenu.menu.size.minus(1)) {
-                            val popupMenuItem = popupMenu.menu[i]
-                            val sortType = Constants.SortUserListRequests[i]
+                            for (i in 0..it.menu.size.minus(1)) {
+                                val popupMenuItem = it.menu[i]
+                                val sortType = Constants.SortUserListRequests[i]
 
-                            popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-                                requireContext(),
-                                if(viewModel.sort == sortType.request) selectedColor else unselectedColor
-                            )
-                            popupMenuItem.title = sortType.name
-                        }
-
-                        popupMenu.setOnMenuItemClickListener { item ->
-                            val newSortType = when(item.itemId) {
-                                R.id.firstSortMenu -> {
-                                    setPopupMenuItemVisibility(popupMenu, 0)
-
-                                    Constants.SortUserListRequests[0].request
-                                }
-                                R.id.secondSortMenu -> {
-                                    setPopupMenuItemVisibility(popupMenu, 1)
-
-                                    Constants.SortUserListRequests[1].request
-                                }
-                                else -> { Constants.SortUserListRequests[0].request }
+                                popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                    requireContext(),
+                                    if(viewModel.sort == sortType.request) selectedColor else unselectedColor
+                                )
+                                popupMenuItem.title = sortType.name
                             }
 
-                            item.isChecked = true
+                            it.setOnMenuItemClickListener { item ->
+                                val newSortType = when(item.itemId) {
+                                    R.id.firstSortMenu -> {
+                                        setPopupMenuItemVisibility(it, 0)
 
-                            if (newSortType != viewModel.sort) {
-                                viewModel.setSort(newSortType)
-                                viewModel.getUserList()
+                                        Constants.SortUserListRequests[0].request
+                                    }
+                                    R.id.secondSortMenu -> {
+                                        setPopupMenuItemVisibility(it, 1)
+
+                                        Constants.SortUserListRequests[1].request
+                                    }
+                                    else -> { Constants.SortUserListRequests[0].request }
+                                }
+
+                                item.isChecked = true
+
+                                if (newSortType != viewModel.sort) {
+                                    viewModel.setSort(newSortType)
+                                    viewModel.getUserList()
+                                }
+
+                                true
                             }
 
-                            true
+                            it.show()
                         }
-
-                        popupMenu.show()
                     }
                 }
                 return true
@@ -358,6 +420,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         viewLifecycleOwner.apply {
             viewModel.userList.removeObservers(this)
         }
+        popupMenu = null
         userListAdapter = null
         super.onDestroyView()
     }

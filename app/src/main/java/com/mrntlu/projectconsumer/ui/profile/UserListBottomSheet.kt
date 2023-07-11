@@ -248,6 +248,11 @@ class UserListBottomSheet(
                     watchedEpisodeTextInputET.setText((currentEpsNum?.plus(1) ?: 1).toString())
                 }
 
+                timesFinishedTextLayout.setEndIconOnClickListener {
+                    val currentTimesFinished = timesFinishedTextInputET.text?.toString()?.toIntOrNull()
+                    timesFinishedTextInputET.setText((currentTimesFinished?.plus(1) ?: 1).toString())
+                }
+
                 scoreSelectionACTV.setOnDismissListener {
                     if (scoreSelectionACTV.text.toString().run { isEmpty() || isBlank() })
                         setACTVSelection(0)
