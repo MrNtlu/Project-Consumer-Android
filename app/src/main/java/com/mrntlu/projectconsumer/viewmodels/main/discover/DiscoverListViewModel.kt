@@ -47,8 +47,6 @@ class DiscoverListViewModel @AssistedInject constructor(
     private val _discoverList = MutableLiveData<NetworkListResponse<List<ContentModel>>>()
     val discoverResults: LiveData<NetworkListResponse<List<ContentModel>>> = _discoverList
 
-    //TODO ProductionCompanies, NumOfSeasons
-
     // Process Death variables
     var isRestoringData = false
     private var contentType: Constants.ContentType = savedStateHandle[DISCOVER_CONTENT_TYPE_KEY] ?: vmContentType

@@ -34,6 +34,7 @@ import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.openInBrowser
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -252,11 +253,19 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             }
 
             imdbButton.setOnClickListener {
-                //TODO Open in web with id
+                movieDetails?.imdbID?.let {
+                    val url = "${Constants.BASE_TMDB_URL}movie/$it"
+
+                    context?.openInBrowser(url)
+                }
             }
 
             tmdbButton.setOnClickListener {
-                //TODO Open in web with id
+                movieDetails?.tmdbID?.let {
+                    val url = "${Constants.BASE_TMDB_URL}movie/$it"
+
+                    context?.openInBrowser(url)
+                }
             }
 
             detailsStreamingCountrySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {

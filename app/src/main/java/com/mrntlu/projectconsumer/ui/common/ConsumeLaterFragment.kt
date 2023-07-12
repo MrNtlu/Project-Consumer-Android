@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.ui.common
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -39,6 +40,7 @@ import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
+import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.ConsumeLaterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,10 +52,10 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     private var scoreDialog: AlertDialog? = null
     private lateinit var dialog: LoadingDialog
-    private lateinit var popupMenu: PopupMenu
-    private lateinit var sortPopupMenu: PopupMenu
 
     private var consumeLaterAdapter: ConsumeLaterAdapter? = null
+    private var sortPopupMenu: PopupMenu? = null
+    private var popupMenu: PopupMenu? = null
     private var searchQuery: String? = null
 
     override fun onCreateView(
@@ -118,126 +120,130 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
                         if (consumeLaterAdapter?.isLoading == false) {
-                            if (!::sortPopupMenu.isInitialized) {
+                            if (sortPopupMenu == null) {
                                 val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
                                 sortPopupMenu = PopupMenu(requireContext(), menuItemView)
-                                sortPopupMenu.menuInflater.inflate(R.menu.sort_extra_menu, sortPopupMenu.menu)
-                                sortPopupMenu.setForceShowIcon(true)
+                                sortPopupMenu!!.menuInflater.inflate(R.menu.sort_extra_menu, sortPopupMenu!!.menu)
+                                sortPopupMenu!!.setForceShowIcon(true)
                             }
 
-                            val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-                            val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+                            popupMenu?.let {
+                                val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+                                val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
 
-                            for (i in 0..sortPopupMenu.menu.size.minus(1)) {
-                                val popupMenuItem = sortPopupMenu.menu[i]
-                                val sortType = Constants.SortConsumeLaterRequests[i]
+                                for (i in 0..it.menu.size.minus(1)) {
+                                    val popupMenuItem = it.menu[i]
+                                    val sortType = Constants.SortConsumeLaterRequests[i]
 
-                                popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-                                    requireContext(),
-                                    if(viewModel.sort == sortType.request) selectedColor else unselectedColor
-                                )
-                                popupMenuItem.title = sortType.name
-                            }
-
-                            sortPopupMenu.setOnMenuItemClickListener { item ->
-                                val newSortType = when(item.itemId) {
-                                    R.id.firstSortMenu -> {
-                                        setPopupMenuItemVisibility(sortPopupMenu, 0)
-
-                                        Constants.SortConsumeLaterRequests[0].request
-                                    }
-                                    R.id.secondSortMenu -> {
-                                        setPopupMenuItemVisibility(sortPopupMenu, 1)
-
-                                        Constants.SortConsumeLaterRequests[1].request
-                                    }
-                                    R.id.thirdSortMenu -> {
-                                        setPopupMenuItemVisibility(sortPopupMenu, 2)
-
-                                        Constants.SortConsumeLaterRequests[2].request
-                                    }
-                                    R.id.forthSortMenu -> {
-                                        setPopupMenuItemVisibility(sortPopupMenu, 3)
-
-                                        Constants.SortConsumeLaterRequests[3].request
-                                    }
-                                    else -> { Constants.SortConsumeLaterRequests[0].request }
+                                    popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                        requireContext(),
+                                        if(viewModel.sort == sortType.request) selectedColor else unselectedColor
+                                    )
+                                    popupMenuItem.title = sortType.name
                                 }
 
-                                item.isChecked = true
+                                it.setOnMenuItemClickListener { item ->
+                                    val newSortType = when(item.itemId) {
+                                        R.id.firstSortMenu -> {
+                                            setPopupMenuItemVisibility(it, 0)
 
-                                if (newSortType != viewModel.sort) {
-                                    viewModel.setSort(newSortType)
-                                    viewModel.getConsumeLater()
+                                            Constants.SortConsumeLaterRequests[0].request
+                                        }
+                                        R.id.secondSortMenu -> {
+                                            setPopupMenuItemVisibility(it, 1)
+
+                                            Constants.SortConsumeLaterRequests[1].request
+                                        }
+                                        R.id.thirdSortMenu -> {
+                                            setPopupMenuItemVisibility(it, 2)
+
+                                            Constants.SortConsumeLaterRequests[2].request
+                                        }
+                                        R.id.forthSortMenu -> {
+                                            setPopupMenuItemVisibility(it, 3)
+
+                                            Constants.SortConsumeLaterRequests[3].request
+                                        }
+                                        else -> { Constants.SortConsumeLaterRequests[0].request }
+                                    }
+
+                                    item.isChecked = true
+
+                                    if (newSortType != viewModel.sort) {
+                                        viewModel.setSort(newSortType)
+                                        viewModel.getConsumeLater()
+                                    }
+
+                                    true
                                 }
 
-                                true
+                                it.show()
                             }
-
-                            sortPopupMenu.show()
                         }
                     }
                     R.id.filterMenu -> {
                         if (consumeLaterAdapter?.isLoading == false) {
-                            if (!::popupMenu.isInitialized) {
+                            if (popupMenu == null) {
                                 val menuItemView = requireActivity().findViewById<View>(R.id.filterMenu)
                                 popupMenu = PopupMenu(requireContext(), menuItemView)
-                                popupMenu.menuInflater.inflate(R.menu.filter_consume_later_menu, popupMenu.menu)
-                                popupMenu.setForceShowIcon(true)
+                                popupMenu!!.menuInflater.inflate(R.menu.filter_consume_later_menu, popupMenu!!.menu)
+                                popupMenu!!.setForceShowIcon(true)
                             }
 
-                            val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-                            val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+                            popupMenu?.let {
+                                val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+                                val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
 
-                            for (i in 0..popupMenu.menu.size.minus(1)) {
-                                val popupMenuItem = popupMenu.menu[i]
-                                val contentType = Constants.ContentType.values()[i]
+                                for (i in 0..it.menu.size.minus(1)) {
+                                    val popupMenuItem = it.menu[i]
+                                    val contentType = Constants.ContentType.values()[i]
 
-                                popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-                                    requireContext(),
-                                    if(viewModel.filter == contentType.request) selectedColor else unselectedColor
-                                )
-                                popupMenuItem.title = contentType.value
-                            }
-
-                            popupMenu.setOnMenuItemClickListener { item ->
-                                val newFilterType = when (item.itemId) {
-                                    R.id.firstFilterMenu -> {
-                                        setPopupMenuItemVisibility(popupMenu, 0)
-
-                                        Constants.ContentType.values()[0]
-                                    }
-                                    R.id.secondFilterMenu -> {
-                                        setPopupMenuItemVisibility(popupMenu, 1)
-
-                                        Constants.ContentType.values()[1]
-                                    }
-                                    R.id.thirdFilterMenu -> {
-                                        setPopupMenuItemVisibility(popupMenu, 2)
-
-                                        Constants.ContentType.values()[2]
-                                    }
-                                    R.id.forthFilterMenu -> {
-                                        setPopupMenuItemVisibility(popupMenu, 3)
-
-                                        Constants.ContentType.values()[3]
-                                    }
-                                    else -> { Constants.ContentType.values()[0] }
+                                    popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                        requireContext(),
+                                        if(viewModel.filter == contentType.request) selectedColor else unselectedColor
+                                    )
+                                    popupMenuItem.title = contentType.value
                                 }
 
-                                item.isChecked = true
+                                it.setOnMenuItemClickListener { item ->
+                                    val newFilterType = when (item.itemId) {
+                                        R.id.firstFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 0)
 
-                                viewModel.setFilter(
-                                    if (newFilterType.request != viewModel.filter)
-                                        newFilterType.request
-                                    else null
-                                )
-                                viewModel.getConsumeLater()
+                                            Constants.ContentType.values()[0]
+                                        }
+                                        R.id.secondFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 1)
 
-                                true
+                                            Constants.ContentType.values()[1]
+                                        }
+                                        R.id.thirdFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 2)
+
+                                            Constants.ContentType.values()[2]
+                                        }
+                                        R.id.forthFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 3)
+
+                                            Constants.ContentType.values()[3]
+                                        }
+                                        else -> { Constants.ContentType.values()[0] }
+                                    }
+
+                                    item.isChecked = true
+
+                                    viewModel.setFilter(
+                                        if (newFilterType.request != viewModel.filter)
+                                            newFilterType.request
+                                        else null
+                                    )
+                                    viewModel.getConsumeLater()
+
+                                    true
+                                }
+
+                                it.show()
                             }
-
-                            popupMenu.show()
                         }
                     }
                 }
@@ -287,31 +293,33 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
-                    //TODO Are you sure dialog
-                    val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
+                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                        val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
 
-                    deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
-                        when(response) {
-                            is NetworkResponse.Failure -> {
-                                if (::dialog.isInitialized)
-                                    dialog.dismissDialog()
+                        deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
+                            when(response) {
+                                is NetworkResponse.Failure -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
 
-                                context?.showErrorDialog(response.errorMessage)
-                            }
-                            NetworkResponse.Loading -> {
-                                if (::dialog.isInitialized)
-                                    dialog.showLoadingDialog()
-                            }
-                            is NetworkResponse.Success -> {
-                                if (::dialog.isInitialized)
-                                    dialog.dismissDialog()
+                                    context?.showErrorDialog(response.errorMessage)
+                                }
+                                NetworkResponse.Loading -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.showLoadingDialog()
+                                }
+                                is NetworkResponse.Success -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
 
-                                consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                    consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                }
                             }
                         }
                     }
                 }
 
+                @SuppressLint("InflateParams")
                 override fun onAddToListPressed(item: ConsumeLaterResponse, position: Int) {
                     activity?.let {
                         val builder = AlertDialog.Builder(it, R.style.WrapContentDialog)
@@ -421,6 +429,8 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     override fun onDestroyView() {
         viewModel.consumeLaterList.removeObservers(viewLifecycleOwner)
+        popupMenu = null
+        sortPopupMenu = null
         consumeLaterAdapter = null
         super.onDestroyView()
     }

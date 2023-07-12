@@ -81,7 +81,23 @@
     <string name="episodes">Episodes</string>
     <string name="watched_seasons">Watched Seasons</string>
     <string name="watched_episodes">Watched Episodes</string>
+    <string name="reset">Reset</string>
+    <string name="apply">Apply</string>
+    <string name="more_cd">More</string>
+    <string name="hours_played">Hours Played</string>
+    <string name="hours">Hours</string>
+    <string name="confirm">Confirm</string>
+    <string name="yes">Yes</string>
+    <string name="no_">No!</string>
+    <string name="platforms">Platforms</string>
+    <string name="release_date">Release Date</string>
+    <string name="themes">Themes</string>
+    <string name="finished">Finished</string>
+    <string name="filter">Filter</string>
+    <string name="diary">Diary</string>
 
+    <string name="my_list">My List</string>
+    <string name="log_out">Log out</string>
     <string name="back_to_top">Back to Top</string>
     <string name="no_internet_connection">No internet connection!</string>
     <string name="connection_lost_no_internet_connection">Connection lost! No internet connection.</string>
@@ -103,28 +119,14 @@
     <string name="password_too_short">Password is too short. Min 6.</string>
     <string name="passwords_dont_match">Passwords don\'t match.</string>
     <string name="please_fill_the_form">Please fill the form.</string>
-    <string name="platforms">Platforms</string>
-    <string name="release_date">Release Date</string>
-    <string name="themes">Themes</string>
-    <string name="finished">Finished</string>
     <string name="empty_list_consume_later">Discover new content with a single tap!</string>
-    <string name="filter">Filter</string>
-    <string name="diary">Diary</string>
-    <string name="my_list">My List</string>
     <string name="profile_content_title">Legend Content</string>
 
     <string name="notification_permission_info">Enable notifications to receive personalized recommendations, updates, and news about movies, tv shows, games and anime.</string>
     <string name="legend_content_info">Legend content refers to movies, animes, games and TV series that users have watched multiple times.</string>
     <string name="move_consume_later_info">You\'ll move this content to your list and mark it as finished.</string>
-    <string name="reset">Reset</string>
-    <string name="apply">Apply</string>
-    <string name="more_cd">More</string>
-    <string name="hours_played">Hours Played</string>
-    <string name="hours">Hours</string>
-    <string name="confirm">Confirm</string>
-    <string name="yes">Yes</string>
-    <string name="no_">No!</string>
     <string name="do_you_want_to_delete">Do you want to delete?</string>
+    <string name="do_you_want_to_log_out_">Do you want to log out?</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

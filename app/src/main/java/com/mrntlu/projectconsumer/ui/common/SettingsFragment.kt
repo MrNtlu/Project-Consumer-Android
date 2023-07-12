@@ -20,6 +20,7 @@ import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
@@ -72,15 +73,17 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             accountSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
 
             if (sharedViewModel.isLoggedIn()) {
-                accountSecondClickTile.settingsClickTileTV.text = "Log out"
+                accountSecondClickTile.settingsClickTileTV.text = getString(R.string.log_out)
 
                 accountSecondClickTile.root.setOnClickListener {
-                    //TODO Are you sure dialog
-                    runBlocking {
-                        tokenManager.deleteToken()
-                        GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut()
-                        sharedViewModel.setAuthentication(false)
-                        navController.popBackStack()
+                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_log_out_)) {
+                        runBlocking {
+                            tokenManager.deleteToken()
+                            GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .signOut()
+                            sharedViewModel.setAuthentication(false)
+                            navController.popBackStack()
+                        }
                     }
                 }
             }

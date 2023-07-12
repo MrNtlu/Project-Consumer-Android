@@ -113,7 +113,6 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
                         discoverSearchView.isIconified = true
                         discoverSearchView.isIconified = true
 
-                        //TODO Let user select
                         val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToMovieSearchFragment(
                             query, contentType,
                         )

@@ -5,11 +5,13 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -44,6 +46,11 @@ fun Fragment.hideKeyboard() {
 
 fun Activity.hideKeyboard() {
     hideKeyboard(currentFocus ?: View(this))
+}
+
+fun Context.openInBrowser(url: String) {
+    val intent = CustomTabsIntent.Builder().build()
+    intent.launchUrl(this, Uri.parse(url))
 }
 
 fun Context.dpToPx(dp: Float): Int {

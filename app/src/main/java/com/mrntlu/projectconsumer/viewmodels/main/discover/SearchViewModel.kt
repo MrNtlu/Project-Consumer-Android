@@ -41,7 +41,7 @@ class SearchViewModel @AssistedInject constructor(
 
     // Process Death variables
     var isRestoringData = false
-    private var contentType: Constants.ContentType = savedStateHandle[SEARCH_CONTENT_TYPE_KEY] ?: vmContentType
+    var contentType: Constants.ContentType = savedStateHandle[SEARCH_CONTENT_TYPE_KEY] ?: vmContentType
     private var page: Int = savedStateHandle[SEARCH_PAGE_KEY] ?: 1
     private var search: String = savedStateHandle[SEARCH_TEXT_KEY] ?: vmSearch
     var scrollPosition: Int = savedStateHandle[SEARCH_SCROLL_POSITION_KEY] ?: 0
@@ -54,7 +54,7 @@ class SearchViewModel @AssistedInject constructor(
         if (page != 1 || search != vmSearch) {
             restoreData()
         } else {
-            setContentType(vmContentType)
+            setContentTypeValue(vmContentType)
             setSearch(vmSearch)
 
             startMoviesFetch(search, true)
@@ -141,7 +141,7 @@ class SearchViewModel @AssistedInject constructor(
         }
     }
 
-    private fun setContentType(newContentType: Constants.ContentType) {
+    fun setContentTypeValue(newContentType: Constants.ContentType) {
         contentType = newContentType
         savedStateHandle[SEARCH_CONTENT_TYPE_KEY] = contentType
     }

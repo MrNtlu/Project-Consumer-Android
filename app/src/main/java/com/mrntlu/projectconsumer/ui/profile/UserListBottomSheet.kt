@@ -81,8 +81,6 @@ class UserListBottomSheet(
         setUI()
         setListeners()
         setObservers()
-
-        //TODO On edit pressed, incrementing the episode and season should be very easy and 1 tap.
     }
 
     private fun setUI() {

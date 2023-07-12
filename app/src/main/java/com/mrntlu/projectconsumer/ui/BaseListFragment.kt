@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 
 abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBinding>() {
 
-    private lateinit var popupMenu: PopupMenu
+    private var popupMenu: PopupMenu? = null
     protected var contentAdapter: ContentAdapter<T>? = null
     private var sortType: String = Constants.SortRequests[0].request
     protected var gridCount = 3
@@ -66,70 +66,72 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
                         if (contentAdapter?.isLoading == false) {
-                            if (!::popupMenu.isInitialized) {
+                            if (popupMenu == null) {
                                 val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
                                 popupMenu = PopupMenu(requireContext(), menuItemView)
-                                popupMenu.menuInflater.inflate(R.menu.sort_menu, popupMenu.menu)
-                                popupMenu.setForceShowIcon(true)
+                                popupMenu!!.menuInflater.inflate(R.menu.sort_menu, popupMenu!!.menu)
+                                popupMenu!!.setForceShowIcon(true)
                             }
 
-                            val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-                            val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+                            popupMenu?.let {
+                                val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+                                val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
 
-                            for (i in 0..popupMenu.menu.size.minus(1)) {
-                                val popupMenuItem = popupMenu.menu[i]
-                                val sortRequest = when(fetchType) {
-                                    FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[i]
-                                    else -> Constants.SortRequests[i]
+                                for (i in 0..it.menu.size.minus(1)) {
+                                    val popupMenuItem = it.menu[i]
+                                    val sortRequest = when(fetchType) {
+                                        FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[i]
+                                        else -> Constants.SortRequests[i]
+                                    }
+
+                                    popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                        requireContext(),
+                                        if(sortType == sortRequest.request) selectedColor else unselectedColor
+                                    )
+                                    popupMenuItem.title = sortRequest.name
                                 }
 
-                                popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-                                    requireContext(),
-                                    if(sortType == sortRequest.request) selectedColor else unselectedColor
-                                )
-                                popupMenuItem.title = sortRequest.name
+                                it.setOnMenuItemClickListener { item ->
+                                    val newSortType = when (item.itemId) {
+                                        R.id.firstSortMenu -> {
+                                            setPopupMenuItemVisibility(it, 0)
+
+                                            when(fetchType) {
+                                                FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[0].request
+                                                else -> Constants.SortRequests[0].request
+                                            }
+                                        }
+                                        R.id.secondSortMenu -> {
+                                            setPopupMenuItemVisibility(it, 1)
+
+                                            when(fetchType) {
+                                                FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[1].request
+                                                else -> Constants.SortRequests[1].request
+                                            }
+                                        }
+                                        R.id.thirdSortMenu -> {
+                                            setPopupMenuItemVisibility(it, 2)
+
+                                            when(fetchType) {
+                                                FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[2].request
+                                                else -> Constants.SortRequests[2].request
+                                            }
+                                        }
+                                        else -> { Constants.SortRequests[0].request }
+                                    }
+
+                                    item.isChecked = true
+
+                                    if (newSortType != sortType) {
+                                        sortType = newSortType
+                                        fetch(sortType)
+                                    }
+
+                                    true
+                                }
+
+                                it.show()
                             }
-
-                            popupMenu.setOnMenuItemClickListener { item ->
-                                val newSortType = when (item.itemId) {
-                                    R.id.firstSortMenu -> {
-                                        setPopupMenuItemVisibility(popupMenu, 0)
-
-                                        when(fetchType) {
-                                            FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[0].request
-                                            else -> Constants.SortRequests[0].request
-                                        }
-                                    }
-                                    R.id.secondSortMenu -> {
-                                        setPopupMenuItemVisibility(popupMenu, 1)
-
-                                        when(fetchType) {
-                                            FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[1].request
-                                            else -> Constants.SortRequests[1].request
-                                        }
-                                    }
-                                    R.id.thirdSortMenu -> {
-                                        setPopupMenuItemVisibility(popupMenu, 2)
-
-                                        when(fetchType) {
-                                            FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[2].request
-                                            else -> Constants.SortRequests[2].request
-                                        }
-                                    }
-                                    else -> { Constants.SortRequests[0].request }
-                                }
-
-                                item.isChecked = true
-
-                                if (newSortType != sortType) {
-                                    sortType = newSortType
-                                    fetch(sortType)
-                                }
-
-                                true
-                            }
-
-                            popupMenu.show()
                         }
                     }
                 }
@@ -270,6 +272,7 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
             sharedViewModel.windowSize.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
+        popupMenu = null
         contentAdapter = null
         super.onDestroyView()
     }

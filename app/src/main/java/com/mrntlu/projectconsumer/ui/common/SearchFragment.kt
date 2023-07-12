@@ -8,9 +8,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.get
+import androidx.core.view.size
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -49,13 +53,8 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
     private lateinit var searchType: Constants.ContentType
 
     private var contentAdapter: ContentAdapter<ContentModel>? = null
+    private var popupMenu: PopupMenu? = null
     private var gridCount = 3
-
-    /* TODO!!!!
-    * TODO Check for process death
-    *  Allow change content type while searching
-    *  TODO!!!!!
-     */
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -106,8 +105,84 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                 })
             }
 
-            override fun onMenuItemSelected(menuItem: MenuItem) = true
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when(menuItem.itemId) {
+                    R.id.filterMenu -> {
+                        if (contentAdapter?.isLoading == false) {
+                            if (popupMenu == null) {
+                                val menuItemView = requireActivity().findViewById<View>(R.id.filterMenu)
+                                popupMenu = PopupMenu(requireContext(), menuItemView)
+                                popupMenu!!.menuInflater.inflate(R.menu.filter_consume_later_menu, popupMenu!!.menu)
+                                popupMenu!!.setForceShowIcon(true)
+                            }
+
+                            popupMenu?.let {
+                                val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+                                val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+
+                                for (i in 0..it.menu.size.minus(1)) {
+                                    val popupMenuItem = it.menu[i]
+                                    val contentType = Constants.ContentType.values()[i]
+
+                                    popupMenuItem.iconTintList = ContextCompat.getColorStateList(
+                                        requireContext(),
+                                        if(viewModel.contentType.request == contentType.request) selectedColor else unselectedColor
+                                    )
+                                    popupMenuItem.title = contentType.value
+                                }
+
+                                it.setOnMenuItemClickListener { item ->
+                                    val newFilterType = when (item.itemId) {
+                                        R.id.firstFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 0)
+
+                                            Constants.ContentType.values()[0]
+                                        }
+                                        R.id.secondFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 1)
+
+                                            Constants.ContentType.values()[1]
+                                        }
+                                        R.id.thirdFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 2)
+
+                                            Constants.ContentType.values()[2]
+                                        }
+                                        R.id.forthFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 3)
+
+                                            Constants.ContentType.values()[3]
+                                        }
+                                        else -> { Constants.ContentType.values()[0] }
+                                    }
+
+                                    item.isChecked = true
+
+                                    if (newFilterType.request != viewModel.contentType.request) {
+                                        viewModel.setContentTypeValue(newFilterType)
+                                        viewModel.startMoviesFetch(searchQuery, true)
+                                    }
+
+                                    true
+                                }
+
+                                it.show()
+                            }
+                        }
+                    }
+                }
+                return true
+            }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun setPopupMenuItemVisibility(popupMenu: PopupMenu, selectedIndex: Int) {
+        val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+        val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+
+        for(i in 0..popupMenu.menu.size.minus(1)) {
+            popupMenu.menu[i].iconTintList = ContextCompat.getColorStateList(requireContext(), if(i == selectedIndex) selectedColor else unselectedColor)
+        }
     }
 
     private fun setObservers() {
@@ -251,6 +326,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
             sharedViewModel.windowSize.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
+        popupMenu = null
         contentAdapter = null
         super.onDestroyView()
     }
