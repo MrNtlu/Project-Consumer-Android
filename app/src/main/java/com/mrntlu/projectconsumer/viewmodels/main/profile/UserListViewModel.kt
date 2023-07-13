@@ -28,6 +28,19 @@ class UserListViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
+    val totalYScroll: MutableLiveData<Int> by lazy {
+        MutableLiveData(0)
+    }
+
+    fun setTotalYPosition(dy: Int) {
+        val newTotal = this.totalYScroll.value?.plus(dy)
+        this.totalYScroll.value = if (newTotal != null) {
+            if (newTotal > 500) 501
+            else if (newTotal < 0) 0
+            else newTotal
+        } else null
+    }
+
     private val _userList = MutableLiveData<NetworkResponse<DataResponse<UserList>>>()
     val userList: LiveData<NetworkResponse<DataResponse<UserList>>> = _userList
 

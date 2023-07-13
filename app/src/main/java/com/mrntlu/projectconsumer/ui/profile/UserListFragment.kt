@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.UserListAdapter
@@ -133,10 +134,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private fun setListeners() {
         binding.apply {
-            userListStatButton.setOnClickListener {
-                //TODO Show in bottom sheet or dialog
-            }
-
             userListTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     when(tab?.position) {
@@ -295,10 +292,31 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 override fun onExhaustButtonPressed() {}
             })
             adapter = userListAdapter
+
+
+            addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    viewModel.setTotalYPosition(dy)
+                }
+            })
         }
     }
 
     private fun setObservers() {
+        val layoutParams = binding.userListTabLayout.layoutParams as ViewGroup.MarginLayoutParams
+
+        viewModel.totalYScroll.observe(viewLifecycleOwner) { totalYScroll ->
+            if (totalYScroll in 0..300) {
+                layoutParams.topMargin = -totalYScroll / 2
+                binding.userListTabLayout.layoutParams = layoutParams
+            } else {
+                layoutParams.topMargin = -150
+                binding.userListTabLayout.layoutParams = layoutParams
+            }
+        }
+
         viewModel.userList.observe(viewLifecycleOwner) { response ->
             when(response) {
                 is NetworkResponse.Failure -> userListAdapter?.setErrorView(response.errorMessage)
@@ -419,6 +437,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
             viewModel.userList.removeObservers(this)
+            viewModel.totalYScroll.removeObservers(this)
         }
         popupMenu = null
         userListAdapter = null

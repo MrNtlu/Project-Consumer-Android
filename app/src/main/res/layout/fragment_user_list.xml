@@ -5,40 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/userListLinearLayout"
-        android:layout_width="match_parent"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/userListTabLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        app:tabIndicatorHeight="0dp"
+        app:tabRippleColor="@null"
+        app:tabMode="scrollable"
+        app:tabGravity="start"
+        app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
+        app:tabTextColor="?attr/mainTextColor"
+        app:tabBackground="?attr/mainBackgroundColor"
+        app:tabMinWidth="0dp"
+        android:background="?attr/mainBackgroundColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/userListTabLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:tabIndicatorHeight="0dp"
-            app:tabRippleColor="@null"
-            app:tabMode="scrollable"
-            app:tabGravity="start"
-            app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
-            app:tabTextColor="?attr/mainTextColor"
-            app:tabBackground="?attr/mainBackgroundColor"
-            app:tabMinWidth="0dp"
-            android:background="?attr/mainBackgroundColor" />
-
-        <Button
-            android:id="@+id/userListStatButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?attr/materialIconButtonStyle"
-            app:icon="@drawable/ic_stat"
-            app:iconTint="?attr/mainTextColor"
-            android:minHeight="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView20"
-            app:layout_constraintEnd_toStartOf="@+id/guideline22"
-            app:layout_constraintTop_toTopOf="@+id/textView20" />
-    </LinearLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userListRV"
@@ -47,5 +30,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userListLinearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/userListTabLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>
