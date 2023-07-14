@@ -31,11 +31,13 @@ import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateTVWatchLis
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
+import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -180,9 +182,9 @@ class UserListBottomSheet(
                 else R.string.episodes
             )
 
-            timesFinishedTextInputET.setText(userListModel?.timesFinished.toString())
-            watchedSeasonTextInputET.setText(userListModel?.subAttribute.toString())
-            watchedEpisodeTextInputET.setText(userListModel?.mainAttribute.toString())
+            timesFinishedTextInputET.setText(userListModel?.timesFinished?.toString())
+            watchedSeasonTextInputET.setText(userListModel?.subAttribute?.toString())
+            watchedEpisodeTextInputET.setText(userListModel?.mainAttribute?.toString())
 
             watchedSeasonTextLayout.suffixText = if (seasonSuffix != null) "/$seasonSuffix" else null
             watchedEpisodeTextLayout.suffixText = if (episodeSuffix != null) "/$episodeSuffix" else null
@@ -223,6 +225,9 @@ class UserListBottomSheet(
                         userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
                             handleBottomSheetState(response)
 
+                            if (response is NetworkResponse.Success)
+                                userListModel = null
+
                             handleResponseStatusLayout(
                                 binding.responseStatusLayout.root,
                                 binding.responseStatusLayout.responseStatusLottie,
@@ -258,58 +263,92 @@ class UserListBottomSheet(
                         scoreSelectionACTV.clearFocus()
                 }
 
+                watchedSeasonTextInputET.addTextChangedListener { text ->
+                    watchedSeasonTextLayout.error = if (text.isNullOrEmpty()) getString(R.string.input_number) else null
+                }
+
+                watchedEpisodeTextInputET.addTextChangedListener { text ->
+                    watchedEpisodeTextLayout.error = if (text.isNullOrEmpty()) getString(R.string.input_number) else null
+                }
+
                 timesFinishedTextInputET.addTextChangedListener { text ->
                     timesFinishedTextLayout.error = if (text.isNullOrEmpty()) getString(R.string.input_number) else null
                 }
 
                 saveButton.setOnClickListener {
                     if (bottomSheetState == BottomSheetState.EDIT) {
-                        val score: Int? = layoutEditInc.scoreSelectionACTV.text.toString().toIntOrNull()
-                        val status = Constants.UserListStatus[layoutEditInc.toggleTabLayout.selectedTabPosition].request
-                        val timesFinished = if (status != Constants.UserListStatus[1].request) null
-                            else layoutEditInc.timesFinishedTextInputET.text?.toString()?.toIntOrNull()
-                        val watchedSeasons = layoutEditInc.watchedSeasonTextInputET.text?.toString()?.toIntOrNull()
-                        val watchedEpisodes = layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.toIntOrNull()
+                        if (validateFields()) {
 
-                        if (userListModel == null) {
-                            when(contentType) {
-                                Constants.ContentType.ANIME -> TODO()
-                                Constants.ContentType.MOVIE -> {
-                                    val watchListBody = MovieWatchListBody(contentId, contentExternalId, timesFinished, score, status)
-                                    viewModel.createMovieWatchList(watchListBody)
+                            val score: Int? = scoreSelectionACTV.text.toString().toIntOrNull()
+                            val status =
+                                Constants.UserListStatus[toggleTabLayout.selectedTabPosition].request
+                            val timesFinished =
+                                if (status != Constants.UserListStatus[1].request) null
+                                else timesFinishedTextInputET.text?.toString()?.toIntOrNull()
+                            val watchedSeasons =
+                                watchedSeasonTextInputET.text?.toString()?.toIntOrNull()
+                            val watchedEpisodes =
+                                watchedEpisodeTextInputET.text?.toString()?.toIntOrNull()
+
+                            if (userListModel == null) {
+                                when (contentType) {
+                                    Constants.ContentType.ANIME -> TODO()
+                                    Constants.ContentType.MOVIE -> {
+                                        val watchListBody = MovieWatchListBody(
+                                            contentId,
+                                            contentExternalId,
+                                            timesFinished,
+                                            score,
+                                            status
+                                        )
+                                        viewModel.createMovieWatchList(watchListBody)
+                                    }
+
+                                    Constants.ContentType.TV -> {
+                                        val tvListBody = TVWatchListBody(
+                                            contentId,
+                                            contentExternalId,
+                                            timesFinished,
+                                            watchedEpisodes,
+                                            watchedSeasons,
+                                            score,
+                                            status
+                                        )
+                                        viewModel.createTVWatchList(tvListBody)
+                                    }
+
+                                    Constants.ContentType.GAME -> TODO()
                                 }
-                                Constants.ContentType.TV -> {
-                                    val tvListBody = TVWatchListBody(contentId, contentExternalId, timesFinished, watchedEpisodes, watchedSeasons, score, status)
-                                    viewModel.createTVWatchList(tvListBody)
+                            } else {
+                                when (contentType) {
+                                    Constants.ContentType.ANIME -> TODO()
+                                    Constants.ContentType.MOVIE -> {
+                                        val updateWatchListBody = UpdateMovieWatchListBody(
+                                            userListModel!!.id, userListModel!!.score != score,
+                                            if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
+                                            if (userListModel!!.score != score) score else null,
+                                            if (userListModel!!.contentStatus != status) status else null
+                                        )
+                                        viewModel.updateMovieWatchList(updateWatchListBody)
+                                    }
+
+                                    Constants.ContentType.TV -> {
+                                        val updateWatchListBody = UpdateTVWatchListBody(
+                                            userListModel!!.id, userListModel!!.score != score,
+                                            if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
+                                            if (userListModel!!.mainAttribute != watchedEpisodes) watchedEpisodes else null,
+                                            if (userListModel!!.subAttribute != watchedSeasons) watchedSeasons else null,
+                                            if (userListModel!!.score != score) score else null,
+                                            if (userListModel!!.contentStatus != status) status else null
+                                        )
+                                        viewModel.updateTVWatchList(updateWatchListBody)
+                                    }
+
+                                    Constants.ContentType.GAME -> TODO()
                                 }
-                                Constants.ContentType.GAME -> TODO()
                             }
-                        } else {
-                            when(contentType) {
-                                Constants.ContentType.ANIME -> TODO()
-                                Constants.ContentType.MOVIE -> {
-                                    val updateWatchListBody = UpdateMovieWatchListBody(
-                                        userListModel!!.id, userListModel!!.score != score,
-                                        if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
-                                        if (userListModel!!.score != score) score else null,
-                                        if (userListModel!!.contentStatus != status) status else null
-                                    )
-                                    viewModel.updateMovieWatchList(updateWatchListBody)
-                                }
-                                Constants.ContentType.TV -> {
-                                    val updateWatchListBody = UpdateTVWatchListBody(
-                                        userListModel!!.id, userListModel!!.score != score,
-                                        if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
-                                        if (userListModel!!.mainAttribute != watchedEpisodes) watchedEpisodes else null,
-                                        if (userListModel!!.subAttribute != watchedSeasons) watchedSeasons else null,
-                                        if (userListModel!!.score != score) score else null,
-                                        if (userListModel!!.contentStatus != status) status else null
-                                    )
-                                    viewModel.updateTVWatchList(updateWatchListBody)
-                                }
-                                Constants.ContentType.GAME -> TODO()
-                            }
-                        }
+                        } else
+                            context?.showErrorDialog(getString(R.string.fix_errors))
                     } else {
                         bottomSheetState = BottomSheetState.EDIT
                         setUI()
@@ -359,6 +398,29 @@ class UserListBottomSheet(
                     }
                 }
             }
+        }
+    }
+
+    private fun validateFields(): Boolean {
+        return when(contentType) {
+            Constants.ContentType.ANIME -> binding.layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.isNotEmptyOrBlank() == true
+            Constants.ContentType.TV -> {
+                var isValid = true
+
+                if (binding.layoutEditInc.watchedSeasonTextInputET.text?.toString()?.isNotEmptyOrBlank() == false) {
+                    binding.layoutEditInc.watchedSeasonTextLayout.error = getString(R.string.input_number)
+                    isValid = false
+                }
+
+                if (binding.layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.isNotEmptyOrBlank() == false) {
+                    binding.layoutEditInc.watchedEpisodeTextLayout.error = getString(R.string.input_number)
+                    isValid = false
+                }
+
+                isValid
+            }
+            Constants.ContentType.GAME -> TODO()
+            else -> true
         }
     }
 

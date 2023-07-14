@@ -210,13 +210,6 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
-        <action
-            android:id="@+id/action_navigation_profile_to_userListFragment"
-            app:destination="@id/userListFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <action
@@ -318,7 +311,7 @@
         app:popEnterAnim="@anim/slide_in_left"
         app:popExitAnim="@anim/slide_out_right"/>
     <fragment
-        android:id="@+id/userListFragment"
+        android:id="@+id/navigation_user_list"
         android:name="com.mrntlu.projectconsumer.ui.profile.UserListFragment"
         android:label="UserListFragment"
         tools:layout="@layout/fragment_user_list" >

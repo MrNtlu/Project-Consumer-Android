@@ -96,9 +96,10 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
                 } else {
                     if (!sharedViewModel.isNetworkAvailable())
                         context?.showErrorDialog(getString(R.string.no_internet_connection))
-
-                    context?.showLoginRegisterDialog(true) {
-                        navController.navigate(R.id.action_global_authFragment)
+                    else {
+                        context?.showLoginRegisterDialog(true) {
+                            navController.navigate(R.id.action_global_authFragment)
+                        }
                     }
                 }
             }
@@ -141,6 +142,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
 
     protected fun handleWatchListLottie(binding: LayoutUserInteractionBinding, isDetailsNull: Boolean) {
         binding.addListLottie.apply {
+
             setMinAndMaxFrame(0, 130)
             frame = if (isDetailsNull) 130 else 0
 
@@ -172,8 +174,8 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         isResponseFailed = response is NetworkResponse.Failure
 
         binding.apply {
-            userInteractionLoading.setAnimation(if (response is NetworkResponse.Failure) R.raw.error_small else R.raw.loading)
-            userInteractionLoadingLayout.setVisibilityByCondition(shouldHide = response is NetworkResponse.Success)
+            userInteractionLoading.setAnimation(R.raw.loading)
+            userInteractionLoadingLayout.setVisibilityByCondition(shouldHide = response !is NetworkResponse.Loading)
 
             userInteractionLoading.apply {
                 if (response is NetworkResponse.Failure) {

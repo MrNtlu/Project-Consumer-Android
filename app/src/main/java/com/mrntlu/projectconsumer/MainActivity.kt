@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -130,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                 setOf(
                     R.id.navigation_home, R.id.navigation_discover,
                     R.id.navigation_profile, R.id.navigation_later,
+                    R.id.navigation_user_list,
                 )
             else
                 setOf(
@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                     binding.navView.setVisibilityByCondition(sharedViewModel.isLoggedIn())
                     handleUserIncVisibility(true)
                 }
-                R.id.navigation_profile, R.id.navigation_later -> {
+                R.id.navigation_profile, R.id.navigation_later, R.id.navigation_user_list -> {
                     binding.toolbar.setVisible()
                     binding.navView.setVisible()
                     handleUserIncVisibility(true)
@@ -189,20 +189,20 @@ class MainActivity : AppCompatActivity() {
             binding.toolbar.title = when(destination.id) {
                 R.id.movieListFragment -> {
                     if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
-                        "Upcoming Movies"
+                        getString(R.string.upcoming)
                     else if (args?.getString("fetchType") == FetchType.TOP.tag)
-                        "Top Movies"
+                        getString(R.string.top_rated)
                     else ""
                 }
                 R.id.tvListFragment -> {
                     if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
-                        "Upcoming TV Series"
+                        getString(R.string.upcoming)
                     else if (args?.getString("fetchType") == FetchType.TOP.tag)
-                        "Top TV Series"
+                        getString(R.string.top_rated)
                     else ""
                 }
-                R.id.navigation_settings -> "Settings"
-                R.id.discoverListFragment -> "Discover"
+                R.id.navigation_settings -> getString(R.string.settings)
+                R.id.discoverListFragment -> getString(R.string.discover)
                 else -> ""
             }
         }
@@ -234,29 +234,8 @@ class MainActivity : AppCompatActivity() {
         return super.onCreateView(name, context, attrs)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar_menu, menu)
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        val currentItem = navController.currentDestination?.id
-
-        menu?.findItem(R.id.settingsMenu)?.isVisible = !(
-                currentItem != R.id.navigation_home &&
-                currentItem != R.id.navigation_discover &&
-                currentItem != R.id.navigation_profile &&
-                currentItem != R.id.navigation_later) &&
-                sharedViewModel.isLoggedIn()
-
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            R.id.settingsMenu -> {
-                navController.navigate(R.id.action_global_settingsFragment)
-            }
             android.R.id.home -> {
                 navController.popBackStack()
             }

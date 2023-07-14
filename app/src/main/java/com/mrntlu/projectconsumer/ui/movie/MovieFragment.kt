@@ -10,7 +10,6 @@ import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.viewmodels.main.movie.MoviePreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class MovieFragment: BasePreviewFragment<Movie>() {
 

@@ -73,7 +73,6 @@
                 android:layout_weight="1"
                 android:indeterminate="false"
                 android:progress="35"
-                android:background="@color/shimmer_color"
                 app:indicatorColor="@color/shimmer_color"
                 app:trackCornerRadius="8dp"
                 app:trackThickness="5dp" />
@@ -87,27 +86,15 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/shimmerProfileMyListButton"
-            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/shimmer_color"
-            app:layout_constraintEnd_toStartOf="@+id/guideline23"
-            app:layout_constraintStart_toStartOf="@+id/guideline21"
-            app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
-
-        <Button
             android:id="@+id/shimmeProfileDiaryButton"
             style="@style/Widget.Material3.Button.ElevatedButton.Icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
             android:backgroundTint="@color/shimmer_color"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
-            app:layout_constraintStart_toStartOf="@+id/guideline23"
-            app:layout_constraintTop_toTopOf="@+id/shimmerProfileMyListButton" />
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
 
         <TextView
             android:id="@+id/shimmerMovieStatTV"
@@ -118,7 +105,7 @@
             android:background="@color/shimmer_color"
             app:layout_constraintEnd_toStartOf="@+id/shimmerTvStatTV"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerProfileMyListButton"/>
+            app:layout_constraintTop_toBottomOf="@+id/shimmeProfileDiaryButton" />
 
         <TextView
             android:id="@+id/shimmerTvStatTV"

@@ -2,10 +2,17 @@ package com.mrntlu.projectconsumer.ui.common
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import com.google.android.material.tabs.TabLayoutMediator
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.HomePagerAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentHomeBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
@@ -31,6 +38,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         setUI()
+        setMenu()
         setObservers()
     }
 
@@ -48,6 +56,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
             }
             mediator?.attach()
         }
+    }
+
+    private fun setMenu() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object: MenuProvider {
+            override fun onPrepareMenu(menu: Menu) {
+                if (!sharedViewModel.isLoggedIn())
+                    menu.removeItem(R.id.settingsMenu)
+            }
+
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.toolbar_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when(menuItem.itemId) {
+                    R.id.settingsMenu -> {
+                        navController.navigate(R.id.action_global_settingsFragment)
+                    }
+                }
+                return true
+            }
+
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setObservers() {

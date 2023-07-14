@@ -16,7 +16,7 @@ class BoundsOffsetDecoration : RecyclerView.ItemDecoration() {
         // It is crucial to refer to layoutParams.width
         // (view.width is 0 at this time)!
         val itemWidth = view.layoutParams.width
-        val offset = (parent.width - itemWidth) / 2
+        val offset = (parent.width - itemWidth) / 4
 
         if (itemPosition == 0) {
             outRect.left = offset

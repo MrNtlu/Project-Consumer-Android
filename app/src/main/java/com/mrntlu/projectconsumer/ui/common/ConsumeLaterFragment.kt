@@ -90,10 +90,6 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         val menuHost: MenuHost = requireActivity()
 
         menuHost.addMenuProvider(object: MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {
-                menu.removeItem(R.id.settingsMenu)
-            }
-
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.consume_later_menu, menu)
 

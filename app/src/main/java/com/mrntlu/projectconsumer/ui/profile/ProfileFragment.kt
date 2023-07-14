@@ -203,10 +203,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 }
             }
 
-            profileMyListButton.setOnClickListener {
-                navController.navigate(R.id.action_navigation_profile_to_userListFragment)
-            }
-
             profileDiaryButton.setOnClickListener {
                 //TODO Diary
             }

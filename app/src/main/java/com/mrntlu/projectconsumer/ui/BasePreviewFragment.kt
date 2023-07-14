@@ -12,6 +12,7 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
 import com.mrntlu.projectconsumer.adapters.PreviewSlideAdapter
 import com.mrntlu.projectconsumer.adapters.ProminentLayoutManager
+import com.mrntlu.projectconsumer.adapters.decorations.BoundsOffsetDecoration
 import com.mrntlu.projectconsumer.adapters.decorations.LinearHorizontalSpacingDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentPreviewBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
@@ -69,6 +70,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
 
             val spacing = resources.getDimensionPixelSize(R.dimen.carousel_spacing)
             addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
+            addItemDecoration(BoundsOffsetDecoration())
 
             snapHelper = PagerSnapHelper()
             snapHelper?.attachToRecyclerView(this)

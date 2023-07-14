@@ -18,5 +18,10 @@
     <item
         android:id="@+id/navigation_later"
         android:icon="@drawable/ic_later"
-        android:title="Watch Later" />
+        android:title="@string/watch_later" />
+
+    <item
+        android:id="@+id/navigation_user_list"
+        android:icon="@drawable/ic_list"
+        android:title="@string/my_list" />
 </menu>
