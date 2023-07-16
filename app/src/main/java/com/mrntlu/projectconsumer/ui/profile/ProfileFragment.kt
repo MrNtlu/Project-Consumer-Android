@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -30,6 +31,11 @@ import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
@@ -69,6 +75,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
 
         setObservers()
+
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(300L)
+            withContext(Dispatchers.Main) {
+
+            }
+        }
     }
 
     override fun onStart() {
@@ -104,6 +117,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
                         setUI()
                         setListeners()
+                        setRecyclerView()
                         contentAdapter?.setData(getLegendContentList())
                     }
                     else -> {}
@@ -119,8 +133,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 WindowSizeClass.MEDIUM -> 3
                 WindowSizeClass.EXPANDED -> 5
             }
-
-            setRecyclerView()
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
@@ -204,7 +216,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
 
             profileDiaryButton.setOnClickListener {
-                //TODO Diary
+                navController.navigate(R.id.action_navigation_profile_to_diaryFragment)
             }
 
             legendInfoButton.setOnClickListener {

@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.service.retrofit
 
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
+import com.mrntlu.projectconsumer.models.main.userList.LogsByDate
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 import com.mrntlu.projectconsumer.models.main.userList.UserList
@@ -21,6 +22,12 @@ import retrofit2.http.Query
 interface UserListApiService {
     @GET("list")
     suspend fun getUserList(@Query("sort") sort: String): Response<DataResponse<UserList>>
+
+    @GET("list/logs")
+    suspend fun getUserLogs(
+        @Query("from") from: String,
+        @Query("to") to: String,
+    ): Response<DataResponse<List<LogsByDate>>>
 
     @POST("list/movie")
     suspend fun createMovieWatchList(@Body body: MovieWatchListBody): Response<DataResponse<MovieWatchList>>

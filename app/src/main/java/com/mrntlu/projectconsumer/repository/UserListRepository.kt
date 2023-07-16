@@ -16,6 +16,10 @@ class UserListRepository @Inject constructor(
         userListApiService.getUserList(sort)
     }
 
+    fun getUserLogs(from: String, to: String) = networkResponseFlow {
+        userListApiService.getUserLogs(from, to)
+    }
+
     fun createMovieWatchList(body: MovieWatchListBody) = networkResponseFlow {
         userListApiService.createMovieWatchList(body)
     }
