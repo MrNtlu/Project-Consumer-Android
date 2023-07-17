@@ -11,7 +11,6 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Date
 
 @AndroidEntryPoint
 class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
@@ -37,9 +36,6 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
     private fun setUI() {
         binding.apply {
             viewModel.getUserLogs("2023-07-13", "2023-07-16")
-
-            calendarView.isSelected = false
-            printLog("${Date(calendarView.date)}")
         }
     }
 
