@@ -17,6 +17,12 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private val viewModel: DiaryViewModel by viewModels()
 
+    // Custom Calendar
+    // https://tejas-soni.medium.com/horizontal-calendar-using-recylerview-android-f07f666f2da5
+    // https://www.youtube.com/watch?v=knpSbtbPz3o&ab_channel=CodeWithCal
+    // https://www.youtube.com/watch?v=yp0ZahAXbzo&ab_channel=AndroidCoding
+    // https://medium.com/meetu-engineering/create-your-custom-calendar-view-10ff41f39bfe
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

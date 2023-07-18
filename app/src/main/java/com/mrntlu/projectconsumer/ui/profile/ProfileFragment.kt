@@ -75,13 +75,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
 
         setObservers()
-
-        GlobalScope.launch(Dispatchers.IO) {
-            delay(300L)
-            withContext(Dispatchers.Main) {
-
-            }
-        }
     }
 
     override fun onStart() {

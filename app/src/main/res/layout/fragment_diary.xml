@@ -8,14 +8,4 @@
     tools:context=".ui.profile.DiaryFragment"
     android:background="?attr/mainBackgroundColor">
 
-    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:mcv_selectionMode="none"
-        app:mcv_showOtherDates="all" />
 </androidx.constraintlayout.widget.ConstraintLayout>
