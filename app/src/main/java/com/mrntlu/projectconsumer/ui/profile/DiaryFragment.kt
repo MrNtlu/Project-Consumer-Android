@@ -5,17 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import com.mrntlu.projectconsumer.adapters.CalendarAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiaryBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.printLog
+import com.mrntlu.projectconsumer.utils.sundayForDate
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.LocalDate
 
 @AndroidEntryPoint
 class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private val viewModel: DiaryViewModel by viewModels()
+
+    private var focusedDate: LocalDate = LocalDate.now()
+    private var calendarAdapter: CalendarAdapter? = null
 
     // Custom Calendar
     // https://tejas-soni.medium.com/horizontal-calendar-using-recylerview-android-f07f666f2da5
@@ -37,17 +44,25 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
         setUI()
         setListeners()
         setObservers()
+        setCalendar()
     }
 
     private fun setUI() {
         binding.apply {
-            viewModel.getUserLogs("2023-07-13", "2023-07-16")
+//            viewModel.getUserLogs("2023-07-13", "2023-07-16")
+            updateFocusedDate()
         }
     }
 
     private fun setListeners() {
         binding.apply {
+            calendarNextButton.setOnClickListener {
+                updateFocusedDate(focusedDate.plusWeeks(1))
+            }
 
+            calendarPrevButton.setOnClickListener {
+                updateFocusedDate(focusedDate.minusWeeks(1))
+            }
         }
     }
 
@@ -67,11 +82,42 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
         }
     }
 
-    private fun setDateRange() {
+    private fun setCalendar() {
+        binding.calendarRV.apply {
+            layoutManager = GridLayoutManager(this.context, 7)
 
+            calendarAdapter = CalendarAdapter(daysInWeekArray())
+            adapter = calendarAdapter
+        }
+    }
+
+    private fun daysInWeekArray(): ArrayList<LocalDate> {
+        val dayList = arrayListOf<LocalDate>()
+
+        var current = focusedDate.sundayForDate()
+        val endDate = current?.plusWeeks(1)
+
+        while (current?.isBefore(endDate) == true) {
+            dayList.add(current)
+            current = current.plusDays(1)
+        }
+
+        return dayList
+    }
+
+    private fun updateFocusedDate(newFocusedDate: LocalDate? = null) {
+        if (newFocusedDate != null)
+            focusedDate = newFocusedDate
+        calendarAdapter?.updateDays(daysInWeekArray())
+
+        val headerDateText = "${focusedDate.month} ${focusedDate.year}"
+        binding.calendarDateTV.text = headerDateText
     }
 
     override fun onDestroyView() {
+        //TODO Remove observers
+        calendarAdapter = null
+
         super.onDestroyView()
     }
 }

@@ -35,6 +35,8 @@ import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.time.LocalDate
 import java.util.Locale
 
 const val DEFAULT_JUMP_THRESHOLD = 20
@@ -46,6 +48,21 @@ fun Fragment.hideKeyboard() {
 
 fun Activity.hideKeyboard() {
     hideKeyboard(currentFocus ?: View(this))
+}
+
+fun LocalDate.sundayForDate(): LocalDate? {
+    var currentDate = this
+
+    val oneWeekAgo = currentDate.minusWeeks(1)
+
+    while (currentDate.isAfter(oneWeekAgo)) {
+        if (currentDate.dayOfWeek == DayOfWeek.SUNDAY)
+            return currentDate
+
+        currentDate = currentDate.minusDays(1)
+    }
+
+    return null
 }
 
 fun Context.openInBrowser(url: String) {
