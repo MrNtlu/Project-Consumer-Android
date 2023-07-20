@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.mrntlu.projectconsumer.adapters.CalendarAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiaryBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.printLog
-import com.mrntlu.projectconsumer.utils.sundayForDate
+import com.mrntlu.projectconsumer.utils.getFirstDateOfTheWeek
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
@@ -23,12 +24,11 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private var focusedDate: LocalDate = LocalDate.now()
     private var calendarAdapter: CalendarAdapter? = null
+    private lateinit var dialog: LoadingDialog
 
-    // Custom Calendar
-    // https://tejas-soni.medium.com/horizontal-calendar-using-recylerview-android-f07f666f2da5
-    // https://www.youtube.com/watch?v=knpSbtbPz3o&ab_channel=CodeWithCal
-    // https://www.youtube.com/watch?v=yp0ZahAXbzo&ab_channel=AndroidCoding
-    // https://medium.com/meetu-engineering/create-your-custom-calendar-view-10ff41f39bfe
+    //TODO Replace LocalDate with Calendar in CalendarAdapter.kt
+    // Create adapter for diary with title headers
+    // Use diffutil to update count nodes
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,18 +40,13 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let {
+            dialog = LoadingDialog(it)
+        }
 
-        setUI()
         setListeners()
         setObservers()
         setCalendar()
-    }
-
-    private fun setUI() {
-        binding.apply {
-//            viewModel.getUserLogs("2023-07-13", "2023-07-16")
-            updateFocusedDate()
-        }
     }
 
     private fun setListeners() {
@@ -66,16 +61,33 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
         }
     }
 
+    private fun fetchRequest(forceFetch: Boolean = true) {
+        if (!(viewModel.logsResponse.hasObservers() || viewModel.logsResponse.value is NetworkResponse.Success) || forceFetch)
+            viewModel.getUserLogs(daysInWeekArray().first().toString(), daysInWeekArray().last().toString())
+    }
+
     private fun setObservers() {
+        fetchRequest(forceFetch = false)
+
         viewModel.logsResponse.observe(viewLifecycleOwner) { response ->
             when(response) {
                 is NetworkResponse.Failure -> {
+                    if (::dialog.isInitialized)
+                        dialog.dismissDialog()
+
+                    //TODO Fail screen
                     printLog("Error ${response.errorMessage}")
                 }
                 NetworkResponse.Loading -> {
-
+                    if (::dialog.isInitialized)
+                        dialog.showLoadingDialog()
                 }
                 is NetworkResponse.Success -> {
+                    if (::dialog.isInitialized)
+                        dialog.dismissDialog()
+
+                    //TODO update adapter
+                    updateFocusedDate()
                     printLog("${response.data}")
                 }
             }
@@ -94,7 +106,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
     private fun daysInWeekArray(): ArrayList<LocalDate> {
         val dayList = arrayListOf<LocalDate>()
 
-        var current = focusedDate.sundayForDate()
+        var current = focusedDate.getFirstDateOfTheWeek()
         val endDate = current?.plusWeeks(1)
 
         while (current?.isBefore(endDate) == true) {
@@ -106,8 +118,10 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
     }
 
     private fun updateFocusedDate(newFocusedDate: LocalDate? = null) {
-        if (newFocusedDate != null)
+        if (newFocusedDate != null) {
             focusedDate = newFocusedDate
+            fetchRequest()
+        }
         calendarAdapter?.updateDays(daysInWeekArray())
 
         val headerDateText = "${focusedDate.month} ${focusedDate.year}"

@@ -50,13 +50,12 @@ fun Activity.hideKeyboard() {
     hideKeyboard(currentFocus ?: View(this))
 }
 
-fun LocalDate.sundayForDate(): LocalDate? {
+fun LocalDate.getFirstDateOfTheWeek(): LocalDate? {
     var currentDate = this
 
     val oneWeekAgo = currentDate.minusWeeks(1)
-
     while (currentDate.isAfter(oneWeekAgo)) {
-        if (currentDate.dayOfWeek == DayOfWeek.SUNDAY)
+        if (currentDate.dayOfWeek == DayOfWeek.MONDAY)
             return currentDate
 
         currentDate = currentDate.minusDays(1)
