@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mrntlu.projectconsumer.adapters.CalendarAdapter
+import com.mrntlu.projectconsumer.adapters.DiaryAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiaryBinding
+import com.mrntlu.projectconsumer.models.common.CalendarUI
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.getFirstDateOfTheWeek
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
@@ -24,9 +26,11 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private var focusedDate: LocalDate = LocalDate.now()
     private var calendarAdapter: CalendarAdapter? = null
+    private var diaryAdapter: DiaryAdapter? = null
+
     private lateinit var dialog: LoadingDialog
 
-    //TODO Replace LocalDate with Calendar in CalendarAdapter.kt
+    //TODO Replace LocalDate with CalendarUI in CalendarAdapter.kt
     // Create adapter for diary with title headers
     // Use diffutil to update count nodes
 
@@ -86,9 +90,24 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
                     if (::dialog.isInitialized)
                         dialog.dismissDialog()
 
-                    //TODO update adapter
+                    val logs = response.data.data
+                    val dates = daysInWeekArray()
+
+                    val calendarList = dates.map {
+                        val index = logs?.indexOfFirst { logsByDate ->
+                            it == LocalDate.parse(logsByDate.date)
+                        } ?: -1
+
+                        CalendarUI(
+                            it,
+                            if (index != -1)
+                                logs!![index].count
+                            else 0
+                        )
+                    }.toCollection(ArrayList())
+
                     updateFocusedDate()
-                    printLog("${response.data}")
+                    calendarAdapter?.updateDays(calendarList)
                 }
             }
         }
@@ -98,7 +117,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
         binding.calendarRV.apply {
             layoutManager = GridLayoutManager(this.context, 7)
 
-            calendarAdapter = CalendarAdapter(daysInWeekArray())
+            calendarAdapter = CalendarAdapter()
             adapter = calendarAdapter
         }
     }
@@ -122,7 +141,6 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
             focusedDate = newFocusedDate
             fetchRequest()
         }
-        calendarAdapter?.updateDays(daysInWeekArray())
 
         val headerDateText = "${focusedDate.month} ${focusedDate.year}"
         binding.calendarDateTV.text = headerDateText
@@ -131,6 +149,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
     override fun onDestroyView() {
         //TODO Remove observers
         calendarAdapter = null
+        diaryAdapter = null
 
         super.onDestroyView()
     }

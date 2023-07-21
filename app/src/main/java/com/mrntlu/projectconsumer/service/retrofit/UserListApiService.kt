@@ -27,7 +27,7 @@ interface UserListApiService {
     suspend fun getUserLogs(
         @Query("from") from: String,
         @Query("to") to: String,
-    ): Response<DataResponse<List<LogsByDate>>>
+    ): Response<DataResponse<List<LogsByDate>?>>
 
     @POST("list/movie")
     suspend fun createMovieWatchList(@Body body: MovieWatchListBody): Response<DataResponse<MovieWatchList>>

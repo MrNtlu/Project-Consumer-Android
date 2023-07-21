@@ -179,6 +179,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            errorLayoutInc.refreshButton.setOnClickListener {
+                viewModel.getUserInfo()
+            }
+
             profileChangeImageButton.setOnClickListener {
                 activity?.let {
                     val bottomSheet = ProfileEditBottomSheet(userInfo?.image ?: "") { image ->

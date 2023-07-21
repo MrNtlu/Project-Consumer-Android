@@ -16,8 +16,8 @@ class DiaryViewModel @Inject constructor(
     private val repository: UserListRepository,
 ): ViewModel() {
 
-    private val _logsResponse = MutableLiveData<NetworkResponse<DataResponse<List<LogsByDate>>>>()
-    val logsResponse: LiveData<NetworkResponse<DataResponse<List<LogsByDate>>>> = _logsResponse
+    private val _logsResponse = MutableLiveData<NetworkResponse<DataResponse<List<LogsByDate>?>>>()
+    val logsResponse: LiveData<NetworkResponse<DataResponse<List<LogsByDate>?>>> = _logsResponse
 
     fun getUserLogs(from: String, to: String) = networkResponseFlowCollector(
         repository.getUserLogs(from, to)
