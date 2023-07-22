@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrntlu.projectconsumer.adapters.CalendarAdapter
 import com.mrntlu.projectconsumer.adapters.DiaryAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiaryBinding
@@ -51,6 +52,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
         setListeners()
         setObservers()
         setCalendar()
+        setRecyclerView()
     }
 
     private fun setListeners() {
@@ -106,8 +108,15 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
                         )
                     }.toCollection(ArrayList())
 
+                    val logList = logs?.flatMap {
+                        it.data
+                    }?.toCollection(ArrayList()) ?: arrayListOf()
+
+                    val headerCount = logs?.size ?: 0
+
                     updateFocusedDate()
                     calendarAdapter?.updateDays(calendarList)
+                    diaryAdapter?.setData(logList, headerCount)
                 }
             }
         }
@@ -119,6 +128,15 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
             calendarAdapter = CalendarAdapter()
             adapter = calendarAdapter
+        }
+    }
+
+    private fun setRecyclerView() {
+        binding.logsRV.apply {
+            layoutManager = LinearLayoutManager(this.context)
+
+            diaryAdapter = DiaryAdapter()
+            adapter = diaryAdapter
         }
     }
 

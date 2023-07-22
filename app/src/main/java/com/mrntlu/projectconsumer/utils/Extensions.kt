@@ -37,6 +37,7 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.util.Date
 import java.util.Locale
 
 const val DEFAULT_JUMP_THRESHOLD = 20
@@ -148,9 +149,13 @@ fun Context.showErrorDialog(message: String) {
         .show()
 }
 
-fun String.convertToFormattedDate(): String? {
+fun String.convertToFormattedDateString(): String? {
     val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(this)
     return if(date != null) SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date) else this
+}
+
+fun String.convertToDate(): Date? {
+    return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(this)
 }
 
 fun String.isEmailValid(): Boolean {
