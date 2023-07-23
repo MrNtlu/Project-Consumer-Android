@@ -37,11 +37,14 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 
 const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
+const val DATE_PATTERN = "yyyy-MM-dd"
+const val DATE_READABLE_PATTERN = "dd.MM.yyyy"
 
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }
@@ -63,6 +66,11 @@ fun LocalDate.getFirstDateOfTheWeek(): LocalDate? {
     }
 
     return null
+}
+
+fun LocalDate.convertToHumanReadableDateString(): String {
+    val formatter = SimpleDateFormat(DATE_PATTERN, Locale.getDefault())
+    return formatter.format(Date.from(this.atStartOfDay(ZoneId.systemDefault()).toInstant()))
 }
 
 fun Context.openInBrowser(url: String) {
@@ -149,13 +157,23 @@ fun Context.showErrorDialog(message: String) {
         .show()
 }
 
-fun String.convertToFormattedDateString(): String? {
-    val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(this)
-    return if(date != null) SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).format(date) else this
+fun String.convertToHumanReadableDateString(): String? {
+    val date = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(this)
+    return if(date != null) SimpleDateFormat(DATE_READABLE_PATTERN, Locale.getDefault()).format(date) else this
+}
+
+fun String.convertToDateString(): String? {
+    val date = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(this)
+    return if(date != null) SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).format(date) else this
 }
 
 fun String.convertToDate(): Date? {
-    return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(this)
+    return SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(this)
+}
+
+fun String.convertToFormattedTime(): String? {
+    val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(this)
+    return if(date != null) SimpleDateFormat("HH:mm z", Locale.getDefault()).format(date) else this
 }
 
 fun String.isEmailValid(): Boolean {

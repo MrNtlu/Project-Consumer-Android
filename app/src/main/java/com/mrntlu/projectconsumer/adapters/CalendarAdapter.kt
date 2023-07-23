@@ -7,10 +7,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.databinding.CellCalendarBinding
 import com.mrntlu.projectconsumer.models.common.CalendarUI
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class CalendarAdapter: RecyclerView.Adapter<CalendarAdapter.ItemHolder>() {
+class CalendarAdapter(
+    private val onClick: (LocalDate) -> Unit,
+): RecyclerView.Adapter<CalendarAdapter.ItemHolder>() {
 
     private val formatter = DateTimeFormatter.ofPattern("E", Locale.getDefault())
     private val calendarUIList: ArrayList<CalendarUI> = arrayListOf()
@@ -30,7 +33,17 @@ class CalendarAdapter: RecyclerView.Adapter<CalendarAdapter.ItemHolder>() {
             dayTV.text = calendarUI.date.dayOfMonth.toString()
 
             badgeCV.setVisibilityByCondition(calendarUI.count == 0)
-            badgeTV.text = calendarUI.count.toString()
+
+            val count = calendarUI.count
+            val countText = if (count > 9) "+9" else count.toString()
+            badgeTV.text = countText
+
+            if (calendarUI.count > 0)
+                root.setOnClickListener {
+                    onClick(calendarUI.date)
+                }
+            else
+                root.setOnClickListener(null)
         }
     }
 

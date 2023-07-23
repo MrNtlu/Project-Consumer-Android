@@ -3,26 +3,28 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginTop="6dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="6dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="5dp"
+        android:layout_marginHorizontal="4dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="1dp"
         android:layout_gravity="center"
-        app:cardBackgroundColor="?attr/mainBackgroundColor">
+        app:cardBackgroundColor="?attr/mainButtonBackgroundColor">
 
         <TextView
             android:id="@+id/dateTV"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAlignment="center"
-            android:padding="12dp"
-            android:textColor="?attr/mainTextColor"
+            android:padding="10dp"
+            android:textColor="?attr/mainBackgroundColor"
             android:textSize="16sp"
             android:textStyle="bold"
             tools:text="2020-04-16"/>

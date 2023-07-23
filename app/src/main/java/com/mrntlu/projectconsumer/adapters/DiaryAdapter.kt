@@ -4,96 +4,96 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.viewholders.EmptyViewHolder
 import com.mrntlu.projectconsumer.databinding.CellDiaryBinding
 import com.mrntlu.projectconsumer.databinding.CellDiaryHeaderBinding
-import com.mrntlu.projectconsumer.databinding.CellDiaryLoadingBinding
 import com.mrntlu.projectconsumer.databinding.CellEmptyBinding
-import com.mrntlu.projectconsumer.models.main.userList.Log
+import com.mrntlu.projectconsumer.models.common.LogsUI
+import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.convertToFormattedDateString
+import com.mrntlu.projectconsumer.utils.convertToDateString
+import com.mrntlu.projectconsumer.utils.convertToFormattedTime
+import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
+import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
 @SuppressLint("NotifyDataSetChanged")
 class DiaryAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val HEADER_TYPE = 6
 
-    var isLoading = true
-
-    private val arrayList: ArrayList<Log> = arrayListOf()
-    private var headerCount: Int = 0
-    private var currentHeaderCount: Int = 0
-    private var isPreviousHeader = false
+    private val arrayList: ArrayList<LogsUI> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             RecyclerViewEnum.Empty.value -> EmptyViewHolder(CellEmptyBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            RecyclerViewEnum.Loading.value -> LoadingHolder(CellDiaryLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             HEADER_TYPE -> HeaderHolder(CellDiaryHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> ItemHolder(CellDiaryBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
     override fun getItemCount(): Int {
-        return if (isLoading)
-            10
-        else if (arrayList.isEmpty())
+        return if (arrayList.isEmpty())
             1
         else
-            arrayList.size + headerCount
+            arrayList.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (getItemViewType(position) == RecyclerViewEnum.View.value) {
-            val log = arrayList[position - currentHeaderCount]
+            val log = arrayList[position].log
 
             (holder as ItemHolder).binding.apply {
                 titleTV.text = log.contentTitle
-            }
+                contentTypeTV.text = Constants.ContentType.fromStringRequest(log.contentType).value
+                createdAtTV.text = log.createdAt.convertToFormattedTime()
+                actionTypeTV.text = this.root.context.getString(
+                    if (log.logAction == "later") {
+                        if (log.logType != "game") R.string.watch_later
+                        else R.string.play_later
+                    } else
+                        R.string.user_list
+                )
+                actionTV.text = log.logAction.replaceFirstChar { it.uppercase() }
 
-            isPreviousHeader = false
+                val attrColor = when(log.logAction) {
+                    "add" -> R.attr.statusActiveColor
+                    "update" -> R.attr.statusFinishedColor
+                    else -> R.attr.statusDroppedColor
+                }
+
+                actionTV.setTextColor(this.root.context.getColorFromAttr(attrColor))
+                diaryDivider.setVisibilityByCondition(position.plus(1) == arrayList.size || arrayList[position.plus(1)].isHeader)
+            }
         } else if (getItemViewType(position) == HEADER_TYPE) {
-            val date = arrayList[position - currentHeaderCount].createdAt.convertToFormattedDateString()
+            val date = arrayList[position].log.createdAt.convertToHumanReadableDateString()
 
             (holder as HeaderHolder).binding.apply {
                 dateTV.text = date
             }
-
-            isPreviousHeader = true
-            currentHeaderCount += 1
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (isLoading)
-            RecyclerViewEnum.Loading.value
-        else if (arrayList.isEmpty())
+        return if (arrayList.isEmpty())
             RecyclerViewEnum.Empty.value
         else {
-            if (
-                position == 0 ||
-                (
-                        !isPreviousHeader &&
-                        arrayList[(position - currentHeaderCount)].createdAt.convertToFormattedDateString() !=
-                                arrayList[(position - currentHeaderCount).minus(1)].createdAt.convertToFormattedDateString()
-                )
-            )
+            if (arrayList[position].isHeader)
                 HEADER_TYPE
             else
                 RecyclerViewEnum.View.value
         }
     }
 
-    fun setData(newList: ArrayList<Log>, headerCount: Int) {
-        setState(
-            if (arrayList.isEmpty() && newList.isEmpty()) RecyclerViewEnum.Empty
-            else RecyclerViewEnum.View
-        )
+    fun getScrollPosition(date: String) = arrayList.indexOfFirst {
+        it.log.createdAt.convertToDateString() == date && it.isHeader
+    }
 
+    fun setData(newList: ArrayList<LogsUI>) {
         if (arrayList.isNotEmpty())
             arrayList.clear()
-
-        this.headerCount = headerCount
 
         arrayList.addAll(newList)
         notifyDataSetChanged()
@@ -102,17 +102,8 @@ class DiaryAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun setLoadingView() {
         if (arrayList.isNotEmpty())
             arrayList.clear()
-        setState(RecyclerViewEnum.Loading)
         notifyDataSetChanged()
     }
-
-    private fun setState(rvEnum: RecyclerViewEnum) {
-        isLoading = rvEnum == RecyclerViewEnum.Loading
-    }
-
-    inner class LoadingHolder(
-        binding: CellDiaryLoadingBinding,
-    ): RecyclerView.ViewHolder(binding.root)
 
     inner class HeaderHolder(
         val binding: CellDiaryHeaderBinding,

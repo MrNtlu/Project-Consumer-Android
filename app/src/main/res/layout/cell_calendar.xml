@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/dayTV"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
@@ -30,7 +30,6 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weekTV"
         tools:text="27" />
@@ -39,13 +38,12 @@
         android:id="@+id/badgeCV"
         android:layout_width="17dp"
         android:layout_height="17dp"
-        android:layout_marginStart="-16dp"
+        android:layout_marginStart="2dp"
         android:layout_marginBottom="-8dp"
         app:cardBackgroundColor="?attr/messageBoxBackgroundColor"
         app:cardCornerRadius="5dp"
         app:cardElevation="3dp"
         app:layout_constraintBottom_toTopOf="@+id/dayTV"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/dayTV">
 
         <TextView
@@ -54,9 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textColor="?attr/mainBackgroundColor"
-            android:textStyle="bold"
             android:textSize="12sp"
-            tools:text="3" />
+            android:textStyle="bold"
+            tools:text="+9" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

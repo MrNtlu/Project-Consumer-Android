@@ -167,7 +167,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             val linearLayout = LinearLayoutManager(context)
             layoutManager = linearLayout
 
-            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL))
+            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
 
             userListAdapter = UserListAdapter(object: UserListInteraction {
                 override fun onDeletePressed(

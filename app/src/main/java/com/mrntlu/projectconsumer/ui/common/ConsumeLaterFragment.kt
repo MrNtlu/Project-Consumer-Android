@@ -285,7 +285,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
             val linearLayout = LinearLayoutManager(context)
             layoutManager = linearLayout
 
-            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.HORIZONTAL))
+            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
 
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {

@@ -41,8 +41,10 @@
         android:layout_marginStart="8dp"
         android:textColor="?attr/subTextColor"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/contentTypeCV"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/contentTypeCV"
         tools:text="2023-08-20 15:30" />
 
     <androidx.cardview.widget.CardView
@@ -51,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         app:cardBackgroundColor="?attr/colorSecondary"
         app:cardCornerRadius="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -82,4 +84,10 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Consume Later" />
 
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/diaryDivider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

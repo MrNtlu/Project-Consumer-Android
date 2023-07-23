@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrntlu.projectconsumer.adapters.CalendarAdapter
 import com.mrntlu.projectconsumer.adapters.DiaryAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiaryBinding
 import com.mrntlu.projectconsumer.models.common.CalendarUI
+import com.mrntlu.projectconsumer.models.common.LogsUI
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.getFirstDateOfTheWeek
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
@@ -31,9 +34,8 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private lateinit var dialog: LoadingDialog
 
-    //TODO Replace LocalDate with CalendarUI in CalendarAdapter.kt
-    // Create adapter for diary with title headers
-    // Use diffutil to update count nodes
+    //TODO Change calendar buttons
+    // On Scroll or with button hide calendar.
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +71,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private fun fetchRequest(forceFetch: Boolean = true) {
         if (!(viewModel.logsResponse.hasObservers() || viewModel.logsResponse.value is NetworkResponse.Success) || forceFetch)
-            viewModel.getUserLogs(daysInWeekArray().first().toString(), daysInWeekArray().last().toString())
+            viewModel.getUserLogs(daysInWeekArray().first().toString(), daysInWeekArray().last().plusDays(1).toString())
     }
 
     private fun setObservers() {
@@ -110,13 +112,34 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
                     val logList = logs?.flatMap {
                         it.data
-                    }?.toCollection(ArrayList()) ?: arrayListOf()
+                    }?.sortedWith(compareBy {
+                        it.createdAt
+                    })
 
-                    val headerCount = logs?.size ?: 0
+                    val logUIList  = arrayListOf<LogsUI>()
+                    logList?.forEachIndexed { index, log ->
+                        val isHeader = index == 0 ||
+                            log.createdAt.convertToHumanReadableDateString() !=
+                            logList[index.minus(1)].createdAt.convertToHumanReadableDateString()
+                        if (isHeader)
+                            logUIList.add(
+                                LogsUI(
+                                    log,
+                                    true
+                                )
+                            )
+
+                        logUIList.add(
+                            LogsUI(
+                                log,
+                                false
+                            )
+                        )
+                    }
 
                     updateFocusedDate()
                     calendarAdapter?.updateDays(calendarList)
-                    diaryAdapter?.setData(logList, headerCount)
+                    diaryAdapter?.setData(logUIList)
                 }
             }
         }
@@ -126,7 +149,12 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
         binding.calendarRV.apply {
             layoutManager = GridLayoutManager(this.context, 7)
 
-            calendarAdapter = CalendarAdapter()
+            calendarAdapter = CalendarAdapter() { date ->
+                val position = diaryAdapter?.getScrollPosition(date.convertToHumanReadableDateString()) ?: 0
+
+                if (position > -1)
+                    binding.logsRV.smoothScrollToPosition(position)
+            }
             adapter = calendarAdapter
         }
     }

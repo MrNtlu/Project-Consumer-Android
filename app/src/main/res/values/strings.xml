@@ -127,10 +127,12 @@
     <string name="move_consume_later_info">You\'ll move this content to your list and mark it as finished.</string>
     <string name="do_you_want_to_delete">Do you want to delete?</string>
     <string name="do_you_want_to_log_out_">Do you want to log out?</string>
-    <string name="watch_later">Watch Later</string>
     <string name="fix_errors">Please fix the errors.</string>
     <string name="previous_cd">Previous Button</string>
     <string name="next_cd">Next Button</string>
+    <string name="watch_later">Watch Later</string>
+    <string name="play_later">Play Later</string>
+    <string name="user_list">User List</string>
 
     <string-array name="score_list">
         <item>@string/select</item>
