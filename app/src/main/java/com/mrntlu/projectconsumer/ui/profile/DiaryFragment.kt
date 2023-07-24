@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrntlu.projectconsumer.adapters.CalendarAdapter
@@ -34,8 +33,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private lateinit var dialog: LoadingDialog
 
-    //TODO Change calendar buttons
-    // On Scroll or with button hide calendar.
+    //TODO On Scroll or with button hide calendar.
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -188,12 +186,15 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
             fetchRequest()
         }
 
-        val headerDateText = "${focusedDate.month} ${focusedDate.year}"
+        val headerDateText = "${focusedDate.month.toString().lowercase().replaceFirstChar { it.uppercase() }} ${focusedDate.year}"
         binding.calendarDateTV.text = headerDateText
     }
 
     override fun onDestroyView() {
-        //TODO Remove observers
+        viewLifecycleOwner.apply {
+            viewModel.logsResponse.removeObservers(this)
+        }
+
         calendarAdapter = null
         diaryAdapter = null
 

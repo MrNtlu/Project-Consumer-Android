@@ -133,6 +133,8 @@
     <string name="watch_later">Watch Later</string>
     <string name="play_later">Play Later</string>
     <string name="user_list">User List</string>
+    <string name="next_week">Next Week</string>
+    <string name="prev_week">Prev Week</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

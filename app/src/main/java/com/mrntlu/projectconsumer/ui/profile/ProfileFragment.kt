@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -31,11 +30,6 @@ import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
@@ -53,6 +47,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
     private var contentAdapter: ContentAdapter<ContentModel>? = null
     private lateinit var dialog: LoadingDialog
+
+    //TODO Implement it with collapsingtoolbar so we can pin the recyclerview
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -110,8 +106,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
                         setUI()
                         setListeners()
-                        setRecyclerView()
-                        contentAdapter?.setData(getLegendContentList())
+                        if (!viewModel.didOrientationChange) {
+                            setRecyclerView()
+                            contentAdapter?.setData(getLegendContentList())
+                        }
                     }
                     else -> {}
                 }
@@ -125,6 +123,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 WindowSizeClass.COMPACT -> 2
                 WindowSizeClass.MEDIUM -> 3
                 WindowSizeClass.EXPANDED -> 5
+            }
+
+            if (viewModel.didOrientationChange) {
+                setRecyclerView()
+                contentAdapter?.setData(getLegendContentList())
+                viewModel.didOrientationChange = false
             }
         }
 
@@ -305,7 +309,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
+        viewModel.didOrientationChange = true
         outState.putString(KEY_VALUE, contentType.value)
     }
 

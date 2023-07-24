@@ -285,7 +285,7 @@ class UserListAdapter(
                 searchListHolder.clear()
 
                 if (getContentList().isEmpty()) {
-                    when(contentType){
+                    when(contentType) {
                         Constants.ContentType.ANIME -> userList.animeList = resetList.toList().map { it.convertToAnimeList() }
                         Constants.ContentType.MOVIE -> userList.movieList = resetList.toList().map { it.convertToMovieList() }
                         Constants.ContentType.TV -> userList.tvList = resetList.toList().map { it.convertToTVSeriesList() }

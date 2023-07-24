@@ -316,6 +316,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="64dp"
             android:minHeight="350dp"
+            android:maxHeight="450dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"

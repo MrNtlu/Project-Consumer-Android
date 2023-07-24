@@ -173,8 +173,10 @@ class ConsumeLaterAdapter(
     fun search(search: String?) {
         if (!isLoading && errorMessage == null) {
             if (search?.isNotEmptyOrBlank() == true) {
-                val filterList = (if (searchListHolder.size > arrayList.size) searchListHolder
-                else arrayList).toMutableList().toCollection(ArrayList())
+                val filterList = (
+                        if (searchListHolder.size > arrayList.size) searchListHolder
+                        else arrayList
+                ).toMutableList().toCollection(ArrayList())
 
                 val searchList = filterList.filter {
                     it.content.titleOriginal.startsWith(

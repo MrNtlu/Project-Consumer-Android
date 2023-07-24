@@ -16,6 +16,8 @@ class ProfileViewModel @Inject constructor(
     private val repository: UserRepository,
 ): ViewModel() {
 
+    var didOrientationChange = false
+
     private val _userInfoResponse = MutableLiveData<NetworkResponse<DataResponse<UserInfo>>>()
     val userInfoResponse: LiveData<NetworkResponse<DataResponse<UserInfo>>> = _userInfoResponse
 

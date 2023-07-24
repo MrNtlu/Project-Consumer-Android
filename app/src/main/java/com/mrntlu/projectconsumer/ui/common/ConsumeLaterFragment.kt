@@ -21,7 +21,6 @@ import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
@@ -57,6 +56,9 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
     private var sortPopupMenu: PopupMenu? = null
     private var popupMenu: PopupMenu? = null
     private var searchQuery: String? = null
+
+    //TODO Fix search issue like the user list fragment
+    // on search cancel clicked, filter is being ignored.
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -284,8 +286,6 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         binding.listRV.apply {
             val linearLayout = LinearLayoutManager(context)
             layoutManager = linearLayout
-
-            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
 
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {

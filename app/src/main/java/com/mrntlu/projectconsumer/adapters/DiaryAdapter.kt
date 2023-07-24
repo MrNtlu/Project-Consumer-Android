@@ -16,7 +16,6 @@ import com.mrntlu.projectconsumer.utils.convertToDateString
 import com.mrntlu.projectconsumer.utils.convertToFormattedTime
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
-import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
 @SuppressLint("NotifyDataSetChanged")

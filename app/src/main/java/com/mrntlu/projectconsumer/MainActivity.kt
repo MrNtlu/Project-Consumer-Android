@@ -95,7 +95,6 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
-
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         setAppBarConfiguration()
@@ -227,7 +226,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
         sharedViewModel.setCountryCode(prefs.getString(Constants.COUNTRY_PREF, Locale.getDefault().country.uppercase()))
         sharedViewModel.setLanguageCode(prefs.getString(Constants.LAN_PREF, Locale.getDefault().language.uppercase()))
-        sharedViewModel.setThemeCode(prefs.getInt(Constants.THEME_PREF, Constants.LIGHT_THEME))
+        sharedViewModel.setThemeCode(prefs.getInt(Constants.THEME_PREF, Constants.DARK_THEME))
 
         AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
 

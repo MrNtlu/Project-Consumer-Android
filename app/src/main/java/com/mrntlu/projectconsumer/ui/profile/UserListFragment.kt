@@ -17,7 +17,6 @@ import androidx.core.view.size
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
@@ -39,6 +38,7 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
@@ -46,17 +46,10 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class UserListFragment: BaseFragment<FragmentUserListBinding>() {
-
-    private companion object {
-        private const val KEY_VALUE = "content_type"
-    }
-
     private val viewModel: UserListViewModel by viewModels()
 
-    private var searchQuery: String? = null
-    private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
-
     private lateinit var dialog: LoadingDialog
+    private lateinit var searchView: SearchView
 
     private var popupMenu: PopupMenu? = null
     private var userListAdapter: UserListAdapter? = null
@@ -95,12 +88,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             dialog = LoadingDialog(it)
         }
 
-        savedInstanceState?.let {
-            contentType = Constants.ContentType.fromStringValue(
-                it.getString(KEY_VALUE, Constants.ContentType.MOVIE.value)
-            )
-        }
-
         setUI()
         setMenu()
         setListeners()
@@ -124,7 +111,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     for (tab in Constants.TabList) {
                         addTab(
                             userListTabLayout.newTab().setText(tab),
-                            tab == contentType.value
+                            tab == viewModel.contentType.value
                         )
                     }
                 }
@@ -136,23 +123,20 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         binding.apply {
             userListTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    when(tab?.position) {
-                        0 -> {
-                            contentType = Constants.ContentType.MOVIE
-                        }
-                        1 -> {
-                            contentType = Constants.ContentType.TV
-                        }
-                        2 -> {
-                            contentType = Constants.ContentType.ANIME
-                        }
-                        3 -> {
-                            contentType = Constants.ContentType.GAME
-                        }
-                        else -> {}
+                    val contentType: Constants.ContentType = when(tab?.position) {
+                        0 -> Constants.ContentType.MOVIE
+                        1 -> Constants.ContentType.TV
+                        2 -> Constants.ContentType.ANIME
+                        3 -> Constants.ContentType.GAME
+                        else -> Constants.ContentType.MOVIE
                     }
 
+                    viewModel.setContentType(contentType)
                     userListAdapter?.changeContentType(contentType)
+
+                    if (searchView.hasFocus() || (viewModel.search != null && viewModel.search!!.isNotEmptyOrBlank())) {
+                        resetSearchView()
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -166,8 +150,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         binding.userListRV.apply {
             val linearLayout = LinearLayoutManager(context)
             layoutManager = linearLayout
-
-            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
 
             userListAdapter = UserListAdapter(object: UserListInteraction {
                 override fun onDeletePressed(
@@ -268,7 +250,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 }
 
                 override fun onItemSelected(item: UserList, position: Int) {
-                    val navWithAction = when(contentType) {
+                    val navWithAction = when(viewModel.contentType) {
                         Constants.ContentType.ANIME -> TODO()
                         Constants.ContentType.MOVIE -> UserListFragmentDirections.actionUserListFragmentToMovieDetailsFragment(
                             item.movieList[position].contentId
@@ -292,7 +274,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 override fun onExhaustButtonPressed() {}
             })
             adapter = userListAdapter
-
 
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -339,8 +320,8 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.user_list_menu, menu)
 
-                val searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
-                searchView.setQuery(searchQuery, false)
+                searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
+                searchView.setQuery(viewModel.search, false)
                 searchView.clearFocus()
 
                 searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -351,7 +332,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        userListAdapter?.search(newText)
+                        viewModel.search(newText)
 
                         return true
                     }
@@ -401,6 +382,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                                 item.isChecked = true
 
                                 if (newSortType != viewModel.sort) {
+                                    resetSearchView()
                                     viewModel.setSort(newSortType)
                                     viewModel.getUserList()
                                 }
@@ -427,11 +409,19 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         }
     }
 
+    private fun resetSearchView() {
+        viewModel.setSearch(null)
+        searchView.setQuery(null, false)
+        searchView.isIconified = true
+        searchView.clearFocus()
+
+        hideKeyboard()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         viewModel.didOrientationChange = true
-
-        outState.putString(KEY_VALUE, contentType.value)
+        viewModel.setTotalYPosition(0)
     }
 
     override fun onDestroyView() {
