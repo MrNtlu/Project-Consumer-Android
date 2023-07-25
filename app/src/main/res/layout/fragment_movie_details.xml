@@ -58,7 +58,6 @@
                     app:tint="?attr/toolbarTintColor"
                     android:contentDescription="@string/back_cd"/>
             </com.google.android.material.appbar.MaterialToolbar>
-
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

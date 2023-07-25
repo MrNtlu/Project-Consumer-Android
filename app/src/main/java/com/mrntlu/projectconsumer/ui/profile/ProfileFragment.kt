@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
@@ -21,6 +22,7 @@ import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -48,8 +50,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private var contentAdapter: ContentAdapter<ContentModel>? = null
     private lateinit var dialog: LoadingDialog
 
-    //TODO Implement it with collapsingtoolbar so we can pin the recyclerview
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,6 +69,17 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 it.getString(KEY_VALUE, Constants.ContentType.MOVIE.value)
             )
         }
+
+        view.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                val rvParams = binding.legendContentRV.layoutParams
+                rvParams.height = view.height
+                    .minus(binding.profileContentTabLayout.height)
+                    .minus(context?.dpToPx(64F) ?: 0)
+            }
+        })
 
         setObservers()
     }

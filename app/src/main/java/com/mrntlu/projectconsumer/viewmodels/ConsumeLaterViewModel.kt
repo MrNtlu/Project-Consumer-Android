@@ -13,8 +13,10 @@ import com.mrntlu.projectconsumer.repository.UserInteractionRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.setData
+import com.mrntlu.projectconsumer.viewmodels.main.profile.USER_LIST_SEARCH_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +27,8 @@ const val CONSUME_LATER_SORT_KEY = "rv.cl.sort"
 const val CONSUME_LATER_SCROLL_POSITION_KEY = "rv.cl.scroll_position"
 const val CONSUME_LATER_FILTER_KEY = "rv.cl.scroll_position"
 
+const val CONSUME_LATER_SEARCH_KEY = "rv.cl.search"
+
 @HiltViewModel
 class ConsumeLaterViewModel @Inject constructor(
     private val userInteractionRepository: UserInteractionRepository,
@@ -32,6 +36,10 @@ class ConsumeLaterViewModel @Inject constructor(
 ): ViewModel() {
     private val _consumeLaterList = MutableLiveData<NetworkListResponse<List<ConsumeLaterResponse>>>()
     val consumeLaterList: LiveData<NetworkListResponse<List<ConsumeLaterResponse>>> = _consumeLaterList
+
+    private var searchHolder: ArrayList<ConsumeLaterResponse>? = null
+    var search: String? = savedStateHandle[CONSUME_LATER_SEARCH_KEY]
+        private set
 
     // Process Death variables
     var isRestoringData = false
@@ -82,6 +90,15 @@ class ConsumeLaterViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             userInteractionRepository.deleteConsumeLater(body).collect { response ->
                 withContext(Dispatchers.Main) {
+                    if (response is NetworkResponse.Success && searchHolder?.isNotEmpty() == true) {
+                        val index = searchHolder!!.indexOfFirst {
+                            it.id == body.id
+                        }
+
+                        if (index >= 0)
+                            searchHolder!!.removeAt(index)
+                    }
+
                     liveData.value = response
                 }
             }
@@ -112,13 +129,21 @@ class ConsumeLaterViewModel @Inject constructor(
     }
 
     fun setSort(newSort: String) {
-        sort = newSort
-        savedStateHandle[CONSUME_LATER_SORT_KEY] = sort
+        if (sort != newSort) {
+            sort = newSort
+            savedStateHandle[CONSUME_LATER_SORT_KEY] = sort
+
+            resetSearch()
+        }
     }
 
     fun setFilter(newFilter: String?) {
-        filter = newFilter
-        savedStateHandle[CONSUME_LATER_FILTER_KEY] = filter
+        if (filter != newFilter) {
+            filter = newFilter
+            savedStateHandle[CONSUME_LATER_FILTER_KEY] = filter
+
+            resetSearch()
+        }
     }
 
     fun setScrollPosition(newPosition: Int) {
@@ -126,5 +151,64 @@ class ConsumeLaterViewModel @Inject constructor(
             scrollPosition = newPosition
             savedStateHandle[CONSUME_LATER_SCROLL_POSITION_KEY] = scrollPosition
         }
+    }
+
+    fun search(search: String?) {
+        setSearch(search)
+
+        if (search != null && search.isNotEmptyOrBlank() && consumeLaterList.value?.isSuccessful() == true) {
+            val data = consumeLaterList.value!!.data!!
+
+            val currentData = if (
+                searchHolder != null &&
+                searchHolder!!.size > data.size
+            ) {
+                searchHolder!!.toMutableList().toCollection(ArrayList())
+            } else {
+                searchHolder = data.toMutableList().toCollection(ArrayList())
+
+                data.toMutableList().toCollection(ArrayList())
+            }
+
+            val searchList = currentData.filter {
+                it.content.titleOriginal.startsWith(search, ignoreCase = true) ||
+                it.content.titleOriginal.contains(search, ignoreCase = true)
+            }.toMutableList().toCollection(ArrayList())
+
+            currentData.clear()
+            currentData.addAll(searchList)
+
+            _consumeLaterList.value = NetworkListResponse(
+                data = currentData,
+                isLoading = false,
+                isPaginating = false,
+                isFailed = false,
+                isPaginationData = false,
+                isPaginationExhausted = true,
+                errorMessage = null
+            )
+        } else {
+            resetSearch()
+        }
+    }
+
+    private fun resetSearch() {
+        if (search != null) {
+            setSearch(null)
+            _consumeLaterList.value = NetworkListResponse(
+                data = searchHolder,
+                isLoading = false,
+                isPaginating = false,
+                isFailed = false,
+                isPaginationData = false,
+                isPaginationExhausted = true,
+                errorMessage = null
+            )
+        }
+    }
+
+    fun setSearch(newSearch: String?) {
+        search = newSearch
+        savedStateHandle[CONSUME_LATER_SEARCH_KEY] = search
     }
 }

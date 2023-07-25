@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.ui.common
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -39,6 +40,7 @@ import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.ConsumeLaterViewModel
@@ -49,16 +51,15 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     private val viewModel: ConsumeLaterViewModel by viewModels()
 
-    private var scoreDialog: AlertDialog? = null
     private lateinit var dialog: LoadingDialog
+    private lateinit var searchView: SearchView
 
     private var consumeLaterAdapter: ConsumeLaterAdapter? = null
+    private var scoreDialog: AlertDialog? = null
     private var sortPopupMenu: PopupMenu? = null
     private var popupMenu: PopupMenu? = null
-    private var searchQuery: String? = null
 
-    //TODO Fix search issue like the user list fragment
-    // on search cancel clicked, filter is being ignored.
+    //TODO Handle with diffutil
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,6 +83,8 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
     override fun onStart() {
         super.onStart()
 
+        printLog("Called ${viewModel.isRestoringData} ${viewModel.didOrientationChange}")
+
         if (!viewModel.isRestoringData && !viewModel.didOrientationChange) {
             consumeLaterAdapter?.setLoadingView()
             viewModel.getConsumeLater()
@@ -95,8 +98,8 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.consume_later_menu, menu)
 
-                val searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
-                searchView.setQuery(searchQuery, false)
+                searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
+                searchView.setQuery(viewModel.search, false)
                 searchView.clearFocus()
 
                 searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
@@ -107,7 +110,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                     }
 
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        consumeLaterAdapter?.search(newText)
+                        viewModel.search(newText)
 
                         return true
                     }
@@ -125,7 +128,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                                 sortPopupMenu!!.setForceShowIcon(true)
                             }
 
-                            popupMenu?.let {
+                            sortPopupMenu?.let {
                                 val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
                                 val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
 
@@ -168,6 +171,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                                     item.isChecked = true
 
                                     if (newSortType != viewModel.sort) {
+                                        resetSearchView()
                                         viewModel.setSort(newSortType)
                                         viewModel.getConsumeLater()
                                     }
@@ -230,6 +234,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
                                     item.isChecked = true
 
+                                    resetSearchView()
                                     viewModel.setFilter(
                                         if (newFilterType.request != viewModel.filter)
                                             newFilterType.request
@@ -290,6 +295,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
                     context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                        printLog("Delete called $item")
                         val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
 
                         deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
@@ -418,9 +424,18 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         }
     }
 
+    private fun resetSearchView() {
+        viewModel.setSearch(null)
+        searchView.setQuery(null, false)
+        searchView.isIconified = true
+        searchView.clearFocus()
+
+        hideKeyboard()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModel.didOrientationChange = true
+//        viewModel.didOrientationChange = true
     }
 
     override fun onDestroyView() {

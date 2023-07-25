@@ -247,57 +247,6 @@ class UserListAdapter(
         handleDiffUtil(newList)
     }
 
-    fun search(search: String?) {
-        if (!isLoading && errorMessage == null) {
-            if (search?.isNotEmptyOrBlank() == true) {
-                val filterList = (
-                        if (searchListHolder.size > getContentList().size) searchListHolder
-                        else getContentList()
-                ).toMutableList().toCollection(ArrayList())
-
-                val searchList = filterList.filter {
-                    it.titleOriginal.startsWith(
-                        search,
-                        ignoreCase = true
-                    ) || it.titleOriginal.contains(search, ignoreCase = true)
-                }.toMutableList().toCollection(ArrayList())
-
-                if (getContentList().size > searchListHolder.size) {
-                    searchListHolder.clear()
-                    searchListHolder.addAll(getContentList())
-                }
-
-                if (getContentList().isEmpty() && searchList.size > 0) {
-                    when(contentType){
-                        Constants.ContentType.ANIME -> userList.animeList = searchList.toList().map { it.convertToAnimeList() }
-                        Constants.ContentType.MOVIE -> userList.movieList = searchList.toList().map { it.convertToMovieList() }
-                        Constants.ContentType.TV -> userList.tvList = searchList.toList().map { it.convertToTVSeriesList() }
-                        Constants.ContentType.GAME -> userList.gameList = searchList.toList().map { it.convertToGameList() }
-                    }
-                    notifyDataSetChanged()
-                } else
-                    handleDiffUtil(searchList)
-            } else {
-                val resetList = getContentList().toMutableList().toCollection(ArrayList())
-
-                resetList.clear()
-                resetList.addAll(searchListHolder)
-                searchListHolder.clear()
-
-                if (getContentList().isEmpty()) {
-                    when(contentType) {
-                        Constants.ContentType.ANIME -> userList.animeList = resetList.toList().map { it.convertToAnimeList() }
-                        Constants.ContentType.MOVIE -> userList.movieList = resetList.toList().map { it.convertToMovieList() }
-                        Constants.ContentType.TV -> userList.tvList = resetList.toList().map { it.convertToTVSeriesList() }
-                        Constants.ContentType.GAME -> userList.gameList = resetList.toList().map { it.convertToGameList() }
-                    }
-                    notifyDataSetChanged()
-                } else
-                    handleDiffUtil(resetList)
-            }
-        }
-    }
-
     inner class LoadingViewHolder(binding: CellUserListLoadingBinding): RecyclerView.ViewHolder(binding.root)
 
     inner class ItemViewHolder(

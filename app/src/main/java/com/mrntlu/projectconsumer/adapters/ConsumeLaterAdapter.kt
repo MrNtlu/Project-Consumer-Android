@@ -24,6 +24,7 @@ import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
 
@@ -112,11 +113,14 @@ class ConsumeLaterAdapter(
             else RecyclerViewEnum.View
         )
 
-        if (arrayList.isNotEmpty())
-            arrayList.clear()
+        if (arrayList.isEmpty() && newList.size > 0) {
+            if (arrayList.isNotEmpty())
+                arrayList.clear()
 
-        arrayList.addAll(newList)
-        notifyDataSetChanged()
+            arrayList.addAll(newList)
+            notifyDataSetChanged()
+        } else
+            handleDiffUtil(newList)
     }
 
     private fun setState(rvEnum: RecyclerViewEnum) {
@@ -239,6 +243,7 @@ class ConsumeLaterAdapter(
                 contentTypeTV.text = Constants.ContentType.fromStringRequest(item.contentType).value
 
                 deleteButton.setOnClickListener {
+                    printLog("Item $item")
                     interaction.onDeletePressed(item, position)
                 }
 
@@ -247,6 +252,7 @@ class ConsumeLaterAdapter(
                 }
 
                 root.setOnClickListener {
+                    printLog("Item $item")
                     interaction.onItemSelected(item, position)
                 }
             }
