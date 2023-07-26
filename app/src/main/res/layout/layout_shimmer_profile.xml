@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:shimmer_auto_start="true"
-    app:shimmer_duration="2250">
+    app:shimmer_duration="1300">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

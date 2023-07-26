@@ -1,12 +1,12 @@
 package com.mrntlu.projectconsumer.ui.common
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -37,10 +37,10 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.ConsumeLaterViewModel
@@ -54,12 +54,12 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
     private lateinit var dialog: LoadingDialog
     private lateinit var searchView: SearchView
 
+    private var orientationEventListener: OrientationEventListener? = null
+
     private var consumeLaterAdapter: ConsumeLaterAdapter? = null
     private var scoreDialog: AlertDialog? = null
     private var sortPopupMenu: PopupMenu? = null
     private var popupMenu: PopupMenu? = null
-
-    //TODO Handle with diffutil
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +75,13 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
             dialog = LoadingDialog(it)
         }
 
+        orientationEventListener = object : OrientationEventListener(view.context) {
+            override fun onOrientationChanged(orientation: Int) {
+                viewModel.setNewOrientation(orientation)
+            }
+        }
+        orientationEventListener?.enable()
+
         setMenu()
         setRecyclerView()
         setObservers()
@@ -82,8 +89,6 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     override fun onStart() {
         super.onStart()
-
-        printLog("Called ${viewModel.isRestoringData} ${viewModel.didOrientationChange}")
 
         if (!viewModel.isRestoringData && !viewModel.didOrientationChange) {
             consumeLaterAdapter?.setLoadingView()
@@ -289,13 +294,16 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     private fun setRecyclerView() {
         binding.listRV.apply {
+            val marginParams = layoutParams as ViewGroup.MarginLayoutParams
+            marginParams.bottomMargin = context.dpToPx(68F)
+            layoutParams = marginParams
+
             val linearLayout = LinearLayoutManager(context)
             layoutManager = linearLayout
 
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
                     context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
-                        printLog("Delete called $item")
                         val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
 
                         deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
@@ -433,13 +441,11 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         hideKeyboard()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-//        viewModel.didOrientationChange = true
-    }
-
     override fun onDestroyView() {
         viewModel.consumeLaterList.removeObservers(viewLifecycleOwner)
+        orientationEventListener?.disable()
+        orientationEventListener = null
+
         popupMenu = null
         sortPopupMenu = null
         consumeLaterAdapter = null

@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -39,6 +41,7 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
@@ -51,21 +54,41 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private lateinit var dialog: LoadingDialog
     private lateinit var searchView: SearchView
 
+    private var orientationEventListener: OrientationEventListener? = null
+
     private var popupMenu: PopupMenu? = null
     private var userListAdapter: UserListAdapter? = null
 
     private var userListDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
+
+    // TODO DiffUtil doesn't seem to be working, check again.
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
             when(operation) {
                 BottomSheetOperation.INSERT -> {}
                 BottomSheetOperation.UPDATE -> {
+                    viewModel.handleSearchHolderOperation(
+                        data!!.id,
+                        data,
+                        NetworkResponse.Success(null),
+                        OperationEnum.Update
+                    )
+
                     userListAdapter?.handleOperation(
                         Operation(data, -1, OperationEnum.Update)
                     )
                 }
                 BottomSheetOperation.DELETE -> {
+                    printLog("Delete $data")
+
+                    viewModel.handleSearchHolderOperation(
+                        data!!.id,
+                        null,
+                        NetworkResponse.Success(null),
+                        OperationEnum.Delete
+                    )
+
                     userListAdapter?.handleOperation(
                         Operation(data, -1, OperationEnum.Delete)
                     )
@@ -87,6 +110,13 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         activity?.let {
             dialog = LoadingDialog(it)
         }
+
+        orientationEventListener = object : OrientationEventListener(view.context) {
+            override fun onOrientationChanged(orientation: Int) {
+                viewModel.setNewOrientation(orientation)
+            }
+        }
+        orientationEventListener?.enable()
 
         setUI()
         setMenu()
@@ -151,7 +181,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             val linearLayout = LinearLayoutManager(context)
             layoutManager = linearLayout
 
-            userListAdapter = UserListAdapter(object: UserListInteraction {
+            userListAdapter = UserListAdapter(viewModel.contentType, object: UserListInteraction {
                 override fun onDeletePressed(
                     item: UserList,
                     contentType: Constants.ContentType,
@@ -275,11 +305,21 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             })
             adapter = userListAdapter
 
+            var isScrolling = false
             addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    isScrolling = newState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+                }
+
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-
                     viewModel.setTotalYPosition(dy)
+
+                    if (isScrolling) {
+                        val centerScrollPosition = (linearLayout.findLastCompletelyVisibleItemPosition() + linearLayout.findFirstCompletelyVisibleItemPosition()) / 2
+                        viewModel.setScrollPosition(centerScrollPosition)
+                    }
                 }
             })
         }
@@ -304,6 +344,12 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 NetworkResponse.Loading -> userListAdapter?.setLoadingView()
                 is NetworkResponse.Success -> {
                     userListAdapter?.setData(response.data.data)
+
+                    if (viewModel.didOrientationChange) {
+                        binding.userListRV.scrollToPosition(viewModel.scrollPosition - 1)
+
+                        viewModel.didOrientationChange = false
+                    }
                 }
             }
         }
@@ -418,17 +464,15 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         hideKeyboard()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        viewModel.didOrientationChange = true
-        viewModel.setTotalYPosition(0)
-    }
-
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
             viewModel.userList.removeObservers(this)
             viewModel.totalYScroll.removeObservers(this)
         }
+
+        orientationEventListener?.disable()
+        orientationEventListener = null
+
         popupMenu = null
         userListAdapter = null
         super.onDestroyView()

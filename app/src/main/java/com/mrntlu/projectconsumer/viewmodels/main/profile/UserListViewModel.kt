@@ -5,8 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mrntlu.projectconsumer.interfaces.UserListModel
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
+import com.mrntlu.projectconsumer.models.main.userList.AnimeList
+import com.mrntlu.projectconsumer.models.main.userList.GameList
+import com.mrntlu.projectconsumer.models.main.userList.MovieList
+import com.mrntlu.projectconsumer.models.main.userList.TVSeriesList
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.models.main.userList.convertToAnimeList
 import com.mrntlu.projectconsumer.models.main.userList.convertToGameList
@@ -16,6 +21,7 @@ import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBo
 import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.networkResponseFlowCollector
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +40,7 @@ class UserListViewModel @Inject constructor(
     private val repository: UserListRepository,
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
-
+    // Scroll Y
     val totalYScroll: MutableLiveData<Int> by lazy {
         MutableLiveData(0)
     }
@@ -46,6 +52,21 @@ class UserListViewModel @Inject constructor(
             else if (newTotal < 0) 0
             else newTotal
         } else null
+    }
+
+    // Variable for detecting orientation change
+    var didOrientationChange = false
+    private var currentOrientation: Int = -1
+
+    fun setNewOrientation(newOrientation: Int) {
+        if (currentOrientation == -1) {
+            currentOrientation = newOrientation
+        } else if (newOrientation != currentOrientation) {
+            setTotalYPosition(0)
+            didOrientationChange = true
+
+            currentOrientation = newOrientation
+        }
     }
 
     private val _userList = MutableLiveData<NetworkResponse<DataResponse<UserList>>>()
@@ -63,9 +84,6 @@ class UserListViewModel @Inject constructor(
     var scrollPosition: Int = savedStateHandle[USER_LIST_SCROLL_POSITION_KEY] ?: 0
         private set
 
-    // Variable for detecting orientation change
-    var didOrientationChange = false
-
     init {
         getUserList()
     }
@@ -76,12 +94,89 @@ class UserListViewModel @Inject constructor(
         _userList.value = response
     }
 
+    fun handleSearchHolderOperation(id: String, data: UserListModel?, response: NetworkResponse<*>, operation: OperationEnum) {
+        val currentSearchList = when(contentType) {
+            Constants.ContentType.ANIME -> searchHolder?.animeList
+            Constants.ContentType.MOVIE -> searchHolder?.movieList
+            Constants.ContentType.TV -> searchHolder?.tvList
+            Constants.ContentType.GAME -> searchHolder?.gameList
+        }?.toMutableList()
+
+        if (response is NetworkResponse.Success && currentSearchList?.isNotEmpty() == true) {
+            val index = currentSearchList.indexOfFirst {
+                it.id == id
+            }
+
+            if (index >= 0) {
+                when(operation) {
+                    OperationEnum.Update -> {
+                        data?.let { ulm ->
+                            when(contentType) {
+                                Constants.ContentType.ANIME -> {
+                                    val item = searchHolder!!.animeList[index]
+
+                                    currentSearchList[index] = AnimeList(
+                                        id, ulm.contentStatus, ulm.score, ulm.timesFinished, ulm.mainAttribute!!, ulm.contentId, ulm.contentExternalId,
+                                        item.title, item.titleOriginal, item.imageUrl, item.totalSeasons,
+                                    )
+                                    searchHolder?.animeList = currentSearchList.toList().map { it.convertToAnimeList() }
+                                }
+                                Constants.ContentType.MOVIE -> {
+                                    val item = searchHolder!!.movieList[index]
+
+                                    currentSearchList[index] = MovieList(
+                                        id, ulm.contentStatus, ulm.score, ulm.timesFinished, ulm.contentId, ulm.contentExternalId,
+                                        item.title, item.titleOriginal, item.imageUrl,
+                                    )
+                                    searchHolder?.movieList = currentSearchList.toList().map { it.convertToMovieList() }
+                                }
+                                Constants.ContentType.TV -> {
+                                    val item = searchHolder!!.tvList[index]
+
+                                    currentSearchList[index] = TVSeriesList(
+                                        id, ulm.contentStatus, ulm.score, ulm.timesFinished, ulm.mainAttribute, ulm.subAttribute,
+                                        ulm.contentId, ulm.contentExternalId, item.title, item.titleOriginal,
+                                        item.imageUrl, item.totalEpisodes, item.totalSeasons,
+                                    )
+
+                                    searchHolder?.tvList = currentSearchList.toList().map { it.convertToTVSeriesList() }
+                                }
+                                Constants.ContentType.GAME -> {
+                                    val item = searchHolder!!.gameList[index]
+
+                                    currentSearchList[index] = GameList(
+                                        id, ulm.contentStatus, ulm.score, ulm.timesFinished, ulm.mainAttribute, ulm.contentId,
+                                        ulm.contentExternalId, item.title, item.titleOriginal, item.imageUrl,
+                                    )
+
+                                    searchHolder?.gameList = currentSearchList.toList().map { it.convertToGameList() }
+                                }
+                            }
+                        }
+                    }
+                    OperationEnum.Delete -> {
+                        currentSearchList.removeAt(index)
+
+                        when(contentType) {
+                            Constants.ContentType.ANIME -> searchHolder?.animeList = currentSearchList.toList().map { it.convertToAnimeList() }
+                            Constants.ContentType.MOVIE -> searchHolder?.movieList = currentSearchList.toList().map { it.convertToMovieList() }
+                            Constants.ContentType.TV -> searchHolder?.tvList = currentSearchList.toList().map { it.convertToTVSeriesList() }
+                            Constants.ContentType.GAME -> searchHolder?.gameList = currentSearchList.toList().map { it.convertToGameList() }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fun deleteUserList(body: DeleteUserListBody): LiveData<NetworkResponse<MessageResponse>> {
         val liveData = MutableLiveData<NetworkResponse<MessageResponse>>()
 
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteUserList(body).collect { response ->
                 withContext(Dispatchers.Main) {
+                    handleSearchHolderOperation(body.id, null, response, OperationEnum.Delete)
+
                     liveData.value = response
                 }
             }
@@ -134,6 +229,7 @@ class UserListViewModel @Inject constructor(
 
             _userList.value = NetworkResponse.Success(DataResponse(currentUserList))
         } else if (searchHolder != null) {
+            setTotalYPosition(0)
             resetSearch()
         }
     }

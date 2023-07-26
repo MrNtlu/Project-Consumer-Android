@@ -22,7 +22,6 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
@@ -37,7 +36,6 @@ class ConsumeLaterAdapter(
     var isLoading = true
 
     private var arrayList: ArrayList<ConsumeLaterResponse> = arrayListOf()
-    private var searchListHolder: ArrayList<ConsumeLaterResponse> = arrayListOf()
 
     private fun handleDiffUtil(newList: ArrayList<ConsumeLaterResponse>) {
         val diffUtil = DiffUtilCallback(
@@ -149,20 +147,10 @@ class ConsumeLaterAdapter(
 
         when(operation.operationEnum) {
             OperationEnum.Delete -> {
-                if (searchListHolder.size > 0)
-                    searchListHolder.remove(operation.data)
-
                 newList.remove(operation.data)
             }
             OperationEnum.Update -> {
                 if (operation.data != null) {
-                    if (searchListHolder.size > 0) {
-                        val index = searchListHolder.indexOfFirst {
-                            it == operation.data
-                        }
-                        searchListHolder[index] = operation.data
-                    }
-
                     val index = newList.indexOfFirst {
                         it == operation.data
                     }
@@ -172,47 +160,6 @@ class ConsumeLaterAdapter(
         }
 
         handleDiffUtil(newList as ArrayList<ConsumeLaterResponse>)
-    }
-
-    fun search(search: String?) {
-        if (!isLoading && errorMessage == null) {
-            if (search?.isNotEmptyOrBlank() == true) {
-                val filterList = (
-                        if (searchListHolder.size > arrayList.size) searchListHolder
-                        else arrayList
-                ).toMutableList().toCollection(ArrayList())
-
-                val searchList = filterList.filter {
-                    it.content.titleOriginal.startsWith(
-                        search,
-                        ignoreCase = true
-                    ) || it.content.titleOriginal.contains(search, ignoreCase = true)
-                }.toMutableList().toCollection(ArrayList())
-
-                if (arrayList.size > searchListHolder.size) {
-                    searchListHolder.clear()
-                    searchListHolder.addAll(arrayList)
-                }
-
-                if (arrayList.size == 0 && searchList.size > 0) {
-                    arrayList.addAll(searchList)
-                    notifyDataSetChanged()
-                } else
-                    handleDiffUtil(searchList)
-            } else {
-                val resetList = arrayList.toMutableList().toCollection(ArrayList())
-
-                resetList.clear()
-                resetList.addAll(searchListHolder)
-                searchListHolder.clear()
-
-                if (arrayList.size == 0) {
-                    arrayList.addAll(resetList)
-                    notifyDataSetChanged()
-                } else
-                    handleDiffUtil(resetList)
-            }
-        }
     }
 
     inner class ItemViewHolder(

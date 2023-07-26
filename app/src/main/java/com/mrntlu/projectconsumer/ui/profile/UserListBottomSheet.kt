@@ -225,9 +225,6 @@ class UserListBottomSheet(
                         userListDeleteLiveData?.observe(viewLifecycleOwner) { response ->
                             handleBottomSheetState(response)
 
-                            if (response is NetworkResponse.Success)
-                                userListModel = null
-
                             handleResponseStatusLayout(
                                 binding.responseStatusLayout.root,
                                 binding.responseStatusLayout.responseStatusLottie,
@@ -278,12 +275,9 @@ class UserListBottomSheet(
                 saveButton.setOnClickListener {
                     if (bottomSheetState == BottomSheetState.EDIT) {
                         if (validateFields()) {
-
                             val score: Int? = scoreSelectionACTV.text.toString().toIntOrNull()
-                            val status =
-                                Constants.UserListStatus[toggleTabLayout.selectedTabPosition].request
-                            val timesFinished =
-                                if (status != Constants.UserListStatus[1].request) null
+                            val status = Constants.UserListStatus[toggleTabLayout.selectedTabPosition].request
+                            val timesFinished = if (status != Constants.UserListStatus[1].request) null
                                 else timesFinishedTextInputET.text?.toString()?.toIntOrNull()
                             val watchedSeasons =
                                 watchedSeasonTextInputET.text?.toString()?.toIntOrNull()

@@ -68,7 +68,10 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
-            tvDetails?.watchList = data?.toTvWatchList()
+            tvDetails?.watchList = if (operation == BottomSheetOperation.DELETE)
+                null
+            else
+                 data?.toTvWatchList()
 
             if (operation != BottomSheetOperation.UPDATE)
                 handleWatchListLottie(

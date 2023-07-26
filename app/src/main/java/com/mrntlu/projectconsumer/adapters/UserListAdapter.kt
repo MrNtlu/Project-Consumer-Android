@@ -40,6 +40,7 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -47,15 +48,13 @@ import com.mrntlu.projectconsumer.utils.setVisible
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
 class UserListAdapter(
+    private var contentType: Constants.ContentType = Constants.ContentType.MOVIE,
     val interaction: UserListInteraction,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
     var isLoading = true
 
     private lateinit var userList: UserList
-    private var searchListHolder: ArrayList<UserListContentModel> = arrayListOf()
-
-    var contentType: Constants.ContentType = Constants.ContentType.MOVIE
 
     private fun handleDiffUtil(newList: ArrayList<UserListContentModel>) {
         val diffUtil = DiffUtilCallback(
@@ -140,13 +139,38 @@ class UserListAdapter(
     }
 
     fun setData(newUserList: UserList) {
-        userList = newUserList
-        setState(
-            if (getContentList().isEmpty()) RecyclerViewEnum.Empty
-            else RecyclerViewEnum.View
-        )
+        if (!::userList.isInitialized) {
+            userList = newUserList
 
-        notifyDataSetChanged()
+            setState(
+                if (getContentList().isEmpty()) RecyclerViewEnum.Empty
+                else RecyclerViewEnum.View
+            )
+
+            notifyDataSetChanged()
+        } else {
+            val newList = when(contentType) {
+                Constants.ContentType.ANIME -> newUserList.animeList
+                Constants.ContentType.MOVIE -> newUserList.movieList
+                Constants.ContentType.TV -> newUserList.tvList
+                Constants.ContentType.GAME -> newUserList.gameList
+            }.toMutableList().toCollection(ArrayList())
+
+            val currentList = getContentList().toMutableList().toCollection(ArrayList())
+
+            setState(
+                if (currentList.isEmpty() && newList.isEmpty()) RecyclerViewEnum.Empty
+                else RecyclerViewEnum.View
+            )
+
+            if (currentList.isEmpty() || newList.isNotEmpty()) {
+                userList = newUserList
+
+                notifyDataSetChanged()
+            } else {
+                handleDiffUtil(newList)
+            }
+        }
     }
 
     private fun setState(rvEnum: RecyclerViewEnum) {
@@ -175,43 +199,10 @@ class UserListAdapter(
 
         when(operation.operationEnum) {
             OperationEnum.Delete -> {
-                if (searchListHolder.size > 0)
-                    searchListHolder.remove(operation.data)
-
                 newList.remove(operation.data)
             }
             OperationEnum.Update -> {
                 if (operation.data != null) {
-                    if (searchListHolder.size > 0) {
-                        val index = searchListHolder.indexOfFirst {
-                            it == operation.data
-                        }
-
-                        val item = searchListHolder[index]
-
-                        operation.data.apply {
-                            searchListHolder[index] = when(contentType) {
-                                Constants.ContentType.ANIME -> AnimeList(
-                                    id, contentStatus, score, timesFinished, mainAttribute!!, contentId, contentExternalId,
-                                    item.title, item.titleOriginal, item.imageUrl, item.totalSeasons,
-                                )
-                                Constants.ContentType.MOVIE -> MovieList(
-                                    id, contentStatus, score, timesFinished, contentId, contentExternalId,
-                                    item.title, item.titleOriginal, item.imageUrl,
-                                )
-                                Constants.ContentType.TV -> TVSeriesList(
-                                    id, contentStatus, score, timesFinished, mainAttribute, subAttribute,
-                                    contentId, contentExternalId, item.title, item.titleOriginal,
-                                    item.imageUrl, item.totalEpisodes, item.totalSeasons,
-                                )
-                                Constants.ContentType.GAME -> GameList(
-                                    id, contentStatus, score, timesFinished, mainAttribute, contentId,
-                                    contentExternalId, item.title, item.titleOriginal, item.imageUrl,
-                                )
-                            }
-                        }
-                    }
-
                     val index = newList.indexOfFirst {
                         it.contentId == operation.data.contentId ||
                         it.contentExternalId == operation.data.contentExternalId

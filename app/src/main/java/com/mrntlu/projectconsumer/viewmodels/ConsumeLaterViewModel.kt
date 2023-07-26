@@ -16,7 +16,6 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.setData
-import com.mrntlu.projectconsumer.viewmodels.main.profile.USER_LIST_SEARCH_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +33,20 @@ class ConsumeLaterViewModel @Inject constructor(
     private val userInteractionRepository: UserInteractionRepository,
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
+    // Variable for detecting orientation change
+    var didOrientationChange = false
+    private var currentOrientation: Int = -1
+
+    fun setNewOrientation(newOrientation: Int) {
+        if (currentOrientation == -1) {
+            currentOrientation = newOrientation
+        } else if (newOrientation != currentOrientation) {
+            didOrientationChange = true
+
+            currentOrientation = newOrientation
+        }
+    }
+
     private val _consumeLaterList = MutableLiveData<NetworkListResponse<List<ConsumeLaterResponse>>>()
     val consumeLaterList: LiveData<NetworkListResponse<List<ConsumeLaterResponse>>> = _consumeLaterList
 
@@ -49,9 +62,6 @@ class ConsumeLaterViewModel @Inject constructor(
         private set
     var scrollPosition: Int = savedStateHandle[CONSUME_LATER_SCROLL_POSITION_KEY] ?: 0
         private set
-
-    // Variable for detecting orientation change
-    var didOrientationChange = false
 
     init {
         if (scrollPosition != 0)
@@ -76,6 +86,15 @@ class ConsumeLaterViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             userInteractionRepository.moveConsumeLaterAsUserList(body).collect { response ->
                 withContext(Dispatchers.Main) {
+                    if (response is NetworkResponse.Success && searchHolder?.isNotEmpty() == true) {
+                        val index = searchHolder!!.indexOfFirst {
+                            it.id == body.id
+                        }
+
+                        if (index >= 0)
+                            searchHolder!!.removeAt(index)
+                    }
+
                     liveData.value = response
                 }
             }
