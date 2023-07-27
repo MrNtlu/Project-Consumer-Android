@@ -38,9 +38,7 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
-import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -85,7 +83,17 @@ class UserListAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
             RecyclerViewEnum.View.value -> {
-                (holder as ItemViewHolder).bind(contentType, userList, position)
+                (holder as ItemViewHolder).apply {
+                    bind(contentType, userList, holder.adapterPosition)
+
+                    binding.root.setOnClickListener {
+                        interaction.onItemSelected(userList, holder.adapterPosition)
+                    }
+
+                    binding.userListButton.setOnClickListener {
+                        handlePopupMenu(binding, holder.adapterPosition)
+                    }
+                }
             }
             RecyclerViewEnum.Error.value -> {
                 (holder as ErrorViewHolderBind<UserList>).bind(errorMessage, interaction, true)
@@ -120,6 +128,28 @@ class UserListAdapter(
         Constants.ContentType.GAME -> userList.gameList
     }
 
+    private fun handlePopupMenu(binding: CellUserListBinding, position: Int) {
+        val popupMenu = PopupMenu(binding.root.context, binding.userListButton)
+        popupMenu.menuInflater.inflate(R.menu.user_list_item_menu, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            when(item.itemId) {
+                R.id.detailsMenu -> {
+                    interaction.onDetailsPressed(userList, contentType, position)
+                }
+                R.id.editMenu -> {
+                    interaction.onUpdatePressed(userList, contentType, position)
+                }
+                R.id.deleteMenu -> {
+                    interaction.onDeletePressed(userList, contentType, position)
+                }
+            }
+            true
+        }
+
+        popupMenu.show()
+    }
+
     fun setErrorView(errorMessage: String) {
         setState(RecyclerViewEnum.Error)
         this.errorMessage = errorMessage
@@ -139,7 +169,7 @@ class UserListAdapter(
     }
 
     fun setData(newUserList: UserList) {
-        if (!::userList.isInitialized) {
+        if (!::userList.isInitialized || isLoading) {
             userList = newUserList
 
             setState(
@@ -163,13 +193,15 @@ class UserListAdapter(
                 else RecyclerViewEnum.View
             )
 
-            if (currentList.isEmpty() || newList.isNotEmpty()) {
+            if (
+                (currentList.isEmpty() && newList.isNotEmpty()) ||
+                (newList.isEmpty() && currentList.isNotEmpty())
+            ) {
                 userList = newUserList
 
                 notifyDataSetChanged()
-            } else {
+            } else
                 handleDiffUtil(newList)
-            }
         }
     }
 
@@ -241,44 +273,44 @@ class UserListAdapter(
     inner class LoadingViewHolder(binding: CellUserListLoadingBinding): RecyclerView.ViewHolder(binding.root)
 
     inner class ItemViewHolder(
-        private val binding: CellUserListBinding,
+        val binding: CellUserListBinding,
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(contentType: Constants.ContentType, userList: UserList, position: Int) {
-            val contentStatus = when(contentType) {
+            val contentStatus = when (contentType) {
                 Constants.ContentType.ANIME -> userList.animeList[position].contentStatus
                 Constants.ContentType.MOVIE -> userList.movieList[position].contentStatus
                 Constants.ContentType.TV -> userList.tvList[position].contentStatus
                 Constants.ContentType.GAME -> userList.gameList[position].contentStatus
             }
 
-            val imageUrl = when(contentType) {
+            val imageUrl = when (contentType) {
                 Constants.ContentType.ANIME -> userList.animeList[position].imageUrl
                 Constants.ContentType.MOVIE -> userList.movieList[position].imageUrl
                 Constants.ContentType.TV -> userList.tvList[position].imageUrl
                 Constants.ContentType.GAME -> userList.gameList[position].imageUrl
             }
 
-            val title = when(contentType) {
+            val title = when (contentType) {
                 Constants.ContentType.ANIME -> userList.animeList[position].title
                 Constants.ContentType.MOVIE -> userList.movieList[position].title
                 Constants.ContentType.TV -> userList.tvList[position].title
                 Constants.ContentType.GAME -> userList.gameList[position].title
             }
 
-            val score = when(contentType) {
+            val score = when (contentType) {
                 Constants.ContentType.ANIME -> userList.animeList[position].score
                 Constants.ContentType.MOVIE -> userList.movieList[position].score
                 Constants.ContentType.TV -> userList.tvList[position].score
                 Constants.ContentType.GAME -> userList.gameList[position].score
             }
 
-            val totalEps = when(contentType) {
+            val totalEps = when (contentType) {
                 Constants.ContentType.ANIME -> userList.animeList[position].totalEpisodes
                 Constants.ContentType.TV -> userList.tvList[position].totalEpisodes
                 else -> null
             }
 
-            val watchedEps = when(contentType) {
+            val watchedEps = when (contentType) {
                 Constants.ContentType.ANIME -> userList.animeList[position].mainAttribute
                 Constants.ContentType.TV -> userList.tvList[position].mainAttribute
                 else -> null
@@ -295,14 +327,6 @@ class UserListAdapter(
             } season${if ((watchedSeasons ?: 0) > 1) "s" else ""}"
 
             binding.apply {
-                root.setOnClickListener {
-                    interaction.onItemSelected(userList, position)
-                }
-
-                userListButton.setOnClickListener {
-                    handlePopupMenu(position)
-                }
-
                 imageInclude.apply {
                     previewComposeView.apply {
                         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -331,7 +355,7 @@ class UserListAdapter(
                     previewTV.text = title
                 }
 
-                val attrColor = when(contentStatus) {
+                val attrColor = when (contentStatus) {
                     Constants.UserListStatus[0].request -> R.attr.statusActiveColor
                     Constants.UserListStatus[1].request -> R.attr.statusFinishedColor
                     else -> R.attr.statusDroppedColor
@@ -343,25 +367,34 @@ class UserListAdapter(
                 totalSeasonTV.text = totalSeasons
                 watchedSeasonTV.text = watchedSeasons?.toString() ?: "?"
 
-                val contentStatusType = Constants.UserListStatus.find { it.request == contentStatus }?.name ?: Constants.UserListStatus[0].name
+                val contentStatusType =
+                    Constants.UserListStatus.find { it.request == contentStatus }?.name
+                        ?: Constants.UserListStatus[0].name
                 contentStatusTV.text = contentStatusType
 
                 contentProgress.apply {
-                    max = when(contentType) {
-                        Constants.ContentType.ANIME -> userList.animeList[position].totalEpisodes ?: if (contentStatus == "finished" && watchedEps != null) watchedEps else 100
+                    max = when (contentType) {
+                        Constants.ContentType.ANIME -> userList.animeList[position].totalEpisodes
+                            ?: if (contentStatus == "finished" && watchedEps != null) watchedEps else 100
+
                         Constants.ContentType.MOVIE -> 1
-                        Constants.ContentType.TV -> userList.tvList[position].totalEpisodes ?: if (contentStatus == "finished" && watchedEps != null) watchedEps else 100
-                        Constants.ContentType.GAME -> if (userList.gameList[position].mainAttribute?.compareTo(1000) == -1) 1000
+                        Constants.ContentType.TV -> userList.tvList[position].totalEpisodes
+                            ?: if (contentStatus == "finished" && watchedEps != null) watchedEps else 100
+
+                        Constants.ContentType.GAME -> if (userList.gameList[position].mainAttribute?.compareTo(
+                                1000
+                            ) == -1
+                        ) 1000
                         else
                             userList.gameList[position].mainAttribute?.plus(1000)
-                        ?: 1
+                                ?: 1
                     }
-                    progress = when(contentType) {
+                    progress = when (contentType) {
                         Constants.ContentType.ANIME -> userList.animeList[position].mainAttribute
                         Constants.ContentType.MOVIE -> if (contentStatus == "finished") 1 else 0
                         Constants.ContentType.TV -> userList.tvList[position].mainAttribute ?: 1
-                        Constants.ContentType.GAME -> userList.gameList[position].mainAttribute ?:
-                            if (contentStatus == "finished") 1 else 0
+                        Constants.ContentType.GAME -> userList.gameList[position].mainAttribute
+                            ?: if (contentStatus == "finished") 1 else 0
                     }
                 }
 
@@ -370,14 +403,16 @@ class UserListAdapter(
                 totalEpisodeTV.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
                 watchedEpisodeTV.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
 
-                when(contentType) {
+                when (contentType) {
                     Constants.ContentType.MOVIE -> {}
                     Constants.ContentType.GAME -> {
                         val hoursPlayedStr = " hours"
                         totalEpisodeTV.text = hoursPlayedStr
 
-                        watchedEpisodeTV.text = userList.gameList[position].mainAttribute?.toString() ?: "?"
+                        watchedEpisodeTV.text =
+                            userList.gameList[position].mainAttribute?.toString() ?: "?"
                     }
+
                     else -> {
                         val totalEpsStr = "/${totalEps ?: "?"} eps"
                         totalEpisodeTV.text = totalEpsStr
@@ -386,28 +421,6 @@ class UserListAdapter(
                     }
                 }
             }
-        }
-
-        private fun handlePopupMenu(position: Int) {
-            val popupMenu = PopupMenu(binding.root.context, binding.userListButton)
-            popupMenu.menuInflater.inflate(R.menu.user_list_item_menu, popupMenu.menu)
-
-            popupMenu.setOnMenuItemClickListener { item ->
-                when(item.itemId) {
-                    R.id.detailsMenu -> {
-                        interaction.onDetailsPressed(userList, contentType, position)
-                    }
-                    R.id.editMenu -> {
-                        interaction.onUpdatePressed(userList, contentType, position)
-                    }
-                    R.id.deleteMenu -> {
-                        interaction.onDeletePressed(userList, contentType, position)
-                    }
-                }
-                true
-            }
-
-            popupMenu.show()
         }
     }
 }

@@ -132,6 +132,8 @@
     <style name="WrapContentDialog" parent="Theme.AppCompat.Light.Dialog">
         <item name="windowMinWidthMajor">0%</item>
         <item name="windowMinWidthMinor">0%</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.InfoButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.InfoNegativeButton</item>
     </style>
 <!--   FAB Style   -->
     <style name="Theme.ProjectConsumer.SmallFAB" parent="Widget.Material3.FloatingActionButton.Small.Primary">

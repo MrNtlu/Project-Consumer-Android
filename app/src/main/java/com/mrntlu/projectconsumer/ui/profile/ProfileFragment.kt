@@ -105,7 +105,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 when(response) {
                     is NetworkResponse.Failure -> {
                         errorLayoutInc.apply {
-                            errorLayoutInc.cancelButton.setGone()
+                            cancelButton.setGone()
 
                             errorText.text = response.errorMessage
 

@@ -41,7 +41,6 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
@@ -61,8 +60,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private var userListDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
 
-    // TODO DiffUtil doesn't seem to be working, check again.
-
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
             when(operation) {
@@ -80,8 +77,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     )
                 }
                 BottomSheetOperation.DELETE -> {
-                    printLog("Delete $data")
-
                     viewModel.handleSearchHolderOperation(
                         data!!.id,
                         null,
@@ -314,9 +309,10 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    viewModel.setTotalYPosition(dy)
 
                     if (isScrolling) {
+                        viewModel.setTotalYPosition(dy)
+
                         val centerScrollPosition = (linearLayout.findLastCompletelyVisibleItemPosition() + linearLayout.findFirstCompletelyVisibleItemPosition()) / 2
                         viewModel.setScrollPosition(centerScrollPosition)
                     }
@@ -343,6 +339,12 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 is NetworkResponse.Failure -> userListAdapter?.setErrorView(response.errorMessage)
                 NetworkResponse.Loading -> userListAdapter?.setLoadingView()
                 is NetworkResponse.Success -> {
+                    viewModel.setScrollPosition(0)
+                    binding.userListRV.scrollToPosition(0)
+
+                    layoutParams.topMargin = 0
+                    binding.userListTabLayout.layoutParams = layoutParams
+
                     userListAdapter?.setData(response.data.data)
 
                     if (viewModel.didOrientationChange) {

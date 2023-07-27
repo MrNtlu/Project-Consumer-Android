@@ -57,11 +57,11 @@ class SearchViewModel @AssistedInject constructor(
             setContentTypeValue(vmContentType)
             setSearch(vmSearch)
 
-            startMoviesFetch(search, true)
+            startContentFetch(search, true)
         }
     }
 
-    fun startMoviesFetch(newSearch: String, refreshAnyway: Boolean = false) {
+    fun startContentFetch(newSearch: String, refreshAnyway: Boolean = false) {
         if (newSearch != search) {
             setSearch(newSearch)
             setPagePosition(1)

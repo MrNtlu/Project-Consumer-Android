@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.adapters.CalendarAdapter
 import com.mrntlu.projectconsumer.adapters.DiaryAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiaryBinding
@@ -18,6 +20,8 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.getFirstDateOfTheWeek
 import com.mrntlu.projectconsumer.utils.printLog
+import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.smoothScrollToCenteredPosition
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
@@ -32,8 +36,6 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
     private var diaryAdapter: DiaryAdapter? = null
 
     private lateinit var dialog: LoadingDialog
-
-    //TODO On Scroll or with button hide calendar.
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +59,10 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            errorLayoutInc.refreshButton.setOnClickListener {
+                fetchRequest(forceFetch = true)
+            }
+
             calendarNextButton.setOnClickListener {
                 updateFocusedDate(focusedDate.plusWeeks(1))
             }
@@ -75,14 +81,29 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
     private fun setObservers() {
         fetchRequest(forceFetch = false)
 
+        val layoutParams = binding.calendarLayout.layoutParams as ViewGroup.MarginLayoutParams
+
+        viewModel.totalYScroll.observe(viewLifecycleOwner) { totalYScroll ->
+            if (totalYScroll in 0..900) {
+                layoutParams.topMargin = (-totalYScroll / 1.5).toInt()
+                binding.calendarLayout.layoutParams = layoutParams
+            } else {
+                layoutParams.topMargin = -600
+                binding.calendarLayout.layoutParams = layoutParams
+            }
+        }
+
         viewModel.logsResponse.observe(viewLifecycleOwner) { response ->
             when(response) {
                 is NetworkResponse.Failure -> {
                     if (::dialog.isInitialized)
                         dialog.dismissDialog()
 
-                    //TODO Fail screen
-                    printLog("Error ${response.errorMessage}")
+                    binding.errorLayoutInc.apply {
+                        cancelButton.setGone()
+
+                        errorText.text = response.errorMessage
+                    }
                 }
                 NetworkResponse.Loading -> {
                     if (::dialog.isInitialized)
@@ -151,7 +172,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
                 val position = diaryAdapter?.getScrollPosition(date.convertToHumanReadableDateString()) ?: 0
 
                 if (position > -1)
-                    binding.logsRV.smoothScrollToPosition(position)
+                    binding.logsRV.smoothScrollToCenteredPosition(position)
             }
             adapter = calendarAdapter
         }
@@ -163,6 +184,21 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
             diaryAdapter = DiaryAdapter()
             adapter = diaryAdapter
+
+            var isScrolling = false
+            addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    isScrolling = newState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    if (isScrolling)
+                        viewModel.setTotalYPosition(dy)
+                }
+            })
         }
     }
 
@@ -186,13 +222,19 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
             fetchRequest()
         }
 
+        viewModel.setTotalYPosition(-150)
+        binding.logsRV.scrollToPosition(0)
+
         val headerDateText = "${focusedDate.month.toString().lowercase().replaceFirstChar { it.uppercase() }} ${focusedDate.year}"
         binding.calendarDateTV.text = headerDateText
     }
 
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
+            viewModel.setTotalYPosition(0)
+
             viewModel.logsResponse.removeObservers(this)
+            viewModel.totalYScroll.removeObservers(this)
         }
 
         calendarAdapter = null
