@@ -7,7 +7,7 @@ class FirebaseMessagingService: FirebaseMessagingService() {
     companion object {
         const val CHANNEL_NAME = "Main Notification"
         const val GROUP_NAME = "Group Notification"
-        const val GROUP_ID = "watchnlist.notification"
+        const val GROUP_ID = "watchlistfy.notification"
     }
 
     /**

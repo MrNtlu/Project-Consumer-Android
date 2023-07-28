@@ -1,4 +1,4 @@
-# Watch'nList
+# WatchListfy
 
 <ul>
   <li> Hilt
@@ -37,12 +37,12 @@ Level = 12
 
 ## Scores
 
-| Type   |      Score      |  Extra |
-|----------|:-------------:|------:|
-| Consume Later |  +25 | - |
-| User List Watching |    +50   |   - |
-| User List Dropped | +50 |    Score +50 |
-| User List Watched | +100 |    Score +25 |
+| Type   |      Score      |
+|----------|:-------------:|
+| Consume Later |  +25 |
+| User List Watching |    +50   |
+| User List Dropped | +50 |
+| User List Watched | +100 |
 
 ## Features
 ### Table of Contents
