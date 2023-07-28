@@ -104,6 +104,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                 menuInflater.inflate(R.menu.consume_later_menu, menu)
 
                 searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
+                searchView.queryHint = getString(R.string.search)
                 searchView.setQuery(viewModel.search, false)
                 searchView.clearFocus()
 
@@ -294,9 +295,8 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     private fun setRecyclerView() {
         binding.listRV.apply {
-            val marginParams = layoutParams as ViewGroup.MarginLayoutParams
-            marginParams.bottomMargin = context.dpToPx(68F)
-            layoutParams = marginParams
+            setPadding(0, 0, 0, context.dpToPx(72F))
+            clipToPadding = false
 
             val linearLayout = LinearLayoutManager(context)
             layoutManager = linearLayout

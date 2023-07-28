@@ -49,14 +49,9 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
         SearchViewModel.provideSearchViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
     }
 
-    private lateinit var searchQuery: String
-    private lateinit var searchType: Constants.ContentType
-
     private var contentAdapter: ContentAdapter<ContentModel>? = null
     private var popupMenu: PopupMenu? = null
     private var gridCount = 3
-
-    //TODO SearchFragemnt, remove searchType variable and use viewModel.contentType. Much more safe!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,8 +63,6 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        searchQuery = args.searchQuery
-        searchType = args.searchType
 
         setMenu()
         setObservers()
@@ -87,7 +80,8 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                 menuInflater.inflate(R.menu.search_toolbar_menu, menu)
 
                 val searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
-                searchView.setQuery(searchQuery, false)
+                searchView.queryHint = getString(R.string.search)
+                searchView.setQuery(viewModel.search, false)
                 searchView.isIconified = false
                 searchView.clearFocus()
 
@@ -96,8 +90,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                         if (query?.isNotEmptyOrBlank() == true) {
                             searchView.clearFocus()
 
-                            searchQuery = query
-                            viewModel.startContentFetch(searchQuery)
+                            viewModel.startContentFetch(query)
                         }
 
                         return true
@@ -161,9 +154,8 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                                     item.isChecked = true
 
                                     if (newFilterType.request != viewModel.contentType.request) {
-                                        searchType = newFilterType
                                         viewModel.setContentTypeValue(newFilterType)
-                                        viewModel.startContentFetch(searchQuery, true)
+                                        viewModel.startContentFetch(viewModel.search, true)
                                     }
 
                                     true
@@ -254,7 +246,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
-                        when(searchType) {
+                        when(viewModel.contentType) {
                             Constants.ContentType.ANIME -> TODO()
                             Constants.ContentType.MOVIE -> {
                                 val navWithAction = SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment(item.id)
@@ -269,7 +261,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                     }
 
                     override fun onErrorRefreshPressed() {
-                        viewModel.startContentFetch(searchQuery)
+                        viewModel.startContentFetch(viewModel.search)
                     }
 
                     override fun onCancelPressed() {

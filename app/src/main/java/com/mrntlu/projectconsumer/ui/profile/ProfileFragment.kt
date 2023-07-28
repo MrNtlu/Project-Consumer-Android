@@ -22,7 +22,6 @@ import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -77,7 +76,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 val rvParams = binding.legendContentRV.layoutParams
                 rvParams.height = view.height
                     .minus(binding.profileContentTabLayout.height)
-                    .minus(context?.dpToPx(64F) ?: 0)
             }
         })
 

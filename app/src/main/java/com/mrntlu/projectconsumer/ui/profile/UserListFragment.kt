@@ -369,6 +369,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 menuInflater.inflate(R.menu.user_list_menu, menu)
 
                 searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
+                searchView.queryHint = getString(R.string.search)
                 searchView.setQuery(viewModel.search, false)
                 searchView.clearFocus()
 

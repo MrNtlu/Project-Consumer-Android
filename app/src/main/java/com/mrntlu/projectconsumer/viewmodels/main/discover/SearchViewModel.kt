@@ -42,10 +42,11 @@ class SearchViewModel @AssistedInject constructor(
     // Process Death variables
     var isRestoringData = false
     var contentType: Constants.ContentType = savedStateHandle[SEARCH_CONTENT_TYPE_KEY] ?: vmContentType
-    private var page: Int = savedStateHandle[SEARCH_PAGE_KEY] ?: 1
-    private var search: String = savedStateHandle[SEARCH_TEXT_KEY] ?: vmSearch
+    var search: String = savedStateHandle[SEARCH_TEXT_KEY] ?: vmSearch
+        private set
     var scrollPosition: Int = savedStateHandle[SEARCH_SCROLL_POSITION_KEY] ?: 0
         private set
+    private var page: Int = savedStateHandle[SEARCH_PAGE_KEY] ?: 1
 
     // Variable for detecting orientation change
     var didOrientationChange = false

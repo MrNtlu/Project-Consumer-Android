@@ -19,7 +19,6 @@ import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.getFirstDateOfTheWeek
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.smoothScrollToCenteredPosition
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
