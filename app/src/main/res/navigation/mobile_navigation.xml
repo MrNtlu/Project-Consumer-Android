@@ -66,7 +66,7 @@
         android:id="@+id/movieDetailsFragment"
         android:name="com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragment"
         android:label="fragment_movie_details"
-        tools:layout="@layout/fragment_movie_details" >
+        tools:layout="@layout/fragment_movie_details">
         <argument
             android:name="movieId"
             app:argType="string" />
@@ -76,7 +76,10 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
+
+        <deepLink
+            app:uri="watchlistfy.com/movie/{movieId}" />
     </fragment>
 
     <fragment
@@ -342,5 +345,13 @@
         android:name="com.mrntlu.projectconsumer.ui.profile.DiaryFragment"
         android:label="fragment_diary"
         tools:layout="@layout/fragment_diary" />
+    <action
+        android:id="@+id/action_global_movieDetailsFragment"
+        app:destination="@id/movieDetailsFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
 
 </navigation>

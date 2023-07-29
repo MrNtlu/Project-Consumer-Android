@@ -3,7 +3,10 @@ package com.mrntlu.projectconsumer.utils
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.app.Notification
+import android.app.PendingIntent
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.DisplayMetrics
@@ -12,6 +15,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -156,6 +160,54 @@ fun Context.showErrorDialog(message: String) {
         }
         .show()
 }
+
+fun Context.setNotification(
+    channelId: String,
+    title: String?,
+    body: String?,
+    soundUri: Uri?,
+    groupId: String?,
+    pendingIntent: PendingIntent,
+): NotificationCompat.Builder {
+    val notification = NotificationCompat.Builder(this, channelId)
+        .setSmallIcon(R.drawable.ic_logo_small)
+        .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_logo))
+        .setColor(ContextCompat.getColor(applicationContext, R.color.materialBlack))
+        .setContentTitle(title)
+        .setContentText(body)
+        .setAutoCancel(true)
+        .setSound(soundUri)
+        .setGroupSummary(false)
+
+    if (groupId != null)
+        notification.setGroup(groupId)
+
+    notification.setContentIntent(pendingIntent)
+
+    return notification
+}
+
+fun Context.setGroupNotification(
+    channelId: String,
+    groupId: String,
+    groupSummary: Boolean,
+    lineText: String,
+    bigContentTitle: String,
+    summaryText: String,
+): Notification = NotificationCompat.Builder(this, channelId)
+    .setSmallIcon(R.drawable.ic_logo_small)
+    .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_logo))
+    .setColor(ContextCompat.getColor(applicationContext, R.color.materialBlack))
+    .setStyle(
+        NotificationCompat.InboxStyle()
+            .addLine(lineText)
+            .setBigContentTitle(bigContentTitle)
+            .setSummaryText(summaryText)
+    )
+    .setGroup(groupId)
+    .setGroupSummary(groupSummary)
+    .setAutoCancel(true)
+    .build()
 
 fun String.convertToHumanReadableDateString(): String? {
     val date = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(this)

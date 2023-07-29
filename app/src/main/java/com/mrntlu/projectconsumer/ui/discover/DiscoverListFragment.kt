@@ -180,7 +180,9 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
-                         val navWithAction = when(args.contentType) {
+                        val contentType: Constants.ContentType = args.contentType
+
+                        val navWithAction = when(contentType) {
                             Constants.ContentType.ANIME -> TODO()
                             Constants.ContentType.MOVIE -> DiscoverListFragmentDirections.actionDiscoverListFragmentToMovieDetailsFragment(
                                 item.id

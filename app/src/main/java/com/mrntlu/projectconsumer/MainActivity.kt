@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer
 
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -33,6 +34,9 @@ import com.google.firebase.ktx.Firebase
 import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
 import com.mrntlu.projectconsumer.interfaces.ConnectivityObserver
 import com.mrntlu.projectconsumer.service.TokenManager
+import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.DATA_EXTRA
+import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.PATH_EXTRA
+import com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragmentDirections
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.MessageBoxType
@@ -86,6 +90,29 @@ class MainActivity : AppCompatActivity() {
     private var isUserInfoFailed = false
     private lateinit var binding: ActivityMainBinding
 
+    private fun handleIntentData(extras: Bundle?) {
+        if (extras != null) {
+            val data = extras.getString(DATA_EXTRA)
+            val path = extras.getString(PATH_EXTRA)
+
+            if (data != null && path != null) {
+
+                when (path) {
+                    "movie" -> {
+                        val navWithAction = MovieDetailsFragmentDirections.actionGlobalMovieDetailsFragment(data)
+                        navController.navigate(navWithAction)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        handleIntentData(intent?.extras)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -120,6 +147,8 @@ class MainActivity : AppCompatActivity() {
         })
 
         computeWindowSizeClasses()
+
+        handleIntentData(intent?.extras)
     }
 
     private fun setAppBarConfiguration() {
