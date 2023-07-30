@@ -31,7 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <intent-filter android:label="http_intent">
+            <intent-filter
+                android:label="http_intent"
+                android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -42,12 +44,14 @@
                 <data android:host="watchlistfy.com" />
             </intent-filter>
 
-            <intent-filter android:label="code_intent">
+            <intent-filter
+                android:label="code_intent">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="redirect"
+                <data
+                    android:scheme="redirect"
                     android:host="watchlistfy" />
             </intent-filter>
 

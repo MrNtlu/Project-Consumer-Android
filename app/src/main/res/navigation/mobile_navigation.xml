@@ -79,6 +79,7 @@
             app:popExitAnim="@anim/slide_out_right" />
 
         <deepLink
+            android:autoVerify="true"
             app:uri="watchlistfy.com/movie/{movieId}" />
     </fragment>
 
@@ -235,7 +236,7 @@
         android:id="@+id/tvDetailsFragment"
         android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragment"
         android:label="fragment_tv_details"
-        tools:layout="@layout/fragment_tv_details" >
+        tools:layout="@layout/fragment_tv_details">
         <argument
             android:name="tvId"
             app:argType="string" />
@@ -245,7 +246,11 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
+        <deepLink
+            android:id="@+id/deepLink"
+            android:autoVerify="true"
+            app:uri="watchlistfy.com/tv/{tvId}" />
     </fragment>
     <fragment
         android:id="@+id/tvListFragment"
