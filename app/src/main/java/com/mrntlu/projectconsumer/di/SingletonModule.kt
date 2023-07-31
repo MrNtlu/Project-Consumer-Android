@@ -11,7 +11,9 @@ import com.mrntlu.projectconsumer.service.retrofit.TVSeriesApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserInteractionApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
+import com.mrntlu.projectconsumer.service.room.AnimeDao
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
+import com.mrntlu.projectconsumer.service.room.GameDao
 import com.mrntlu.projectconsumer.service.room.MovieDao
 import com.mrntlu.projectconsumer.service.room.TVSeriesDao
 import com.mrntlu.projectconsumer.service.room.UserInteractionDao
@@ -148,6 +150,14 @@ class SingletonModule {
     @Singleton
     @Provides
     fun provideTVSeriesDao(cacheDB: CacheDatabase): TVSeriesDao = cacheDB.getTVSeriesDao()
+
+    @Singleton
+    @Provides
+    fun provideAnimeDao(cacheDB: CacheDatabase): AnimeDao = cacheDB.getAnimeDao()
+
+    @Singleton
+    @Provides
+    fun provideGameDao(cacheDB: CacheDatabase): GameDao = cacheDB.getGameDao()
 
     @Singleton
     @Provides

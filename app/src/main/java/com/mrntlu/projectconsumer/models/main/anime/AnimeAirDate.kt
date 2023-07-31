@@ -1,7 +1,10 @@
 package com.mrntlu.projectconsumer.models.main.anime
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class AnimeAirDate(
     val from: String,
     val to: String,
@@ -23,4 +26,8 @@ data class AnimeAirDate(
 
     @SerializedName("to_year")
     val toYear: Int,
-)
+) : Parcelable {
+    constructor(): this(
+        "", "", 0, 0, 0, 0, 0, 0
+    )
+}

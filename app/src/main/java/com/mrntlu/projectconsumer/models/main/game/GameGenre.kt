@@ -1,14 +1,13 @@
-package com.mrntlu.projectconsumer.models.main.anime
+package com.mrntlu.projectconsumer.models.main.game
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AnimeGenre(
+data class GameGenre(
     val name: String,
-    val url: String,
 
-    @SerializedName("mal_id")
-    val malID: Int,
+    @SerializedName("rawg_id")
+    val rawgID: Int,
 ) : Parcelable
