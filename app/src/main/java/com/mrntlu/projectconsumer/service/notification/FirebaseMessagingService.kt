@@ -25,6 +25,7 @@ class FirebaseMessagingService: FirebaseMessagingService() {
 
         const val PATH_EXTRA = "path"
         const val DATA_EXTRA = "data"
+        const val DEEPLINK_EXTRA = "deepLink"
     }
 
     @Inject

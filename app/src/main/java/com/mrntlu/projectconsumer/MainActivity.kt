@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
@@ -35,8 +36,10 @@ import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
 import com.mrntlu.projectconsumer.interfaces.ConnectivityObserver
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.DATA_EXTRA
+import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.DEEPLINK_EXTRA
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.PATH_EXTRA
 import com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragmentDirections
+import com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragmentDirections
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.MessageBoxType
@@ -94,13 +97,24 @@ class MainActivity : AppCompatActivity() {
         if (extras != null) {
             val data = extras.getString(DATA_EXTRA)
             val path = extras.getString(PATH_EXTRA)
+            val deepLink = extras.getString(DEEPLINK_EXTRA)
 
-            if (data != null && path != null) {
+            try {
+                val deepLinkUri = Uri.parse(deepLink)
 
-                when (path) {
-                    "movie" -> {
-                        val navWithAction = MovieDetailsFragmentDirections.actionGlobalMovieDetailsFragment(data)
-                        navController.navigate(navWithAction)
+                navController.navigate(deepLink = deepLinkUri)
+            } catch (_: Exception) {
+                if (data != null && path != null) {
+                    when (path) {
+                        "movie" -> {
+                            val navWithAction = MovieDetailsFragmentDirections.actionGlobalMovieDetailsFragment(data)
+                            navController.navigate(navWithAction)
+                        }
+
+                        "tv" -> {
+                            val navWithAction = TVSeriesDetailsFragmentDirections.actionGlobalTvDetailsFragment(data)
+                            navController.navigate(navWithAction)
+                        }
                     }
                 }
             }

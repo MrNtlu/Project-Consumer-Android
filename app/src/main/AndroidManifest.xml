@@ -42,17 +42,7 @@
                 <data android:scheme="https"/>
 
                 <data android:host="watchlistfy.com" />
-            </intent-filter>
-
-            <intent-filter
-                android:label="code_intent">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:scheme="redirect"
-                    android:host="watchlistfy" />
+                <data android:host="www.watchlistfy.com" />
             </intent-filter>
 
             <nav-graph android:value="@navigation/mobile_navigation" />
