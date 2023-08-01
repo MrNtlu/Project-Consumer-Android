@@ -7,7 +7,6 @@ import javax.inject.Inject
 class MoviePreviewRepository @Inject constructor(
     private val movieApiService: MovieApiService,
 ) {
-
     fun fetchPreviewMovies() = networkResponseFlow {
         movieApiService.getPreviewMovies()
     }

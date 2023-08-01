@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.viewmodels.main.movie
+package com.mrntlu.projectconsumer.viewmodels.main.anime
 
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
@@ -8,8 +8,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
-import com.mrntlu.projectconsumer.models.main.movie.Movie
-import com.mrntlu.projectconsumer.repository.MovieRepository
+import com.mrntlu.projectconsumer.models.main.anime.Anime
+import com.mrntlu.projectconsumer.repository.AnimeRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
@@ -23,26 +23,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-private const val MOVIE_PAGE_KEY = "rv.movie.page"
-private const val MOVIE_SORT_KEY = "rv.movie.sort"
-private const val MOVIE_SCROLL_POSITION_KEY = "rv.movie.scroll_position"
-private const val MOVIE_TAG_KEY = "movie.fetch.tag"
+private const val ANIME_PAGE_KEY = "rv.anime.page"
+private const val ANIME_SORT_KEY = "rv.anime.sort"
+private const val ANIME_SCROLL_POSITION_KEY = "rv.anime.scroll_position"
+private const val ANIME_TAG_KEY = "anime.fetch.tag"
 
-class MovieViewModel @AssistedInject constructor(
-    private val movieRepository: MovieRepository,
+class AnimeViewModel @AssistedInject constructor(
+    private val animeRepository: AnimeRepository,
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val vmTag: String,
     @Assisted var isNetworkAvailable: Boolean,
 ): ViewModel() {
-    private val _movieList = MutableLiveData<NetworkListResponse<List<Movie>>>()
-    val movies: LiveData<NetworkListResponse<List<Movie>>> = _movieList
+    private val _animeList = MutableLiveData<NetworkListResponse<List<Anime>>>()
+    val animes: LiveData<NetworkListResponse<List<Anime>>> = _animeList
 
     // Process Death variables
     var isRestoringData = false
-    private var page: Int = savedStateHandle[MOVIE_PAGE_KEY] ?: 1
-    private var tag: String = savedStateHandle[MOVIE_TAG_KEY] ?: FetchType.UPCOMING.tag
-    private var sort: String = savedStateHandle[MOVIE_SORT_KEY] ?: Constants.SortUpcomingRequests[0].request
-    var scrollPosition: Int = savedStateHandle[MOVIE_SCROLL_POSITION_KEY] ?: 0
+    private var page: Int = savedStateHandle[ANIME_PAGE_KEY] ?: 1
+    private var tag: String = savedStateHandle[ANIME_TAG_KEY] ?: FetchType.UPCOMING.tag
+    private var sort: String = savedStateHandle[ANIME_SORT_KEY] ?: Constants.SortUpcomingRequests[0].request
+    var scrollPosition: Int = savedStateHandle[ANIME_SCROLL_POSITION_KEY] ?: 0
         private set
 
     // Variable for detecting orientation change
@@ -54,40 +54,40 @@ class MovieViewModel @AssistedInject constructor(
         } else {
             setTag(vmTag)
 
-            startMoviesFetch(sort, true)
+            startAnimesFetch(sort, true)
         }
     }
 
-    fun startMoviesFetch(newSort: String, refreshAnyway: Boolean = false) {
+    fun startAnimesFetch(newSort: String, refreshAnyway: Boolean = false) {
         if (sort != newSort) {
             setSort(newSort)
             setPagePosition(1)
         } else if (refreshAnyway)
             setPagePosition(1)
 
-        fetchMovies()
+        fetchAnimes()
     }
 
-    fun fetchMovies() {
-        val prevList = arrayListOf<Movie>()
-        if (_movieList.value?.data != null && page != 1) {
-            prevList.addAll(_movieList.value!!.data!!.toCollection(ArrayList()))
+    fun fetchAnimes() {
+        val prevList = arrayListOf<Anime>()
+        if (_animeList.value?.data != null && page != 1) {
+            prevList.addAll(_animeList.value!!.data!!.toCollection(ArrayList()))
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable).collect { response ->
+            animeRepository.fetchAnimes(page, sort, tag, isNetworkAvailable).collect { response ->
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful()) {
                         prevList.addAll(response.data!!)
 
-                        _movieList.value = setData(prevList, response.isPaginationData, response.isPaginationExhausted)
+                        _animeList.value = setData(prevList, response.isPaginationData, response.isPaginationExhausted)
 
                         if (!response.isPaginationExhausted)
                             setPagePosition(page.plus(1))
                     } else if (response.isPaginating) {
-                        _movieList.value = setPaginationLoading(prevList)
+                        _animeList.value = setPaginationLoading(prevList)
                     } else
-                        _movieList.value = response
+                        _animeList.value = response
                 }
             }
         }
@@ -97,9 +97,9 @@ class MovieViewModel @AssistedInject constructor(
         isRestoringData = true
 
         var isPaginationExhausted = false
-        val tempList = arrayListOf<Movie>()
+        val tempList = arrayListOf<Anime>()
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
+            animeRepository.fetchAnimes(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
                 if (response.isSuccessful()) {
                     tempList.addAll(response.data!!)
                     isPaginationExhausted = response.isPaginationExhausted
@@ -107,7 +107,7 @@ class MovieViewModel @AssistedInject constructor(
             }
 
             withContext(Dispatchers.Main) {
-                _movieList.value = setData(
+                _animeList.value = setData(
                     tempList,
                     isPaginationData = false,
                     isPaginationExhausted = if (isNetworkAvailable) false else isPaginationExhausted
@@ -119,34 +119,34 @@ class MovieViewModel @AssistedInject constructor(
     private fun setTag(newTag: String) {
         if (tag != newTag) {
             tag = newTag
-            savedStateHandle[MOVIE_TAG_KEY] = tag
+            savedStateHandle[ANIME_TAG_KEY] = tag
         }
     }
 
     private fun setPagePosition(newPage: Int) {
         page = newPage
-        savedStateHandle[MOVIE_PAGE_KEY] = page
+        savedStateHandle[ANIME_PAGE_KEY] = page
     }
 
     private fun setSort(newSort: String) {
         sort = newSort
-        savedStateHandle[MOVIE_SORT_KEY] = sort
+        savedStateHandle[ANIME_SORT_KEY] = sort
     }
 
     fun setScrollPosition(newPosition: Int) {
         if (!isRestoringData && !didOrientationChange) {
             scrollPosition = newPosition
-            savedStateHandle[MOVIE_SCROLL_POSITION_KEY] = scrollPosition
+            savedStateHandle[ANIME_SCROLL_POSITION_KEY] = scrollPosition
         }
     }
 
     @AssistedFactory
     interface Factory {
-        fun create(savedStateHandle: SavedStateHandle, vmTag: String, isNetworkAvailable: Boolean): MovieViewModel
+        fun create(savedStateHandle: SavedStateHandle, vmTag: String, isNetworkAvailable: Boolean): AnimeViewModel
     }
 
     companion object {
-        fun provideMovieViewModelFactory(factory: Factory, owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null, vmTag: String, isNetworkAvailable: Boolean): AbstractSavedStateViewModelFactory {
+        fun provideAnimeViewModelFactory(factory: Factory, owner: SavedStateRegistryOwner, defaultArgs: Bundle? = null, vmTag: String, isNetworkAvailable: Boolean): AbstractSavedStateViewModelFactory {
             return object: AbstractSavedStateViewModelFactory(owner, defaultArgs) {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {

@@ -5,7 +5,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.mrntlu.projectconsumer.models.common.entity.Converters
 import com.mrntlu.projectconsumer.models.main.anime.entity.AnimeEntity
+import com.mrntlu.projectconsumer.models.main.anime.entity.AnimeTypeConverters
 import com.mrntlu.projectconsumer.models.main.game.entity.GameEntity
+import com.mrntlu.projectconsumer.models.main.game.entity.GameTypeConverters
 import com.mrntlu.projectconsumer.models.main.movie.entity.MovieEntity
 import com.mrntlu.projectconsumer.models.main.movie.entity.MovieTypeConverters
 import com.mrntlu.projectconsumer.models.main.tv.entity.TVSeriesEntity
@@ -24,7 +26,7 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.entity.ConsumeLate
 )
 @TypeConverters(
     Converters::class, MovieTypeConverters::class, TVSeriesTypeConverters::class,
-    ConsumeLaterTypeConverters::class,
+    ConsumeLaterTypeConverters::class, AnimeTypeConverters::class, GameTypeConverters::class,
 )
 abstract class CacheDatabase: RoomDatabase() {
     abstract fun getMovieDao(): MovieDao

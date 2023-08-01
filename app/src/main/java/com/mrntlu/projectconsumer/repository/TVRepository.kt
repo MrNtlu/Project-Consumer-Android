@@ -18,7 +18,6 @@ class TVRepository @Inject constructor(
     private val tvSeriesDao: TVSeriesDao,
     private val cacheDatabase: CacheDatabase,
 ) {
-
     private companion object {
         private const val SearchTag = "search:tv"
         private const val DiscoverTag = "discover:tv"

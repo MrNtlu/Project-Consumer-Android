@@ -14,9 +14,9 @@ data class Game(
     val platforms: List<String>,
     val developers: List<String>,
     val publishers: List<String>,
-    val stores: List<GameStore>,
+    val stores: List<GameStore>?,
 
-    @SerializedName("title_en")
+    @SerializedName("title")
     override val title: String,
 
     @SerializedName("title_original")
@@ -40,7 +40,7 @@ data class Game(
     @SerializedName("release_date")
     val releaseDate: String,
 
-    @SerializedName("background_image")
+    @SerializedName("image_url")
     override val imageURL: String,
 
     @SerializedName("age_rating")

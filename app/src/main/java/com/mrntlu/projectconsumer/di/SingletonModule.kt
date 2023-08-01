@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.mrntlu.projectconsumer.service.AuthAuthenticator
 import com.mrntlu.projectconsumer.service.AuthInterceptor
 import com.mrntlu.projectconsumer.service.TokenManager
+import com.mrntlu.projectconsumer.service.retrofit.AnimeApiService
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
+import com.mrntlu.projectconsumer.service.retrofit.GameApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
 import com.mrntlu.projectconsumer.service.retrofit.TVSeriesApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
@@ -119,6 +121,22 @@ class SingletonModule {
             .client(okHttpClient)
             .build()
             .create(TVSeriesApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideAnimeAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): AnimeApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(AnimeApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideGameAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): GameApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(GameApiService::class.java)
 
     @Singleton
     @Provides

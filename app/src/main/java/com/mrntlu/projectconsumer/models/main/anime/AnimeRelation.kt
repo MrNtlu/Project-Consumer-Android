@@ -19,5 +19,5 @@ data class AnimeRelationDetails(
     val malID: Int,
 
     @SerializedName("redirect_url")
-    val redirectURL: Int,
+    val redirectURL: String,
 ) : Parcelable

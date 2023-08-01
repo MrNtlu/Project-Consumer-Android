@@ -23,10 +23,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-const val TV_PAGE_KEY = "rv.tv.page"
-const val TV_SORT_KEY = "rv.tv.sort"
-const val TV_SCROLL_POSITION_KEY = "rv.tv.scroll_position"
-const val TV_TAG_KEY = "tv.fetch.tag"
+private const val TV_PAGE_KEY = "rv.tv.page"
+private const val TV_SORT_KEY = "rv.tv.sort"
+private const val TV_SCROLL_POSITION_KEY = "rv.tv.scroll_position"
+private const val TV_TAG_KEY = "tv.fetch.tag"
 
 class TVSeriesViewModel @AssistedInject constructor(
     private val tvRepository: TVRepository,

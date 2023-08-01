@@ -70,6 +70,11 @@ class ContentAdapter<T: ContentModel>(
 
                 previewCard.setGone()
                 previewComposeView.setVisible()
+
+//                (previewIV.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (item is Game) "16:9" else "2:3"
+//                (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (item is Game) "16:9" else "2:3"
+//                (previewComposeView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (item is Game) "16:9" else "2:3"
+
                 previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
                     centerCrop().transform(RoundedCorners(24))
                 }

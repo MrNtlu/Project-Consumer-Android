@@ -1,31 +1,81 @@
 package com.mrntlu.projectconsumer.ui.game
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import com.mrntlu.projectconsumer.databinding.FragmentGameBinding
-import com.mrntlu.projectconsumer.ui.BaseFragment
+import androidx.fragment.app.viewModels
+import com.mrntlu.projectconsumer.models.main.game.Game
+import com.mrntlu.projectconsumer.ui.BasePreviewFragment
+import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
+import com.mrntlu.projectconsumer.utils.FetchType
+import com.mrntlu.projectconsumer.viewmodels.main.game.GamePreviewViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class GameFragment : BaseFragment<FragmentGameBinding>() {
+@AndroidEntryPoint
+class GameFragment : BasePreviewFragment<Game>() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentGameBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    private val viewModel: GamePreviewViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setListeners()
+        setShowcaseRecyclerView(
+            onItemClicked = { id ->
+//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
+//
+//                navController.navigate(navWithAction)
+            },
+            onRefreshPressed = { viewModel.fetchPreviewGames() }
+        )
+        setRecyclerView(
+            firstOnItemSelected = { id ->
+//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
+//
+//                navController.navigate(navWithAction)
+            },
+            firstOnRefreshPressed = { viewModel.fetchPreviewGames() },
+            secondOnItemSelected = { id ->
+//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
+//
+//                navController.navigate(navWithAction)
+            },
+            secondOnRefreshPressed = { viewModel.fetchPreviewGames() }
+        )
+        setObservers()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+    private fun setListeners() {
+        binding.apply {
+            setScrollListener()
+
+            seeAllButtonFirst.setOnClickListener {
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameListFragment(FetchType.UPCOMING.tag)
+
+                navController.navigate(navWithAction)
+            }
+
+            seeAllButtonSecond.setOnClickListener {
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameListFragment(FetchType.TOP.tag)
+
+                navController.navigate(navWithAction)
+            }
+        }
+    }
+
+    private fun setObservers() {
+        viewModel.previewList.observe(viewLifecycleOwner) { handleObserver(it) }
+
+        sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
+            if (
+                (upcomingAdapter?.errorMessage != null && topRatedAdapter?.errorMessage != null) && it
+            ) {
+                viewModel.fetchPreviewGames()
+            }
+        }
     }
 
     override fun onDestroyView() {
+        viewModel.previewList.removeObservers(viewLifecycleOwner)
         super.onDestroyView()
     }
 }

@@ -22,13 +22,13 @@
         android:id="@+id/navigation_anime"
         android:name="com.mrntlu.projectconsumer.ui.anime.AnimeFragment"
         android:label="@string/title_anime"
-        tools:layout="@layout/fragment_anime" />
+        tools:layout="@layout/fragment_preview" />
 
     <fragment
         android:id="@+id/navigation_game"
         android:name="com.mrntlu.projectconsumer.ui.game.GameFragment"
         android:label="@string/title_game"
-        tools:layout="@layout/fragment_game" />
+        tools:layout="@layout/fragment_preview" />
 
     <fragment
         android:id="@+id/movieListFragment"
@@ -164,10 +164,24 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_navigation_home_to_tvListFragment"
             app:destination="@id/tvListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_home_to_animeListFragment"
+            app:destination="@id/animeListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_home_to_gameListFragment"
+            app:destination="@id/gameListFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -367,5 +381,25 @@
         app:exitAnim="@anim/slide_out_left"
         app:popEnterAnim="@anim/slide_in_left"
         app:popExitAnim="@anim/slide_out_right"/>
+    <fragment
+        android:id="@+id/animeListFragment"
+        android:name="com.mrntlu.projectconsumer.ui.anime.AnimeListFragment"
+        android:label="AnimeListFragment"
+        tools:layout="@layout/fragment_list">
+        <argument
+            android:name="fetchType"
+            app:argType="string"
+            android:defaultValue="popular" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameListFragment"
+        android:name="com.mrntlu.projectconsumer.ui.game.GameListFragment"
+        android:label="GameListFragment"
+        tools:layout="@layout/fragment_list">
+        <argument
+            android:name="fetchType"
+            app:argType="string"
+            android:defaultValue="popular" />
+    </fragment>
 
 </navigation>

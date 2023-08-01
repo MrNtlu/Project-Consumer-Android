@@ -12,7 +12,7 @@ import retrofit2.http.Query
 interface GameApiService {
 
     @GET("game")
-    suspend fun getAnimesBySortFilter(
+    suspend fun getGamesBySortFilter(
         @Query("page") page: Int,
         @Query("sort") sort: String,
         @Query("tba") tba: Boolean?,

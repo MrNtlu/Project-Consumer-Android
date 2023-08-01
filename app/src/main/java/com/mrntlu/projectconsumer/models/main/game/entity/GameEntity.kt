@@ -20,9 +20,9 @@ data class GameEntity(
     val platforms: List<String>,
     val developers: List<String>,
     val publishers: List<String>,
-    val stores: List<GameStore>,
+    val stores: List<GameStore>?,
 
-    @ColumnInfo("title_en")
+    @ColumnInfo("title")
     val title: String,
 
     @ColumnInfo("title_original")
@@ -46,7 +46,7 @@ data class GameEntity(
     @ColumnInfo("release_date")
     val releaseDate: String,
 
-    @ColumnInfo("background_image")
+    @ColumnInfo("image_url")
     val imageURL: String,
 
     @ColumnInfo("age_rating")
