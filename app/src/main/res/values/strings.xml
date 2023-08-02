@@ -135,6 +135,15 @@
     <string name="user_list">User List</string>
     <string name="next_week">Next Week</string>
     <string name="prev_week">Prev Week</string>
+    <string name="anime_backdrop_cd">Anime Backdrop</string>
+    <string name="description">Description</string>
+    <string name="information">Information</string>
+    <string name="season">Season</string>
+    <string name="source">Source</string>
+    <string name="aired">Aired</string>
+    <string name="studios">Studios</string>
+    <string name="producers">Producers</string>
+    <string name="relations">Relations</string>
 
     <string-array name="score_list">
         <item>@string/select</item>
