@@ -132,7 +132,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                                         watchList,
                                         Constants.ContentType.MOVIE,
                                         if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
-                                        args.movieId,
+                                        movieDetails!!.id,
                                         movieDetails!!.tmdbID,
                                         null, null,
                                         onBottomSheetClosedCallback,

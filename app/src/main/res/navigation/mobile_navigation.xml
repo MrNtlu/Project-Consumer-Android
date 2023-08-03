@@ -390,6 +390,9 @@
             android:name="fetchType"
             app:argType="string"
             android:defaultValue="popular" />
+        <action
+            android:id="@+id/action_animeListFragment_to_animeDetailsFragment"
+            app:destination="@id/animeDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameListFragment"
@@ -401,5 +404,27 @@
             app:argType="string"
             android:defaultValue="popular" />
     </fragment>
+    <fragment
+        android:id="@+id/animeDetailsFragment"
+        android:name="com.mrntlu.projectconsumer.ui.anime.AnimeDetailsFragment"
+        android:label="AnimeDetailsFragment"
+        tools:layout="@layout/fragment_anime_details">
+        <argument
+            android:name="animeId"
+            app:argType="string" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            android:autoVerify="true"
+            app:uri="watchlistfy.com/anime/{animeId}" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_animeDetailsFragment"
+        app:launchSingleTop="true"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right"
+        app:destination="@id/animeDetailsFragment"/>
 
 </navigation>

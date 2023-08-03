@@ -1,5 +1,7 @@
 package com.mrntlu.projectconsumer.interfaces
 
+import com.mrntlu.projectconsumer.models.main.userList.AnimeWatchList
+import com.mrntlu.projectconsumer.models.main.userList.GamePlayList
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 
@@ -24,4 +26,14 @@ fun UserListModel.toTvWatchList() = TVSeriesWatchList(
 fun UserListModel.toMovieWatchList() = MovieWatchList(
     id, contentId, contentExternalId, timesFinished,
     contentStatus, score,
+)
+
+fun UserListModel.toAnimeWatchList() = AnimeWatchList(
+    id, contentId, contentExternalId, mainAttribute ?: 0, timesFinished,
+    contentStatus, score,
+)
+
+fun UserListModel.toGamePlayList() = GamePlayList(
+    id, contentId, contentExternalId, timesFinished, mainAttribute,
+    contentStatus, score
 )
