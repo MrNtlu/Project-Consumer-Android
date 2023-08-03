@@ -38,6 +38,7 @@ import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.DATA_EXTRA
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.DEEPLINK_EXTRA
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.PATH_EXTRA
+import com.mrntlu.projectconsumer.ui.anime.AnimeDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragmentDirections
 import com.mrntlu.projectconsumer.utils.Constants
@@ -113,6 +114,11 @@ class MainActivity : AppCompatActivity() {
 
                         "tv" -> {
                             val navWithAction = TVSeriesDetailsFragmentDirections.actionGlobalTvDetailsFragment(data)
+                            navController.navigate(navWithAction)
+                        }
+
+                        "anime" -> {
+                            val navWithAction = AnimeDetailsFragmentDirections.actionGlobalAnimeDetailsFragment(data)
                             navController.navigate(navWithAction)
                         }
                     }
@@ -216,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                     binding.navView.setVisible()
                     handleUserIncVisibility(true)
                 }
-                R.id.movieDetailsFragment, R.id.tvDetailsFragment -> {
+                R.id.movieDetailsFragment, R.id.tvDetailsFragment, R.id.animeDetailsFragment -> {
                     binding.toolbar.setGone()
                     binding.navView.setGone()
                     handleUserIncVisibility(true)

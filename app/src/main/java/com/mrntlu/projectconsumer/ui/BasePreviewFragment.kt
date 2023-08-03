@@ -152,7 +152,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
             is NetworkResponse.Success -> {
                 upcomingAdapter?.setData(response.data.upcoming)
                 showCaseAdapter?.setData(response.data.popular)
-//                topRatedAdapter?.setData(response.data.top)
+                topRatedAdapter?.setData(response.data.top)
             }
         }
     }

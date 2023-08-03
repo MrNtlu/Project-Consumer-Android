@@ -23,8 +23,6 @@ class AnimeRepository @Inject constructor(
         private const val DiscoverTag = "discover:anime"
     }
 
-    //TODO Search
-
     fun fetchAnimes(page: Int, sort: String, tag: String, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
         cacheQuery = {
@@ -36,7 +34,7 @@ class AnimeRepository @Inject constructor(
         fetchNetwork = {
             when(tag) {
                FetchType.UPCOMING.tag -> animeApiService.getUpcomingAnimes(page, sort)
-//               FetchType.TOP.tag -> animeApiService.getUpcomingAnimes(page, sort) TODO FIX THIS
+               FetchType.POPULAR.tag -> animeApiService.getPopularAnimes(page)
                 else -> animeApiService.getAnimesBySortFilter(
                     page, sort, Constants.AnimeStatusRequests[2].request,
                     null, null, null, null,
@@ -72,11 +70,52 @@ class AnimeRepository @Inject constructor(
         }
     )
 
+    fun searchAnimesByTitle(search: String, page: Int, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
+        isPaginating = page != 1,
+        cacheQuery = {
+            if (isRestoringData)
+                animeDao.getAllSearchAnimes(SearchTag, page)
+            else
+                animeDao.getSearchAnimes(SearchTag, page)
+        },
+        fetchNetwork = {
+            animeApiService.searchAnimesByTitle(search, page)
+        },
+        mapper = {
+            it!!.asModel()
+        },
+        emptyObjectCreator = {
+            listOf<Anime>()
+        },
+        saveAndQueryResult = { animeResponse ->
+            cacheDatabase.withTransaction {
+                if (page == 1)
+                    animeDao.deleteAnimesByTag(SearchTag)
+
+                if (animeResponse.data != null)
+                    animeDao.insertAnimeList(animeResponse.data.asEntity(SearchTag, page))
+                Pair(
+                    animeDao.getSearchAnimes(SearchTag, page),
+                    page >= animeResponse.pagination.totalPage
+                )
+            }
+        },
+        isCachePaginationExhausted = {
+            !animeDao.isAnimePageExist(SearchTag, page.plus(1))
+        },
+        shouldFetch = {
+            !(
+                (isRestoringData && !it.isNullOrEmpty()) ||
+                (!isNetworkAvailable && !it.isNullOrEmpty())
+            )
+        }
+    )
+
     fun getAnimeDetails(id: String) = networkResponseFlow {
         animeApiService.getAnimeDetails(id)
     }
 
-    fun getMovieBySortFilter(
+    fun getAnimeBySortFilter(
         page: Int,
         sort: String,
         status: String?,

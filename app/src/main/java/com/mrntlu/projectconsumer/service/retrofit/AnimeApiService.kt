@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.service.retrofit
 
 import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.DataSearchPaginationResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.models.main.anime.Anime
 import com.mrntlu.projectconsumer.models.main.anime.AnimeDetails
@@ -30,6 +31,17 @@ interface AnimeApiService {
         @Query("page") page: Int,
         @Query("sort") sort: String,
     ): Response<DataPaginationResponse<Anime>>
+
+    @GET("anime/popular")
+    suspend fun getPopularAnimes(
+        @Query("page") page: Int,
+    ): Response<DataPaginationResponse<Anime>>
+
+    @GET("anime/search")
+    suspend fun searchAnimesByTitle(
+        @Query("search") search: String,
+        @Query("page") page: Int,
+    ): Response<DataSearchPaginationResponse<Anime>>
 
     @GET("anime/details")
     suspend fun getAnimeDetails(

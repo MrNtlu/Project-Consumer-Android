@@ -49,7 +49,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() {
 
     companion object {
-        const val TYPE = "tv"
+        private const val TYPE = "tv"
     }
 
     private val viewModel: TVDetailsViewModel by viewModels()

@@ -49,6 +49,7 @@ const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
 const val DATE_PATTERN = "yyyy-MM-dd"
 const val DATE_READABLE_PATTERN = "dd.MM.yyyy"
+const val DATE_ALT_READABLE_PATTERN = "dd MMM yy"
 
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }
@@ -209,9 +210,9 @@ fun Context.setGroupNotification(
     .setAutoCancel(true)
     .build()
 
-fun String.convertToHumanReadableDateString(): String? {
+fun String.convertToHumanReadableDateString(isAlt: Boolean = false): String? {
     val date = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(this)
-    return if(date != null) SimpleDateFormat(DATE_READABLE_PATTERN, Locale.getDefault()).format(date) else this
+    return if(date != null) SimpleDateFormat(if (isAlt) DATE_ALT_READABLE_PATTERN else DATE_READABLE_PATTERN, Locale.getDefault()).format(date) else this
 }
 
 fun String.convertToDateString(): String? {

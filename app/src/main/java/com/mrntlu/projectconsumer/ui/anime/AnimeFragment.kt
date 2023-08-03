@@ -15,31 +15,29 @@ class AnimeFragment : BasePreviewFragment<Anime>() {
 
     private val viewModel: AnimePreviewViewModel by viewModels()
 
-    //TODO Finish navigations
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setListeners()
         setShowcaseRecyclerView(
             onItemClicked = { id ->
-//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
-//
-//                navController.navigate(navWithAction)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToAnimeDetailsFragment(id)
+
+                navController.navigate(navWithAction)
             },
             onRefreshPressed = { viewModel.fetchPreviewAnimes() }
         )
         setRecyclerView(
             firstOnItemSelected = { id ->
-//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
-//
-//                navController.navigate(navWithAction)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToAnimeDetailsFragment(id)
+
+                navController.navigate(navWithAction)
             },
             firstOnRefreshPressed = { viewModel.fetchPreviewAnimes() },
             secondOnItemSelected = { id ->
-//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
-//
-//                navController.navigate(navWithAction)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToAnimeDetailsFragment(id)
+
+                navController.navigate(navWithAction)
             },
             secondOnRefreshPressed = { viewModel.fetchPreviewAnimes() }
         )

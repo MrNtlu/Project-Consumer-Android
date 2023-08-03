@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.mrntlu.projectconsumer.interfaces.ContentModel
+import com.mrntlu.projectconsumer.repository.AnimeRepository
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.repository.TVRepository
 import com.mrntlu.projectconsumer.utils.Constants
@@ -31,6 +32,7 @@ const val SEARCH_CONTENT_TYPE_KEY = "rv.search.content_type"
 class SearchViewModel @AssistedInject constructor(
     private val movieRepository: MovieRepository,
     private val tvRepository: TVRepository,
+    private val animeRepository: AnimeRepository,
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val vmSearch: String,
     @Assisted private val vmContentType: Constants.ContentType,
@@ -80,7 +82,7 @@ class SearchViewModel @AssistedInject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             val flowCollector = when(contentType) {
-                Constants.ContentType.ANIME -> TODO()
+                Constants.ContentType.ANIME -> animeRepository.searchAnimesByTitle(search, page, isNetworkAvailable)
                 Constants.ContentType.MOVIE -> movieRepository.searchMoviesByTitle(search, page, isNetworkAvailable)
                 Constants.ContentType.TV -> tvRepository.searchTVSeriesByTitle(search, page, isNetworkAvailable)
                 Constants.ContentType.GAME -> TODO()
@@ -118,7 +120,7 @@ class SearchViewModel @AssistedInject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             launch(Dispatchers.IO) {
                 val flowCollector = when(contentType) {
-                    Constants.ContentType.ANIME -> TODO()
+                    Constants.ContentType.ANIME -> animeRepository.searchAnimesByTitle(search, page, isNetworkAvailable, isRestoringData = true)
                     Constants.ContentType.MOVIE -> movieRepository.searchMoviesByTitle(search, page, isNetworkAvailable, isRestoringData = true)
                     Constants.ContentType.TV -> tvRepository.searchTVSeriesByTitle(search, page, isNetworkAvailable, isRestoringData = true)
                     Constants.ContentType.GAME -> TODO()

@@ -145,6 +145,7 @@
     <string name="producers">Producers</string>
     <string name="relations">Relations</string>
     <string name="characters">Characters</string>
+    <string name="unknown">Unknown</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

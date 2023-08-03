@@ -230,9 +230,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/source"
-                android:textColor="?attr/mainTextColor"
+                android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/detailsInformationTV"
                 app:layout_constraintTop_toBottomOf="@+id/detailsInformationTV" />
 
@@ -243,6 +242,7 @@
                 android:layout_marginTop="8dp"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/textView15"
                 app:layout_constraintTop_toBottomOf="@+id/textView15"
                 tools:text="Manga" />
@@ -253,9 +253,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/season"
-                android:textColor="?attr/mainTextColor"
+                android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline30"
                 app:layout_constraintTop_toBottomOf="@+id/detailsInformationTV" />
 
@@ -266,6 +265,7 @@
                 android:layout_marginTop="8dp"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/textView16"
                 app:layout_constraintTop_toBottomOf="@+id/textView16"
                 tools:text="Summer 2023" />
@@ -276,9 +276,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/episodes"
-                android:textColor="?attr/mainTextColor"
+                android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline28"
                 app:layout_constraintTop_toBottomOf="@+id/detailsSourceTV" />
 
@@ -289,6 +288,7 @@
                 android:layout_marginTop="8dp"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/textView17"
                 app:layout_constraintTop_toBottomOf="@+id/textView17"
                 tools:text="64 eps." />
@@ -299,7 +299,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/aired"
-                android:textColor="?attr/mainTextColor"
+                android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline30"
@@ -322,7 +322,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/studios"
-                android:textColor="?attr/mainTextColor"
+                android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline28"
@@ -344,7 +344,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/producers"
-                android:textColor="?attr/mainTextColor"
+                android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline30"
@@ -388,7 +388,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView21" />
 
             <TextView
-                android:id="@+id/textView22"
+                android:id="@+id/detailsCharTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -406,7 +406,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline29"
                 app:layout_constraintStart_toStartOf="@+id/guideline28"
-                app:layout_constraintTop_toBottomOf="@+id/textView22" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsCharTV" />
 
             <TextView
                 android:id="@+id/textView23"
@@ -430,4 +430,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView23" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/errorLayout"
+        android:elevation="9dp"
+        android:background="?attr/mainBackgroundColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:visibility="gone">
+        <include
+            android:id="@+id/errorLayoutInc"
+            layout="@layout/cell_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

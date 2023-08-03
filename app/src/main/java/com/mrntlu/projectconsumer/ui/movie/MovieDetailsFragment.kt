@@ -47,7 +47,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() {
 
     companion object {
-        const val TYPE = "movie"
+        private const val TYPE = "movie"
     }
 
     private val viewModel: MovieDetailsViewModel by viewModels()
