@@ -20,6 +20,7 @@ import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
+import com.mrntlu.projectconsumer.databinding.FragmentAnimeDetailsBinding
 import com.mrntlu.projectconsumer.databinding.LayoutUserInteractionBinding
 import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.DetailsUI
@@ -52,7 +53,8 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.statusBarColor = Color.TRANSPARENT
+        if (binding !is FragmentAnimeDetailsBinding)
+            activity?.window?.statusBarColor = Color.TRANSPARENT
         countryCode = sharedViewModel.getCountryCode()
     }
 

@@ -1,19 +1,21 @@
 package com.mrntlu.projectconsumer.ui.anime
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
+import com.mrntlu.projectconsumer.adapters.GenreAdapter
+import com.mrntlu.projectconsumer.adapters.NameUrlAdapter
+import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentAnimeDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
@@ -22,13 +24,17 @@ import com.mrntlu.projectconsumer.interfaces.UserListModel
 import com.mrntlu.projectconsumer.interfaces.toAnimeWatchList
 import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.models.main.anime.AnimeDetails
+import com.mrntlu.projectconsumer.models.main.anime.AnimeNameURL
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
+import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -47,6 +53,11 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
     private val args: AnimeDetailsFragmentArgs by navArgs()
 
     private var characterAdapter: DetailsAdapter? = null
+    private var genreAdapter: GenreAdapter? = null
+    private var studioAdapter: NameUrlAdapter? = null
+    private var producerAdapter: NameUrlAdapter? = null
+    private var streamingAdapter: NameUrlAdapter? = null
+    //TODO RelationsAdapter recyclerview in static recyclerview
 
     private var animeDetails: AnimeDetails? = null
 
@@ -86,7 +97,6 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         viewModel.animeDetails.observe(viewLifecycleOwner) { response ->
             binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
-                toggleCollapsingLayoutScroll(detailsCollapsingToolbar, response !is NetworkResponse.Loading)
 //                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
@@ -173,28 +183,24 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
     private fun setUI() {
         animeDetails!!.apply {
-            binding.detailsToolbarProgress.setVisible()
-            Glide.with(requireContext()).load(imageURL).addListener(object:
-                RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    binding.detailsToolbarProgress.setGone()
-                    binding.detailsAppBarLayout.setExpanded(false)
-
-                    onImageFailedHandler(
-                        binding.detailsCollapsingToolbar,
-                        binding.detailsNestedSV
-                    )
-
-                    return false
+            binding.imageInclude.apply {
+                previewComposeView.apply {
+                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                    setContent {
+                        LoadingShimmer(isDarkTheme = false, roundedCornerSize = 6.dp) {
+                            fillMaxHeight()
+                        }
+                    }
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    _binding?.detailsToolbarProgress?.setGone()
-                    return false
+                previewCard.setGone()
+                previewComposeView.setVisible()
+                previewIV.loadWithGlide(animeDetails?.imageURL ?: "", previewCard, previewComposeView) {
+                    transform(RoundedCorners(12))
                 }
-            }).into(binding.detailsToolbarIV)
+            }
 
-            binding.detailsTitleTV.text = titleEn
+            binding.detailsTitleTV.text = if (titleEn.isEmptyOrBlank()) titleOriginal else titleEn
             binding.detailsDescriptionTV.text = description
             binding.detailsOriginalTV.text = titleOriginal
 
@@ -222,10 +228,6 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
     private fun setListeners() {
         binding.apply {
-            detailsToolbarBackButton.setOnClickListener {
-                navController.popBackStack()
-            }
-
             detailsDescriptionTV.setOnClickListener {
                 detailsDescriptionTV.toggle()
             }
@@ -258,7 +260,64 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             binding.detailsCharRV.setGone()
         }
 
-        //TODO
+        if (!animeDetails?.genres.isNullOrEmpty()) {
+            binding.detailsGenreRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+                val bulletDecoration = BulletItemDecoration(context)
+                addItemDecoration(bulletDecoration)
+
+                genreAdapter = GenreAdapter(animeDetails!!.genres!!.map { it.name }) {
+                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToDiscoverListFragment(Constants.ContentType.ANIME, animeDetails?.genres?.get(it)?.name)
+                    navController.navigate(navWithAction)
+                }
+                adapter = genreAdapter
+            }
+        } else {
+            binding.genreDivider.setGone()
+            binding.detailsGenreRV.setGone()
+        }
+
+        binding.detailsStudiosRV.apply {
+            val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = linearLayout
+            val bulletDecoration = BulletItemDecoration(context)
+            addItemDecoration(bulletDecoration)
+
+            studioAdapter = NameUrlAdapter(
+                if (!animeDetails?.studios.isNullOrEmpty()) animeDetails!!.studios!!
+                else listOf(AnimeNameURL(getString(R.string.unknown), ""))
+            )
+            adapter = studioAdapter
+        }
+
+        binding.detailsProducerRV.apply {
+            val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = linearLayout
+            val bulletDecoration = BulletItemDecoration(context)
+            addItemDecoration(bulletDecoration)
+
+            producerAdapter = NameUrlAdapter(
+                if (!animeDetails?.producers.isNullOrEmpty()) animeDetails!!.producers!!
+                else listOf(AnimeNameURL(getString(R.string.unknown), ""))
+            )
+            adapter = producerAdapter
+        }
+
+        if (!animeDetails?.streaming.isNullOrEmpty()) {
+            binding.detailsStreamingRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+                val bulletDecoration = BulletItemDecoration(context)
+                addItemDecoration(bulletDecoration)
+
+                streamingAdapter = NameUrlAdapter(animeDetails!!.streaming!!)
+                adapter = streamingAdapter
+            }
+        } else {
+            binding.detailsStreamingRV.setGone()
+            binding.detailsStreamingTV.setGone()
+        }
     }
 
     override fun onDestroyView() {
@@ -268,6 +327,10 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         }
 
         characterAdapter = null
+        genreAdapter = null
+        producerAdapter = null
+        studioAdapter = null
+        streamingAdapter = null
 
         super.onDestroyView()
     }

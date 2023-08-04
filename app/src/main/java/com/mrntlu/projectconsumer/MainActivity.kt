@@ -222,7 +222,7 @@ class MainActivity : AppCompatActivity() {
                     binding.navView.setVisible()
                     handleUserIncVisibility(true)
                 }
-                R.id.movieDetailsFragment, R.id.tvDetailsFragment, R.id.animeDetailsFragment -> {
+                R.id.movieDetailsFragment, R.id.tvDetailsFragment -> {
                     binding.toolbar.setGone()
                     binding.navView.setGone()
                     handleUserIncVisibility(true)

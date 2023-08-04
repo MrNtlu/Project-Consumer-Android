@@ -23,7 +23,6 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
 
@@ -190,7 +189,6 @@ class ConsumeLaterAdapter(
                 contentTypeTV.text = Constants.ContentType.fromStringRequest(item.contentType).value
 
                 deleteButton.setOnClickListener {
-                    printLog("Item $item")
                     interaction.onDeletePressed(item, position)
                 }
 
@@ -199,7 +197,6 @@ class ConsumeLaterAdapter(
                 }
 
                 root.setOnClickListener {
-                    printLog("Item $item")
                     interaction.onItemSelected(item, position)
                 }
             }

@@ -183,7 +183,9 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
                         val contentType: Constants.ContentType = args.contentType
 
                         val navWithAction = when(contentType) {
-                            Constants.ContentType.ANIME -> TODO()
+                            Constants.ContentType.ANIME -> DiscoverListFragmentDirections.actionDiscoverListFragmentToAnimeDetailsFragment(
+                                item.id
+                            )
                             Constants.ContentType.MOVIE -> DiscoverListFragmentDirections.actionDiscoverListFragmentToMovieDetailsFragment(
                                 item.id
                             )
