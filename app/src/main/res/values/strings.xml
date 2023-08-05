@@ -146,6 +146,7 @@
     <string name="relations">Relations</string>
     <string name="characters">Characters</string>
     <string name="unknown">Unknown</string>
+    <string name="bullet_point">•</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

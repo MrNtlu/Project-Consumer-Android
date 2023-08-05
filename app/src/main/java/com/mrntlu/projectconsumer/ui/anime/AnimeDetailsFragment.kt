@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.adapters.AnimeRelationsAdapter
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.NameUrlAdapter
@@ -57,7 +58,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
     private var studioAdapter: NameUrlAdapter? = null
     private var producerAdapter: NameUrlAdapter? = null
     private var streamingAdapter: NameUrlAdapter? = null
-    //TODO RelationsAdapter recyclerview in static recyclerview
+    private var relationAdapter: AnimeRelationsAdapter? = null
 
     private var animeDetails: AnimeDetails? = null
 
@@ -97,7 +98,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         viewModel.animeDetails.observe(viewLifecycleOwner) { response ->
             binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
-//                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
+                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
@@ -318,6 +319,22 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             binding.detailsStreamingRV.setGone()
             binding.detailsStreamingTV.setGone()
         }
+
+        if (!animeDetails?.relations.isNullOrEmpty()) {
+            binding.detailsRelationRV.apply {
+                val linearLayout = LinearLayoutManager(context)
+                layoutManager = linearLayout
+
+                relationAdapter = AnimeRelationsAdapter(animeDetails!!.relations!!) { malID ->
+                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
+                    navController.navigate(navWithAction)
+                }
+                adapter = relationAdapter
+            }
+        } else {
+            binding.detailsRelationTV.setGone()
+            binding.detailsRelationRV.setGone()
+        }
     }
 
     override fun onDestroyView() {
@@ -331,6 +348,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         producerAdapter = null
         studioAdapter = null
         streamingAdapter = null
+        relationAdapter = null
 
         super.onDestroyView()
     }

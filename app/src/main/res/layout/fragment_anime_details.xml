@@ -324,7 +324,7 @@
             app:constraint_referenced_ids="detailsStudiosRV, detailsProducerRV" />
 
         <TextView
-            android:id="@+id/textView21"
+            android:id="@+id/detailsRelationTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -340,9 +340,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:nestedScrollingEnabled="false"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/textView21" />
+            app:layout_constraintTop_toBottomOf="@+id/detailsRelationTV" />
 
         <TextView
             android:id="@+id/detailsCharTV"
@@ -389,18 +390,40 @@
             app:layout_constraintTop_toBottomOf="@+id/detailsStreamingTV" />
 
         <FrameLayout
-            android:id="@+id/errorLayout"
+            android:id="@+id/loadingLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:elevation="9dp"
             android:background="?attr/mainBackgroundColor"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            android:visibility="gone">
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <include
+                layout="@layout/layout_shimmer_anime_details"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/errorLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="?attr/mainBackgroundColor"
+            android:elevation="9dp"
+            android:fitsSystemWindows="true"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
             <include
                 android:id="@+id/errorLayoutInc"
                 layout="@layout/cell_error"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

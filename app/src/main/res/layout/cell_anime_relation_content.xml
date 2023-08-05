@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/animeNameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Action"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/blue900"
+        android:paddingVertical="4dp"/>
+
+    <TextView
+        android:id="@+id/bulletTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bullet_point"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="6dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="?attr/mainTextColor"/>
+</LinearLayout>

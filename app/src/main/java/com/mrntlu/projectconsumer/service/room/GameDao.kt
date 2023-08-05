@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mrntlu.projectconsumer.models.main.game.entity.GameEntity
-import com.mrntlu.projectconsumer.models.main.movie.entity.MovieEntity
 
 @Dao
 interface GameDao {
