@@ -386,7 +386,10 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
                 override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {
                     when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                        Constants.ContentType.ANIME -> TODO()
+                        Constants.ContentType.ANIME -> {
+                            val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToAnimeDetailsFragment(item.contentID)
+                            navController.navigate(navWithAction)
+                        }
                         Constants.ContentType.MOVIE -> {
                             val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToMovieDetailsFragment(item.contentID)
                             navController.navigate(navWithAction)
@@ -395,7 +398,10 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                             val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToTvDetailsFragment(item.contentID)
                             navController.navigate(navWithAction)
                         }
-                        Constants.ContentType.GAME -> TODO()
+                        Constants.ContentType.GAME -> {
+                            val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToGameDetailsFragment(item.contentID)
+                            navController.navigate(navWithAction)
+                        }
                     }
                 }
 

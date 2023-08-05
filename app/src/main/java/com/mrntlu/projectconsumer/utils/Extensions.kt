@@ -8,6 +8,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -238,6 +239,27 @@ fun String.isEmptyOrBlank() = this.isEmpty() || this.isBlank()
 
 fun String.isNotEmptyOrBlank(): Boolean {
     return this.trim().isNotEmpty() && this.trim().isNotBlank()
+}
+
+fun View.setCornerRadius(topLeft: Float = 0f, topRight: Float = 0f, bottomLeft: Float = 0f, bottomRight: Float = 0f) {
+    val bgDrawable = background as? GradientDrawable
+    if (bgDrawable is GradientDrawable) {
+        val radii = bgDrawable.cornerRadii
+
+        radii?.let {
+            it[0] = topLeft
+            it[1] = topLeft
+            it[2] = topRight
+            it[3] = topRight
+            it[4] = bottomLeft
+            it[5] = bottomLeft
+            it[6] = bottomRight
+            it[7] = bottomRight
+        }
+
+        bgDrawable.cornerRadii = radii
+        background = bgDrawable
+    }
 }
 
 fun View.setVisibilityByConditionWithAnimation(shouldHide: Boolean) {

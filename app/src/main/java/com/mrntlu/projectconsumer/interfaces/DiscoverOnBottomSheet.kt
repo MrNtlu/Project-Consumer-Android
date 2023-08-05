@@ -8,6 +8,7 @@ interface DiscoverOnBottomSheet {
         from: Int?,
         to: Int?,
         animeTheme: String?,
+        animeDemographics: String?,
         gameTBA: Boolean?,
         gamePlatform: String?,
     )

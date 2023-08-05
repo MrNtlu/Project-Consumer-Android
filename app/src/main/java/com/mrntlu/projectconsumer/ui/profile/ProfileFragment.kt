@@ -279,11 +279,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             layoutManager = gridLayoutManager
             contentAdapter = ContentAdapter(
                 gridCount = gridCount,
+                isRatioDifferent = contentType == Constants.ContentType.GAME,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
                         when(contentType) {
-                            Constants.ContentType.ANIME -> TODO()
+                            Constants.ContentType.ANIME -> {
+                                val navWithAction =
+                                    ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(
+                                        item.id
+                                    )
+                                navController.navigate(navWithAction)
+                            }
                             Constants.ContentType.MOVIE -> {
                                 val navWithAction =
                                     ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(
@@ -298,7 +305,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                                     )
                                 navController.navigate(navWithAction)
                             }
-                            Constants.ContentType.GAME -> TODO()
+                            Constants.ContentType.GAME -> {
+                                val navWithAction =
+                                    ProfileFragmentDirections.actionNavigationProfileToGameDetailsFragment(
+                                        item.id
+                                    )
+                                navController.navigate(navWithAction)
+                            }
                         }
                     }
 

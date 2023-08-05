@@ -4,11 +4,17 @@ import android.annotation.SuppressLint
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.interfaces.*
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.DEFAULT_RATIO
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
-abstract class BaseGridPaginationAdapter<T>(open val interaction: Interaction<T>, private val gridCount: Int, private val isDarkTheme: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class BaseGridPaginationAdapter<T>(
+    open val interaction: Interaction<T>,
+    private val gridCount: Int,
+    private val isDarkTheme: Boolean,
+    private val aspectRatio: Float = DEFAULT_RATIO,
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
     var isLoading = true
     var isPaginating = false
@@ -27,10 +33,10 @@ abstract class BaseGridPaginationAdapter<T>(open val interaction: Interaction<T>
                 (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
             }
             RecyclerViewEnum.PaginationLoading.value -> {
-                (holder as PaginationLoadingViewHolderBind).bind(gridCount, isDarkTheme)
+                (holder as PaginationLoadingViewHolderBind).bind(gridCount, aspectRatio, isDarkTheme)
             }
             RecyclerViewEnum.Loading.value -> {
-                (holder as LoadingViewHolderBind).bind(isDarkTheme)
+                (holder as LoadingViewHolderBind).bind(aspectRatio, isDarkTheme)
             }
             RecyclerViewEnum.PaginationExhaust.value -> {
                 (holder as PaginationExhaustViewHolderBind<T>).bind(interaction)

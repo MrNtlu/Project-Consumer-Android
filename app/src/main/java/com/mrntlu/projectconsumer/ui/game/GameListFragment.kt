@@ -41,11 +41,12 @@ class GameListFragment : BaseListFragment<Game>() {
             }
 
             setRecyclerView(
+                isRatioDifferent = true,
                 startFetch = { sortType -> viewModel.startGamesFetch(sortType) },
                 onItemSelected = { itemId ->
-//                    val navWithAction = GameListFragmentDirections.actionGameListFragmentToGameDetailsFragment(itemId)
-//
-//                    navController.navigate(navWithAction)
+                    val navWithAction = GameListFragmentDirections.actionGameListFragmentToGameDetailsFragment(itemId)
+
+                    navController.navigate(navWithAction)
                 },
                 scrollViewModel = { position -> viewModel.setScrollPosition(position) },
                 fetch = { viewModel.fetchGames() }

@@ -17,6 +17,7 @@ interface GameApiService {
         @Query("sort") sort: String,
         @Query("tba") tba: Boolean?,
         @Query("genres") genres: String?,
+        @Query("platform") platform: String?,
     ): Response<DataPaginationResponse<Game>>
 
     @GET("game/preview")
@@ -27,6 +28,9 @@ interface GameApiService {
         @Query("page") page: Int,
         @Query("sort") sort: String,
     ): Response<DataPaginationResponse<Game>>
+
+    //TODO Popular or Top Rated Games
+    // Search
 
     @GET("game/details")
     suspend fun getGameDetails(

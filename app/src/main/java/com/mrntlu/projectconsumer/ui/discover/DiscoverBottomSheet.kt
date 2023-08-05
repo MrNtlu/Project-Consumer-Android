@@ -13,6 +13,7 @@ import com.mrntlu.projectconsumer.databinding.LayoutDiscoverBottomSheetBinding
 import com.mrntlu.projectconsumer.interfaces.DiscoverOnBottomSheet
 import com.mrntlu.projectconsumer.models.common.BackendRequestMapper
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.AnimeDemographicsList
 import com.mrntlu.projectconsumer.utils.Constants.AnimeGenreList
 import com.mrntlu.projectconsumer.utils.Constants.AnimeStatusRequests
 import com.mrntlu.projectconsumer.utils.Constants.AnimeThemeList
@@ -24,6 +25,7 @@ import com.mrntlu.projectconsumer.utils.Constants.MovieStatusRequests
 import com.mrntlu.projectconsumer.utils.Constants.SortRequests
 import com.mrntlu.projectconsumer.utils.Constants.TVGenreList
 import com.mrntlu.projectconsumer.utils.Constants.TVSeriesStatusRequests
+import com.mrntlu.projectconsumer.utils.setGone
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,6 +35,7 @@ class DiscoverBottomSheet(
     private val initialStatus: String? = null,
     private val initialDecade: String? = null,
     private val initialAnimeTheme: String? = null,
+    private val initialAnimeDemographics: String? = null,
     private val initialGameTBA: Boolean? = null,
     private val initialGamePlatform: String? = null,
     private val contentType: Constants.ContentType,
@@ -49,6 +52,7 @@ class DiscoverBottomSheet(
     private var genreAdapter: FilterAdapter? = null
     private var statusAdapter: FilterAdapter? = null
     private var releaseDateAdapter: FilterAdapter? = null
+    private var extraAdapter: FilterAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,14 +101,17 @@ class DiscoverBottomSheet(
                     statusAdapter?.getSelected()
                 else null,
                 sort = sortAdapter?.getSelected()!!,
-                from = if (contentType == Constants.ContentType.MOVIE || contentType == Constants.ContentType.TV) {
+                from = if (contentType == Constants.ContentType.MOVIE || contentType == Constants.ContentType.TV)
                     releaseDateAdapter?.getSelected()?.toIntOrNull()
-                } else null,
-                to = if (contentType == Constants.ContentType.MOVIE || contentType == Constants.ContentType.TV) {
+                else null,
+                to = if (contentType == Constants.ContentType.MOVIE || contentType == Constants.ContentType.TV)
                     releaseDateAdapter?.getSelected()?.toIntOrNull()?.plus(10)
-                } else null,
+                else null,
                 animeTheme = if (contentType == Constants.ContentType.ANIME)
                     releaseDateAdapter?.getSelected()
+                else null,
+                animeDemographics = if (contentType == Constants.ContentType.ANIME)
+                    extraAdapter?.getSelected()
                 else null,
                 gameTBA = if (contentType == Constants.ContentType.GAME)
                     releaseDateAdapter?.getSelected() != null
@@ -122,6 +129,7 @@ class DiscoverBottomSheet(
             statusAdapter?.deselect()
             sortAdapter?.deselect()
             releaseDateAdapter?.deselect()
+            extraAdapter?.deselect()
         }
     }
 
@@ -229,6 +237,29 @@ class DiscoverBottomSheet(
                 scrollToPosition(index)
             }
         }
+
+        if (contentType == Constants.ContentType.ANIME) {
+            binding.extraRV.apply {
+                binding.extraTV.text = getString(R.string.demographics)
+
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                extraAdapter = FilterAdapter(AnimeDemographicsList)
+                adapter = extraAdapter
+
+                if (initialAnimeDemographics != null) {
+                    val index = AnimeDemographicsList.indexOfFirst { it.name == initialAnimeDemographics }
+
+                    extraAdapter?.setSelectedIndex(index)
+                    scrollToPosition(index)
+                }
+            }
+        } else {
+            binding.extraTV.setGone()
+            binding.extraRV.setGone()
+            binding.materialDivider8.setGone()
+        }
     }
 
     override fun onDestroyView() {
@@ -236,6 +267,7 @@ class DiscoverBottomSheet(
         genreAdapter = null
         statusAdapter = null
         releaseDateAdapter = null
+        extraAdapter = null
 
         super.onDestroyView()
         _binding = null

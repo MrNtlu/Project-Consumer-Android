@@ -46,6 +46,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     }
 
     protected fun setShowcaseRecyclerView(
+        isRatioDifferent: Boolean = false,
         onItemClicked: (String) -> Unit,
         onRefreshPressed: () -> Unit,
     ) {
@@ -65,7 +66,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                 override fun onCancelPressed() {}
 
                 override fun onExhaustButtonPressed() {}
-            }, !sharedViewModel.isLightTheme())
+            }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
             adapter = showCaseAdapter
 
             val spacing = resources.getDimensionPixelSize(R.dimen.carousel_spacing)
@@ -91,6 +92,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     }
 
     protected fun setRecyclerView(
+        isRatioDifferent: Boolean = false,
         firstOnItemSelected: (String) -> Unit,
         firstOnRefreshPressed: () -> Unit,
         secondOnItemSelected: (String) -> Unit,
@@ -112,7 +114,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                 }
 
                 override fun onExhaustButtonPressed() {}
-            }, isDarkTheme = !sharedViewModel.isLightTheme())
+            }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
             adapter = upcomingAdapter
         }
 

@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.mrntlu.projectconsumer.interfaces.ContentModel
+import com.mrntlu.projectconsumer.repository.AnimeRepository
+import com.mrntlu.projectconsumer.repository.GameRepository
 import com.mrntlu.projectconsumer.repository.MovieRepository
 import com.mrntlu.projectconsumer.repository.TVRepository
 import com.mrntlu.projectconsumer.utils.Constants
@@ -24,21 +26,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-const val DISCOVER_PAGE_KEY = "rv.discover.page"
-const val DISCOVER_SCROLL_POSITION_KEY = "rv.discover.scroll_position"
-const val DISCOVER_CONTENT_TYPE_KEY = "rv.discover.content_type"
-const val DISCOVER_SORT_KEY = "rv.discover.sort"
-const val DISCOVER_STATUS_KEY = "rv.discover.status"
-const val DISCOVER_GENRE_KEY = "rv.discover.genre"
-const val DISCOVER_FROM_KEY = "rv.discover.from"
-const val DISCOVER_TO_KEY = "rv.discover.to"
-const val DISCOVER_ANIME_THEME_KEY = "rv.discover.anime.theme"
-const val DISCOVER_GAME_TBA_KEY = "rv.discover.game.tba"
-const val DISCOVER_GAME_PLATFORM_KEY = "rv.discover.game.platform"
+private const val DISCOVER_PAGE_KEY = "rv.discover.page"
+private const val DISCOVER_SCROLL_POSITION_KEY = "rv.discover.scroll_position"
+private const val DISCOVER_CONTENT_TYPE_KEY = "rv.discover.content_type"
+private const val DISCOVER_SORT_KEY = "rv.discover.sort"
+private const val DISCOVER_STATUS_KEY = "rv.discover.status"
+private const val DISCOVER_GENRE_KEY = "rv.discover.genre"
+private const val DISCOVER_FROM_KEY = "rv.discover.from"
+private const val DISCOVER_TO_KEY = "rv.discover.to"
+private const val DISCOVER_ANIME_THEME_KEY = "rv.discover.anime.theme"
+private const val DISCOVER_ANIME_DEMOGRAPHICS_KEY = "rv.discover.anime.demographics"
+private const val DISCOVER_GAME_TBA_KEY = "rv.discover.game.tba"
+private const val DISCOVER_GAME_PLATFORM_KEY = "rv.discover.game.platform"
 
 class DiscoverListViewModel @AssistedInject constructor(
     private val movieRepository: MovieRepository,
     private val tvRepository: TVRepository,
+    private val animeRepository: AnimeRepository,
+    private val gameRepository: GameRepository,
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val vmGenre: String?,
     @Assisted private val vmContentType: Constants.ContentType,
@@ -62,6 +67,8 @@ class DiscoverListViewModel @AssistedInject constructor(
     var to: Int? = savedStateHandle[DISCOVER_TO_KEY]
         private set
     var animeTheme: String? = savedStateHandle[DISCOVER_ANIME_THEME_KEY]
+        private set
+    var animeDemographics: String? = savedStateHandle[DISCOVER_ANIME_DEMOGRAPHICS_KEY]
         private set
     var gameTBA: Boolean? = savedStateHandle[DISCOVER_GAME_TBA_KEY]
         private set
@@ -89,17 +96,18 @@ class DiscoverListViewModel @AssistedInject constructor(
         newSort: String,
         newStatus: String?,
         newGenre: String?,
-        newFrom: Int?,
-        newTo: Int?,
+        newFrom: Int? = null,
+        newTo: Int? = null,
         newAnimeTheme: String? = null,
+        newAnimeDemographics: String? = null,
         newGameTBA: Boolean? = null,
         newGamePlatform: String? = null,
         refreshAnyway: Boolean = false,
     ) {
         if (
-            newContentType != contentType || newSort != sort || newStatus != status ||
-            newGenre != genre || newFrom != from || newTo != to ||
-            (newContentType == Constants.ContentType.ANIME && newAnimeTheme != animeTheme) ||
+            newContentType != contentType || newSort != sort || newStatus != status || newGenre != genre ||
+            ((newContentType == Constants.ContentType.MOVIE || newContentType == Constants.ContentType.TV) && (newFrom != from || newTo != to)) ||
+            (newContentType == Constants.ContentType.ANIME && (newAnimeTheme != animeTheme || newAnimeDemographics != animeDemographics)) ||
             (newContentType == Constants.ContentType.GAME && (newGameTBA != gameTBA || newGamePlatform != gamePlatform)) || refreshAnyway
         ) {
             setContentType(newContentType)
@@ -109,6 +117,7 @@ class DiscoverListViewModel @AssistedInject constructor(
             setFrom(newFrom)
             setTo(newTo)
             setAnimeTheme(newAnimeTheme)
+            setAnimeDemographics(newAnimeDemographics)
             setGameTBA(newGameTBA)
             setGamePlatform(newGamePlatform)
             setPagePosition(1)
@@ -125,14 +134,18 @@ class DiscoverListViewModel @AssistedInject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             val flowCollector = when(contentType) {
-                Constants.ContentType.ANIME -> TODO()
+                Constants.ContentType.ANIME -> animeRepository.getAnimeBySortFilter(
+                    page, sort, status, genre, animeDemographics, animeTheme, null, isNetworkAvailable,
+                )
                 Constants.ContentType.MOVIE -> movieRepository.getMovieBySortFilter(
                     page, sort, status, null, genre, from, to, isNetworkAvailable
                 )
                 Constants.ContentType.TV -> tvRepository.getTVSeriesBySortFilter(
                     page, sort, status, null, null, genre, from, to, isNetworkAvailable
                 )
-                Constants.ContentType.GAME -> TODO()
+                Constants.ContentType.GAME -> gameRepository.getGameBySortFilter(
+                    page, sort, gameTBA, genre, gamePlatform, isNetworkAvailable,
+                )
             }
 
             flowCollector.collect { response ->
@@ -167,7 +180,10 @@ class DiscoverListViewModel @AssistedInject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             launch(Dispatchers.IO) {
                 val flowCollector = when(contentType) {
-                    Constants.ContentType.ANIME -> TODO()
+                    Constants.ContentType.ANIME -> animeRepository.getAnimeBySortFilter(
+                        page, sort, status, genre, animeDemographics, animeTheme, null,
+                        isNetworkAvailable, isRestoringData = true
+                    )
                     Constants.ContentType.MOVIE -> movieRepository.getMovieBySortFilter(
                         page, sort, status, null, genre, from, to,
                         isNetworkAvailable, isRestoringData = true,
@@ -176,7 +192,10 @@ class DiscoverListViewModel @AssistedInject constructor(
                         page, sort, status, null, null, genre, from, to,
                         isNetworkAvailable, isRestoringData = true,
                     )
-                    Constants.ContentType.GAME -> TODO()
+                    Constants.ContentType.GAME -> gameRepository.getGameBySortFilter(
+                        page, sort, gameTBA, genre, gamePlatform,
+                        isNetworkAvailable, isRestoringData = true,
+                    )
                 }
 
                 flowCollector.collect { response ->
@@ -235,6 +254,11 @@ class DiscoverListViewModel @AssistedInject constructor(
     private fun setAnimeTheme(newAnimeTheme: String?) {
         animeTheme = newAnimeTheme
         savedStateHandle[DISCOVER_ANIME_THEME_KEY] = newAnimeTheme
+    }
+
+    private fun setAnimeDemographics(newAnimeDemographics: String?) {
+        animeDemographics = newAnimeDemographics
+        savedStateHandle[DISCOVER_ANIME_DEMOGRAPHICS_KEY] = newAnimeDemographics
     }
 
     private fun setGameTBA(newGameTBA: Boolean?) {

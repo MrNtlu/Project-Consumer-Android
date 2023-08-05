@@ -54,10 +54,11 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
     private val discoverOnBottomSheet = object: DiscoverOnBottomSheet {
         override fun onApply(
             genre: String?, status: String?, sort: String, from: Int?, to: Int?,
-            animeTheme: String?, gameTBA: Boolean?, gamePlatform: String?
+            animeTheme: String?, animeDemographics: String?, gameTBA: Boolean?, gamePlatform: String?
         ) {
             viewModel.startDiscoveryFetch(
-                contentType, sort, status, genre, from, to, animeTheme, gameTBA, gamePlatform
+                contentType, sort, status, genre, from, to,
+                animeTheme, animeDemographics, gameTBA, gamePlatform,
             )
         }
     }
@@ -99,6 +100,7 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
                                     initialStatus = status,
                                     initialDecade = from?.toString(),
                                     initialAnimeTheme = animeTheme,
+                                    initialAnimeDemographics = animeDemographics,
                                     initialGameTBA = gameTBA,
                                     initialGamePlatform = gamePlatform,
                                     contentType = contentType,
@@ -177,6 +179,7 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
             layoutManager = gridLayoutManager
             contentAdapter = ContentAdapter(
                 gridCount = gridCount,
+                isRatioDifferent = contentType == Constants.ContentType.GAME,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
@@ -192,7 +195,9 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
                             Constants.ContentType.TV -> DiscoverListFragmentDirections.actionDiscoverListFragmentToTvDetailsFragment(
                                 item.id
                             )
-                            Constants.ContentType.GAME -> TODO()
+                            Constants.ContentType.GAME -> DiscoverListFragmentDirections.actionDiscoverListFragmentToGameDetailsFragment(
+                                item.id
+                            )
                         }
 
                         navController.navigate(navWithAction)

@@ -19,6 +19,29 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
+    <LinearLayout
+        android:id="@+id/previewGameTitleLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="@drawable/bottom_rounded_corners"
+        android:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/previewIV"
+        app:layout_constraintEnd_toEndOf="@+id/previewIV"
+        app:layout_constraintStart_toStartOf="@+id/previewIV">
+
+        <TextView
+            android:id="@+id/previewGameTitleTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="6dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="TextView" />
+    </LinearLayout>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/previewCard"
         android:layout_width="0dp"

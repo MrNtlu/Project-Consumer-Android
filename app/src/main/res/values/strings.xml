@@ -10,7 +10,6 @@
     <!-- Content Descriptions -->
     <string name="see_all_cd">See All</string>
     <string name="login_register_cd">Login/Register Image</string>
-    <string name="popular">Popular</string>
     <string name="see_all_popular_cd">See All Popular</string>
     <string name="genre_image_cd">Genre Image</string>
     <string name="message_icon_cd">Message Icon</string>
@@ -20,9 +19,9 @@
     <string name="tv_series_backdrop_cd">TV Series Backdrop</string>
     <string name="movie_backdrop_cd">Movie Backdrop</string>
     <string name="profile_image_cd">Profile Image</string>
+    <string name="anime_backdrop_cd">Anime Backdrop</string>
+    <string name="game_backdrop_cd">Game Backdrop</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_register_toolbar">Login/Register</string>
     <string name="refresh_cd">Refresh</string>
     <string name="no_poster">No Poster</string>
@@ -75,9 +74,11 @@
     <string name="seasons">Seasons</string>
     <string name="home">Home</string>
     <string name="discover">Discover</string>
+    <string name="discover_title">🕵️ Discover</string>
     <string name="profile">Profile</string>
     <string name="upcoming">📅 Upcoming</string>
-    <string name="top_rated">🔥 Top Rated</string>
+    <string name="top_rated">🍿 Top Rated</string>
+    <string name="popular">🔥 Popular</string>
     <string name="episodes">Episodes</string>
     <string name="watched_seasons">Watched Seasons</string>
     <string name="watched_episodes">Watched Episodes</string>
@@ -95,6 +96,17 @@
     <string name="finished">Finished</string>
     <string name="filter">Filter</string>
     <string name="diary">Diary</string>
+    <string name="description">Description</string>
+    <string name="information">Information</string>
+    <string name="season">Season</string>
+    <string name="source">Source</string>
+    <string name="aired">Aired</string>
+    <string name="studios">Studios</string>
+    <string name="producers">Producers</string>
+    <string name="relations">Relations</string>
+    <string name="characters">Characters</string>
+    <string name="unknown">Unknown</string>
+    <string name="demographics">Demographics</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>
@@ -135,18 +147,8 @@
     <string name="user_list">User List</string>
     <string name="next_week">Next Week</string>
     <string name="prev_week">Prev Week</string>
-    <string name="anime_backdrop_cd">Anime Backdrop</string>
-    <string name="description">Description</string>
-    <string name="information">Information</string>
-    <string name="season">Season</string>
-    <string name="source">Source</string>
-    <string name="aired">Aired</string>
-    <string name="studios">Studios</string>
-    <string name="producers">Producers</string>
-    <string name="relations">Relations</string>
-    <string name="characters">Characters</string>
-    <string name="unknown">Unknown</string>
     <string name="bullet_point">•</string>
+    <string name="not_rated_yet">Not rated yet</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mrntlu.projectconsumer.utils.Constants
 
 @Composable
 fun PaginationLoadingShimmer(
     gridCount: Int,
+    aspectRatio: Float = Constants.DEFAULT_RATIO,
     isDarkTheme: Boolean = false,
 ) {
     Column(
@@ -34,6 +36,7 @@ fun PaginationLoadingShimmer(
                     LoadingShimmer(
                         modifier = Modifier.weight(1f),
                         isDarkTheme = isDarkTheme,
+                        aspectRatio = aspectRatio
                     ) {
                         fillMaxWidth()
                         padding(4.dp)

@@ -9,11 +9,11 @@ interface ErrorViewHolderBind<T> {
 }
 
 interface LoadingViewHolderBind {
-    fun bind(isDarkTheme: Boolean)
+    fun bind(aspectRatio: Float?, isDarkTheme: Boolean)
 }
 
 interface PaginationLoadingViewHolderBind {
-    fun bind(gridCount: Int, isDarkTheme: Boolean)
+    fun bind(gridCount: Int, aspectRatio: Float?, isDarkTheme: Boolean)
 }
 
 interface PaginationExhaustViewHolderBind<T> {

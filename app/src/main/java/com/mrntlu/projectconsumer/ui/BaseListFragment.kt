@@ -151,6 +151,7 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
     }
 
     protected fun setRecyclerView(
+        isRatioDifferent: Boolean = false,
         startFetch: (String) -> Unit,
         onItemSelected: (String) -> Unit,
         scrollViewModel: (Int) -> Unit,
@@ -172,6 +173,7 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
             layoutManager = gridLayoutManager
             contentAdapter = ContentAdapter(
                 gridCount = gridCount,
+                isRatioDifferent = isRatioDifferent,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<T> {
                     override fun onItemSelected(item: T, position: Int) {

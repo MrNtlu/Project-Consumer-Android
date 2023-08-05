@@ -20,24 +20,26 @@ class GameFragment : BasePreviewFragment<Game>() {
 
         setListeners()
         setShowcaseRecyclerView(
+            isRatioDifferent = true,
             onItemClicked = { id ->
-//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
-//
-//                navController.navigate(navWithAction)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
+
+                navController.navigate(navWithAction)
             },
             onRefreshPressed = { viewModel.fetchPreviewGames() }
         )
         setRecyclerView(
+            isRatioDifferent = true,
             firstOnItemSelected = { id ->
-//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
-//
-//                navController.navigate(navWithAction)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
+
+                navController.navigate(navWithAction)
             },
             firstOnRefreshPressed = { viewModel.fetchPreviewGames() },
             secondOnItemSelected = { id ->
-//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
-//
-//                navController.navigate(navWithAction)
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
+
+                navController.navigate(navWithAction)
             },
             secondOnRefreshPressed = { viewModel.fetchPreviewGames() }
         )

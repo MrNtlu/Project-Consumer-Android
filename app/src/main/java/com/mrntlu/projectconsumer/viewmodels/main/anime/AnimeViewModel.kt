@@ -54,21 +54,21 @@ class AnimeViewModel @AssistedInject constructor(
         } else {
             setTag(vmTag)
 
-            startAnimesFetch(sort, true)
+            startAnimeFetch(sort, true)
         }
     }
 
-    fun startAnimesFetch(newSort: String, refreshAnyway: Boolean = false) {
+    fun startAnimeFetch(newSort: String, refreshAnyway: Boolean = false) {
         if (sort != newSort) {
             setSort(newSort)
             setPagePosition(1)
         } else if (refreshAnyway)
             setPagePosition(1)
 
-        fetchAnimes()
+        fetchAnime()
     }
 
-    fun fetchAnimes() {
+    fun fetchAnime() {
         val prevList = arrayListOf<Anime>()
         if (_animeList.value?.data != null && page != 1) {
             prevList.addAll(_animeList.value!!.data!!.toCollection(ArrayList()))

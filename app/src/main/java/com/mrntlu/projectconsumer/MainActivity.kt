@@ -39,6 +39,7 @@ import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.DEEPLINK_EXTRA
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.PATH_EXTRA
 import com.mrntlu.projectconsumer.ui.anime.AnimeDetailsFragmentDirections
+import com.mrntlu.projectconsumer.ui.game.GameDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragmentDirections
 import com.mrntlu.projectconsumer.utils.Constants
@@ -119,6 +120,11 @@ class MainActivity : AppCompatActivity() {
 
                         "anime" -> {
                             val navWithAction = AnimeDetailsFragmentDirections.actionGlobalAnimeDetailsFragment(data)
+                            navController.navigate(navWithAction)
+                        }
+
+                        "game" -> {
+                            val navWithAction = GameDetailsFragmentDirections.actionGlobalGameDetailsFragment(data)
                             navController.navigate(navWithAction)
                         }
                     }
@@ -222,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                     binding.navView.setVisible()
                     handleUserIncVisibility(true)
                 }
-                R.id.movieDetailsFragment, R.id.tvDetailsFragment -> {
+                R.id.movieDetailsFragment, R.id.tvDetailsFragment, R.id.gameDetailsFragment -> {
                     binding.toolbar.setGone()
                     binding.navView.setGone()
                     handleUserIncVisibility(true)
@@ -235,22 +241,16 @@ class MainActivity : AppCompatActivity() {
             }
 
             binding.toolbar.title = when(destination.id) {
-                R.id.movieListFragment -> {
-                    if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
-                        getString(R.string.upcoming)
-                    else if (args?.getString("fetchType") == FetchType.TOP.tag)
-                        getString(R.string.top_rated)
-                    else ""
-                }
-                R.id.tvListFragment -> {
-                    if (args?.getString("fetchType") == FetchType.UPCOMING.tag)
-                        getString(R.string.upcoming)
-                    else if (args?.getString("fetchType") == FetchType.TOP.tag)
-                        getString(R.string.top_rated)
-                    else ""
+                R.id.movieListFragment, R.id.tvListFragment, R.id.animeListFragment, R.id.gameListFragment -> {
+                    when (args?.getString("fetchType")) {
+                        FetchType.UPCOMING.tag -> getString(R.string.upcoming)
+                        FetchType.TOP.tag -> getString(R.string.top_rated)
+                        FetchType.POPULAR.tag -> getString(R.string.popular)
+                        else -> ""
+                    }
                 }
                 R.id.navigation_settings -> getString(R.string.settings)
-                R.id.discoverListFragment -> getString(R.string.discover)
+                R.id.discoverListFragment -> getString(R.string.discover_title)
                 else -> ""
             }
         }
@@ -370,7 +370,13 @@ class MainActivity : AppCompatActivity() {
                 binding.userInc.root.setGone()
                 binding.userLoadingProgressBar.setGone()
             }
-            binding.anonymousInc.root.setVisibilityByCondition(it)
+
+            val currentItem = navController.currentDestination?.id
+            val shouldShow = currentItem == R.id.navigation_home ||
+                    currentItem == R.id.navigation_discover
+
+            if (shouldShow)
+                binding.anonymousInc.root.setVisibilityByCondition(it)
 
             if (it) {
                 if (userSharedViewModel.userInfo == null) {

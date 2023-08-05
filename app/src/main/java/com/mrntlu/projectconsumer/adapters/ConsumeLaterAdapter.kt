@@ -3,11 +3,13 @@ package com.mrntlu.projectconsumer.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
 import com.mrntlu.projectconsumer.databinding.CellConsumeLaterBinding
@@ -178,8 +180,18 @@ class ConsumeLaterAdapter(
 
                     previewCard.setGone()
                     previewComposeView.setVisible()
+                    previewGameTitleLayout.setGone()
+
+                    previewIV.scaleType = if (item.contentType == "game")
+                        ImageView.ScaleType.CENTER_CROP
+                    else
+                        ImageView.ScaleType.FIT_XY
+
                     previewIV.loadWithGlide(item.content.imageURL, previewCard, previewComposeView) {
-                        transform(RoundedCorners(12))
+                        if (item.contentType == "game")
+                            transform(CenterCrop(), RoundedCorners(12))
+                        else
+                            transform(RoundedCorners(12))
                     }
 
                     previewTV.text = item.content.titleOriginal

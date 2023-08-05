@@ -18,7 +18,7 @@ data class GameDetails(
     val publishers: List<String>,
     val stores: List<GameStore>,
 
-    @SerializedName("title_en")
+    @SerializedName("title")
     val title: String,
 
     @SerializedName("title_original")
@@ -34,15 +34,15 @@ data class GameDetails(
     val rawgRatingCount: Int,
 
     @SerializedName("metacritic_score")
-    val metacriticScore: Int,
+    val metacriticScore: Int?,
 
     @SerializedName("metacritic_score_by_platform")
     val metacriticScoreByPlatform: List<GameMetacriticScorePlatform>,
 
     @SerializedName("release_date")
-    val releaseDate: String,
+    val releaseDate: String?,
 
-    @SerializedName("background_image")
+    @SerializedName("image_url")
     val imageURL: String,
 
     @SerializedName("age_rating")
@@ -50,9 +50,6 @@ data class GameDetails(
 
     @SerializedName("related_games")
     val relatedGames: List<GameRelation>,
-
-    @SerializedName("has_release_date")
-    val hasReleaseDate: Boolean,
 
     @SerializedName("game_list")
     override var watchList: GamePlayList?,

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -232,8 +233,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 String.format("%02dh %02dm • ", hours, minutes)
             } else null
 
-            val releaseText = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.take(4) else ""}"
-            binding.detailsReleaseTV.text = releaseText
+            val releaseStr = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.take(4) else ""}"
+            binding.detailsReleaseTV.text = releaseStr
             binding.detailsStatusTV.text = status
 
             binding.imdbButton.setVisibilityByCondition(imdbID == null)
@@ -327,7 +328,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     )
                 },
                 placeHolderImage = R.drawable.ic_company_75, cardCornerRadius = 18F,
-                transformImage = { centerCrop().transform(RoundedCorners(12)) }
+                transformImage = { transform(CenterCrop(), RoundedCorners(12)) }
             ) {
                 companiesAdapter = it
                 it

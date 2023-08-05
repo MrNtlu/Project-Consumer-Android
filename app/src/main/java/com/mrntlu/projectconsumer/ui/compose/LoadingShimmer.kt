@@ -16,12 +16,13 @@ fun LoadingShimmer(
     modifier: Modifier = Modifier,
     isDarkTheme: Boolean = false,
     roundedCornerSize: Dp = 8.dp,
+    aspectRatio: Float = 0.6666667f,
     sizeModifier: Modifier.() -> Modifier = { modifier.fillMaxWidth() },
 ) {
     Spacer(
         modifier = modifier
             .sizeModifier()
-            .aspectRatio(0.6666667f)
+            .aspectRatio(aspectRatio)
             .clip(RoundedCornerShape(roundedCornerSize))
             .background(getShimmerBrush(isDarkTheme = isDarkTheme)),
     )

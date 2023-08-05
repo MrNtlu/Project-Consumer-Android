@@ -243,11 +243,15 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
             layoutManager = gridLayoutManager
             contentAdapter = ContentAdapter(
                 gridCount = gridCount,
+                isRatioDifferent = viewModel.contentType == Constants.ContentType.GAME,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
                         when(viewModel.contentType) {
-                            Constants.ContentType.ANIME -> TODO()
+                            Constants.ContentType.ANIME -> {
+                                val navWithAction = SearchFragmentDirections.actionSearchFragmentToAnimeDetailsFragment(item.id)
+                                navController.navigate(navWithAction)
+                            }
                             Constants.ContentType.MOVIE -> {
                                 val navWithAction = SearchFragmentDirections.actionSearchFragmentToMovieDetailsFragment(item.id)
                                 navController.navigate(navWithAction)
@@ -256,7 +260,10 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                                 val navWithAction = SearchFragmentDirections.actionSearchFragmentToTvDetailsFragment(item.id)
                                 navController.navigate(navWithAction)
                             }
-                            Constants.ContentType.GAME -> TODO()
+                            Constants.ContentType.GAME -> {
+                                val navWithAction = SearchFragmentDirections.actionSearchFragmentToGameDetailsFragment(item.id)
+                                navController.navigate(navWithAction)
+                            }
                         }
                     }
 

@@ -3,11 +3,13 @@ package com.mrntlu.projectconsumer.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.adapters.viewholders.LoadingPreviewViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.PreviewErrorViewHolder
@@ -19,15 +21,20 @@ import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
 import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
+import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.DEFAULT_RATIO
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.setCornerRadius
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
 class PreviewAdapter<T: ContentModel>(
     private val interaction: Interaction<T>,
+    private val isRatioDifferent: Boolean = false,
     private val isDarkTheme: Boolean,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -53,7 +60,7 @@ class PreviewAdapter<T: ContentModel>(
                 (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
             }
             RecyclerViewEnum.Loading.value -> {
-                (holder as LoadingPreviewViewHolder).bind(isDarkTheme)
+                (holder as LoadingPreviewViewHolder).bind(if (isRatioDifferent) Constants.GAME_RATIO else DEFAULT_RATIO, isDarkTheme)
             }
         }
     }
@@ -113,7 +120,7 @@ class PreviewAdapter<T: ContentModel>(
         }
     }
 
-    class ItemPreviewHolder<T: ContentModel>(
+    inner class ItemPreviewHolder<T: ContentModel>(
         private val binding: CellPreviewItemBinding,
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
         override fun bind(item: T, position: Int, interaction: Interaction<T>) {
@@ -139,8 +146,24 @@ class PreviewAdapter<T: ContentModel>(
 
                 previewCard.setGone()
                 previewComposeView.setVisible()
+                previewGameTitleLayout.setVisibilityByCondition(!isRatioDifferent)
+
+                (previewIV.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
+                (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
+                (previewComposeView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
+
+                previewGameTitleLayout.setCornerRadius(bottomRight = 18f, bottomLeft = 18f)
+
+                previewIV.scaleType = if (isRatioDifferent)
+                    ImageView.ScaleType.CENTER_CROP
+                else
+                    ImageView.ScaleType.FIT_XY
+
                 previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
-                    centerCrop().transform(RoundedCorners(18))
+                    if (isRatioDifferent)
+                        transform(CenterCrop(), RoundedCorners(18))
+                    else
+                        transform(RoundedCorners(18))
                 }
 
                 previewTV.text = item.title

@@ -276,14 +276,18 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                 override fun onItemSelected(item: UserList, position: Int) {
                     val navWithAction = when(viewModel.contentType) {
-                        Constants.ContentType.ANIME -> TODO()
+                        Constants.ContentType.ANIME -> UserListFragmentDirections.actionNavigationUserListToAnimeDetailsFragment(
+                            item.animeList[position].contentId
+                        )
                         Constants.ContentType.MOVIE -> UserListFragmentDirections.actionUserListFragmentToMovieDetailsFragment(
                             item.movieList[position].contentId
                         )
                         Constants.ContentType.TV -> UserListFragmentDirections.actionUserListFragmentToTvDetailsFragment(
                             item.tvList[position].contentId
                         )
-                        Constants.ContentType.GAME -> TODO()
+                        Constants.ContentType.GAME -> UserListFragmentDirections.actionNavigationUserListToGameDetailsFragment(
+                            item.gameList[position].contentId
+                        )
                     }
                     navController.navigate(navWithAction)
                 }

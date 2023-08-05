@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".ui.movie.MovieDetailsFragment">
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/detailsAppBarLayout"
@@ -31,7 +30,7 @@
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
-                android:contentDescription="@string/movie_backdrop_cd"/>
+                android:contentDescription="@string/game_backdrop_cd"/>
 
             <ProgressBar
                 android:id="@+id/detailsToolbarProgress"
@@ -74,21 +73,21 @@
             android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline5"
+                android:id="@+id/guideline31"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.04" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline6"
+                android:id="@+id/guideline32"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.96" />
 
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline18"
+                android:id="@+id/guideline33"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -99,8 +98,8 @@
                 layout="@layout/layout_user_interaction"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -112,8 +111,8 @@
                 android:textColor="?attr/mainTextColor"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/detailsInclude"
                 tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
 
@@ -125,7 +124,7 @@
                 android:textAlignment="textStart"
                 android:textColor="?attr/subTextColor"
                 android:textSize="12sp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
                 app:layout_constraintStart_toStartOf="@+id/detailsTitleTV"
                 app:layout_constraintTop_toBottomOf="@+id/detailsTitleTV"
                 tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
@@ -137,12 +136,12 @@
                 android:layout_marginTop="24dp"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/detailsOriginalTV"
                 tools:text="2023" />
 
             <TextView
-                android:id="@+id/detailsStatusTV"
+                android:id="@+id/detailsMetacriticTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="Airing"
@@ -150,7 +149,7 @@
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/detailsReleaseTV"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
                 app:layout_constraintTop_toTopOf="@+id/detailsReleaseTV" />
 
             <com.google.android.material.divider.MaterialDivider
@@ -168,8 +167,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
 
             <com.google.android.material.divider.MaterialDivider
@@ -186,11 +185,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/plot"
+                android:text="@string/description"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/genreDivider" />
 
             <io.github.glailton.expandabletextview.ExpandableTextView
@@ -204,9 +203,9 @@
                 app:collapsedLines="3"
                 app:ellipsizeTextColor="?attr/subTextColor"
                 app:isExpanded="false"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
                 app:readLessText="Hide"
                 app:readMoreText="Expand"
@@ -214,184 +213,18 @@
                 tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
 
             <TextView
-                android:id="@+id/detailsActorsTV"
+                android:id="@+id/detailsInformationTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="@string/actors"
+                android:text="@string/information"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailsActorsRV"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsActorsTV" />
-
-            <TextView
-                android:id="@+id/detailsProductionTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="@string/production"
-                android:textColor="?attr/descriptionTitleTextColor"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsActorsRV" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailsProductionRV"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsProductionTV" />
-
-            <TextView
-                android:id="@+id/detailsAvailableTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="@string/streaming"
-                android:textColor="?attr/descriptionTitleTextColor"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsProductionRV" />
-
-            <Spinner
-                android:id="@+id/detailsStreamingCountrySpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@+id/detailsAvailableTV"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintTop_toTopOf="@+id/detailsAvailableTV" />
-
-            <TextView
-                android:id="@+id/detailsBuyTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/buy"
-                android:textColor="?attr/subTextColor"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/detailsAvailableTV"
-                app:layout_constraintTop_toBottomOf="@+id/detailsAvailableTV" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailsBuyRV"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsBuyTV" />
-
-            <TextView
-                android:id="@+id/detailsRentTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/rent"
-                android:textColor="?attr/subTextColor"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/detailsAvailableTV"
-                app:layout_constraintTop_toBottomOf="@+id/detailsBuyRV" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailsRentRV"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsRentTV" />
-
-            <TextView
-                android:id="@+id/detailsStreamingTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/streaming"
-                android:textColor="?attr/subTextColor"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/detailsAvailableTV"
-                app:layout_constraintTop_toBottomOf="@+id/detailsRentRV" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailsStreamingRV"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsStreamingTV" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline18"
-                app:layout_constraintStart_toStartOf="@+id/guideline18"
-                app:layout_constraintTop_toBottomOf="@+id/detailsStreamingRV">
-
-                <Button
-                    android:id="@+id/tmdbButton"
-                    android:layout_width="55dp"
-                    android:layout_height="45dp"
-                    android:backgroundTint="#04243f"
-                    android:padding="0dp"
-                    android:text="@string/tmdb"
-                    android:textColor="#58bab0"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/imdbButton"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline18"
-                    app:layout_constraintTop_toTopOf="@+id/imdbButton" />
-
-                <Button
-                    android:id="@+id/imdbButton"
-                    android:layout_width="55dp"
-                    android:layout_height="45dp"
-                    android:backgroundTint="#f6c800"
-                    android:padding="0dp"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/imdb"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline18"
-                    app:layout_constraintTop_toBottomOf="@+id/detailsStreamingRV" />
-            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <FrameLayout
-        android:id="@+id/loadingLayout"
-        android:elevation="9dp"
-        android:background="?attr/mainBackgroundColor"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:visibility="gone">
-        <include
-            layout="@layout/layout_shimmer_movie_details"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/errorLayout"
