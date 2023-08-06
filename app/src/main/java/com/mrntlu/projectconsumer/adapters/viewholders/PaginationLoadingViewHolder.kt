@@ -12,7 +12,11 @@ class PaginationLoadingViewHolder(private val binding: CellPaginationLoadingBind
         binding.paginationLoadingComposeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent { 
-                PaginationLoadingShimmer(gridCount = gridCount, aspectRatio = aspectRatio ?: Constants.DEFAULT_RATIO, isDarkTheme = isDarkTheme)
+                PaginationLoadingShimmer(
+                    gridCount = gridCount,
+                    aspectRatio = aspectRatio ?: Constants.DEFAULT_RATIO,
+                    isDarkTheme = isDarkTheme
+                )
             }
         }
     }

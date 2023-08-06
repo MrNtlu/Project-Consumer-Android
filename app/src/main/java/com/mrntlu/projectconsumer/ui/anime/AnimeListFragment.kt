@@ -43,9 +43,9 @@ class AnimeListFragment : BaseListFragment<Anime>() {
             setRecyclerView(
                 startFetch = { sortType -> viewModel.startAnimeFetch(sortType) },
                 onItemSelected = { itemId ->
-//                    val navWithAction = AnimeListFragmentDirections.actionAnimeListFragmentToAnimeDetailsFragment(itemId)
+                    val navWithAction = AnimeListFragmentDirections.actionAnimeListFragmentToAnimeDetailsFragment(itemId)
 
-//                    navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
                 },
                 scrollViewModel = { position -> viewModel.setScrollPosition(position) },
                 fetch = { viewModel.fetchAnime() }

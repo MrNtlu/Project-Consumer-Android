@@ -149,6 +149,10 @@
     <string name="prev_week">Prev Week</string>
     <string name="bullet_point">•</string>
     <string name="not_rated_yet">Not rated yet</string>
+    <string name="developers">Developers</string>
+    <string name="publishers">Publishers</string>
+    <string name="stores">Stores</string>
+    <string name="game_series">Game Series</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

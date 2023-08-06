@@ -22,6 +22,7 @@ import com.mrntlu.projectconsumer.utils.Constants.GameGenreList
 import com.mrntlu.projectconsumer.utils.Constants.GamePlatformRequests
 import com.mrntlu.projectconsumer.utils.Constants.MovieGenreList
 import com.mrntlu.projectconsumer.utils.Constants.MovieStatusRequests
+import com.mrntlu.projectconsumer.utils.Constants.SortGameRequests
 import com.mrntlu.projectconsumer.utils.Constants.SortRequests
 import com.mrntlu.projectconsumer.utils.Constants.TVGenreList
 import com.mrntlu.projectconsumer.utils.Constants.TVSeriesStatusRequests
@@ -138,10 +139,15 @@ class DiscoverBottomSheet(
             val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayout
 
-            sortAdapter = FilterAdapter(SortRequests, false)
+            val sortRequestList = if (contentType == Constants.ContentType.GAME)
+                SortGameRequests
+            else
+                SortRequests
+
+            sortAdapter = FilterAdapter(sortRequestList, false)
             adapter = sortAdapter
 
-            val index = SortRequests.indexOfFirst {
+            val index = sortRequestList.indexOfFirst {
                 it.name == initialSort || it.request == initialSort
             }
             sortAdapter?.setSelectedIndex(index)
@@ -222,7 +228,7 @@ class DiscoverBottomSheet(
 
             if (
                 (contentType == Constants.ContentType.ANIME && initialAnimeTheme != null) ||
-                (contentType == Constants.ContentType.GAME && initialGameTBA != null) ||
+                (contentType == Constants.ContentType.GAME && initialGameTBA != null && initialGameTBA) ||
                 ((contentType == Constants.ContentType.MOVIE || contentType == Constants.ContentType.TV) && initialDecade != null)
             ) {
                 val index = when(contentType) {

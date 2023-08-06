@@ -11,6 +11,11 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.AnimeRelationsAdapter
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
@@ -280,10 +285,14 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         }
 
         binding.detailsStudiosRV.apply {
-            val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            layoutManager = linearLayout
-            val bulletDecoration = BulletItemDecoration(context)
-            addItemDecoration(bulletDecoration)
+            val flexboxLayout = FlexboxLayoutManager(context)
+            flexboxLayout.apply {
+                flexDirection = FlexDirection.ROW
+                justifyContent = JustifyContent.FLEX_START
+                alignItems = AlignItems.FLEX_START
+                flexWrap = FlexWrap.WRAP
+            }
+            layoutManager = flexboxLayout
 
             studioAdapter = NameUrlAdapter(
                 if (!animeDetails?.studios.isNullOrEmpty()) animeDetails!!.studios!!
@@ -293,10 +302,14 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         }
 
         binding.detailsProducerRV.apply {
-            val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            layoutManager = linearLayout
-            val bulletDecoration = BulletItemDecoration(context)
-            addItemDecoration(bulletDecoration)
+            val flexboxLayout = FlexboxLayoutManager(context)
+            flexboxLayout.apply {
+                flexDirection = FlexDirection.ROW
+                justifyContent = JustifyContent.FLEX_START
+                alignItems = AlignItems.FLEX_START
+                flexWrap = FlexWrap.WRAP
+            }
+            layoutManager = flexboxLayout
 
             producerAdapter = NameUrlAdapter(
                 if (!animeDetails?.producers.isNullOrEmpty()) animeDetails!!.producers!!
@@ -307,10 +320,14 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
         if (!animeDetails?.streaming.isNullOrEmpty()) {
             binding.detailsStreamingRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-                val bulletDecoration = BulletItemDecoration(context)
-                addItemDecoration(bulletDecoration)
+                val flexboxLayout = FlexboxLayoutManager(context)
+                flexboxLayout.apply {
+                    flexDirection = FlexDirection.ROW
+                    justifyContent = JustifyContent.FLEX_START
+                    alignItems = AlignItems.FLEX_START
+                    flexWrap = FlexWrap.WRAP
+                }
+                layoutManager = flexboxLayout
 
                 streamingAdapter = NameUrlAdapter(animeDetails!!.streaming!!)
                 adapter = streamingAdapter

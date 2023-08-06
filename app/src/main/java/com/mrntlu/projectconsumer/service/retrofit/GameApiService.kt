@@ -29,7 +29,11 @@ interface GameApiService {
         @Query("sort") sort: String,
     ): Response<DataPaginationResponse<Game>>
 
-    //TODO Popular or Top Rated Games
+    @GET("game/popular")
+    suspend fun getPopularGames(
+        @Query("page") page: Int,
+    ): Response<DataPaginationResponse<Game>>
+
     // Search
 
     @GET("game/details")

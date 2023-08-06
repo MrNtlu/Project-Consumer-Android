@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/slidePreviewLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -19,13 +20,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-    <LinearLayout
-        android:id="@+id/previewGameTitleLayout"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/previewGameCV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:alpha="0.85"
+        android:outlineProvider="none"
         android:visibility="gone"
-        android:background="@drawable/bottom_rounded_corners"
-        android:elevation="6dp"
+        tools:visibility="visible"
+        app:cardBackgroundColor="?attr/toolbarBackgroundColor"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/previewIV"
         app:layout_constraintEnd_toEndOf="@+id/previewIV"
         app:layout_constraintStart_toStartOf="@+id/previewIV">
@@ -40,7 +45,7 @@
             android:textSize="12sp"
             android:textStyle="bold"
             tools:text="TextView" />
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/previewCard"

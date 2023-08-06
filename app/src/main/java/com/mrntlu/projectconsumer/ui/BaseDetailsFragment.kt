@@ -58,6 +58,13 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         countryCode = sharedViewModel.getCountryCode()
     }
 
+    override fun onStop() {
+        super.onStop()
+        activity?.let {
+            it.window.statusBarColor = ContextCompat.getColor(it, if (sharedViewModel.isLightTheme()) R.color.darkWhite else R.color.androidBlack)
+        }
+    }
+
     protected fun <WatchList> setLottieUI(
         binding: LayoutUserInteractionBinding,
         details: DetailsModel<WatchList>?,
@@ -265,9 +272,6 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
 
     override fun onDestroyView() {
         consumeLaterDeleteLiveData?.removeObservers(this)
-        activity?.let {
-            it.window.statusBarColor = ContextCompat.getColor(it, if (sharedViewModel.isLightTheme()) R.color.darkWhite else R.color.androidBlack)
-        }
         super.onDestroyView()
     }
 }

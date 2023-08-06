@@ -34,10 +34,12 @@ class AnimeRelationsAdapter(
 
             relationRV.apply {
                 val flexboxLayout = FlexboxLayoutManager(context)
-                flexboxLayout.flexDirection = FlexDirection.ROW
-                flexboxLayout.justifyContent = JustifyContent.FLEX_START
-                flexboxLayout.alignItems = AlignItems.FLEX_START
-                flexboxLayout.flexWrap = FlexWrap.WRAP
+                flexboxLayout.apply {
+                    flexDirection = FlexDirection.ROW
+                    justifyContent = JustifyContent.FLEX_START
+                    alignItems = AlignItems.FLEX_START
+                    flexWrap = FlexWrap.WRAP
+                }
                 layoutManager = flexboxLayout
 
                 val childAdapter = AnimeRelationContentAdapter(

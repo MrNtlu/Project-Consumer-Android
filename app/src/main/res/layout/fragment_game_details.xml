@@ -138,19 +138,19 @@
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/detailsOriginalTV"
-                tools:text="2023" />
+                tools:text="21 Mar 23" />
 
             <TextView
                 android:id="@+id/detailsMetacriticTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Airing"
                 android:textColor="?attr/statusActiveColor"
-                android:textStyle="bold"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/detailsReleaseTV"
                 app:layout_constraintEnd_toStartOf="@+id/guideline32"
-                app:layout_constraintTop_toTopOf="@+id/detailsReleaseTV" />
+                app:layout_constraintTop_toTopOf="@+id/detailsReleaseTV"
+                tools:text="Metacritic 92" />
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/materialDivider"
@@ -213,6 +213,72 @@
                 tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
 
             <TextView
+                android:id="@+id/detailsRelationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/game_series"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsRelationRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRelationTV" />
+
+            <TextView
+                android:id="@+id/detailsPlatformTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/platforms"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRelationRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsPlatformRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsPlatformTV" />
+
+            <TextView
+                android:id="@+id/detailsStoreTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/stores"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsPlatformRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsStoreRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsStoreTV" />
+
+            <TextView
                 android:id="@+id/detailsInformationTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -222,7 +288,75 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline31"
-                app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsStoreRV" />
+
+            <TextView
+                android:id="@+id/detailsDevelopersTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/developers"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsInformationTV" />
+
+            <TextView
+                android:id="@+id/detailsDevelopersTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?attr/mainTextColor"
+                tools:text="Activision"
+                app:layout_constraintEnd_toStartOf="@+id/guideline33"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsDevelopersTitleTV" />
+
+            <TextView
+                android:id="@+id/detailsPublishersTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/publishers"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline33"
+                app:layout_constraintTop_toBottomOf="@+id/detailsInformationTV" />
+
+            <TextView
+                android:id="@+id/detailsPublishersTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="?attr/mainTextColor"
+                tools:text="Activision"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                app:layout_constraintStart_toStartOf="@+id/guideline33"
+                app:layout_constraintTop_toBottomOf="@+id/detailsDevelopersTitleTV" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/detailsBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="detailsPublishersTV, detailsDevelopersTV" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/detailsBarrier" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

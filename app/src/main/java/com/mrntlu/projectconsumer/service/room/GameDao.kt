@@ -14,6 +14,7 @@ interface GameDao {
     @Query(
         "Select * From games Where page = :page And tag = :tag Order By " +
                 "Case When :sort = 'popularity' Then rawg_rating End Desc," +
+                "Case When :sort = 'metacritic' Then metacritic_score End Desc," +
                 "Case When :sort = 'new' Then release_date End Desc," +
                 "Case When :sort = 'old' Then release_date End Asc," +
                 "Case When :sort = 'later' Then release_date End Desc," +
@@ -24,6 +25,7 @@ interface GameDao {
     @Query(
         "Select * From games Where page <= :page And tag = :tag Order By " +
                 "Case When :sort = 'popularity' Then rawg_rating End Desc," +
+                "Case When :sort = 'metacritic' Then metacritic_score End Desc," +
                 "Case When :sort = 'new' Then release_date End Desc," +
                 "Case When :sort = 'old' Then release_date End Asc," +
                 "Case When :sort = 'later' Then release_date End Desc," +

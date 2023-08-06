@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.databinding.CellNameUrlBinding
 import com.mrntlu.projectconsumer.models.main.anime.AnimeNameURL
 import com.mrntlu.projectconsumer.utils.openInBrowser
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
 class NameUrlAdapter(
     private val nameUrlList: List<AnimeNameURL>,
@@ -25,6 +26,8 @@ class NameUrlAdapter(
             nameTV.paintFlags = nameTV.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
             nameTV.text = nameUrl.name
+
+            bulletTV.setVisibilityByCondition(itemCount <= 1 || position == itemCount.minus(1))
 
             root.setOnClickListener {
                 if (URLUtil.isValidUrl(nameUrl.url))

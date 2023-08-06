@@ -15,7 +15,14 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.adapters.GamePlatformAdapter
+import com.mrntlu.projectconsumer.adapters.GameRelationsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.NameUrlAdapter
 import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
@@ -25,11 +32,16 @@ import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.interfaces.UserListModel
 import com.mrntlu.projectconsumer.interfaces.toGamePlayList
+import com.mrntlu.projectconsumer.models.common.BackendRequestMapper
+import com.mrntlu.projectconsumer.models.common.GamePlatformUI
+import com.mrntlu.projectconsumer.models.main.anime.AnimeNameURL
 import com.mrntlu.projectconsumer.models.main.game.GameDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.GamePlatformUIList
+import com.mrntlu.projectconsumer.utils.Constants.GameStoreList
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
@@ -52,13 +64,10 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
     private var storeAdapter: NameUrlAdapter? = null
     private var genreAdapter: GenreAdapter? = null
+    private var relationAdapter: GameRelationsAdapter? = null
+    private var platformAdapter: GamePlatformAdapter? = null
 
     private var gameDetails: GameDetails? = null
-
-    //TODO Stores with NamedURL
-    //TODO developers & publishers combined string and show with textview
-    //TODO Platforms, string list and onclick open discovery(?)
-    //TODO RelatedGames, on click open with rawgID
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
@@ -268,6 +277,87 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.genreDivider.setGone()
             binding.detailsGenreRV.setGone()
         }
+
+        val developersStr: String = if (gameDetails?.developers.isNullOrEmpty())
+            getString(R.string.unknown)
+        else
+            gameDetails!!.developers.joinToString(separator = getString(R.string.bullet_point))
+
+        binding.detailsDevelopersTV.text = developersStr
+
+        val publishersStr: String = if (gameDetails?.publishers.isNullOrEmpty())
+            getString(R.string.unknown)
+        else
+            gameDetails!!.publishers.joinToString(separator = getString(R.string.bullet_point))
+
+        binding.detailsPublishersTV.text = publishersStr
+
+        val gameStoreList = gameDetails?.stores?.map { gameStore ->
+            AnimeNameURL(
+                GameStoreList.firstOrNull { it.second == gameStore.storeId }?.first ?: getString(R.string.unknown),
+                gameStore.url
+            )
+        }
+
+        if (!gameStoreList.isNullOrEmpty()) {
+            binding.detailsStoreRV.apply {
+                val flexboxLayout = FlexboxLayoutManager(context)
+                flexboxLayout.apply {
+                    flexDirection = FlexDirection.ROW
+                    justifyContent = JustifyContent.FLEX_START
+                    alignItems = AlignItems.FLEX_START
+                    flexWrap = FlexWrap.WRAP
+                }
+                layoutManager = flexboxLayout
+
+                storeAdapter = NameUrlAdapter(gameStoreList)
+                adapter = storeAdapter
+            }
+        } else {
+            binding.detailsStoreTV.setGone()
+            binding.detailsStoreRV.setGone()
+        }
+
+        if (!gameDetails?.relatedGames.isNullOrEmpty()) {
+            binding.detailsRelationRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                relationAdapter = GameRelationsAdapter(
+                    gameDetails!!.relatedGames,
+                    !sharedViewModel.isLightTheme()
+                ) { rawgId ->
+                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentSelf(rawgId.toString())
+                    navController.navigate(navWithAction)
+                }
+                adapter = relationAdapter
+            }
+        } else {
+            binding.detailsRelationTV.setGone()
+            binding.detailsRelationRV.setGone()
+        }
+
+        val platformUIList = gameDetails?.platforms?.map { platform ->
+            GamePlatformUIList.firstOrNull {
+                it.requestMapper.name == platform
+            } ?: GamePlatformUI(
+                BackendRequestMapper(platform, platform),
+                R.drawable.game,
+            )
+        }
+
+        if (!platformUIList.isNullOrEmpty()) {
+            binding.detailsPlatformRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                platformAdapter = GamePlatformAdapter(platformUIList)
+                adapter = platformAdapter
+            }
+        } else {
+            binding.detailsPlatformTV.setGone()
+            binding.detailsPlatformRV.setGone()
+        }
     }
 
     override fun onDestroyView() {
@@ -278,6 +368,8 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
         storeAdapter = null
         genreAdapter = null
+        relationAdapter = null
+        platformAdapter = null
 
         super.onDestroyView()
     }

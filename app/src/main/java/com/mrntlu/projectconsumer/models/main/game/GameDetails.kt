@@ -49,7 +49,7 @@ data class GameDetails(
     val ageRating: String?,
 
     @SerializedName("related_games")
-    val relatedGames: List<GameRelation>,
+    val relatedGames: List<GameDetailsRelation>,
 
     @SerializedName("game_list")
     override var watchList: GamePlayList?,

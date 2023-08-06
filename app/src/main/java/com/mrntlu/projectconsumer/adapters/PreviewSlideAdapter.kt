@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -23,8 +22,8 @@ import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
 import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
-import com.mrntlu.projectconsumer.utils.setCornerRadius
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -129,10 +128,15 @@ class PreviewSlideAdapter<T: ContentModel>(
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
         override fun bind(item: T, position: Int, interaction: Interaction<T>) {
             binding.apply {
+                val radiusInPx = root.context.dpToPxFloat(8f)
+
                 previewComposeView.apply {
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                     setContent {
-                        LoadingShimmer(isDarkTheme = false, roundedCornerSize = 6.dp) {
+                        LoadingShimmer(
+                            aspectRatio = if (isRatioDifferent) Constants.GAME_RATIO else Constants.DEFAULT_RATIO,
+                            isDarkTheme = false,
+                        ) {
                             fillMaxHeight()
                         }
                     }
@@ -140,13 +144,14 @@ class PreviewSlideAdapter<T: ContentModel>(
 
                 previewCard.setGone()
                 previewComposeView.setVisible()
-                previewGameTitleLayout.setVisibilityByCondition(!isRatioDifferent)
+                previewGameCV.setVisibilityByCondition(!isRatioDifferent)
 
                 (previewIV.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
                 (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
                 (previewComposeView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
 
-                previewGameTitleLayout.setCornerRadius(bottomRight = 24f, bottomLeft = 24f)
+                if (isRatioDifferent)
+                    previewGameCV.radius = radiusInPx
 
                 previewIV.scaleType = if (isRatioDifferent)
                     ImageView.ScaleType.CENTER_CROP
@@ -155,12 +160,13 @@ class PreviewSlideAdapter<T: ContentModel>(
 
                 previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
                     if (isRatioDifferent)
-                        transform(CenterCrop(), RoundedCorners(18))
+                        transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
                     else
-                        transform(RoundedCorners(18))
+                        transform(RoundedCorners(radiusInPx.toInt()))
                 }
 
                 previewTV.text = item.title
+                previewGameTitleTV.text = item.title
 
                 root.setOnClickListener {
                     interaction.onItemSelected(item, position)

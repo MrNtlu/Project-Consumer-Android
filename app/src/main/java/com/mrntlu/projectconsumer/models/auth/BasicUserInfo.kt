@@ -12,6 +12,9 @@ data class BasicUserInfo(
     @SerializedName("is_premium")
     val isPremium: Boolean,
 
+    @SerializedName("membership_type")
+    val membershipType: Int,
+
     @SerializedName("oauth_type")
     val oauthType: Int?,
 

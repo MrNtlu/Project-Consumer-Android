@@ -180,7 +180,7 @@ class ConsumeLaterAdapter(
 
                     previewCard.setGone()
                     previewComposeView.setVisible()
-                    previewGameTitleLayout.setGone()
+                    previewGameCV.setGone()
 
                     previewIV.scaleType = if (item.contentType == "game")
                         ImageView.ScaleType.CENTER_CROP

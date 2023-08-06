@@ -6,6 +6,9 @@ data class UserInfo(
     @SerializedName("is_premium")
     val isPremium: Boolean,
 
+    @SerializedName("membership_type")
+    val membershipType: Int,
+
     @SerializedName("anime_count")
     val animeCount: Int,
 

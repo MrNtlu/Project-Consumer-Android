@@ -7,6 +7,7 @@ import com.mrntlu.projectconsumer.models.main.game.Game
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.viewmodels.main.game.GamePreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,6 +18,9 @@ class GameFragment : BasePreviewFragment<Game>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.upcomingPreviewRV.layoutParams.height = view.context.dpToPx(150f)
+        binding.topRatedPreviewRV.layoutParams.height = view.context.dpToPx(150f)
 
         setListeners()
         setShowcaseRecyclerView(

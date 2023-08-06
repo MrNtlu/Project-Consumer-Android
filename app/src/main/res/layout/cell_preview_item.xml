@@ -8,6 +8,33 @@
     android:layout_centerHorizontal="true"
     android:layout_margin="4dp">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/previewGameCV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:alpha="0.85"
+        android:outlineProvider="none"
+        android:visibility="gone"
+        app:cardBackgroundColor="?attr/toolbarBackgroundColor"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/previewIV"
+        app:layout_constraintEnd_toEndOf="@+id/previewIV"
+        app:layout_constraintStart_toStartOf="@+id/previewIV"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/previewGameTitleTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="6dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="TextView" />
+    </androidx.cardview.widget.CardView>
+
     <ImageView
         android:id="@+id/previewIV"
         android:layout_width="0dp"
@@ -20,29 +47,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-    <LinearLayout
-        android:id="@+id/previewGameTitleLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:background="@drawable/bottom_rounded_corners"
-        android:elevation="6dp"
-        app:layout_constraintBottom_toBottomOf="@+id/previewIV"
-        app:layout_constraintEnd_toEndOf="@+id/previewIV"
-        app:layout_constraintStart_toStartOf="@+id/previewIV">
-
-        <TextView
-            android:id="@+id/previewGameTitleTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="6dp"
-            android:textColor="?attr/mainTextColor"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            tools:text="TextView" />
-    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/previewCard"

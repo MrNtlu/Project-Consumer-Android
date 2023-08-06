@@ -54,19 +54,23 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
             val linearLayoutManager = ProminentLayoutManager(context)
             layoutManager = linearLayoutManager
 
-            showCaseAdapter = PreviewSlideAdapter(object: Interaction<T> {
-                override fun onItemSelected(item: T, position: Int) {
-                    onItemClicked(item.id)
-                }
+            showCaseAdapter = PreviewSlideAdapter(
+                object: Interaction<T> {
+                    override fun onItemSelected(item: T, position: Int) {
+                        onItemClicked(item.id)
+                    }
 
-                override fun onErrorRefreshPressed() {
-                    onRefreshPressed()
-                }
+                    override fun onErrorRefreshPressed() {
+                        onRefreshPressed()
+                    }
 
-                override fun onCancelPressed() {}
+                    override fun onCancelPressed() {}
 
-                override fun onExhaustButtonPressed() {}
-            }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
+                    override fun onExhaustButtonPressed() {}
+                },
+                isRatioDifferent = isRatioDifferent,
+                isDarkTheme = !sharedViewModel.isLightTheme(),
+            )
             adapter = showCaseAdapter
 
             val spacing = resources.getDimensionPixelSize(R.dimen.carousel_spacing)
@@ -134,7 +138,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                 }
 
                 override fun onExhaustButtonPressed() {}
-            }, isDarkTheme = !sharedViewModel.isLightTheme())
+            }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
             adapter = topRatedAdapter
         }
     }
@@ -160,6 +164,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     }
 
     override fun onDestroyView() {
+        viewPagerSharedViewModel.scrollYPosition.removeObservers(this)
         sharedViewModel.networkStatus.removeObservers(this)
         binding.previewScrollView.setOnScrollChangeListener(null)
         snapHelper = null

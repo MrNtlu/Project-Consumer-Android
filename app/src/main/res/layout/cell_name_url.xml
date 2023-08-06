@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/nameTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="?attr/mainTextColor"
+        tools:text="Action"
+        android:textSize="14sp"
         android:textStyle="bold"
-        tools:text="Text"/>
+        android:textColor="?attr/mainTextColor"
+        android:paddingVertical="4dp"/>
+
+    <TextView
+        android:id="@+id/bulletTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bullet_point"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="6dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="?attr/mainTextColor"/>
 </LinearLayout>

@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.adapters.HomeFragmentFactory
 import com.mrntlu.projectconsumer.adapters.HomePagerAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentHomeBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
@@ -44,9 +45,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
 
     private fun setUI() {
         binding.homeViewPager.apply {
+            val fragmentFactory = HomeFragmentFactory()
+
             viewPagerAdapter = HomePagerAdapter(
                 this@HomeFragment.childFragmentManager,
-                viewLifecycleOwner.lifecycle
+                viewLifecycleOwner.lifecycle,
+                fragmentFactory,
             )
             adapter = viewPagerAdapter
             isUserInputEnabled = false

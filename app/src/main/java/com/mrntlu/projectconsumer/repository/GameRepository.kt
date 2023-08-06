@@ -22,7 +22,7 @@ class GameRepository @Inject constructor(
         private const val DiscoverTag = "discover:game"
     }
 
-    //TODO Search & Top or Popular
+    //TODO Search
 
     fun fetchGames(page: Int, sort: String, tag: String, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
@@ -35,7 +35,7 @@ class GameRepository @Inject constructor(
         fetchNetwork = {
             when(tag) {
                 FetchType.UPCOMING.tag -> gameApiService.getUpcomingGames(page, sort)
-//                FetchType.TOP.tag -> gameApiService.getTopRatedGames(page) TODO FIX THIS
+                FetchType.POPULAR.tag -> gameApiService.getPopularGames(page)
                 else -> gameApiService.getGamesBySortFilter(page, sort, null, null, null)
             }
         },

@@ -11,6 +11,7 @@ import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
 import com.mrntlu.projectconsumer.interfaces.LoadingViewHolderBind
 import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.GAME_RATIO
 
 class LoadingPreviewViewHolder(private val binding: CellLoadingBinding): RecyclerView.ViewHolder(binding.root), LoadingViewHolderBind {
     override fun bind(aspectRatio: Float?, isDarkTheme: Boolean) {
@@ -26,7 +27,7 @@ class LoadingPreviewViewHolder(private val binding: CellLoadingBinding): Recycle
                 LoadingShimmer(
                     isDarkTheme = isDarkTheme,
                     aspectRatio = aspectRatio ?: Constants.DEFAULT_RATIO,
-                    roundedCornerSize = 6.dp
+                    roundedCornerSize = if (aspectRatio == GAME_RATIO) 12.dp else 8.dp,
                 ) {
                     fillMaxHeight()
                     padding(horizontal = 3.dp)
