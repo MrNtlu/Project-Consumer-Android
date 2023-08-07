@@ -52,7 +52,15 @@
         android:id="@+id/navigation_settings"
         android:name="com.mrntlu.projectconsumer.ui.common.SettingsFragment"
         android:label="@string/settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_navigation_settings_to_policyFragment"
+            app:destination="@id/policyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <action
         android:id="@+id/action_global_settingsFragment"
@@ -151,7 +159,15 @@
         android:id="@+id/registerFragment"
         android:name="com.mrntlu.projectconsumer.ui.auth.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_policyFragment"
+            app:destination="@id/policyFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_home"
@@ -566,5 +582,15 @@
         app:launchSingleTop="true"
         app:popEnterAnim="@anim/slide_in_left"
         app:popExitAnim="@anim/slide_out_right" />
+    <fragment
+        android:id="@+id/policyFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.PolicyFragment"
+        android:label="fragment_policy"
+        tools:layout="@layout/fragment_policy" >
+        <argument
+            android:name="isPrivacy"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
 
 </navigation>

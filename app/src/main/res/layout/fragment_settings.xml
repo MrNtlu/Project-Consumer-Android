@@ -60,10 +60,12 @@
                     layout="@layout/settings_click_tile" />
 
                 <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/accountFirstTileDivider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp" />
 
                 <LinearLayout
+                    android:id="@+id/accountSwitchTile"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
                     android:orientation="horizontal"
@@ -90,6 +92,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/accountSwitchTileDivider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp" />
 
@@ -165,6 +168,7 @@
                     layout="@layout/settings_click_tile" />
 
                 <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/applicationFirstTileDivider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp" />
 

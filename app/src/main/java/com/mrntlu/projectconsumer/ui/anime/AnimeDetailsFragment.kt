@@ -134,7 +134,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                                 activity?.let {
                                     val listBottomSheet = UserListBottomSheet(
                                         watchList,
-                                        Constants.ContentType.MOVIE,
+                                        Constants.ContentType.ANIME,
                                         if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
                                         animeDetails!!.id,
                                         animeDetails!!.malID.toString(),

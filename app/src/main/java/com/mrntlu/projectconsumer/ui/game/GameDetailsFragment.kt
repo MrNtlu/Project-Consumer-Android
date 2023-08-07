@@ -106,7 +106,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
                 toggleCollapsingLayoutScroll(detailsCollapsingToolbar, response !is NetworkResponse.Loading)
-//                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
+                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
@@ -137,7 +137,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                                 activity?.let {
                                     val listBottomSheet = UserListBottomSheet(
                                         watchList,
-                                        Constants.ContentType.MOVIE,
+                                        Constants.ContentType.GAME,
                                         if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
                                         gameDetails!!.id,
                                         gameDetails!!.rawgID.toString(),

@@ -107,6 +107,10 @@
     <string name="characters">Characters</string>
     <string name="unknown">Unknown</string>
     <string name="demographics">Demographics</string>
+    <string name="developers">Developers</string>
+    <string name="publishers">Publishers</string>
+    <string name="stores">Stores</string>
+    <string name="game_series">Game Series</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>
@@ -137,6 +141,8 @@
     <string name="notification_permission_info">Enable notifications to receive personalized recommendations, updates, and news about movies, tv shows, games and anime.</string>
     <string name="legend_content_info">Legend content refers to movies, animes, games and TV series that users have watched multiple times.</string>
     <string name="move_consume_later_info">You\'ll move this content to your list and mark it as finished.</string>
+    <string name="read_terms_conditions"><![CDATA[Please read and accept the Terms & Conditions.]]></string>
+    <string name="read_privacy_policy"><![CDATA[Please read and accept the Privacy & Policy.]]></string>
     <string name="do_you_want_to_delete">Do you want to delete?</string>
     <string name="do_you_want_to_log_out_">Do you want to log out?</string>
     <string name="fix_errors">Please fix the errors.</string>
@@ -149,10 +155,6 @@
     <string name="prev_week">Prev Week</string>
     <string name="bullet_point">•</string>
     <string name="not_rated_yet">Not rated yet</string>
-    <string name="developers">Developers</string>
-    <string name="publishers">Publishers</string>
-    <string name="stores">Stores</string>
-    <string name="game_series">Game Series</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.1" />
+            app:layout_constraintGuide_percent="0.075" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/profileImageRV"
@@ -155,7 +155,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.3" />
+            app:layout_constraintGuide_percent="0.225" />
 
         <Button
             android:id="@+id/registerButton"
@@ -168,7 +168,7 @@
             android:textColor="@color/white"
             app:layout_constraintEnd_toStartOf="@+id/guideline12"
             app:layout_constraintStart_toStartOf="@+id/guideline11"
-            app:layout_constraintTop_toBottomOf="@+id/rePasswordTextLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/termsCheckBox" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -200,5 +200,53 @@
                 android:textColor="?attr/descriptionTitleTextColor"
                 app:rippleColor="@android:color/transparent" />
         </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/privacyCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@+id/guideline11"
+            app:layout_constraintTop_toBottomOf="@+id/rePasswordTextLayout" />
+
+        <Button
+            android:id="@+id/privacyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:text="@string/privacy_and_policy"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="12sp"
+            android:textAlignment="textStart"
+            android:padding="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/privacyCheckBox"
+            app:layout_constraintStart_toEndOf="@+id/privacyCheckBox"
+            app:layout_constraintTop_toTopOf="@+id/privacyCheckBox" />
+
+        <CheckBox
+            android:id="@+id/termsCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@+id/guideline11"
+            app:layout_constraintTop_toBottomOf="@+id/privacyCheckBox" />
+
+        <Button
+            android:id="@+id/termsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:text="@string/terms_and_conditions"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="12sp"
+            android:textAlignment="textStart"
+            android:padding="2dp"
+            app:layout_constraintBottom_toBottomOf="@+id/termsCheckBox"
+            app:layout_constraintStart_toEndOf="@+id/termsCheckBox"
+            app:layout_constraintTop_toTopOf="@+id/termsCheckBox" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

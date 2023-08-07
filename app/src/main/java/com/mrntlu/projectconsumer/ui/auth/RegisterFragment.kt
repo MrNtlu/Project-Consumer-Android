@@ -92,6 +92,14 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
             signInButton.setOnClickListener {
                 navController.popBackStack()
             }
+
+            privacyButton.setOnClickListener {
+                navController.navigate(RegisterFragmentDirections.actionRegisterFragmentToPolicyFragment())
+            }
+
+            termsButton.setOnClickListener {
+                navController.navigate(RegisterFragmentDirections.actionRegisterFragmentToPolicyFragment(false))
+            }
         }
     }
 
@@ -145,6 +153,12 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
                 return false
             } else if (password != null && passwordAgain != null && password != passwordAgain) {
                 passwordTextLayout.error = getString(R.string.passwords_dont_match)
+                return false
+            } else if (!privacyCheckBox.isChecked) {
+                context?.showErrorDialog(getString(R.string.read_privacy_policy))
+                return false
+            } else if (!termsCheckBox.isChecked) {
+                context?.showErrorDialog(getString(R.string.read_terms_conditions))
                 return false
             }
         }

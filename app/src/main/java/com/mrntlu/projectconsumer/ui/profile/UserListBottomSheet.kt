@@ -23,9 +23,13 @@ import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.interfaces.UserListModel
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.AnimeWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.GamePlayListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.TVWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateAnimeWatchListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateGamePlayListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateTVWatchListBody
 import com.mrntlu.projectconsumer.utils.Constants
@@ -286,7 +290,17 @@ class UserListBottomSheet(
 
                             if (userListModel == null) {
                                 when (contentType) {
-                                    Constants.ContentType.ANIME -> TODO()
+                                    Constants.ContentType.ANIME -> {
+                                        val animeListBody = AnimeWatchListBody(
+                                            contentId,
+                                            contentExternalId.toInt(),
+                                            watchedEpisodes,
+                                            timesFinished,
+                                            score,
+                                            status,
+                                        )
+                                        viewModel.createAnimeWatchList(animeListBody)
+                                    }
                                     Constants.ContentType.MOVIE -> {
                                         val watchListBody = MovieWatchListBody(
                                             contentId,
@@ -311,17 +325,36 @@ class UserListBottomSheet(
                                         viewModel.createTVWatchList(tvListBody)
                                     }
 
-                                    Constants.ContentType.GAME -> TODO()
+                                    Constants.ContentType.GAME -> {
+                                        val gameListBody = GamePlayListBody(
+                                            contentId,
+                                            contentExternalId.toInt(),
+                                            timesFinished,
+                                            watchedEpisodes,
+                                            score,
+                                            status,
+                                        )
+                                        viewModel.createGamePlayList(gameListBody)
+                                    }
                                 }
                             } else {
                                 when (contentType) {
-                                    Constants.ContentType.ANIME -> TODO()
+                                    Constants.ContentType.ANIME -> {
+                                        val updateAnimeWatchListBody = UpdateAnimeWatchListBody(
+                                            userListModel!!.id, userListModel!!.score != score,
+                                            if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
+                                            if (userListModel!!.mainAttribute != watchedEpisodes) watchedEpisodes else null,
+                                            if (userListModel!!.score != score) score else null,
+                                            if (userListModel!!.contentStatus != status) status else null,
+                                        )
+                                        viewModel.updateAnimeWatchList(updateAnimeWatchListBody)
+                                    }
                                     Constants.ContentType.MOVIE -> {
                                         val updateWatchListBody = UpdateMovieWatchListBody(
                                             userListModel!!.id, userListModel!!.score != score,
                                             if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
                                             if (userListModel!!.score != score) score else null,
-                                            if (userListModel!!.contentStatus != status) status else null
+                                            if (userListModel!!.contentStatus != status) status else null,
                                         )
                                         viewModel.updateMovieWatchList(updateWatchListBody)
                                     }
@@ -333,12 +366,21 @@ class UserListBottomSheet(
                                             if (userListModel!!.mainAttribute != watchedEpisodes) watchedEpisodes else null,
                                             if (userListModel!!.subAttribute != watchedSeasons) watchedSeasons else null,
                                             if (userListModel!!.score != score) score else null,
-                                            if (userListModel!!.contentStatus != status) status else null
+                                            if (userListModel!!.contentStatus != status) status else null,
                                         )
                                         viewModel.updateTVWatchList(updateWatchListBody)
                                     }
 
-                                    Constants.ContentType.GAME -> TODO()
+                                    Constants.ContentType.GAME -> {
+                                        val updateGamePlayListBody = UpdateGamePlayListBody(
+                                            userListModel!!.id, userListModel!!.score != score,
+                                            if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
+                                            if (userListModel!!.mainAttribute != watchedEpisodes) watchedEpisodes else null,
+                                            if (userListModel!!.score != score) score else null,
+                                            if (userListModel!!.contentStatus != status) status else null,
+                                        )
+                                        viewModel.updateGamePlayList(updateGamePlayListBody)
+                                    }
                                 }
                             }
                         } else
@@ -413,7 +455,7 @@ class UserListBottomSheet(
 
                 isValid
             }
-            Constants.ContentType.GAME -> TODO()
+            Constants.ContentType.GAME -> binding.layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.isNotEmptyOrBlank() == true
             else -> true
         }
     }
@@ -480,6 +522,14 @@ class UserListBottomSheet(
         viewModel.tvWatchList.observe(viewLifecycleOwner) { response ->
             handleUserListObserver(response)
         }
+
+        viewModel.animeWatchList.observe(viewLifecycleOwner) { response ->
+            handleUserListObserver(response)
+        }
+
+        viewModel.gamePlayList.observe(viewLifecycleOwner) { response ->
+            handleUserListObserver(response)
+        }
     }
 
     private fun <T: UserListModel> handleUserListObserver(response: NetworkResponse<DataResponse<T>>) {
@@ -503,6 +553,8 @@ class UserListBottomSheet(
         viewLifecycleOwner.apply {
             viewModel.movieWatchList.removeObservers(this)
             viewModel.tvWatchList.removeObservers(this)
+            viewModel.animeWatchList.removeObservers(this)
+            viewModel.gamePlayList.removeObservers(this)
         }
 
         if (bottomSheetState == BottomSheetState.SUCCESS)

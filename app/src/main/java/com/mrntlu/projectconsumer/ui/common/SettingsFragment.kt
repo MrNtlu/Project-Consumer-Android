@@ -18,8 +18,8 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
-import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
@@ -30,6 +30,8 @@ import javax.inject.Inject
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     @Inject lateinit var tokenManager: TokenManager
+
+    //TODO Add account information on top of account tile
 
     private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
         val locale = Locale("", it)
@@ -67,10 +69,16 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     }
 
     private fun setUI() {
-        //TODO If not logged in hide/show
         binding.apply {
             accountTitleTV.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
             accountSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
+
+            accountFirstClickTile.root.setGone()
+            accountFirstTileDivider.setGone()
+            accountSwitchTileDivider.setGone()
+            accountSwitchTile.setGone()
+            applicationFirstClickTile.root.setGone()
+            applicationFirstTileDivider.setGone()
 
             if (sharedViewModel.isLoggedIn()) {
                 accountSecondClickTile.settingsClickTileTV.text = getString(R.string.log_out)
@@ -91,8 +99,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             //Application settings
             themeSwitch.isChecked = !sharedViewModel.isLightTheme()
             themeSwitchTV.text = getString(if (sharedViewModel.isLightTheme()) R.string.light_theme else R.string.dark_theme)
-
-            applicationFirstClickTile.settingsClickTileTV.text = "Placeholder"
 
             settingsSpinnerTileTV.text = getString(R.string.change_country)
 
@@ -126,10 +132,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 themeSwitchTV.text = getString(if (isChecked) R.string.dark_theme else R.string.light_theme)
             }
 
-            applicationFirstClickTile.root.setOnClickListener {
-                accountTitleTV.setVisible()
-                accountSettingsCard.setVisible()
-            }
 
             settingsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -145,6 +147,14 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
+
+            privacyButton.setOnClickListener {
+                navController.navigate(SettingsFragmentDirections.actionNavigationSettingsToPolicyFragment())
+            }
+
+            termsButton.setOnClickListener {
+                navController.navigate(SettingsFragmentDirections.actionNavigationSettingsToPolicyFragment(false))
             }
         }
     }

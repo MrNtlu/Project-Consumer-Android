@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.di
 
 import android.content.Context
 import androidx.room.Room
+import com.mrntlu.projectconsumer.BuildConfig
 import com.mrntlu.projectconsumer.service.AuthAuthenticator
 import com.mrntlu.projectconsumer.service.AuthInterceptor
 import com.mrntlu.projectconsumer.service.TokenManager
@@ -87,7 +88,12 @@ class SingletonModule {
     @Provides
     fun provideRetrofitBuilder(): Retrofit.Builder =
         Retrofit.Builder()
-            .baseUrl(Constants.API_URL)
+            .baseUrl(
+                if (BuildConfig.DEBUG)
+                    Constants.TEST_API_URL
+                else
+                    Constants.API_URL
+            )
             .addConverterFactory(GsonConverterFactory.create())
 
     @Singleton

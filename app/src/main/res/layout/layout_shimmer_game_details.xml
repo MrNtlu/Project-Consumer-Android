@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:shimmer_auto_start="true"
+    app:shimmer_duration="2250">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/shimmerDetailsAppBarLayout"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/shimmerDetailsNestedSV"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="-20dp"
+            android:background="@drawable/top_rounded_corners"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsAppBarLayout">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.04" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.96" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/shimmerIntLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_star_48"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/shimmer_color" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/shimmer_color"
+                    android:textColor="?attr/mainTextColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                    app:layout_constraintStart_toEndOf="@+id/imageView2"
+                    app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/shimmer_color"
+                    android:textColor="?attr/mainTextColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/imageView2" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:background="@color/shimmer_color"
+                    android:textColor="?attr/mainTextColor"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                    app:layout_constraintEnd_toStartOf="@+id/textView"
+                    app:layout_constraintTop_toTopOf="@+id/imageView2" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/shimmerDetailsTitleTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/shimmer_color"
+                android:textSize="22sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerIntLayout" />
+
+            <TextView
+                android:id="@+id/shimmerDetailsOriginalTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/shimmerDetailsTitleTV"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsTitleTV" />
+
+            <TextView
+                android:id="@+id/detailsReleaseTV"
+                android:layout_width="125dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsOriginalTV" />
+
+            <TextView
+                android:id="@+id/detailsStatusTV"
+                android:layout_width="75dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsOriginalTV" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/materialDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsReleaseTV" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/materialDivider5"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsGenreRV" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/materialDivider5" />
+
+            <TextView
+                android:id="@+id/shimmerDetailsDescriptionTV"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+            <View
+                android:id="@+id/shimmerDetailsGenreRV"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/shimmer_color"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
+
+            <TextView
+                android:id="@+id/shimmerDetailsActorsTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@color/shimmer_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsDescriptionTV" />
+
+            <View
+                android:id="@+id/shimmerDetailsActorsRV"
+                android:layout_width="0dp"
+                android:layout_height="130dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/shimmer_color"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsActorsTV" />
+
+            <TextView
+                android:id="@+id/shimmerDetailsProductionTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@color/shimmer_color"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsActorsRV" />
+
+            <View
+                android:id="@+id/shimmerDetailsProductionRV"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/shimmer_color"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsProductionTV" />
+
+            <TextView
+                android:id="@+id/shimmerDetailsAvailableTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@color/shimmer_color"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsProductionRV" />
+
+            <View
+                android:id="@+id/detailsBuyRV"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/shimmer_color"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsAvailableTV" />
+
+            <TextView
+                android:id="@+id/shimmerDetailsStoreTV"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:background="@color/shimmer_color"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/detailsBuyRV" />
+
+            <View
+                android:id="@+id/detailsStoreRV"
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/shimmer_color"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsStoreTV" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.facebook.shimmer.ShimmerFrameLayout>

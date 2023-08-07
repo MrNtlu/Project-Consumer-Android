@@ -16,6 +16,8 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 
 class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
@@ -129,6 +131,8 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
     }
 
     private fun setXMLGridLayout() {
+        binding.discoverSearchView.setVisibilityByCondition(contentType == Constants.ContentType.GAME)
+
         val cellHeight = 100f
         val padding = 3
 

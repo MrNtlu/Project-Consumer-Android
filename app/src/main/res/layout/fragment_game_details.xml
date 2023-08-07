@@ -361,6 +361,20 @@
     </androidx.core.widget.NestedScrollView>
 
     <FrameLayout
+        android:id="@+id/loadingLayout"
+        android:elevation="9dp"
+        android:background="?attr/mainBackgroundColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:visibility="gone">
+        <include
+            layout="@layout/layout_shimmer_game_details"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/errorLayout"
         android:elevation="9dp"
         android:background="?attr/mainBackgroundColor"
