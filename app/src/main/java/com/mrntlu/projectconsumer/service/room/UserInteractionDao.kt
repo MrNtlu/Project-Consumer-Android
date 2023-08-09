@@ -18,8 +18,8 @@ interface UserInteractionDao {
         "Select * From consume_laters Where page = :page And tag = :tag Order By " +
                 "Case When :sort = 'new' Then created_at End Desc," +
                 "Case When :sort = 'old' Then created_at End Asc," +
-                "Case When :sort = 'alphabetical' Then title_original End Desc," +
-                "Case When :sort = 'unalphabetical' Then title_original End Asc"
+                "Case When :sort = 'alphabetical' Then title_original End Asc," +
+                "Case When :sort = 'unalphabetical' Then title_original End Desc"
     )
     fun getConsumeLatersByTag(tag: String, page: Int, sort: String): List<ConsumeLaterEntity>?
 
@@ -27,8 +27,8 @@ interface UserInteractionDao {
         "Select * From consume_laters Where page <= :page And tag = :tag Order By " +
                 "Case When :sort = 'new' Then created_at End Desc," +
                 "Case When :sort = 'old' Then created_at End Asc," +
-                "Case When :sort = 'alphabetical' Then title_original End Desc," +
-                "Case When :sort = 'unalphabetical' Then title_original End Asc"
+                "Case When :sort = 'alphabetical' Then title_original End Asc," +
+                "Case When :sort = 'unalphabetical' Then title_original End Desc"
     )
     fun getAllConsumeLatersByTag(tag: String, page: Int, sort: String): List<ConsumeLaterEntity>
 

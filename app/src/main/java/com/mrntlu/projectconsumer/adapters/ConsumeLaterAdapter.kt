@@ -118,7 +118,9 @@ class ConsumeLaterAdapter(
 
             arrayList.addAll(newList)
             notifyDataSetChanged()
-        } else
+        } else if (arrayList.isEmpty() && newList.isEmpty())
+            notifyDataSetChanged()
+         else
             handleDiffUtil(newList)
     }
 

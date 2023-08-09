@@ -138,7 +138,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                                         if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
                                         animeDetails!!.id,
                                         animeDetails!!.malID.toString(),
-                                        null, null,
+                                        null, animeDetails?.episodes,
                                         onBottomSheetClosedCallback,
                                     )
                                     listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
