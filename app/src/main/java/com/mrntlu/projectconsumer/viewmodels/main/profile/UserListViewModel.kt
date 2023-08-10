@@ -48,10 +48,14 @@ class UserListViewModel @Inject constructor(
     fun setTotalYPosition(dy: Int) {
         val newTotal = this.totalYScroll.value?.plus(dy)
         this.totalYScroll.value = if (newTotal != null) {
-            if (newTotal > 500) 501
+            if (newTotal > 200) 201
             else if (newTotal < 0) 0
             else newTotal
         } else null
+    }
+
+    fun resetTotalYPosition() {
+        this.totalYScroll.value = 0
     }
 
     // Variable for detecting orientation change
@@ -253,6 +257,7 @@ class UserListViewModel @Inject constructor(
             contentType = newContentType
             savedStateHandle[USER_LIST_CONTENT_TYPE_KEY] = contentType
 
+            setScrollPosition(0)
             resetSearch()
         }
     }

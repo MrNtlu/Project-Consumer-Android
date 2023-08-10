@@ -3,11 +3,13 @@ package com.mrntlu.projectconsumer.ui.discover
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.core.view.GestureDetectorCompat
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.adapters.GridAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiscoverBinding
@@ -17,16 +19,34 @@ import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
-import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 
 class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
     private companion object {
         private const val KEY_VALUE = "content_type"
+
+        const val SWIPE_THRESHOLD = 100
     }
 
+    private var gestureDetector: GestureDetectorCompat? = null
     private var gridAdapter: GridAdapter? = null
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
+
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            if (e2.x - e1.x > SWIPE_THRESHOLD) {
+                selectTab(true)
+            } else if (e1.x - e2.x > SWIPE_THRESHOLD) {
+                selectTab(false)
+            }
+            return true
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,8 +70,24 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
         setXMLGridLayout()
     }
 
+    private fun selectTab(isRight: Boolean) {
+        binding.discoverTabLayout.apply {
+            val newSelectedIndex: Int = if (selectedTabPosition == 0 && isRight)
+                tabCount.minus(1)
+            else if (selectedTabPosition == tabCount.minus(1) && !isRight)
+                0
+            else
+                selectedTabPosition.plus(if (isRight) -1 else 1)
+
+            val tabToSelect = getTabAt(newSelectedIndex)
+            tabToSelect?.select()
+        }
+    }
+
     private fun setUI() {
         binding.apply {
+            gestureDetector = GestureDetectorCompat(this.root.context, GestureListener())
+
             discoverTabLayout.apply {
                 for (tab in Constants.TabList) {
                     addTab(
@@ -66,6 +102,11 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         binding.apply {
+            discoverConstraintLayout.setOnTouchListener { _, event ->
+                gestureDetector?.onTouchEvent(event)
+                true
+            }
+
             discoverTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     when(tab?.position) {
@@ -184,6 +225,7 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
     }
 
     override fun onDestroyView() {
+        gestureDetector = null
         gridAdapter = null
         super.onDestroyView()
     }

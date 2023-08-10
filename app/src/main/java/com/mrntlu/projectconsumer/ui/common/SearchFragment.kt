@@ -107,7 +107,9 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                             if (popupMenu == null) {
                                 val menuItemView = requireActivity().findViewById<View>(R.id.filterMenu)
                                 popupMenu = PopupMenu(requireContext(), menuItemView)
-                                popupMenu!!.menuInflater.inflate(R.menu.filter_consume_later_menu, popupMenu!!.menu)
+                                popupMenu!!.menuInflater.inflate(R.menu.sort_menu, popupMenu!!.menu)
+//                                popupMenu!!.menuInflater.inflate(R.menu.filter_consume_later_menu, popupMenu!!.menu)
+                                // TODO After game search implementation, change R.id.firstSortMenu to firstFilterMenu
                                 popupMenu!!.setForceShowIcon(true)
                             }
 
@@ -128,26 +130,26 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
                                 it.setOnMenuItemClickListener { item ->
                                     val newFilterType = when (item.itemId) {
-                                        R.id.firstFilterMenu -> {
+                                        R.id.firstSortMenu -> {
                                             setPopupMenuItemVisibility(it, 0)
 
                                             Constants.ContentType.values()[0]
                                         }
-                                        R.id.secondFilterMenu -> {
+                                        R.id.secondSortMenu -> {
                                             setPopupMenuItemVisibility(it, 1)
 
                                             Constants.ContentType.values()[1]
                                         }
-                                        R.id.thirdFilterMenu -> {
+                                        R.id.thirdSortMenu -> {
                                             setPopupMenuItemVisibility(it, 2)
 
                                             Constants.ContentType.values()[2]
                                         }
-                                        R.id.forthFilterMenu -> {
-                                            setPopupMenuItemVisibility(it, 3)
-
-                                            Constants.ContentType.values()[3]
-                                        }
+//                                        R.id.forthFilterMenu -> {
+//                                            setPopupMenuItemVisibility(it, 3)
+//
+//                                            Constants.ContentType.values()[3]
+//                                        }
                                         else -> { Constants.ContentType.values()[0] }
                                     }
 

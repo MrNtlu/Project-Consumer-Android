@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val prefs: SharedPreferences by lazy {
-        getSharedPreferences(Constants.THEME_PREF, 0)
+        getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE)
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -420,10 +420,12 @@ class MainActivity : AppCompatActivity() {
             if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 //Granted
             } else if (shouldShowRequestPermissionRationale(POST_NOTIFICATIONS)) {
-
-                //TODO If no, save via pref and don't show again!
-                showNotificationInfoDialog(getString(R.string.notification_permission_info)) {
-                    requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+                if (prefs.getBoolean(Constants.NOTIFICATION_PREF, true)) {
+                    showNotificationInfoDialog(getString(R.string.notification_permission_info), onPositive = {
+                        requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+                    }) {
+                        setNotificationPref()
+                    }
                 }
             } else {
                 requestPermissionLauncher.launch(POST_NOTIFICATIONS)
@@ -452,6 +454,12 @@ class MainActivity : AppCompatActivity() {
     private fun setThemePref(value: Int){
         val editor = prefs.edit()
         editor.putInt(Constants.THEME_PREF, value)
+        editor.apply()
+    }
+
+    private fun setNotificationPref(){
+        val editor = prefs.edit()
+        editor.putBoolean(Constants.NOTIFICATION_PREF, false)
         editor.apply()
     }
 

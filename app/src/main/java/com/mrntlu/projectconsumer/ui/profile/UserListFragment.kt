@@ -1,10 +1,12 @@
 package com.mrntlu.projectconsumer.ui.profile
 
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +47,7 @@ import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class UserListFragment: BaseFragment<FragmentUserListBinding>() {
@@ -57,8 +60,36 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private var popupMenu: PopupMenu? = null
     private var userListAdapter: UserListAdapter? = null
+    private var gestureDetector: GestureDetector? = null
 
     private var userListDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
+
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+        private val swipeThreshold = 100
+        private val swipeVelocityThreshold = 100
+
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            val diffX = e2.x - e1.x
+            val diffY = e2.y - e1.y
+
+            if (abs(diffX) > abs(diffY)) {
+                if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
+                    if (diffX > 0) {
+                        selectTab(true)
+                    } else {
+                        selectTab(false)
+                    }
+                    return true
+                }
+            }
+            return false
+        }
+    }
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
@@ -322,6 +353,19 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     }
                 }
             })
+
+            gestureDetector = GestureDetector(this.context, GestureListener())
+
+            addOnItemTouchListener(object: RecyclerView.OnItemTouchListener {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    gestureDetector?.onTouchEvent(e)
+                    return false
+                }
+
+                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+
+                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+            })
         }
     }
 
@@ -329,11 +373,11 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         val layoutParams = binding.userListTabLayout.layoutParams as ViewGroup.MarginLayoutParams
 
         viewModel.totalYScroll.observe(viewLifecycleOwner) { totalYScroll ->
-            if (totalYScroll in 0..300) {
+            if (totalYScroll in 0..binding.userListTabLayout.height.times(2)) {
                 layoutParams.topMargin = -totalYScroll / 2
                 binding.userListTabLayout.layoutParams = layoutParams
             } else {
-                layoutParams.topMargin = -150
+                layoutParams.topMargin = -binding.userListTabLayout.height
                 binding.userListTabLayout.layoutParams = layoutParams
             }
         }
@@ -343,11 +387,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 is NetworkResponse.Failure -> userListAdapter?.setErrorView(response.errorMessage)
                 NetworkResponse.Loading -> userListAdapter?.setLoadingView()
                 is NetworkResponse.Success -> {
-                    viewModel.setScrollPosition(0)
-                    binding.userListRV.scrollToPosition(0)
-
-                    layoutParams.topMargin = 0
-                    binding.userListTabLayout.layoutParams = layoutParams
+                    viewModel.resetTotalYPosition()
 
                     userListAdapter?.setData(response.data.data)
 
@@ -471,6 +511,28 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         hideKeyboard()
     }
 
+    private fun selectTab(isRight: Boolean) {
+        binding.userListTabLayout.apply {
+            val newSelectedIndex: Int = if (selectedTabPosition == 0 && isRight)
+                tabCount.minus(1)
+            else if (selectedTabPosition == tabCount.minus(1) && !isRight)
+                0
+            else
+                selectedTabPosition.plus(if (isRight) -1 else 1)
+
+            val tabToSelect = getTabAt(newSelectedIndex)
+            tabToSelect?.select()
+
+            resetRVPositionAndMargin()
+        }
+    }
+
+    private fun resetRVPositionAndMargin() {
+        viewModel.resetTotalYPosition()
+        viewModel.setScrollPosition(0)
+        binding.userListRV.scrollToPosition(0)
+    }
+
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
             viewModel.userList.removeObservers(this)
@@ -481,6 +543,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         orientationEventListener = null
 
         popupMenu = null
+        gestureDetector = null
         userListAdapter = null
         super.onDestroyView()
     }

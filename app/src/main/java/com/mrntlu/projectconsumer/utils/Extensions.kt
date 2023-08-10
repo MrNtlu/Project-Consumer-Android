@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -119,7 +120,7 @@ fun Context.showConfirmationDialog(message: String, onPositive: () -> Unit,) {
         .show()
 }
 
-fun Context.showNotificationInfoDialog(message: String, onPositive: () -> Unit) {
+fun Context.showNotificationInfoDialog(message: String, onPositive: () -> Unit, onNegative: () -> Unit) {
     MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
         .setTitle(getString(R.string.info))
         .setMessage(message)
@@ -128,6 +129,7 @@ fun Context.showNotificationInfoDialog(message: String, onPositive: () -> Unit) 
             dialog.dismiss()
         }
         .setNegativeButton(getString(R.string.no_thanks_)) { dialog, _ ->
+            onNegative()
             dialog.dismiss()
         }
         .show()
@@ -280,13 +282,21 @@ fun View.setVisible() {
 fun Double.roundOffDecimal(): Double {
     val df = DecimalFormat("#.##")
     df.roundingMode = RoundingMode.CEILING
-    return df.format(this).toDouble()
+
+    val formattedStr = df.format(this)
+    val numberFormat = NumberFormat.getInstance(Locale.getDefault())
+
+    return numberFormat.parse(formattedStr)?.toDouble() ?: this
 }
 
 fun Double.roundSingleDecimal(): Double {
     val df = DecimalFormat("#.#")
     df.roundingMode = RoundingMode.CEILING
-    return df.format(this).toDouble()
+
+    val formattedStr = df.format(this)
+    val numberFormat = NumberFormat.getInstance(Locale.getDefault())
+
+    return numberFormat.parse(formattedStr)?.toDouble() ?: this
 }
 
 fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: View, transformImage: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable>) =
