@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.messaging.FirebaseMessaging
 import com.mrntlu.projectconsumer.BuildConfig
 import com.mrntlu.projectconsumer.service.AuthAuthenticator
 import com.mrntlu.projectconsumer.service.AuthInterceptor
@@ -37,6 +38,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class SingletonModule {
+
+    @Singleton
+    @Provides
+    fun provideFirebaseMessaging(): FirebaseMessaging = FirebaseMessaging.getInstance()
 
     @Singleton
     @Provides

@@ -14,6 +14,10 @@ import com.mrntlu.projectconsumer.repository.UserRepository
 import com.mrntlu.projectconsumer.utils.setGroupNotification
 import com.mrntlu.projectconsumer.utils.setNotification
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -31,6 +35,8 @@ class FirebaseMessagingService: FirebaseMessagingService() {
     @Inject
     lateinit var userRepository: UserRepository
 
+    private val job = SupervisorJob()
+
     /**
      * Called if the FCM registration token is updated. This may occur if the security of
      * the previous token had been compromised. Note that this is called when the
@@ -39,9 +45,11 @@ class FirebaseMessagingService: FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
 
-        userRepository.updateFCMToken(UpdateFCMTokenBody(
-            token
-        ))
+        CoroutineScope(job).launch {
+            userRepository.updateFCMToken(UpdateFCMTokenBody(
+                token
+            )).collect()
+        }
     }
 
     /**
@@ -52,6 +60,11 @@ class FirebaseMessagingService: FirebaseMessagingService() {
         remoteMessage.notification?.let {
             sendNotification(it.title, it.body, remoteMessage.data)
         }
+    }
+
+    override fun onDestroy() {
+        job.cancel()
+        super.onDestroy()
     }
 
     private fun sendNotification(

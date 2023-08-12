@@ -9,7 +9,6 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.AttributeSet
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.get
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -32,6 +32,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
 import com.mrntlu.projectconsumer.interfaces.ConnectivityObserver
 import com.mrntlu.projectconsumer.service.TokenManager
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var connectivityObserver: NetworkConnectivityObserver
     @Inject lateinit var tokenManager: TokenManager
+    @Inject lateinit var fcmMessaging: FirebaseMessaging
 
     private val sharedViewModel: ActivitySharedViewModel by viewModels()
     private val userSharedViewModel: UserSharedViewModel by viewModels()
@@ -89,7 +91,8 @@ class MainActivity : AppCompatActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) {
-        //Granted or not
+        if (it)
+            setNotificationPref()
     }
 
     private var isUserInfoFailed = false
@@ -140,7 +143,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        sharedViewModel.setCountryCode(prefs.getString(Constants.COUNTRY_PREF, Locale.getDefault().country.uppercase()))
+        sharedViewModel.setLanguageCode(prefs.getString(Constants.LAN_PREF, Locale.getDefault().language.uppercase()))
+        sharedViewModel.setThemeCode(prefs.getInt(Constants.THEME_PREF, Constants.DARK_THEME))
+        AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
+
         super.onCreate(savedInstanceState)
+        installSplashScreen()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -272,16 +281,6 @@ class MainActivity : AppCompatActivity() {
         askNotificationPermission()
     }
 
-    override fun onCreateView(name: String, context: Context, attrs: AttributeSet): View? {
-        sharedViewModel.setCountryCode(prefs.getString(Constants.COUNTRY_PREF, Locale.getDefault().country.uppercase()))
-        sharedViewModel.setLanguageCode(prefs.getString(Constants.LAN_PREF, Locale.getDefault().language.uppercase()))
-        sharedViewModel.setThemeCode(prefs.getInt(Constants.THEME_PREF, Constants.DARK_THEME))
-
-        AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
-
-        return super.onCreateView(name, context, attrs)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             android.R.id.home -> {
@@ -379,9 +378,8 @@ class MainActivity : AppCompatActivity() {
                 binding.anonymousInc.root.setVisibilityByCondition(it)
 
             if (it) {
-                if (userSharedViewModel.userInfo == null) {
+                if (userSharedViewModel.userInfo == null)
                     userSharedViewModel.getBasicInfo()
-                }
             } else {
                 userSharedViewModel.userInfo = null
             }

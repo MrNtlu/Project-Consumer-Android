@@ -221,7 +221,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
             fetchRequest()
         }
 
-        viewModel.setTotalYPosition(-150)
+        viewModel.resetTotalYPosition()
         binding.logsRV.scrollToPosition(0)
 
         val headerDateText = "${focusedDate.month.toString().lowercase().replaceFirstChar { it.uppercase() }} ${focusedDate.year}"
@@ -230,7 +230,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
-            viewModel.setTotalYPosition(0)
+            viewModel.resetTotalYPosition()
 
             viewModel.logsResponse.removeObservers(this)
             viewModel.totalYScroll.removeObservers(this)

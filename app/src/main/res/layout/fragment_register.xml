@@ -108,7 +108,7 @@
                 android:id="@+id/passwordET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textVisiblePassword"
+                android:inputType="textPassword"
                 android:maxLines="1"
                 android:imeOptions="actionNext"/>
 
@@ -130,7 +130,7 @@
                 android:id="@+id/rePasswordET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textVisiblePassword"
+                android:inputType="textPassword"
                 android:maxLines="1"
                 android:imeOptions="actionDone"/>
 

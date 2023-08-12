@@ -29,6 +29,10 @@ class DiaryViewModel @Inject constructor(
         } else null
     }
 
+    fun resetTotalYPosition() {
+        this.totalYScroll.value = 0
+    }
+
     private val _logsResponse = MutableLiveData<NetworkResponse<DataResponse<List<LogsByDate>?>>>()
     val logsResponse: LiveData<NetworkResponse<DataResponse<List<LogsByDate>?>>> = _logsResponse
 
