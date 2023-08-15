@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.repository
 
+import com.mrntlu.projectconsumer.models.auth.retrofit.ForgotPasswordBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.GoogleLoginBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.LoginBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.RegisterBody
@@ -21,5 +22,9 @@ class AuthRepository @Inject constructor(
 
     fun googleLogin(body: GoogleLoginBody) = networkResponseFlow {
         authApiService.googleLogin(body)
+    }
+
+    fun forgotPassword(body: ForgotPasswordBody) = networkResponseFlow {
+        authApiService.forgotPassword(body)
     }
 }

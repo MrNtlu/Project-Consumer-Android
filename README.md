@@ -15,6 +15,8 @@
   <li> Jetpack Compose
   <li> Coil
   <li> SafeArgs
+  <li> SplashScreen
+  <li> Flexbox
 </ul>
 
 # [Wiki Page](https://github.com/MrNtlu/Project-Consumer)
@@ -35,24 +37,20 @@ Level = 60 * 0.2
 Level = 12
 ```
 
-## Scores
-
-| Type   |      Score      |
-|----------|:-------------:|
-| Consume Later |  +25 |
-| User List Watching |    +50   |
-| User List Dropped | +50 |
-| User List Watched | +100 |
-
-## Features
+## Features & Tutorials
 ### Table of Contents
 * **[Pagination](#pagination)**
 * **[Caching](#caching)**
+* **[Search](#search)**
 * **[Dark Theme](#dark-theme)**
 * **[Error Handling](#error-handling)**
 * **[Orientation Change](#orientation-change)**
 * **[Screen-Base Grid](#screen-based-grid)**
 * **[DeepLink](#deeplink)**
+* **[Flexbox](#flexbox)**
+* **[SplashScreen](#splashscreen)**
+* **[Themed Icon](#themed-icon)**
+* **[Google Sign-in with Backend](#sign-in-backend)**
 
 ### Soon
 

@@ -301,7 +301,9 @@
         app:enterAnim="@anim/slide_in_right"
         app:exitAnim="@anim/slide_out_left"
         app:popEnterAnim="@anim/slide_in_left"
-        app:popExitAnim="@anim/slide_out_right" />
+        app:popExitAnim="@anim/slide_out_right"
+        app:popUpTo="@id/navigation_home"
+        app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/tvDetailsFragment"
         android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragment"

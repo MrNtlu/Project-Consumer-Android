@@ -134,7 +134,10 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
             }
 
             forgotPasswordButton.setOnClickListener {
-                //TODO ForgotPassword
+                activity?.let {
+                    val bottomSheet = ForgotPasswordBottomSheet()
+                    bottomSheet.show(it.supportFragmentManager, ForgotPasswordBottomSheet.TAG)
+                }
             }
         }
     }

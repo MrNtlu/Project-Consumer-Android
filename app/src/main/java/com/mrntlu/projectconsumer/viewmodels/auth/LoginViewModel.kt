@@ -3,13 +3,19 @@ package com.mrntlu.projectconsumer.viewmodels.auth
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mrntlu.projectconsumer.models.auth.retrofit.ForgotPasswordBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.GoogleLoginBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.LoginBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.LoginResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.repository.AuthRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.networkResponseFlowCollector
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -31,5 +37,19 @@ class LoginViewModel @Inject constructor(
         repository.login(body)
     ) { response ->
         _loginResponse.value = response
+    }
+
+    fun forgotPassword(body: ForgotPasswordBody): LiveData<NetworkResponse<MessageResponse>> {
+        val liveData = MutableLiveData<NetworkResponse<MessageResponse>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.forgotPassword(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
     }
 }
