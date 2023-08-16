@@ -189,10 +189,17 @@ class ConsumeLaterViewModel @Inject constructor(
                 data.toMutableList().toCollection(ArrayList())
             }
 
-            val searchList = currentData.filter {
+            var searchList = currentData.filter {
                 it.content.titleOriginal.startsWith(search, ignoreCase = true) ||
                 it.content.titleOriginal.contains(search, ignoreCase = true)
-            }.toMutableList().toCollection(ArrayList())
+            }
+
+            if (filter != null)
+                searchList = searchList.filter {
+                    it.contentType == filter
+                }
+
+            searchList = searchList.toMutableList().toCollection(ArrayList())
 
             currentData.clear()
             currentData.addAll(searchList)
@@ -206,9 +213,24 @@ class ConsumeLaterViewModel @Inject constructor(
                 isPaginationExhausted = true,
                 errorMessage = null
             )
-        } else {
+        } else if ((search.isNullOrEmpty() || search.isBlank()) && filter != null && searchHolder != null) {
+            val currentData = searchHolder!!.toMutableList().toCollection(ArrayList())
+
+            val searchList = currentData.filter {
+                it.contentType == filter
+            }.toMutableList().toCollection(ArrayList())
+
+            _consumeLaterList.value = NetworkListResponse(
+                data = searchList,
+                isLoading = false,
+                isPaginating = false,
+                isFailed = false,
+                isPaginationData = false,
+                isPaginationExhausted = true,
+                errorMessage = null
+            )
+        } else
             resetSearch()
-        }
     }
 
     private fun resetSearch() {

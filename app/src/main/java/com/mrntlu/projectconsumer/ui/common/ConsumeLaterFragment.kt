@@ -13,6 +13,7 @@ import android.view.WindowManager
 import android.widget.AbsListView
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -57,6 +58,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
     private var orientationEventListener: OrientationEventListener? = null
 
     private var consumeLaterAdapter: ConsumeLaterAdapter? = null
+    private var searchMenu: MenuItem? = null
     private var scoreDialog: AlertDialog? = null
     private var sortPopupMenu: PopupMenu? = null
     private var popupMenu: PopupMenu? = null
@@ -103,7 +105,8 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.consume_later_menu, menu)
 
-                searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
+                searchMenu = menu.findItem(R.id.searchMenu)
+                searchView = searchMenu!!.actionView as SearchView
                 searchView.queryHint = getString(R.string.search)
                 searchView.setQuery(viewModel.search, false)
                 searchView.clearFocus()
@@ -121,9 +124,19 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                         return true
                     }
                 })
+
+                val closeBtn = searchView.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_close_btn)
+                closeBtn.setOnClickListener {
+                    viewModel.setSearch(null)
+                    searchView.setQuery(null, false)
+
+                    hideKeyboard()
+                }
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                hideKeyboard()
+
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
                         if (consumeLaterAdapter?.isLoading == false) {
@@ -444,6 +457,9 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         searchView.isIconified = true
         searchView.clearFocus()
 
+        searchView.onActionViewCollapsed()
+        searchMenu?.collapseActionView()
+
         hideKeyboard()
     }
 
@@ -452,6 +468,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         orientationEventListener?.disable()
         orientationEventListener = null
 
+        searchMenu = null
         popupMenu = null
         sortPopupMenu = null
         consumeLaterAdapter = null

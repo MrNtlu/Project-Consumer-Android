@@ -12,8 +12,6 @@ interface UserInteractionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertConsumeLaterList(consumeLaterList: List<ConsumeLaterEntity>)
 
-    //TODO Test, add filter by content type and local search
-
     @Query(
         "Select * From consume_laters Where page = :page And tag = :tag Order By " +
                 "Case When :sort = 'new' Then created_at End Desc," +
