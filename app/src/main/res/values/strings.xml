@@ -21,6 +21,13 @@
     <string name="profile_image_cd">Profile Image</string>
     <string name="anime_backdrop_cd">Anime Backdrop</string>
     <string name="game_backdrop_cd">Game Backdrop</string>
+    <string name="add_to_user_list_cd">Add to User List</string>
+    <string name="add_to_watch_later_cd">Add to Watch Later</string>
+    <string name="legend_content_information_cd">Legend Content Information</string>
+    <string name="content_image_cd">Content Image</string>
+    <string name="change_profile_image_cd">Change Profile Image</string>
+    <string name="next_cd">Next</string>
+    <string name="previous_cd">Previous</string>
 
     <string name="login_register_toolbar">Login/Register</string>
     <string name="refresh_cd">Refresh</string>
@@ -146,8 +153,6 @@
     <string name="do_you_want_to_delete">Do you want to delete?</string>
     <string name="do_you_want_to_log_out_">Do you want to log out?</string>
     <string name="fix_errors">Please fix the errors.</string>
-    <string name="previous_cd">Previous Button</string>
-    <string name="next_cd">Next Button</string>
     <string name="watch_later">Watch Later</string>
     <string name="play_later">Play Later</string>
     <string name="user_list">User List</string>

@@ -26,7 +26,6 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isEmailValid
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.auth.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,6 +42,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
     private val viewModel: LoginViewModel by viewModels()
     @Inject lateinit var tokenManager: TokenManager
+    @Inject lateinit var firebaseMessaging: FirebaseMessaging
 
     private var coroutineScope = CoroutineScope(Dispatchers.IO)
     private lateinit var googleSignInClient: GoogleSignInClient
@@ -58,7 +58,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
                 if (account.idToken != null) {
                     viewModel.googleLogin(
-                        GoogleLoginBody(account.idToken!!, Constants.ProfileImageList[(0..Constants.ProfileImageList.size).random()], fcmToken)
+                        GoogleLoginBody(account.idToken!!, Constants.ProfileImageList[(0..Constants.ProfileImageList.size.minus(1)).random()], fcmToken)
                     )
                 }
             } catch (exception: ApiException) {
@@ -66,7 +66,6 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
             }
         } else {
             context?.showErrorDialog("Failed to login! ${result.resultCode}")
-            printLog("Failed $result")
         }
     }
 
@@ -101,7 +100,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
     }
 
     private fun getFCMToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+        firebaseMessaging.token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 fcmToken = "unknown_fcm_token"
                 return@OnCompleteListener
@@ -122,6 +121,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
                 if (validate()) {
                     val body = LoginBody(
                         binding.mailET.text!!.toString(),
+                        fcmToken,
                         binding.passwordET.text!!.toString(),
                     )
 

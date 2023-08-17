@@ -2,12 +2,20 @@ package com.mrntlu.projectconsumer.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -17,20 +25,25 @@ import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.auth.UserInfo
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
+import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
@@ -38,6 +51,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private companion object {
         private const val KEY_VALUE = "content_type"
     }
+
+    @Inject lateinit var tokenManager: TokenManager
 
     private val viewModel: ProfileViewModel by viewModels()
     private val userSharedViewModel: UserSharedViewModel by activityViewModels()
@@ -79,6 +94,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
         })
 
+        setMenu()
         setObservers()
     }
 
@@ -87,6 +103,38 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
         binding.loadingLayout.setVisible()
         viewModel.getUserInfo()
+    }
+
+    private fun setMenu() {
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object: MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.profile_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                hideKeyboard()
+
+                when(menuItem.itemId) {
+                    R.id.logoutMenu -> {
+                        context?.let {
+                            it.showConfirmationDialog(getString(R.string.do_you_want_to_log_out_)) {
+                                runBlocking {
+                                    tokenManager.deleteToken()
+                                    GoogleSignIn.getClient(it, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                        .signOut()
+                                    sharedViewModel.setAuthentication(false)
+                                    navController.popBackStack()
+                                }
+                            }
+                        }
+                    }
+                }
+                return true
+            }
+
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setObservers() {

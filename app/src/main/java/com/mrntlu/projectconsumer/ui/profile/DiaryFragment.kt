@@ -63,11 +63,13 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
             }
 
             calendarNextButton.setOnClickListener {
-                updateFocusedDate(focusedDate.plusWeeks(1))
+                if (LocalDate.now().plusWeeks(1).isAfter(focusedDate.plusWeeks(1)))
+                    updateFocusedDate(focusedDate.plusWeeks(1))
             }
 
             calendarPrevButton.setOnClickListener {
-                updateFocusedDate(focusedDate.minusWeeks(1))
+                if (LocalDate.now().minusYears(1).isBefore(focusedDate.minusWeeks(1)))
+                    updateFocusedDate(focusedDate.minusWeeks(1))
             }
         }
     }

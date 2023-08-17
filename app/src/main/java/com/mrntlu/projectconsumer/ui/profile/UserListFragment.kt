@@ -433,6 +433,8 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                hideKeyboard()
+
                 when(menuItem.itemId) {
                     R.id.sortMenu -> {
                         if (popupMenu == null) {

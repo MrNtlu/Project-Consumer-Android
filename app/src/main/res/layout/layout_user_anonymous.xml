@@ -1,26 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<Button
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clickable="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <ImageView
-        android:id="@+id/userProfileIV"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginEnd="6dp"
-        app:tint="?attr/toolbarTintColor"
-        android:src="@drawable/ic_person_64"
-        android:contentDescription="@string/login_register_cd" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="@string/login_register_toolbar"
-        android:textColor="?attr/toolbarTintColor"
-        android:textSize="12sp" />
-
-</LinearLayout>
+    android:text="@string/sign_in"
+    style="@style/Widget.Material3.Button.TextButton"
+    app:icon="@drawable/ic_login_24"
+    app:iconGravity="end"
+    app:iconPadding="6dp"
+    app:iconSize="22dp"
+    app:iconTint="?attr/mainTextColor"
+    android:textColor="?attr/mainTextColor"
+    android:textSize="14sp"
+    android:textStyle="bold" />

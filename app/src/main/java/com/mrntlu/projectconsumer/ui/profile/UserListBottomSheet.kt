@@ -455,7 +455,6 @@ class UserListBottomSheet(
 
                 isValid
             }
-            Constants.ContentType.GAME -> binding.layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.isNotEmptyOrBlank() == true
             else -> true
         }
     }

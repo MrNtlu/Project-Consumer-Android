@@ -32,7 +32,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.mrntlu.projectconsumer.databinding.ActivityMainBinding
 import com.mrntlu.projectconsumer.interfaces.ConnectivityObserver
 import com.mrntlu.projectconsumer.service.TokenManager
@@ -73,7 +72,6 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var connectivityObserver: NetworkConnectivityObserver
     @Inject lateinit var tokenManager: TokenManager
-    @Inject lateinit var fcmMessaging: FirebaseMessaging
 
     private val sharedViewModel: ActivitySharedViewModel by viewModels()
     private val userSharedViewModel: UserSharedViewModel by viewModels()
@@ -214,7 +212,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             userInc.root.setOnClickListener {
-                navController.navigate(R.id.action_global_navigation_profile)
+                binding.navView.selectedItemId = R.id.navigation_profile
             }
         }
 
@@ -230,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_settings -> {
                     binding.toolbar.setVisible()
                     binding.navView.setVisibilityByCondition(sharedViewModel.isLoggedIn())
-                    handleUserIncVisibility(true)
+                    handleUserIncVisibility(false)
                 }
                 R.id.navigation_profile, R.id.navigation_later, R.id.navigation_user_list -> {
                     binding.toolbar.setVisible()

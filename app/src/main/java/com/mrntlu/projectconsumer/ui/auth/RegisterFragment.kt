@@ -23,6 +23,7 @@ import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.auth.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
@@ -34,6 +35,8 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
     private lateinit var fcmToken: String
     private lateinit var dialog: LoadingDialog
     private lateinit var successDialog: SuccessDialog
+
+    @Inject lateinit var firebaseMessaging: FirebaseMessaging
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
@@ -54,7 +57,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
     }
 
     private fun getFCMToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+        firebaseMessaging.token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 fcmToken = "unknown_fcm_token"
                 return@OnCompleteListener

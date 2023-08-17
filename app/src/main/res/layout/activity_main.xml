@@ -19,13 +19,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <include
-            android:id="@+id/anonymousInc"
-            layout="@layout/layout_user_anonymous"
-            android:visibility="visible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <include
             android:id="@+id/userInc"
             layout="@layout/layout_user"
             android:visibility="gone"
@@ -40,6 +33,14 @@
             android:indeterminateTint="?attr/mainTextColor"
             android:visibility="gone"
             tools:visibility="visible" />
+
+        <include
+            android:id="@+id/anonymousInc"
+            layout="@layout/layout_user_anonymous"
+            android:visibility="visible"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </com.google.android.material.appbar.MaterialToolbar>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

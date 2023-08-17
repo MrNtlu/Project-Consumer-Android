@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:src="@drawable/ic_star_48"
         app:layout_constraintBottom_toBottomOf="@+id/watchLaterLottie"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,11 +42,12 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/watchLaterLottie"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_marginTop="8dp"
         android:scaleX="1.2"
         android:scaleY="1.1"
+        android:contentDescription="@string/add_to_watch_later_cd"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -54,11 +55,12 @@
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/addListLottie"
-        android:layout_width="38dp"
-        android:layout_height="38dp"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
         android:layout_marginEnd="6dp"
         android:scaleX="0.92"
         android:scaleY="0.92"
+        android:contentDescription="@string/add_to_user_list_cd"
         app:layout_constraintBottom_toBottomOf="@+id/watchLaterLottie"
         app:layout_constraintEnd_toStartOf="@+id/watchLaterLottie"
         app:layout_constraintTop_toTopOf="@+id/watchLaterLottie"
@@ -75,7 +77,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:clickable="true"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/userInteractionLoading"

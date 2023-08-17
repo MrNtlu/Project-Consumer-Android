@@ -72,13 +72,14 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         binding.apply {
             accountTitleTV.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
             accountSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
+            deleteAccountButton.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
 
+            applicationFirstClickTile.root.setGone()
+            applicationFirstTileDivider.setGone()
             accountFirstClickTile.root.setGone()
             accountFirstTileDivider.setGone()
             accountSwitchTileDivider.setGone()
             accountSwitchTile.setGone()
-            applicationFirstClickTile.root.setGone()
-            applicationFirstTileDivider.setGone()
 
             if (sharedViewModel.isLoggedIn()) {
                 accountSecondClickTile.settingsClickTileTV.text = getString(R.string.log_out)

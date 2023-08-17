@@ -18,7 +18,7 @@ android {
         applicationId "com.mrntlu.projectconsumer"
         minSdk 28
         targetSdk 33
-        versionCode 1
+        versionCode 5
         versionName "0.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -28,6 +28,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {

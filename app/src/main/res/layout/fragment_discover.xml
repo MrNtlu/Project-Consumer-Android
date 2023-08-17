@@ -51,6 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:queryHint="@string/search"
             android:background="@drawable/bottom_nav_background"
             android:elevation="4dp"
             android:queryBackground="@drawable/bottom_nav_background"
