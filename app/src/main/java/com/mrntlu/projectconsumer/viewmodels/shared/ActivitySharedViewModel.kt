@@ -7,6 +7,17 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 
 class ActivitySharedViewModel: ViewModel() {
+    //Is Back Pressed
+    val shouldPreventBottomSelection: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    fun shouldPreventBottomSelection() = shouldPreventBottomSelection.value == true
+
+    fun setShouldPreventBottomSelection(shouldPrevent: Boolean) {
+        shouldPreventBottomSelection.value = shouldPrevent
+    }
+
     //Is Logged in
     val isAuthenticated: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()

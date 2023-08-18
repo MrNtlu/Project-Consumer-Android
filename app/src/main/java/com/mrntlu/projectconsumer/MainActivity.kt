@@ -25,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
@@ -59,6 +60,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -95,6 +97,11 @@ class MainActivity : AppCompatActivity() {
 
     private var isUserInfoFailed = false
     private lateinit var binding: ActivityMainBinding
+
+    override fun onBackPressed() {
+        sharedViewModel.setShouldPreventBottomSelection(true)
+        super.onBackPressed()
+    }
 
     private fun handleIntentData(extras: Bundle?) {
         if (extras != null) {
@@ -214,6 +221,18 @@ class MainActivity : AppCompatActivity() {
             userInc.root.setOnClickListener {
                 binding.navView.selectedItemId = R.id.navigation_profile
             }
+
+            navView.setOnItemSelectedListener {
+                if (!sharedViewModel.shouldPreventBottomSelection()) {
+                    NavigationUI.onNavDestinationSelected(it, navController)
+
+                    return@setOnItemSelectedListener true
+                }
+
+                false
+            }
+
+            navView.setOnItemReselectedListener {}
         }
 
         navController.addOnDestinationChangedListener { _, destination, args ->
@@ -228,7 +247,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_settings -> {
                     binding.toolbar.setVisible()
                     binding.navView.setVisibilityByCondition(sharedViewModel.isLoggedIn())
-                    handleUserIncVisibility(false)
+                    handleUserIncVisibility(sharedViewModel.isLoggedIn())
                 }
                 R.id.navigation_profile, R.id.navigation_later, R.id.navigation_user_list -> {
                     binding.toolbar.setVisible()
@@ -353,6 +372,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        sharedViewModel.shouldPreventBottomSelection.observe(this) {
+            if (it) {
+                coroutineScope.launch {
+                    delay(500)
+                    withContext(Dispatchers.Main) {
+                        sharedViewModel.setShouldPreventBottomSelection(false)
+                    }
+                }
+            }
+        }
+
         sharedViewModel.isAuthenticated.observe(this) {
             if (it && binding.navView.menu[2].itemId != R.id.navigation_profile) {
                 binding.navView.menu.clear()
@@ -465,7 +495,13 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
     }
 
+    override fun onPause() {
+        sharedViewModel.setShouldPreventBottomSelection(false)
+        super.onPause()
+    }
+
     override fun onDestroy() {
+        sharedViewModel.shouldPreventBottomSelection.removeObservers(this)
         sharedViewModel.isAuthenticated.removeObservers(this)
         sharedViewModel.countryCode.removeObservers(this)
         sharedViewModel.languageCode.removeObservers(this)
