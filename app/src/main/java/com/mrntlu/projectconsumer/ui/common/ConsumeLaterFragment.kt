@@ -38,6 +38,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
+import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
@@ -79,7 +80,42 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
         orientationEventListener = object : OrientationEventListener(view.context) {
             override fun onOrientationChanged(orientation: Int) {
-                viewModel.setNewOrientation(orientation)
+                val defaultPortrait = 0
+                val upsideDownPortrait = 180
+                val rightLandscape = 90
+                val leftLandscape = 270
+
+                when {
+                    isWithinOrientationRange(orientation, defaultPortrait) -> {
+                        viewModel.setNewOrientation(Orientation.Portrait)
+                    }
+                    isWithinOrientationRange(orientation, leftLandscape) -> {
+                        viewModel.setNewOrientation(Orientation.Landscape)
+                    }
+                    isWithinOrientationRange(orientation, upsideDownPortrait) -> {
+                        viewModel.setNewOrientation(Orientation.PortraitReverse)
+                    }
+                    isWithinOrientationRange(orientation, rightLandscape) -> {
+                        viewModel.setNewOrientation(Orientation.LandscapeReverse)
+                    }
+                }
+
+                /*viewModel.setNewOrientation(
+                    when (orientation) {
+                        in 45..134 -> {
+                            Orientation.Landscape
+                        }
+                        in 135..224 -> {
+                            Orientation.Portrait
+                        }
+                        in 225..314 -> {
+                            Orientation.LandscapeReverse
+                        }
+                        else -> {
+                            Orientation.Portrait
+                        }
+                    }
+                )*/
             }
         }
         orientationEventListener?.enable()
@@ -87,6 +123,13 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         setMenu()
         setRecyclerView()
         setObservers()
+    }
+
+    private fun isWithinOrientationRange(
+        currentOrientation: Int, targetOrientation: Int, epsilon: Int = 30
+    ): Boolean {
+        return currentOrientation > targetOrientation - epsilon
+                && currentOrientation < targetOrientation + epsilon
     }
 
     override fun onStart() {
@@ -465,6 +508,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     override fun onDestroyView() {
         viewModel.consumeLaterList.removeObservers(viewLifecycleOwner)
+
         orientationEventListener?.disable()
         orientationEventListener = null
 

@@ -11,27 +11,40 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
+import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
+import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
+import com.mrntlu.projectconsumer.utils.showErrorDialog
+import com.mrntlu.projectconsumer.viewmodels.main.common.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
+    private val settingsViewModel: SettingsViewModel by viewModels()
+
     @Inject lateinit var tokenManager: TokenManager
 
-    //TODO Add account information on top of account tile
+    private lateinit var dialog: LoadingDialog
+    private var deleteUserLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
 
     private val countryList = Locale.getISOCountries().filter { it.length == 2 }.map {
         val locale = Locale("", it)
@@ -54,6 +67,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let {
+            dialog = LoadingDialog(it)
+        }
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object: MenuProvider {
@@ -86,13 +102,13 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
                 accountSecondClickTile.root.setOnClickListener {
                     context?.showConfirmationDialog(getString(R.string.do_you_want_to_log_out_)) {
-                        runBlocking {
+                        lifecycleScope.launch(Dispatchers.IO) {
                             tokenManager.deleteToken()
-                            GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                .signOut()
-                            sharedViewModel.setAuthentication(false)
-                            navController.popBackStack()
                         }
+                        GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .signOut()
+                        sharedViewModel.setAuthentication(false)
+                        navController.popBackStack()
                     }
                 }
             }
@@ -157,6 +173,51 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             termsButton.setOnClickListener {
                 navController.navigate(SettingsFragmentDirections.actionNavigationSettingsToPolicyFragment(false))
             }
+
+            deleteAccountButton.setOnClickListener {
+                context?.showConfirmationDialog(getString(R.string.delete_user_info)) {
+                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                        if (deleteUserLiveData != null && deleteUserLiveData?.hasActiveObservers() == true)
+                            deleteUserLiveData?.removeObservers(viewLifecycleOwner)
+
+                        deleteUserLiveData = settingsViewModel.deleteUser()
+
+                        deleteUserLiveData?.observe(viewLifecycleOwner) { response ->
+                            when(response) {
+                                is NetworkResponse.Failure -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    context?.showErrorDialog(response.errorMessage)
+                                }
+                                NetworkResponse.Loading -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.showLoadingDialog()
+                                }
+                                is NetworkResponse.Success -> {
+                                    lifecycleScope.launch(Dispatchers.IO) {
+                                        tokenManager.deleteToken()
+                                        GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                            .signOut()
+                                        withContext(Dispatchers.Main) {
+                                            sharedViewModel.setAuthentication(false)
+                                            navController.popBackStack()
+                                        }
+                                    }
+
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    override fun onDestroyView() {
+        deleteUserLiveData?.removeObservers(viewLifecycleOwner)
+        super.onDestroyView()
     }
 }

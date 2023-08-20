@@ -163,7 +163,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
                         setUI()
                         setListeners()
-                        if (!viewModel.didOrientationChange) {
+                        if (!viewModel.didOrientationChange && userInfo != null) {
                             setRecyclerView()
                             contentAdapter?.setData(getLegendContentList())
                         }
@@ -182,7 +182,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 WindowSizeClass.EXPANDED -> 5
             }
 
-            if (viewModel.didOrientationChange) {
+            if (viewModel.didOrientationChange && userInfo != null) {
                 setRecyclerView()
                 contentAdapter?.setData(getLegendContentList())
                 viewModel.didOrientationChange = false
@@ -299,8 +299,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                         else -> {}
                     }
 
-                    contentAdapter?.setLoadingView()
-                    contentAdapter?.setData(getLegendContentList())
+                    if (userInfo != null) {
+                        contentAdapter?.setLoadingView()
+                        contentAdapter?.setData(getLegendContentList())
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}

@@ -361,6 +361,7 @@ class UserListAdapter(
                     else -> R.attr.statusDroppedColor
                 }
 
+                imageInclude.previewIV.contentDescription = title
                 statusColor.dividerColor = root.context.getColorFromAttr(attrColor)
                 titleTV.text = title
                 scoreTV.text = score?.toString() ?: "*"

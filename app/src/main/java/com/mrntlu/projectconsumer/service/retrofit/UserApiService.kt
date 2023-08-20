@@ -8,6 +8,7 @@ import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 
@@ -24,4 +25,7 @@ interface UserApiService {
 
     @PATCH("user/token")
     suspend fun updateFCMToken(@Body body: UpdateFCMTokenBody): Response<MessageResponse>
+
+    @DELETE("user/delete")
+    suspend fun deleteUser(): Response<MessageResponse>
 }

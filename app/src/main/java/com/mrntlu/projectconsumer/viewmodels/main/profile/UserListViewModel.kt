@@ -22,6 +22,7 @@ import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.OperationEnum
+import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.networkResponseFlowCollector
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -60,13 +61,13 @@ class UserListViewModel @Inject constructor(
 
     // Variable for detecting orientation change
     var didOrientationChange = false
-    private var currentOrientation: Int = -1
+    private var currentOrientation: Orientation = Orientation.Idle
 
-    fun setNewOrientation(newOrientation: Int) {
-        if (currentOrientation == -1) {
+    fun setNewOrientation(newOrientation: Orientation) {
+        if (currentOrientation == Orientation.Idle) {
             currentOrientation = newOrientation
         } else if (newOrientation != currentOrientation) {
-            setTotalYPosition(0)
+            resetTotalYPosition()
             didOrientationChange = true
 
             currentOrientation = newOrientation
@@ -233,7 +234,7 @@ class UserListViewModel @Inject constructor(
 
             _userList.value = NetworkResponse.Success(DataResponse(currentUserList))
         } else if (searchHolder != null) {
-            setTotalYPosition(0)
+            resetTotalYPosition()
             resetSearch()
         }
     }

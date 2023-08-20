@@ -165,6 +165,7 @@ class PreviewSlideAdapter<T: ContentModel>(
                         transform(RoundedCorners(radiusInPx.toInt()))
                 }
 
+                previewIV.contentDescription = item.title
                 previewTV.text = item.title
                 previewGameTitleTV.text = item.title
 

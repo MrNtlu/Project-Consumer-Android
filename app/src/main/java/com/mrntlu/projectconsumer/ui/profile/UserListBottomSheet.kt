@@ -438,6 +438,11 @@ class UserListBottomSheet(
     }
 
     private fun validateFields(): Boolean {
+        if (binding.layoutEditInc.toggleTabLayout.selectedTabPosition < 0) {
+            context?.showErrorDialog(getString(R.string.unexpected_try_again))
+            return false
+        }
+
         return when(contentType) {
             Constants.ContentType.ANIME -> binding.layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.isNotEmptyOrBlank() == true
             Constants.ContentType.TV -> {

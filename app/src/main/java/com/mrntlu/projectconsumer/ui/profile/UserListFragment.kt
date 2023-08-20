@@ -41,6 +41,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
+import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
@@ -139,7 +140,25 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
         orientationEventListener = object : OrientationEventListener(view.context) {
             override fun onOrientationChanged(orientation: Int) {
-                viewModel.setNewOrientation(orientation)
+                val defaultPortrait = 0
+                val upsideDownPortrait = 180
+                val rightLandscape = 90
+                val leftLandscape = 270
+
+                when {
+                    isWithinOrientationRange(orientation, defaultPortrait) -> {
+                        viewModel.setNewOrientation(Orientation.Portrait)
+                    }
+                    isWithinOrientationRange(orientation, leftLandscape) -> {
+                        viewModel.setNewOrientation(Orientation.Landscape)
+                    }
+                    isWithinOrientationRange(orientation, upsideDownPortrait) -> {
+                        viewModel.setNewOrientation(Orientation.PortraitReverse)
+                    }
+                    isWithinOrientationRange(orientation, rightLandscape) -> {
+                        viewModel.setNewOrientation(Orientation.LandscapeReverse)
+                    }
+                }
             }
         }
         orientationEventListener?.enable()
@@ -149,6 +168,13 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         setListeners()
         setRecyclerView()
         setObservers()
+    }
+
+    private fun isWithinOrientationRange(
+        currentOrientation: Int, targetOrientation: Int, epsilon: Int = 30
+    ): Boolean {
+        return currentOrientation > targetOrientation - epsilon
+                && currentOrientation < targetOrientation + epsilon
     }
 
     override fun onStart() {

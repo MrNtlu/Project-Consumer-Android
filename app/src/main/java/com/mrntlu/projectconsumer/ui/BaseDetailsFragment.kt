@@ -32,7 +32,7 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showLoginRegisterDialog
-import com.mrntlu.projectconsumer.viewmodels.main.DetailsConsumeLaterViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.common.DetailsConsumeLaterViewModel
 import java.util.Locale
 
 abstract class BaseDetailsFragment<T>: BaseFragment<T>() {

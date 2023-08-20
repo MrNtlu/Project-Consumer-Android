@@ -225,6 +225,7 @@ class MainActivity : AppCompatActivity() {
             navView.setOnItemSelectedListener {
                 if (!sharedViewModel.shouldPreventBottomSelection()) {
                     NavigationUI.onNavDestinationSelected(it, navController)
+                    sharedViewModel.setShouldPreventBottomSelection(true)
 
                     return@setOnItemSelectedListener true
                 }

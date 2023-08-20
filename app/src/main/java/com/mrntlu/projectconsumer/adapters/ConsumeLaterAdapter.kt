@@ -199,6 +199,7 @@ class ConsumeLaterAdapter(
                     previewTV.text = item.content.titleOriginal
                 }
 
+                imageInclude.previewIV.contentDescription = item.content.titleOriginal
                 titleTV.text = item.content.titleOriginal
                 contentTypeTV.text = Constants.ContentType.fromStringRequest(item.contentType).value
 

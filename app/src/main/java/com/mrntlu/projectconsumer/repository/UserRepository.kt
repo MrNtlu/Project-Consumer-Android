@@ -25,4 +25,8 @@ class UserRepository @Inject constructor(
     fun updateFCMToken(body: UpdateFCMTokenBody) = networkResponseFlow {
         userApiService.updateFCMToken(body)
     }
+
+    fun deleteUser() = networkResponseFlow {
+        userApiService.deleteUser()
+    }
 }

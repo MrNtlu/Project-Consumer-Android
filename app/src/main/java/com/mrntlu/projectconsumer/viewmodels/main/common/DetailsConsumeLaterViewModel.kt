@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.viewmodels.main
+package com.mrntlu.projectconsumer.viewmodels.main.common
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

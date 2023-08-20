@@ -13,6 +13,7 @@ import com.mrntlu.projectconsumer.repository.UserInteractionRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.setData
@@ -35,10 +36,10 @@ class ConsumeLaterViewModel @Inject constructor(
 ): ViewModel() {
     // Variable for detecting orientation change
     var didOrientationChange = false
-    private var currentOrientation: Int = -1
+    private var currentOrientation: Orientation = Orientation.Idle
 
-    fun setNewOrientation(newOrientation: Int) {
-        if (currentOrientation == -1) {
+    fun setNewOrientation(newOrientation: Orientation) {
+        if (currentOrientation == Orientation.Idle) {
             currentOrientation = newOrientation
         } else if (newOrientation != currentOrientation) {
             didOrientationChange = true
