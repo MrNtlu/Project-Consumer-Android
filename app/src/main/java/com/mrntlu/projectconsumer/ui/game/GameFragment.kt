@@ -19,6 +19,7 @@ class GameFragment : BasePreviewFragment<Game>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.guideline14.setGuidelinePercent(0.25f)
         binding.upcomingPreviewRV.layoutParams.height = view.context.dpToPx(150f)
         binding.topRatedPreviewRV.layoutParams.height = view.context.dpToPx(150f)
 

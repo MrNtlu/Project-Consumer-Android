@@ -19,11 +19,21 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <include
+            android:id="@+id/anonymousInc"
+            layout="@layout/layout_user_anonymous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:visibility="visible" />
+        <include
             android:id="@+id/userInc"
             layout="@layout/layout_user"
-            android:visibility="gone"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/userLoadingProgressBar"
@@ -32,31 +42,23 @@
             android:layout_height="wrap_content"
             android:indeterminateTint="?attr/mainTextColor"
             android:visibility="gone"
-            tools:visibility="visible" />
-
-        <include
-            android:id="@+id/anonymousInc"
-            layout="@layout/layout_user_anonymous"
-            android:visibility="visible"
+            android:layout_marginEnd="8dp"
             android:layout_gravity="end"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            tools:visibility="visible" />
     </com.google.android.material.appbar.MaterialToolbar>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        style="@style/Widget.MaterialComponents.BottomNavigationView"
         android:id="@+id/nav_view"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
+        android:layout_height="65dp"
         app:itemRippleColor="@null"
-        app:labelVisibilityMode="selected"
+        app:itemPaddingBottom="13dp"
+        app:itemIconSize="24dp"
         app:itemIconTint="@drawable/bottom_nav_selector"
-        app:itemTextColor="@drawable/bottom_nav_selector"
-        android:background="@drawable/bottom_nav_background"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginBottom="12dp"
+        app:itemTextColor="@drawable/bottom_nav_text_selector"
+        android:background="?attr/bottomNavBackgroundColor"
+        app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
+        app:labelVisibilityMode="selected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -127,5 +129,4 @@
         app:layout_constraintTop_toBottomOf="@+id/messageBoxLayout"
         app:navGraph="@navigation/mobile_navigation"
         tools:ignore="FragmentTagUsage" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

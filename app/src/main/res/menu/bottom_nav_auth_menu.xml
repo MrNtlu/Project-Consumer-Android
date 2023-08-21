@@ -2,26 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/selector_home"
         android:title="@string/home" />
 
     <item
         android:id="@+id/navigation_discover"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/selector_discover"
         android:title="@string/discover" />
 
     <item
         android:id="@+id/navigation_profile"
-        android:icon="@drawable/ic_person_75"
+        android:icon="@drawable/selector_person"
         android:title="@string/profile" />
 
     <item
         android:id="@+id/navigation_later"
-        android:icon="@drawable/ic_later"
+        android:icon="@drawable/selector_later"
         android:title="@string/watch_later" />
 
     <item
         android:id="@+id/navigation_user_list"
-        android:icon="@drawable/ic_list"
+        android:icon="@drawable/selector_list"
         android:title="@string/my_list" />
 </menu>

@@ -351,7 +351,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     private fun setRecyclerView() {
         binding.listRV.apply {
-            setPadding(0, 0, 0, context.dpToPx(72F))
+            setPadding(0, 0, 0, context.dpToPx(76F))
             clipToPadding = false
 
             val linearLayout = LinearLayoutManager(context)

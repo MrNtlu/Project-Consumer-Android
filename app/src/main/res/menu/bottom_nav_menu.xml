@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/selector_home"
         android:title="@string/home" />
 
     <item
         android:id="@+id/navigation_discover"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/selector_discover"
         android:title="@string/discover" />
 
     <item
         android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_settings_64"
+        android:icon="@drawable/selector_settings"
         android:title="@string/settings" />
 </menu>

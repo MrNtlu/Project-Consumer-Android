@@ -12,6 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/toolbarBackgroundColor</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:navigationBarColor">?attr/bottomNavBackgroundColor</item>
+        <item name="android:windowLightNavigationBar">false</item>
 
         <!-- Customize your theme here. -->
         <item name="popupMenuStyle">@style/CustomPopupMenu</item>
@@ -49,13 +51,21 @@
         <item name="bottomNavBackgroundColor">@color/materialBlack</item>
         <item name="bottomNavSelectedColor">@color/blue700</item>
         <item name="bottomNavUnselectedColor">@color/grey500</item>
-        <item name="colorSecondaryContainer">@color/materialBlack</item>
+        <item name="colorSecondaryContainer">@color/blue700</item>
 
         <item name="materialAlertDialogTheme">@style/Theme.ProjectConsumer.ErrorMaterialAlertDialog</item>
 
         <item name="floatingActionButtonSmallStyle">@style/Theme.ProjectConsumer.SmallFAB</item>
     </style>
 
+    <style name="Widget.Material3.BottomNavigationView.ActiveIndicator" parent="">
+        <item name="android:width">54dp</item>
+        <item name="android:height">26dp</item>
+        <item name="marginHorizontal">@dimen/m3_bottom_nav_item_active_indicator_margin_horizontal</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.NavigationBarView.ActiveIndicator</item>
+        <item name="android:color">?attr/colorSecondaryContainer</item>
+    </style>
+    
 <!--   Custom Popup Menu Style   -->
     <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">
         <item name="android:popupBackground">@drawable/custom_popup_background</item>

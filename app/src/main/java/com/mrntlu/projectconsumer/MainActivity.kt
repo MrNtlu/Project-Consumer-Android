@@ -278,6 +278,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_settings -> getString(R.string.settings)
                 R.id.discoverListFragment -> getString(R.string.discover_title)
+                R.id.navigation_home -> getString(R.string.home)
+                R.id.navigation_discover -> getString(R.string.discover)
+                R.id.navigation_profile -> getString(R.string.profile)
+                R.id.navigation_later -> getString(R.string.watch_later)
+                R.id.navigation_user_list -> getString(R.string.my_list)
                 else -> ""
             }
         }

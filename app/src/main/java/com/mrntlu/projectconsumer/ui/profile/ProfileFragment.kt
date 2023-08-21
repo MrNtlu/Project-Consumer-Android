@@ -14,8 +14,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -36,13 +34,11 @@ import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
-import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -117,18 +113,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 hideKeyboard()
 
                 when(menuItem.itemId) {
-                    R.id.logoutMenu -> {
-                        context?.let {
-                            it.showConfirmationDialog(getString(R.string.do_you_want_to_log_out_)) {
-                                runBlocking {
-                                    tokenManager.deleteToken()
-                                    GoogleSignIn.getClient(it, GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                        .signOut()
-                                    sharedViewModel.setAuthentication(false)
-                                    navController.popBackStack()
-                                }
-                            }
-                        }
+                    R.id.settingsMenu -> {
+                        navController.navigate(R.id.action_global_settingsFragment)
                     }
                 }
                 return true

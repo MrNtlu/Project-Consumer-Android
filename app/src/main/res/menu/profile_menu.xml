@@ -4,8 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/logoutMenu"
-        android:icon="@drawable/ic_logout_24"
+        android:id="@+id/settingsMenu"
+        android:icon="@drawable/ic_settings_64"
         app:showAsAction="always"
-        android:title="@string/log_out" />
+        android:title="@string/settings" />
+
+<!--    <item-->
+<!--        android:id="@+id/logoutMenu"-->
+<!--        android:icon="@drawable/ic_logout_24"-->
+<!--        app:showAsAction="always"-->
+<!--        android:title="@string/log_out" />-->
 </menu>

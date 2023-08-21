@@ -108,7 +108,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                         GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
                             .signOut()
                         sharedViewModel.setAuthentication(false)
-                        navController.popBackStack()
+                        navController.popBackStack(R.id.navigation_home, false)
                     }
                 }
             }
@@ -201,7 +201,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                                             .signOut()
                                         withContext(Dispatchers.Main) {
                                             sharedViewModel.setAuthentication(false)
-                                            navController.popBackStack()
+                                            navController.popBackStack(R.id.navigation_home, false)
                                         }
                                     }
 
