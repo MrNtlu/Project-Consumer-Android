@@ -267,8 +267,8 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 val bulletDecoration = BulletItemDecoration(context)
                 addItemDecoration(bulletDecoration)
 
-                genreAdapter = GenreAdapter(gameDetails!!.genres.map { it.name }) {
-                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToDiscoverListFragment(Constants.ContentType.GAME, gameDetails?.genres?.get(it)?.name)
+                genreAdapter = GenreAdapter(gameDetails!!.genres) {
+                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToDiscoverListFragment(Constants.ContentType.GAME, gameDetails?.genres?.get(it))
                     navController.navigate(navWithAction)
                 }
                 adapter = genreAdapter

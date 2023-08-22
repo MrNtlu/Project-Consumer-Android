@@ -1,9 +1,7 @@
 package com.mrntlu.projectconsumer.models.main.tv.mapper
 
 import com.mrntlu.projectconsumer.interfaces.EntityMapper
-import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
-import com.mrntlu.projectconsumer.models.common.entity.TmdbGenreEntity
 import com.mrntlu.projectconsumer.models.common.entity.TranslationEntity
 import com.mrntlu.projectconsumer.models.main.tv.Network
 import com.mrntlu.projectconsumer.models.main.tv.TVSeries
@@ -17,7 +15,7 @@ object TVSeriesEntityMapper: EntityMapper<List<TVSeries>, List<TVSeriesEntity>> 
                 tv.id,
                 tv.description,
                 tv.actors,
-                tv.genres.map { TmdbGenreEntity(it.name, it.tmdbID) },
+                tv.genres,
                 tv.networks?.map { NetworkEntity(it.logo, it.name, it.originCountry) },
                 tv.seasons,
                 tv.translations?.map { TranslationEntity(it.lanCode, it.lanName, it.lanNameEn, it.title, it.description) },
@@ -25,7 +23,6 @@ object TVSeriesEntityMapper: EntityMapper<List<TVSeries>, List<TVSeriesEntity>> 
                 tv.streaming,
                 tv.backdrop,
                 tv.imageURL,
-                tv.smallImageURL,
                 tv.firstAirDate,
                 tv.title,
                 tv.titleOriginal,
@@ -48,7 +45,7 @@ object TVSeriesEntityMapper: EntityMapper<List<TVSeries>, List<TVSeriesEntity>> 
                 tvEntity.id,
                 tvEntity.description,
                 tvEntity.actors,
-                tvEntity.genres.map { TmdbGenre(it.name, it.tmdbID) },
+                tvEntity.genres,
                 tvEntity.networks?.map { Network(it.logo, it.name, it.originCountry) },
                 tvEntity.seasons,
                 tvEntity.translations?.map { Translation(it.lanCode, it.lanName, it.lanNameEn, it.title, it.description) },
@@ -56,7 +53,6 @@ object TVSeriesEntityMapper: EntityMapper<List<TVSeries>, List<TVSeriesEntity>> 
                 tvEntity.streaming,
                 tvEntity.backdrop,
                 tvEntity.imageURL,
-                tvEntity.smallImageURL,
                 tvEntity.firstAirDate,
                 tvEntity.title,
                 tvEntity.titleOriginal,

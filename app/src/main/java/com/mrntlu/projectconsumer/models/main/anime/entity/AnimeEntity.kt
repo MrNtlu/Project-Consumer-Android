@@ -43,9 +43,6 @@ data class AnimeEntity(
     @ColumnInfo("image_url")
     val imageURL: String,
 
-    @ColumnInfo("small_image_url")
-    val smallImageURL: String,
-
     @ColumnInfo("mal_id")
     val malID: Int,
 
@@ -66,7 +63,7 @@ data class AnimeEntity(
 ) {
     constructor(): this(
         "", "", null, "", "", null, null, null, "",
-        AnimeAirDate(), listOf(), listOf(), listOf(), listOf(), listOf(), listOf(), listOf(), listOf(), "", "", "",
+        AnimeAirDate(), listOf(), listOf(), listOf(), listOf(), listOf(), listOf(), listOf(), listOf(), "", "",
         "", "", -1, 0.0f, 0, false, null, "", 0
     )
 }

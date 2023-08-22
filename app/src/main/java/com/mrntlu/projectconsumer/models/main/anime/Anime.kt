@@ -36,9 +36,6 @@ data class Anime(
     @SerializedName("image_url")
     override val imageURL: String,
 
-    @SerializedName("small_image_url")
-    val smallImageURL: String,
-
     @SerializedName("mal_id")
     val malID: Int,
 

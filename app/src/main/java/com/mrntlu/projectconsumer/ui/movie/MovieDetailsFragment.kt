@@ -345,8 +345,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 val bulletDecoration = BulletItemDecoration(context)
                 addItemDecoration(bulletDecoration)
 
-                genreAdapter = GenreAdapter(movieDetails!!.genres.map { it.name }) {
-                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it)?.name)
+                genreAdapter = GenreAdapter(movieDetails!!.genres) {
+                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it))
                     navController.navigate(navWithAction)
                 }
                 adapter = genreAdapter

@@ -3,7 +3,6 @@ package com.mrntlu.projectconsumer.models.main.tv
 import com.google.gson.annotations.SerializedName
 
 data class Season(
-    val description: String,
     val name: String,
 
     @SerializedName("air_date")
@@ -18,5 +17,5 @@ data class Season(
     @SerializedName("season_num")
     val seasonNum: Int
 ) {
-    constructor(): this("", "", "", 0, "", 0)
+    constructor(): this("", "", 0, "", 0)
 }

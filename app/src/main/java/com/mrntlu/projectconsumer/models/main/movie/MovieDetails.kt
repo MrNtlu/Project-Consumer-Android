@@ -5,7 +5,6 @@ import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.Streaming
-import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userList.MovieWatchList
@@ -14,7 +13,7 @@ data class MovieDetails(
     @SerializedName("_id")
     val id: String,
     val description: String,
-    val genres: List<TmdbGenre>,
+    val genres: List<String>,
     val streaming: List<Streaming>?,
     val actors: List<Actor>?,
     val translations: List<Translation>?,
@@ -24,9 +23,6 @@ data class MovieDetails(
 
     @SerializedName("image_url")
     val imageURL: String,
-
-    @SerializedName("small_image_url")
-    val smallImageURL: String,
 
     @SerializedName("imdb_id")
     val imdbID: String?,

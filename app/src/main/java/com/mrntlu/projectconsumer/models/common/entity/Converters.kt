@@ -9,20 +9,6 @@ import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 class Converters {
 
     @TypeConverter
-    fun fromGenreEntity(genres: List<TmdbGenreEntity>?): String {
-        return Gson().toJson(genres)
-    }
-
-    @TypeConverter
-    fun toGenreEntity(genres: String?): List<TmdbGenreEntity>? {
-        if (genres != null) {
-            val genre = object : TypeToken<List<TmdbGenreEntity>>() {}.type
-            return Gson().fromJson(genres, genre)
-        }
-        return emptyList()
-    }
-
-    @TypeConverter
     fun fromActorList(actors: List<Actor>?): String {
         return Gson().toJson(actors)
     }

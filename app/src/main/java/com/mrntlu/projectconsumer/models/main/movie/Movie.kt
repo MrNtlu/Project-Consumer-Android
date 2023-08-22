@@ -5,14 +5,13 @@ import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.Streaming
-import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
 
 data class Movie(
     @SerializedName("_id")
     override val id: String,
     val description: String,
-    val genres: List<TmdbGenre>,
+    val genres: List<String>,
     val streaming: List<Streaming>?,
     val actors: List<Actor>?,
     val translations: List<Translation>?,
@@ -22,9 +21,6 @@ data class Movie(
 
     @SerializedName("image_url")
     override val imageURL: String,
-
-    @SerializedName("small_image_url")
-    val smallImageURL: String,
 
     @SerializedName("imdb_id")
     val imdbID: String?,

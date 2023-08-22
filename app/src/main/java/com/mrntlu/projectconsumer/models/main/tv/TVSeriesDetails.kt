@@ -5,7 +5,6 @@ import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.Streaming
-import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
@@ -15,7 +14,7 @@ data class TVSeriesDetails(
     val id: String,
     val description: String,
     val actors: List<Actor>?,
-    val genres: List<TmdbGenre>,
+    val genres: List<String>,
     val networks: List<Network>?,
     val seasons: List<Season>,
     val translations: List<Translation>?,
@@ -25,9 +24,6 @@ data class TVSeriesDetails(
 
     @SerializedName("image_url")
     val imageURL: String,
-
-    @SerializedName("small_image_url")
-    val smallImageURL: String,
 
     @SerializedName("first_air_date")
     val firstAirDate: String,

@@ -11,7 +11,7 @@ object AnimeEntityMapper: EntityMapper<List<Anime>, List<AnimeEntity>> {
                 AnimeEntity(
                     id, description, trailer, type, source, episodes, season, year,
                     status, aired, streaming, producers, studios, genres, themes, demographics,
-                    relations, characters, title, titleOriginal, titleJP, imageURL, smallImageURL,
+                    relations, characters, title, titleOriginal, titleJP, imageURL,
                     malID, malScore, malScoredBy, isAiring, ageRating, tag, page
                 )
             }
@@ -24,7 +24,7 @@ object AnimeEntityMapper: EntityMapper<List<Anime>, List<AnimeEntity>> {
                 Anime(
                     id, description, trailer, type, source, episodes, season, year,
                     status, aired, streaming, producers, studios, genres, themes, demographics,
-                    relations, characters, title, titleOriginal, titleJP, imageURL, smallImageURL,
+                    relations, characters, title, titleOriginal, titleJP, imageURL,
                     malID, malScore, malScoredBy, isAiring, ageRating,
                 )
             }

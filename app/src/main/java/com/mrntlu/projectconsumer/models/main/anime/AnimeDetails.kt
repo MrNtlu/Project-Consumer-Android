@@ -38,9 +38,6 @@ data class AnimeDetails(
     @SerializedName("image_url")
     val imageURL: String,
 
-    @SerializedName("small_image_url")
-    val smallImageURL: String,
-
     @SerializedName("mal_id")
     val malID: Int,
 

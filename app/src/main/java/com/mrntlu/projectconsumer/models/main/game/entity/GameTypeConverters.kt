@@ -3,7 +3,6 @@ package com.mrntlu.projectconsumer.models.main.game.entity
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.mrntlu.projectconsumer.models.main.game.GameGenre
 import com.mrntlu.projectconsumer.models.main.game.GameMetacriticScorePlatform
 import com.mrntlu.projectconsumer.models.main.game.GameRelation
 import com.mrntlu.projectconsumer.models.main.game.GameStore
@@ -21,20 +20,6 @@ class GameTypeConverters {
         if (stringList != null) {
             val string = object : TypeToken<List<String>>() {}.type
             return gson.fromJson(stringList, string)
-        }
-        return emptyList()
-    }
-
-    @TypeConverter
-    fun fromGenre(gameGenreList: List<GameGenre>): String {
-        return gson.toJson(gameGenreList)
-    }
-
-    @TypeConverter
-    fun toGenre(gameGenreList: String?): List<GameGenre> {
-        if (gameGenreList != null) {
-            val gameGenre = object : TypeToken<List<GameGenre>>() {}.type
-            return gson.fromJson(gameGenreList, gameGenre)
         }
         return emptyList()
     }

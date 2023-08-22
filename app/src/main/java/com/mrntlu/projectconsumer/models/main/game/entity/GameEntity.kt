@@ -3,7 +3,6 @@ package com.mrntlu.projectconsumer.models.main.game.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.mrntlu.projectconsumer.models.main.game.GameGenre
 import com.mrntlu.projectconsumer.models.main.game.GameMetacriticScorePlatform
 import com.mrntlu.projectconsumer.models.main.game.GameRelation
 import com.mrntlu.projectconsumer.models.main.game.GameStore
@@ -15,7 +14,7 @@ data class GameEntity(
     val description: String,
     val tba: Boolean,
     val subreddit: String?,
-    val genres: List<GameGenre>,
+    val genres: List<String>,
     val tags: List<String>,
     val platforms: List<String>,
     val developers: List<String>,

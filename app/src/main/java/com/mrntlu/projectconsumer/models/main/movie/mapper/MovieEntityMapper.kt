@@ -1,9 +1,7 @@
 package com.mrntlu.projectconsumer.models.main.movie.mapper
 
 import com.mrntlu.projectconsumer.interfaces.EntityMapper
-import com.mrntlu.projectconsumer.models.common.TmdbGenre
 import com.mrntlu.projectconsumer.models.common.Translation
-import com.mrntlu.projectconsumer.models.common.entity.TmdbGenreEntity
 import com.mrntlu.projectconsumer.models.common.entity.TranslationEntity
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.models.main.movie.entity.MovieEntity
@@ -18,7 +16,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
             MovieEntity(
                 movie.id,
                 movie.description,
-                movie.genres.map { TmdbGenreEntity(it.name, it.tmdbID) },
+                movie.genres,
                 movie.streaming,
                 movie.actors,
                 movie.translations?.map { TranslationEntity(it.lanCode, it.lanName, it.lanNameEn, it.title, it.description) },
@@ -26,7 +24,6 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
                 movie.status,
                 movie.backdrop,
                 movie.imageURL,
-                movie.smallImageURL,
                 movie.imdbID,
                 movie.releaseDate,
                 movie.title,
@@ -47,7 +44,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
             Movie(
                 movieEntity.id,
                 movieEntity.description,
-                movieEntity.genres.map { TmdbGenre(it.name, it.tmdbID) },
+                movieEntity.genres,
                 movieEntity.streaming,
                 movieEntity.actors,
                 movieEntity.translations?.map { Translation(it.lanCode, it.lanName, it.lanNameEn, it.title, it.description) },
@@ -55,7 +52,6 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
                 movieEntity.status,
                 movieEntity.backdrop,
                 movieEntity.imageURL,
-                movieEntity.smallImageURL,
                 movieEntity.imdbID,
                 movieEntity.releaseDate,
                 movieEntity.titleEn,

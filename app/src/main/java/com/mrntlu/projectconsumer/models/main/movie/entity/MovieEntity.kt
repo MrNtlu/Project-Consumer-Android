@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.Streaming
-import com.mrntlu.projectconsumer.models.common.entity.TmdbGenreEntity
 import com.mrntlu.projectconsumer.models.common.entity.TranslationEntity
 
 @Entity(tableName = "movies")
@@ -14,7 +13,7 @@ data class MovieEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
     val description: String,
-    val genres: List<TmdbGenreEntity>,
+    val genres: List<String>,
     val streaming: List<Streaming>?,
     val actors: List<Actor>?,
     val translations: List<TranslationEntity>?,
@@ -24,9 +23,6 @@ data class MovieEntity(
 
     @ColumnInfo("image_url")
     val imageURL: String,
-
-    @ColumnInfo("small_image_url")
-    val smallImageURL: String,
 
     @ColumnInfo("imdb_id")
     val imdbID: String?,
@@ -60,7 +56,7 @@ data class MovieEntity(
 ) {
     constructor(): this(
         "","", listOf(), listOf(), listOf(), listOf(), 0,"", null,"",
-        "","","","","","",
+        "","","","","",
         0.0, 0.0, 0, listOf(), "", 0
     )
 }

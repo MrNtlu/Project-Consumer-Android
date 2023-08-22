@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.Streaming
-import com.mrntlu.projectconsumer.models.common.entity.TmdbGenreEntity
 import com.mrntlu.projectconsumer.models.common.entity.TranslationEntity
 import com.mrntlu.projectconsumer.models.main.tv.Season
 
@@ -16,7 +15,7 @@ data class TVSeriesEntity(
     val id: String,
     val description: String,
     val actors: List<Actor>?,
-    val genres: List<TmdbGenreEntity>,
+    val genres: List<String>,
     val networks: List<NetworkEntity>?,
     val seasons: List<Season>,
     val translations: List<TranslationEntity>?,
@@ -26,9 +25,6 @@ data class TVSeriesEntity(
 
     @ColumnInfo("image_url")
     val imageURL: String,
-
-    @ColumnInfo("small_image_url")
-    val smallImageURL: String,
 
     @ColumnInfo("first_air_date")
     val firstAirDate: String,
@@ -65,7 +61,7 @@ data class TVSeriesEntity(
 ) {
     constructor(): this(
         "", "", listOf(), listOf(), listOf(), listOf(), listOf(), "", listOf(), "",
-        "", "", "", "", "", "", 0.0, 0.0,
+        "", "", "", "", "", 0.0, 0.0,
         0, 0, 0, listOf(), "", 0
     )
 }

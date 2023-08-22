@@ -9,7 +9,7 @@ data class Game(
     val description: String,
     val tba: Boolean,
     val subreddit: String?,
-    val genres: List<GameGenre>,
+    val genres: List<String>,
     val tags: List<String>,
     val platforms: List<String>,
     val developers: List<String>,
