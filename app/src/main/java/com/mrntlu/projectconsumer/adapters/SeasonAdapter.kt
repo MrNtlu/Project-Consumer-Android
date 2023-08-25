@@ -11,6 +11,7 @@ import com.mrntlu.projectconsumer.databinding.CellSeasonBinding
 import com.mrntlu.projectconsumer.models.main.tv.Season
 import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
 class SeasonAdapter(
@@ -35,6 +36,12 @@ class SeasonAdapter(
                     }
                 }
             }
+
+            if (season.episodeCount > 0) {
+                val episodeStr = "${season.episodeCount} eps."
+                episodeCountChip.text = episodeStr
+            }
+            episodeCountChip.setVisibilityByCondition(season.episodeCount == 0)
 
             seasonComposeView.setVisible()
             seasonIV.loadWithGlide(season.imageURL, null, seasonComposeView) {
