@@ -37,6 +37,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -327,6 +328,8 @@ class UserListAdapter(
             } season${if ((watchedSeasons ?: 0) > 1) "s" else ""}"
 
             binding.apply {
+                val radiusInPx = root.context.dpToPxFloat(6f)
+
                 imageInclude.apply {
                     previewComposeView.apply {
                         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -338,6 +341,7 @@ class UserListAdapter(
                     }
 
                     previewCard.setGone()
+                    previewTV.setGone()
                     previewComposeView.setVisible()
 
                     previewIV.scaleType = if (contentType == Constants.ContentType.GAME)
@@ -347,12 +351,12 @@ class UserListAdapter(
 
                     previewIV.loadWithGlide(imageUrl ?: "", previewCard, previewComposeView) {
                         if (contentType == Constants.ContentType.GAME)
-                            transform(CenterCrop(), RoundedCorners(12))
+                            transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
                         else
-                            transform(RoundedCorners(12))
+                            transform(RoundedCorners(radiusInPx.toInt()))
                     }
 
-                    previewTV.text = title
+                    previewCard.radius = radiusInPx
                 }
 
                 val attrColor = when (contentStatus) {

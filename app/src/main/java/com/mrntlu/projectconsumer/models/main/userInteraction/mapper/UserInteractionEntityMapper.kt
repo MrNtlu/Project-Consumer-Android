@@ -19,6 +19,7 @@ object UserInteractionEntityMapper: EntityMapper<List<ConsumeLaterResponse>, Lis
                 consumeLater.selfNote,
                 consumeLater.createdAt,
                 ConsumeLaterContentEntity(
+                    consumeLater.content.titleEn,
                     consumeLater.content.titleOriginal,
                     consumeLater.content.imageURL,
                     consumeLater.content.description,
@@ -41,6 +42,7 @@ object UserInteractionEntityMapper: EntityMapper<List<ConsumeLaterResponse>, Lis
                 consumeLaterEntity.selfNote,
                 consumeLaterEntity.createdAt,
                 ConsumeLaterContent(
+                    consumeLaterEntity.content.titleEn,
                     consumeLaterEntity.content.titleOriginal,
                     consumeLaterEntity.content.imageURL,
                     consumeLaterEntity.content.description,

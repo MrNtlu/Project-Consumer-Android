@@ -278,6 +278,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_settings -> getString(R.string.settings)
                 R.id.discoverListFragment -> getString(R.string.discover_title)
+                R.id.imageFragment -> getString(R.string.poster)
                 R.id.navigation_home -> getString(R.string.home)
                 R.id.navigation_discover -> getString(R.string.discover)
                 R.id.navigation_profile -> getString(R.string.profile)

@@ -167,6 +167,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toStartOf="@+id/guideline32"
                 app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/materialDivider" />

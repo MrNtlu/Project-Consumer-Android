@@ -33,6 +33,20 @@
         app:layout_constraintTop_toTopOf="@+id/imageInclude"
         tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
 
+    <TextView
+        android:id="@+id/titleOriginalTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="?attr/subTextColor"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/titleTV"
+        app:layout_constraintStart_toStartOf="@+id/titleTV"
+        app:layout_constraintTop_toBottomOf="@+id/titleTV"
+        tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix"
+        tools:ignore="SmallSp" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/contentTypeCV"
         android:layout_width="wrap_content"
@@ -60,7 +74,7 @@
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:minHeight="0dp"
         android:padding="2dp"
         android:text="@string/delete"
@@ -69,7 +83,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/titleTV"
-        app:layout_constraintTop_toBottomOf="@+id/titleTV"
+        app:layout_constraintTop_toBottomOf="@+id/titleOriginalTV"
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
@@ -86,4 +100,5 @@
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/deleteButton"
         app:layout_constraintTop_toTopOf="@+id/deleteButton" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

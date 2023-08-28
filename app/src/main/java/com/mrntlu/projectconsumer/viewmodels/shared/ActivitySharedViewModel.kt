@@ -7,6 +7,25 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 
 class ActivitySharedViewModel: ViewModel() {
+    // Theme
+    val themeCode: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
+
+    fun isLightTheme() = themeCode.value == Constants.LIGHT_THEME
+
+    fun setThemeCode(code: Int) {
+        themeCode.value = code
+    }
+
+    fun toggleTheme() {
+        themeCode.value = if (isLightTheme()) {
+            Constants.DARK_THEME
+        } else {
+            Constants.LIGHT_THEME
+        }
+    }
+
     //Is Back Pressed
     val shouldPreventBottomSelection: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)
@@ -51,25 +70,6 @@ class ActivitySharedViewModel: ViewModel() {
     fun setLanguageCode(code: String?) {
         if (code != null)
             this.languageCode.value = code
-    }
-
-    // Theme
-    val themeCode: MutableLiveData<Int> by lazy {
-        MutableLiveData<Int>()
-    }
-
-    fun isLightTheme() = themeCode.value == Constants.LIGHT_THEME
-
-    fun setThemeCode(code: Int) {
-        themeCode.value = code
-    }
-
-    fun toggleTheme() {
-        themeCode.value = if (isLightTheme()) {
-            Constants.DARK_THEME
-        } else {
-            Constants.LIGHT_THEME
-        }
     }
 
     // Window Size

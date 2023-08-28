@@ -38,6 +38,7 @@ import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
@@ -190,10 +191,12 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
     private fun setUI() {
         animeDetails!!.apply {
             binding.imageInclude.apply {
+                val radiusInPx = root.context.dpToPxFloat(6f)
+
                 previewComposeView.apply {
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                     setContent {
-                        LoadingShimmer(isDarkTheme = false, roundedCornerSize = 6.dp) {
+                        LoadingShimmer(isDarkTheme = false, roundedCornerSize = radiusInPx.dp) {
                             fillMaxHeight()
                         }
                     }
@@ -202,7 +205,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 previewCard.setGone()
                 previewComposeView.setVisible()
                 previewIV.loadWithGlide(animeDetails?.imageURL ?: "", previewCard, previewComposeView) {
-                    transform(RoundedCorners(12))
+                    transform(RoundedCorners(radiusInPx.toInt()))
                 }
             }
 
@@ -234,6 +237,16 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
     private fun setListeners() {
         binding.apply {
+            imageInclude.root.setOnClickListener {
+                if (animeDetails?.imageURL?.isNotEmptyOrBlank() == true) {
+                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToImageFragment(
+                        animeDetails!!.imageURL
+                    )
+
+                    navController.navigate(navWithAction)
+                }
+            }
+
             detailsDescriptionTV.setOnClickListener {
                 detailsDescriptionTV.toggle()
             }

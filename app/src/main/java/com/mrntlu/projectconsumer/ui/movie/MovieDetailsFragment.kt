@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
@@ -34,6 +35,8 @@ import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.openInBrowser
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
@@ -233,7 +236,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 String.format("%02dh %02dm • ", hours, minutes)
             } else null
 
-            val releaseStr = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.take(4) else ""}"
+            val releaseStr = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.convertToHumanReadableDateString(true) else ""}"
             binding.detailsReleaseTV.text = releaseStr
             binding.detailsStatusTV.text = status
 
@@ -248,6 +251,16 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
     private fun setListeners() {
         binding.apply {
+            detailsToolbarIV.setOnClickListener {
+                if (movieDetails?.imageURL?.isNotEmptyOrBlank() == true) {
+                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToImageFragment(
+                        movieDetails!!.imageURL
+                    )
+
+                    navController.navigate(navWithAction)
+                }
+            }
+
             detailsToolbarBackButton.setOnClickListener {
                 navController.popBackStack()
             }
@@ -294,6 +307,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
     }
 
     private fun setRecyclerView() {
+        val radiusInPx = binding.root.context.dpToPxFloat(12f)
+
         if (!movieDetails?.actors.isNullOrEmpty()) {
             createDetailsAdapter(
                 recyclerView = binding.detailsActorsRV,
@@ -305,7 +320,9 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         it.image,
                         it.character
                     )
-                }
+                },
+                cardCornerRadius = radiusInPx,
+                transformImage = { transform(CenterCrop(), RoundedCorners(radiusInPx.toInt())) }
             ) {
                 actorAdapter = it
                 it
@@ -327,8 +344,9 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         it.originCountry
                     )
                 },
-                placeHolderImage = R.drawable.ic_company_75, cardCornerRadius = 18F,
-                transformImage = { transform(CenterCrop(), RoundedCorners(12)) }
+                placeHolderImage = R.drawable.ic_company_75,
+                cardCornerRadius = radiusInPx,
+                transformImage = { transform(CenterInside(), RoundedCorners(radiusInPx.toInt())) }
             ) {
                 companiesAdapter = it
                 it

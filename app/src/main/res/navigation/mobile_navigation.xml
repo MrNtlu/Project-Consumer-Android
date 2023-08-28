@@ -90,6 +90,13 @@
         <deepLink
             android:autoVerify="true"
             app:uri="watchlistfy.com/movie/{movieId}" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -316,6 +323,13 @@
             android:id="@+id/deepLink"
             android:autoVerify="true"
             app:uri="watchlistfy.com/tv/{tvId}" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/tvListFragment"
@@ -530,6 +544,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_animeDetailsFragment_to_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <action
@@ -566,6 +587,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_gameDetailsFragment_to_imageFragment"
+            app:destination="@id/imageFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <action
         android:id="@+id/action_global_gameDetailsFragment"
@@ -584,6 +612,19 @@
             android:name="isPrivacy"
             app:argType="boolean"
             android:defaultValue="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.ImageFragment"
+        android:label="fragment_image"
+        tools:layout="@layout/fragment_image" >
+        <argument
+            android:name="imageUrl"
+            app:argType="string" />
+        <argument
+            android:name="isRatioDifferent"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 
 </navigation>

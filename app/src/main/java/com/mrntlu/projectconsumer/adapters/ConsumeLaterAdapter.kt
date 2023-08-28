@@ -24,6 +24,8 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -170,6 +172,8 @@ class ConsumeLaterAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ConsumeLaterResponse, position: Int, interaction: ConsumeLaterInteraction) {
             binding.apply {
+                val radiusInPx = root.context.dpToPxFloat(6f)
+
                 imageInclude.apply {
                     previewComposeView.apply {
                         setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -183,6 +187,7 @@ class ConsumeLaterAdapter(
                     previewCard.setGone()
                     previewComposeView.setVisible()
                     previewGameCV.setGone()
+                    previewTV.setGone()
 
                     previewIV.scaleType = if (item.contentType == "game")
                         ImageView.ScaleType.CENTER_CROP
@@ -191,16 +196,24 @@ class ConsumeLaterAdapter(
 
                     previewIV.loadWithGlide(item.content.imageURL, previewCard, previewComposeView) {
                         if (item.contentType == "game")
-                            transform(CenterCrop(), RoundedCorners(12))
+                            transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
                         else
-                            transform(RoundedCorners(12))
+                            transform(RoundedCorners(radiusInPx.toInt()))
                     }
 
-                    previewTV.text = item.content.titleOriginal
+                    previewCard.radius = radiusInPx
                 }
 
                 imageInclude.previewIV.contentDescription = item.content.titleOriginal
-                titleTV.text = item.content.titleOriginal
+
+                if (item.content.titleEn.isNotEmptyOrBlank() && item.content.titleEn != item.content.titleOriginal) {
+                    titleTV.text = item.content.titleEn
+                    titleOriginalTV.text = item.content.titleOriginal
+                } else {
+                    titleTV.text = item.content.titleOriginal
+                    titleOriginalTV.setGone()
+                }
+
                 contentTypeTV.text = Constants.ContentType.fromStringRequest(item.contentType).value
 
                 deleteButton.setOnClickListener {

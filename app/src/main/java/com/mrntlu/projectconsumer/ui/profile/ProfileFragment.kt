@@ -1,10 +1,12 @@
 package com.mrntlu.projectconsumer.ui.profile
 
 import android.os.Bundle
+import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -14,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -40,6 +43,7 @@ import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
@@ -56,9 +60,38 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private var gridCount = 3
     private var isResponseFailed = false
     private var userInfo: UserInfo? = null
+    private var gestureDetector: GestureDetector? = null
+
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
     private var contentAdapter: ContentAdapter<ContentModel>? = null
     private lateinit var dialog: LoadingDialog
+
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+        private val swipeThreshold = 100
+        private val swipeVelocityThreshold = 100
+
+        override fun onFling(
+            e1: MotionEvent,
+            e2: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            val diffX = e2.x - e1.x
+            val diffY = e2.y - e1.y
+
+            if (abs(diffX) > abs(diffY)) {
+                if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
+                    if (diffX > 0) {
+                        selectTab(true)
+                    } else {
+                        selectTab(false)
+                    }
+                    return true
+                }
+            }
+            return false
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -362,6 +395,33 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 }
             )
             adapter = contentAdapter
+
+            gestureDetector = GestureDetector(this.context, GestureListener())
+
+            addOnItemTouchListener(object: RecyclerView.OnItemTouchListener {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    gestureDetector?.onTouchEvent(e)
+                    return false
+                }
+
+                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+
+                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+            })
+        }
+    }
+
+    private fun selectTab(isRight: Boolean) {
+        binding.profileContentTabLayout.apply {
+            val newSelectedIndex: Int = if (selectedTabPosition == 0 && isRight)
+                tabCount.minus(1)
+            else if (selectedTabPosition == tabCount.minus(1) && !isRight)
+                0
+            else
+                selectedTabPosition.plus(if (isRight) -1 else 1)
+
+            val tabToSelect = getTabAt(newSelectedIndex)
+            tabToSelect?.select()
         }
     }
 
@@ -373,6 +433,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     override fun onDestroyView() {
         contentAdapter = null
+        gestureDetector = null
+
         viewLifecycleOwner.apply {
             sharedViewModel.networkStatus.removeObservers(this)
             sharedViewModel.windowSize.removeObservers(this)

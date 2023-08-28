@@ -32,20 +32,75 @@
         app:layout_constraintTop_toTopOf="parent"
         android:visibility="gone"/>
 
-    <com.google.android.material.chip.Chip
-        android:id="@+id/episodeCountChip"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/placeHolderCV"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:elevation="3dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="?attr/mainTextColor"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="2:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/no_poster"
+                android:textColor="?attr/mainBackgroundColor"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/previewTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                android:textColor="?attr/mainBackgroundColor"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="TextView" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/seasonEpisodeCV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="3dp"
-        android:elevation="5dp"
-        android:textColor="@color/white"
-        app:chipCornerRadius="8dp"
-        app:chipStartPadding="3dp"
-        app:chipEndPadding="3dp"
-        android:clickable="false"
-        app:chipBackgroundColor="@color/red500"
+        app:cardElevation="5dp"
+        app:cardBackgroundColor="?attr/toolbarBackButtonColor"
         app:layout_constraintBottom_toBottomOf="@+id/seasonIV"
-        app:layout_constraintEnd_toEndOf="@+id/seasonIV"
-        tools:text="120 eps." />
+        app:layout_constraintEnd_toEndOf="@+id/seasonIV">
+        <TextView
+            android:id="@+id/episodeCountTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="?attr/mainTextColor"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:paddingHorizontal="3dp"
+            tools:text="120 eps."
+            tools:ignore="SmallSp" />
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

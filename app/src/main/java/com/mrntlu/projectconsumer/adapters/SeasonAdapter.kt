@@ -10,7 +10,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.databinding.CellSeasonBinding
 import com.mrntlu.projectconsumer.models.main.tv.Season
 import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
@@ -28,6 +30,8 @@ class SeasonAdapter(
         val season = seasonList[position]
 
         holder.binding.apply {
+            val radiusInPx = root.context.dpToPxFloat(6f)
+
             seasonComposeView.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
@@ -37,16 +41,24 @@ class SeasonAdapter(
                 }
             }
 
+            placeHolderCV.setGone()
+            seasonComposeView.setVisible()
+
             if (season.episodeCount > 0) {
                 val episodeStr = "${season.episodeCount} eps."
-                episodeCountChip.text = episodeStr
+                episodeCountTV.text = episodeStr
             }
-            episodeCountChip.setVisibilityByCondition(season.episodeCount == 0)
+            seasonEpisodeCV.setVisibilityByCondition(season.episodeCount == 0)
 
             seasonComposeView.setVisible()
-            seasonIV.loadWithGlide(season.imageURL, null, seasonComposeView) {
-                transform(RoundedCorners(18))
+            seasonIV.loadWithGlide(season.imageURL, placeHolderCV, seasonComposeView) {
+                transform(RoundedCorners(radiusInPx.toInt()))
             }
+
+            previewTV.text = season.seasonNum.toString()
+            seasonIV.contentDescription = season.name
+            seasonEpisodeCV.radius = radiusInPx
+            placeHolderCV.radius = radiusInPx
         }
     }
 

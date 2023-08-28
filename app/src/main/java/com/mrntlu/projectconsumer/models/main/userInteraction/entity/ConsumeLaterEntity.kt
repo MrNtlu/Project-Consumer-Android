@@ -44,6 +44,8 @@ data class ConsumeLaterEntity(
 }
 
 data class ConsumeLaterContentEntity(
+    @ColumnInfo("title_en")
+    val titleEn: String,
 
     @ColumnInfo("title_original")
     val titleOriginal: String,
@@ -53,5 +55,5 @@ data class ConsumeLaterContentEntity(
 
     val description: String,
 ) {
-    constructor(): this("", "", "")
+    constructor(): this("","", "", "")
 }

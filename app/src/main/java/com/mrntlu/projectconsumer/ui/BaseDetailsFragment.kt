@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.ui
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import com.mrntlu.projectconsumer.models.common.StreamingPlatform
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showLoginRegisterDialog
@@ -219,6 +221,8 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         val collapsingLayoutParams: AppBarLayout.LayoutParams = collapsingToolbar.layoutParams as AppBarLayout.LayoutParams
         collapsingLayoutParams.scrollFlags = -1
         collapsingToolbar.layoutParams = collapsingLayoutParams
+
+        nestedScrollView.background = GradientDrawable().apply { setColor(nestedScrollView.context.getColorFromAttr(R.attr.mainBackgroundColor)) }
     }
 
     protected fun setSpinner(spinner: Spinner) {

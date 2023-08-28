@@ -394,6 +394,7 @@
     <string name="not_rated_yet">Not rated yet</string>
     <string name="delete_user_info">Do you want to delete your account? You can\'t undo this action and all your data will be deleted!</string>
     <string name="unexpected_try_again">Unexpected error, please try again.</string>
+    <string name="poster">Poster</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -49,6 +49,8 @@ data class ConsumeLaterResponse(
 }
 
 data class ConsumeLaterContent(
+    @SerializedName("title_en")
+    val titleEn: String,
 
     @SerializedName("title_original")
     val titleOriginal: String,

@@ -241,6 +241,17 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            detailsToolbarIV.setOnClickListener {
+                if (gameDetails?.imageURL?.isNotEmptyOrBlank() == true) {
+                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToImageFragment(
+                        gameDetails!!.imageURL,
+                        isRatioDifferent = true
+                    )
+
+                    navController.navigate(navWithAction)
+                }
+            }
+
             detailsToolbarBackButton.setOnClickListener {
                 navController.popBackStack()
             }

@@ -36,6 +36,8 @@ import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.openInBrowser
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
@@ -232,7 +234,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 interactionsRateCountTV.text = rateCountText
             }
 
-            binding.tvDetailsInfoTV.text = firstAirDate.take(4)
+            binding.tvDetailsInfoTV.text = firstAirDate.convertToHumanReadableDateString(true)
             binding.tvDetailsStatusTV.text = status
 
             val totalSeasonsStr = "$totalSeasons Season${if (totalSeasons > 1) "s" else ""}"
@@ -250,6 +252,15 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     private fun setListeners() {
         binding.apply {
+            tvDetailsToolbarIV.setOnClickListener {
+                if (tvDetails?.imageURL?.isNotEmptyOrBlank() == true) {
+                    val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToImageFragment(
+                        tvDetails!!.imageURL
+                    )
+
+                    navController.navigate(navWithAction)
+                }
+            }
             tvDetailsToolbarBackButton.setOnClickListener {
                 navController.popBackStack()
             }
@@ -288,6 +299,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
     }
 
     private fun setRecyclerView() {
+        val radiusInPx = binding.root.context.dpToPxFloat(12f)
+
         if (!tvDetails?.seasons.isNullOrEmpty()) {
             binding.tvDetailsSeasonRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -329,7 +342,9 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                         it.image,
                         it.character
                     )
-                }
+                },
+                cardCornerRadius = radiusInPx,
+                transformImage = { transform(CenterCrop(), RoundedCorners(radiusInPx.toInt())) }
             ) {
                 actorAdapter = it
                 it
@@ -351,8 +366,9 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                         it.originCountry ?: ""
                     )
                 },
-                placeHolderImage = R.drawable.ic_company_75, cardCornerRadius = 18F,
-                transformImage = { transform(CenterCrop(), RoundedCorners(12)) }
+                placeHolderImage = R.drawable.ic_company_75,
+                cardCornerRadius = radiusInPx,
+                transformImage = { transform(CenterCrop(), RoundedCorners(radiusInPx.toInt())) }
             ) {
                 networkAdapter = it
                 it
@@ -374,8 +390,9 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                         it.originCountry
                     )
                 },
-                placeHolderImage = R.drawable.ic_company_75, cardCornerRadius = 18F,
-                transformImage = { transform(CenterCrop(), RoundedCorners(12)) }
+                placeHolderImage = R.drawable.ic_company_75,
+                cardCornerRadius = radiusInPx,
+                transformImage = { transform(CenterCrop(), RoundedCorners(radiusInPx.toInt())) }
             ) {
                 companiesAdapter = it
                 it

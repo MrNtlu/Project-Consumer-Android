@@ -32,6 +32,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -71,6 +72,10 @@ class SingletonModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         return OkHttpClient.Builder()
+            .readTimeout(45, TimeUnit.SECONDS)
+            .writeTimeout(45, TimeUnit.SECONDS)
+            .callTimeout(45, TimeUnit.SECONDS)
+            .connectTimeout(45, TimeUnit.SECONDS)
             .addInterceptor(authInterceptor)
 //            .addInterceptor(loggingInterceptor)
             .authenticator(authAuthenticator)
@@ -85,6 +90,10 @@ class SingletonModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         return OkHttpClient.Builder()
+            .readTimeout(45, TimeUnit.SECONDS)
+            .writeTimeout(45, TimeUnit.SECONDS)
+            .callTimeout(45, TimeUnit.SECONDS)
+            .connectTimeout(45, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
             .build()
     }

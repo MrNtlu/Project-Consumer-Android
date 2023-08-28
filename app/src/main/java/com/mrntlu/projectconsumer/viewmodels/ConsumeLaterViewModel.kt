@@ -192,7 +192,9 @@ class ConsumeLaterViewModel @Inject constructor(
 
             var searchList = currentData.filter {
                 it.content.titleOriginal.startsWith(search, ignoreCase = true) ||
-                it.content.titleOriginal.contains(search, ignoreCase = true)
+                it.content.titleOriginal.contains(search, ignoreCase = true) ||
+                it.content.titleEn.startsWith(search, ignoreCase = true) ||
+                it.content.titleEn.contains(search, ignoreCase = true)
             }
 
             if (filter != null)
