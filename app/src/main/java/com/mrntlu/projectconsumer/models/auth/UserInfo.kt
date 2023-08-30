@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.models.auth
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 
 data class UserInfo(
     @SerializedName("is_premium")
@@ -24,17 +25,11 @@ data class UserInfo(
     @SerializedName("fcm_token")
     val fcmToken: String,
 
-    @SerializedName("legend_anime_list")
-    val legendAnimeList: List<UserInfoCommon>,
+    @SerializedName("legend_content")
+    val legendContent: List<UserInfoCommon>,
 
-    @SerializedName("legend_movie_list")
-    val legendMovieList: List<UserInfoCommon>,
-
-    @SerializedName("legend_tv_list")
-    val legendTVList: List<UserInfoCommon>,
-
-    @SerializedName("legend_game_list")
-    val legendGameList: List<UserInfoGame>,
+    @SerializedName("consume_later")
+    val watchLater: List<ConsumeLaterResponse>?,
 
     val username: String,
     val email: String,

@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/empty" />
+        app:lottie_rawRes="@raw/discover" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline20"

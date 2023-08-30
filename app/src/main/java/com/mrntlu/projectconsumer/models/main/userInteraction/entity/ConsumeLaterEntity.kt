@@ -53,7 +53,8 @@ data class ConsumeLaterContentEntity(
     @ColumnInfo("image_url")
     val imageURL: String,
 
+    val score: Float,
     val description: String,
 ) {
-    constructor(): this("","", "", "")
+    constructor(): this("","", "", 0f, "")
 }

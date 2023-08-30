@@ -25,6 +25,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mrntlu.projectconsumer.MainActivity
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ConsumeLaterAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentListBinding
@@ -351,7 +352,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
     private fun setRecyclerView() {
         binding.listRV.apply {
-            setPadding(0, 0, 0, context.dpToPx(76F))
+            setPadding(0, 0, 0, context.dpToPx(8F))
             clipToPadding = false
 
             val linearLayout = LinearLayoutManager(context)
@@ -470,7 +471,8 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
                 override fun onExhaustButtonPressed() {}
 
                 override fun onDiscoverButtonPressed() {
-                    navController.navigate(R.id.action_global_navigation_discover)
+                    navController.popBackStack()
+                    (activity as? MainActivity)?.navigateToDiscover()
                 }
             })
             adapter = consumeLaterAdapter

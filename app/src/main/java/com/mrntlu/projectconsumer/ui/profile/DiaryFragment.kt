@@ -17,6 +17,7 @@ import com.mrntlu.projectconsumer.models.common.LogsUI
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.getFirstDateOfTheWeek
 import com.mrntlu.projectconsumer.utils.setGone
@@ -226,7 +227,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
         viewModel.resetTotalYPosition()
         binding.logsRV.scrollToPosition(0)
 
-        val headerDateText = "${focusedDate.month.toString().lowercase().replaceFirstChar { it.uppercase() }} ${focusedDate.year}"
+        val headerDateText = "${focusedDate.month.toString().lowercase().capitalizeFirstLetter()} ${focusedDate.year}"
         binding.calendarDateTV.text = headerDateText
     }
 

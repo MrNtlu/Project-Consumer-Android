@@ -1,97 +1,66 @@
 package com.mrntlu.projectconsumer.ui.profile
 
 import android.os.Bundle
-import android.view.GestureDetector
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.MotionEvent
+import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.tabs.TabLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.mrntlu.projectconsumer.MainActivity
 import com.mrntlu.projectconsumer.R
-import com.mrntlu.projectconsumer.WindowSizeClass
-import com.mrntlu.projectconsumer.adapters.ContentAdapter
+import com.mrntlu.projectconsumer.adapters.ConsumeLaterPreviewAdapter
+import com.mrntlu.projectconsumer.adapters.LegendContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentProfileBinding
-import com.mrntlu.projectconsumer.interfaces.ContentModel
-import com.mrntlu.projectconsumer.interfaces.Interaction
+import com.mrntlu.projectconsumer.interfaces.ConsumeLaterInteraction
 import com.mrntlu.projectconsumer.models.auth.UserInfo
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
+import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.Operation
+import com.mrntlu.projectconsumer.utils.OperationEnum
+import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import kotlin.math.abs
 
 @AndroidEntryPoint
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
-
-    private companion object {
-        private const val KEY_VALUE = "content_type"
-    }
 
     @Inject lateinit var tokenManager: TokenManager
 
     private val viewModel: ProfileViewModel by viewModels()
     private val userSharedViewModel: UserSharedViewModel by activityViewModels()
 
-    private var gridCount = 3
+    private var orientationEventListener: OrientationEventListener? = null
+
     private var isResponseFailed = false
     private var userInfo: UserInfo? = null
-    private var gestureDetector: GestureDetector? = null
 
-    private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
-    private var contentAdapter: ContentAdapter<ContentModel>? = null
+    private var legendContentAdapter: LegendContentAdapter? = null
+    private var consumeLaterAdapter: ConsumeLaterPreviewAdapter? = null
     private lateinit var dialog: LoadingDialog
-
-    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-        private val swipeThreshold = 100
-        private val swipeVelocityThreshold = 100
-
-        override fun onFling(
-            e1: MotionEvent,
-            e2: MotionEvent,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            val diffX = e2.x - e1.x
-            val diffY = e2.y - e1.y
-
-            if (abs(diffX) > abs(diffY)) {
-                if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
-                    if (diffX > 0) {
-                        selectTab(true)
-                    } else {
-                        selectTab(false)
-                    }
-                    return true
-                }
-            }
-            return false
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -107,24 +76,44 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             dialog = LoadingDialog(it)
         }
 
-        savedInstanceState?.let {
-            contentType = Constants.ContentType.fromStringValue(
-                it.getString(KEY_VALUE, Constants.ContentType.MOVIE.value)
-            )
-        }
+        orientationEventListener = object : OrientationEventListener(view.context) {
+            override fun onOrientationChanged(orientation: Int) {
+                val defaultPortrait = 0
+                val upsideDownPortrait = 180
+                val rightLandscape = 90
+                val leftLandscape = 270
 
-        view.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                when {
+                    isWithinOrientationRange(orientation, defaultPortrait) -> {
+                        viewModel.setNewOrientation(Orientation.Portrait)
+                    }
 
-                val rvParams = binding.legendContentRV.layoutParams
-                rvParams.height = view.height
-                    .minus(binding.profileContentTabLayout.height)
+                    isWithinOrientationRange(orientation, leftLandscape) -> {
+                        viewModel.setNewOrientation(Orientation.Landscape)
+                    }
+
+                    isWithinOrientationRange(orientation, upsideDownPortrait) -> {
+                        viewModel.setNewOrientation(Orientation.PortraitReverse)
+                    }
+
+                    isWithinOrientationRange(orientation, rightLandscape) -> {
+                        viewModel.setNewOrientation(Orientation.LandscapeReverse)
+                    }
+                }
             }
-        })
+        }
+        orientationEventListener?.enable()
 
         setMenu()
+        setConsumeLaterRV()
         setObservers()
+    }
+
+    private fun isWithinOrientationRange(
+        currentOrientation: Int, targetOrientation: Int, epsilon: Int = 30
+    ): Boolean {
+        return currentOrientation > targetOrientation - epsilon
+                && currentOrientation < targetOrientation + epsilon
     }
 
     override fun onStart() {
@@ -184,27 +173,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                         setListeners()
                         if (!viewModel.didOrientationChange && userInfo != null) {
                             setRecyclerView()
-                            contentAdapter?.setData(getLegendContentList())
+                            consumeLaterAdapter?.setData(userInfo!!.watchLater?.toCollection(ArrayList()) ?: arrayListOf())
+
+                            viewModel.didOrientationChange = false
                         }
                     }
                     else -> {}
                 }
-            }
-        }
-
-        sharedViewModel.windowSize.observe(viewLifecycleOwner) {
-            val widthSize: WindowSizeClass = it
-
-            gridCount = when(widthSize) {
-                WindowSizeClass.COMPACT -> 2
-                WindowSizeClass.MEDIUM -> 3
-                WindowSizeClass.EXPANDED -> 5
-            }
-
-            if (viewModel.didOrientationChange && userInfo != null) {
-                setRecyclerView()
-                contentAdapter?.setData(getLegendContentList())
-                viewModel.didOrientationChange = false
             }
         }
 
@@ -213,13 +188,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 viewModel.getUserInfo()
         }
     }
-
-    private fun getLegendContentList() = when(contentType) {
-        Constants.ContentType.ANIME -> userInfo!!.legendAnimeList
-        Constants.ContentType.MOVIE -> userInfo!!.legendMovieList
-        Constants.ContentType.TV -> userInfo!!.legendTVList
-        Constants.ContentType.GAME -> userInfo!!.legendGameList
-    }.toCollection(ArrayList())
 
     private fun setUI() {
         userInfo?.let {
@@ -239,17 +207,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 gameStatTV.text = it.gameCount.toString()
                 animeStatTV.text = it.animeCount.toString()
 
-                profileContentTabLayout.apply {
-                    if (profileContentTabLayout.tabCount < Constants.TabList.size) {
-                        for (tab in Constants.TabList) {
-                            addTab(
-                                profileContentTabLayout.newTab().setText(tab),
-                                tab == contentType.value
-                            )
-                        }
-                    }
-                }
-
                 val levelStr = "${it.level} lv."
                 profileLevelBar.progress = it.level
                 profileLevelTV.text = levelStr
@@ -259,6 +216,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            profileUserListButton.setOnClickListener {
+                navController.navigate(R.id.action_navigation_profile_to_navigation_user_list)
+            }
+
+            seeAllButtonFirst.setOnClickListener {
+                navController.navigate(R.id.action_navigation_profile_to_navigation_later)
+            }
+
             errorLayoutInc.refreshButton.setOnClickListener {
                 viewModel.getUserInfo()
             }
@@ -299,145 +264,119 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             legendInfoButton.setOnClickListener {
                 context?.showInfoDialog(getString(R.string.legend_content_info))
             }
-
-            profileContentTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    when(tab?.position) {
-                        0 -> {
-                            contentType = Constants.ContentType.MOVIE
-                        }
-                        1 -> {
-                            contentType = Constants.ContentType.TV
-                        }
-                        2 -> {
-                            contentType = Constants.ContentType.ANIME
-                        }
-                        3 -> {
-                            contentType = Constants.ContentType.GAME
-                        }
-                        else -> {}
-                    }
-
-                    if (userInfo != null) {
-                        contentAdapter?.setLoadingView()
-                        contentAdapter?.setData(getLegendContentList())
-                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
         }
     }
 
     private fun setRecyclerView() {
         binding.legendContentRV.apply {
-            val gridLayoutManager = GridLayoutManager(this.context, gridCount)
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = linearLayoutManager
 
-            gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    val itemViewType = contentAdapter?.getItemViewType(position)
-                    return if (
-                        itemViewType == RecyclerViewEnum.View.value ||
-                        itemViewType == RecyclerViewEnum.Loading.value
-                    ) 1 else gridCount
+            legendContentAdapter = LegendContentAdapter(!sharedViewModel.isLightTheme(), userInfo!!.legendContent) { item ->
+                when(Constants.ContentType.fromStringRequest(item.contentType)) {
+                    Constants.ContentType.ANIME -> {
+                        val navWithAction = ProfileFragmentDirections.actionGlobalAnimeDetailsFragment(item.id)
+                        navController.navigate(navWithAction)
+                    }
+                    Constants.ContentType.MOVIE -> {
+                        val navWithAction = ProfileFragmentDirections.actionGlobalMovieDetailsFragment(item.id)
+                        navController.navigate(navWithAction)
+                    }
+                    Constants.ContentType.TV -> {
+                        val navWithAction = ProfileFragmentDirections.actionGlobalTvDetailsFragment(item.id)
+                        navController.navigate(navWithAction)
+                    }
+                    Constants.ContentType.GAME -> {
+                        val navWithAction = ProfileFragmentDirections.actionGlobalGameDetailsFragment(item.id)
+                        navController.navigate(navWithAction)
+                    }
                 }
             }
+            adapter = legendContentAdapter
+        }
+    }
 
-            layoutManager = gridLayoutManager
-            contentAdapter = ContentAdapter(
-                gridCount = gridCount,
-                isRatioDifferent = contentType == Constants.ContentType.GAME,
-                isDarkTheme = !sharedViewModel.isLightTheme(),
-                interaction = object: Interaction<ContentModel> {
-                    override fun onItemSelected(item: ContentModel, position: Int) {
-                        when(contentType) {
-                            Constants.ContentType.ANIME -> {
-                                val navWithAction =
-                                    ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(
-                                        item.id
-                                    )
-                                navController.navigate(navWithAction)
-                            }
-                            Constants.ContentType.MOVIE -> {
-                                val navWithAction =
-                                    ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(
-                                        item.id
-                                    )
-                                navController.navigate(navWithAction)
-                            }
-                            Constants.ContentType.TV -> {
-                                val navWithAction =
-                                    ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(
-                                        item.id
-                                    )
-                                navController.navigate(navWithAction)
-                            }
-                            Constants.ContentType.GAME -> {
-                                val navWithAction =
-                                    ProfileFragmentDirections.actionNavigationProfileToGameDetailsFragment(
-                                        item.id
-                                    )
-                                navController.navigate(navWithAction)
+    private fun setConsumeLaterRV() {
+        binding.watchLaterRV.apply {
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = linearLayoutManager
+
+            consumeLaterAdapter = ConsumeLaterPreviewAdapter(!sharedViewModel.isLightTheme(), object: ConsumeLaterInteraction {
+                override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
+                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                        val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
+
+                        deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
+                            when(response) {
+                                is NetworkResponse.Failure -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    context?.showErrorDialog(response.errorMessage)
+                                }
+                                NetworkResponse.Loading -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.showLoadingDialog()
+                                }
+                                is NetworkResponse.Success -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                }
                             }
                         }
                     }
+                }
 
-                    override fun onErrorRefreshPressed() {
-                        viewModel.getUserInfo()
+                override fun onAddToListPressed(item: ConsumeLaterResponse, position: Int) {}
+
+                override fun onDiscoverButtonPressed() {
+                    (activity as? MainActivity)?.navigateToDiscover()
+                }
+
+                override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {
+                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
+                        Constants.ContentType.ANIME -> {
+                            val navWithAction = ProfileFragmentDirections.actionGlobalAnimeDetailsFragment(item.contentID)
+                            navController.navigate(navWithAction)
+                        }
+                        Constants.ContentType.MOVIE -> {
+                            val navWithAction = ProfileFragmentDirections.actionGlobalMovieDetailsFragment(item.contentID)
+                            navController.navigate(navWithAction)
+                        }
+                        Constants.ContentType.TV -> {
+                            val navWithAction = ProfileFragmentDirections.actionGlobalTvDetailsFragment(item.contentID)
+                            navController.navigate(navWithAction)
+                        }
+                        Constants.ContentType.GAME -> {
+                            val navWithAction = ProfileFragmentDirections.actionGlobalGameDetailsFragment(item.contentID)
+                            navController.navigate(navWithAction)
+                        }
                     }
-
-                    override fun onCancelPressed() {}
-
-                    override fun onExhaustButtonPressed() {}
-
-                }
-            )
-            adapter = contentAdapter
-
-            gestureDetector = GestureDetector(this.context, GestureListener())
-
-            addOnItemTouchListener(object: RecyclerView.OnItemTouchListener {
-                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                    gestureDetector?.onTouchEvent(e)
-                    return false
                 }
 
-                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+                override fun onErrorRefreshPressed() {
+                    viewModel.getUserInfo()
+                }
 
-                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+                override fun onCancelPressed() {}
+
+                override fun onExhaustButtonPressed() {}
             })
+            adapter = consumeLaterAdapter
         }
-    }
-
-    private fun selectTab(isRight: Boolean) {
-        binding.profileContentTabLayout.apply {
-            val newSelectedIndex: Int = if (selectedTabPosition == 0 && isRight)
-                tabCount.minus(1)
-            else if (selectedTabPosition == tabCount.minus(1) && !isRight)
-                0
-            else
-                selectedTabPosition.plus(if (isRight) -1 else 1)
-
-            val tabToSelect = getTabAt(newSelectedIndex)
-            tabToSelect?.select()
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        viewModel.didOrientationChange = true
-        outState.putString(KEY_VALUE, contentType.value)
     }
 
     override fun onDestroyView() {
-        contentAdapter = null
-        gestureDetector = null
+        legendContentAdapter = null
+        consumeLaterAdapter = null
+
+        orientationEventListener?.disable()
+        orientationEventListener = null
 
         viewLifecycleOwner.apply {
             sharedViewModel.networkStatus.removeObservers(this)
-            sharedViewModel.windowSize.removeObservers(this)
             viewModel.userInfoResponse.removeObservers(this)
         }
 

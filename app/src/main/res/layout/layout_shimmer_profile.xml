@@ -2,6 +2,7 @@
 <com.facebook.shimmer.ShimmerFrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:shimmer_auto_start="true"
@@ -16,14 +17,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05" />
+            app:layout_constraintGuide_begin="16dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline22"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.95" />
+            app:layout_constraintGuide_end="16dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline23"
@@ -91,9 +92,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/shimmer_color"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
+
+        <Button
+            android:id="@+id/shimmerUserListButton"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
             android:backgroundTint="@color/shimmer_color"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
-            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
             app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
 
         <TextView
@@ -195,7 +209,7 @@
             app:layout_constraintTop_toBottomOf="@+id/shimmerMovieStatTitleTV" />
 
         <View
-            android:id="@+id/shimmerLegendInfoButton"
+            android:id="@+id/shimmerSeeAllButton"
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:background="@color/shimmer_color"
@@ -204,25 +218,44 @@
             app:layout_constraintTop_toTopOf="@+id/textView20" />
 
         <View
-            android:id="@+id/shimmerProfileContentTabLayout"
+            android:id="@+id/shimmerWatchLaterRV"
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="230dp"
+            android:layout_marginTop="8dp"
             android:background="@color/shimmer_color"
-            android:layout_marginTop="16dp"
+            android:minHeight="350dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="170dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerWatchLaterRV" />
+
+        <View
+            android:id="@+id/shimmerLegendInfoButton"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:background="@color/shimmer_color"
+            app:layout_constraintBottom_toBottomOf="@+id/textView21"
+            app:layout_constraintEnd_toStartOf="@+id/guideline22"
+            app:layout_constraintTop_toTopOf="@+id/textView21" />
 
         <View
             android:id="@+id/shimmerLegendContentRV"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:background="@color/shimmer_color"
             android:minHeight="350dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerProfileContentTabLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/textView21" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.facebook.shimmer.ShimmerFrameLayout>

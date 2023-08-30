@@ -12,6 +12,7 @@ import com.mrntlu.projectconsumer.databinding.CellEmptyBinding
 import com.mrntlu.projectconsumer.models.common.LogsUI
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
 import com.mrntlu.projectconsumer.utils.convertToDateString
 import com.mrntlu.projectconsumer.utils.convertToFormattedTime
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
@@ -55,7 +56,7 @@ class DiaryAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     } else
                         R.string.user_list
                 )
-                actionTV.text = log.logAction.replaceFirstChar { it.uppercase() }
+                actionTV.text = log.logAction.capitalizeFirstLetter()
 
                 val attrColor = when(log.logAction) {
                     "add" -> R.attr.statusActiveColor

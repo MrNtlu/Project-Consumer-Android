@@ -14,14 +14,4 @@
         android:id="@+id/navigation_profile"
         android:icon="@drawable/selector_person"
         android:title="@string/profile" />
-
-    <item
-        android:id="@+id/navigation_later"
-        android:icon="@drawable/selector_later"
-        android:title="@string/watch_later" />
-
-    <item
-        android:id="@+id/navigation_user_list"
-        android:icon="@drawable/selector_list"
-        android:title="@string/my_list" />
 </menu>

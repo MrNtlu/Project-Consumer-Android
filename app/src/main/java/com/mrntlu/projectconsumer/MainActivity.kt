@@ -98,6 +98,10 @@ class MainActivity : AppCompatActivity() {
     private var isUserInfoFailed = false
     private lateinit var binding: ActivityMainBinding
 
+    fun navigateToDiscover() {
+        binding.navView.selectedItemId = R.id.navigation_discover
+    }
+
     override fun onBackPressed() {
         sharedViewModel.setShouldPreventBottomSelection(true)
         super.onBackPressed()
@@ -195,9 +199,7 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             if (sharedViewModel.isLoggedIn())
                 setOf(
-                    R.id.navigation_home, R.id.navigation_discover,
-                    R.id.navigation_profile, R.id.navigation_later,
-                    R.id.navigation_user_list,
+                    R.id.navigation_home, R.id.navigation_discover, R.id.navigation_profile,
                 )
             else
                 setOf(
@@ -250,7 +252,7 @@ class MainActivity : AppCompatActivity() {
                     binding.navView.setVisibilityByCondition(sharedViewModel.isLoggedIn())
                     handleUserIncVisibility(sharedViewModel.isLoggedIn())
                 }
-                R.id.navigation_profile, R.id.navigation_later, R.id.navigation_user_list -> {
+                R.id.navigation_profile -> {
                     binding.toolbar.setVisible()
                     binding.navView.setVisible()
                     handleUserIncVisibility(true)

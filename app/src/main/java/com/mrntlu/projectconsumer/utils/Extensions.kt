@@ -217,6 +217,10 @@ fun Context.setGroupNotification(
     .setAutoCancel(true)
     .build()
 
+fun String.capitalizeFirstLetter(): String {
+    return this.replaceFirstChar { it.uppercase() }
+}
+
 fun String.convertToHumanReadableDateString(isAlt: Boolean = false): String? {
     val date = SimpleDateFormat(DATE_PATTERN, Locale.getDefault()).parse(this)
     return if(date != null) SimpleDateFormat(if (isAlt) DATE_ALT_READABLE_PATTERN else DATE_READABLE_PATTERN, Locale.getDefault()).format(date) else this

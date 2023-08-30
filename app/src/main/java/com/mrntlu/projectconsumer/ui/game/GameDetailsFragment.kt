@@ -353,7 +353,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 it.requestMapper.name == platform
             } ?: GamePlatformUI(
                 BackendRequestMapper(platform, platform),
-                R.drawable.game,
+                R.drawable.ic_game_24,
             )
         }
 

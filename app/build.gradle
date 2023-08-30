@@ -18,8 +18,8 @@ android {
         applicationId "com.mrntlu.projectconsumer"
         minSdk 28
         targetSdk 33
-        versionCode 10
-        versionName "0.0.1"
+        versionCode 11
+        versionName "0.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

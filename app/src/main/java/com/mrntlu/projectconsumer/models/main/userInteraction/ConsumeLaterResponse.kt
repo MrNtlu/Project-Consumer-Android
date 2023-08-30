@@ -41,8 +41,8 @@ data class ConsumeLaterResponse(
             contentID != newItem.contentID -> false
             contentExternalID != newItem.contentExternalID -> false
             contentExternalIntID != newItem.contentExternalIntID -> false
-            selfNote != newItem.selfNote -> false
             content.titleOriginal != newItem.content.titleOriginal -> false
+            selfNote != newItem.selfNote -> false
             else -> true
         }
     }
@@ -58,5 +58,6 @@ data class ConsumeLaterContent(
     @SerializedName("image_url")
     val imageURL: String,
 
+    val score: Float,
     val description: String,
 )

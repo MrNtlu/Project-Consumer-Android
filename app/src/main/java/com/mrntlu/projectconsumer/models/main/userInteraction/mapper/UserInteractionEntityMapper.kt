@@ -22,6 +22,7 @@ object UserInteractionEntityMapper: EntityMapper<List<ConsumeLaterResponse>, Lis
                     consumeLater.content.titleEn,
                     consumeLater.content.titleOriginal,
                     consumeLater.content.imageURL,
+                    consumeLater.content.score,
                     consumeLater.content.description,
                 ),
                 tag,
@@ -45,6 +46,7 @@ object UserInteractionEntityMapper: EntityMapper<List<ConsumeLaterResponse>, Lis
                     consumeLaterEntity.content.titleEn,
                     consumeLaterEntity.content.titleOriginal,
                     consumeLaterEntity.content.imageURL,
+                    consumeLaterEntity.content.score,
                     consumeLaterEntity.content.description,
                 ),
             )

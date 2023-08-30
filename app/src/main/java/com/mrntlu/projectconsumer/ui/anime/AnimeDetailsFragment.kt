@@ -37,6 +37,7 @@ import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
@@ -223,7 +224,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             binding.detailsStatusTV.text = status
             binding.detailsSourceTV.text = source
 
-            val seasonsStr = if (season != null) "${season.replaceFirstChar { it.uppercase() }} $year" else getString(R.string.unknown)
+            val seasonsStr = if (season != null) "${season.capitalizeFirstLetter()} $year" else getString(R.string.unknown)
             binding.detailsSeasonTV.text = seasonsStr
 
             binding.detailsEpisodeTV.text = if (episodes != null) "$episodes eps." else getString(R.string.unknown)

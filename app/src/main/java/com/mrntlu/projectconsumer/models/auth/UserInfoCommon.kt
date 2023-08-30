@@ -18,21 +18,7 @@ data class UserInfoCommon(
 
     @SerializedName("times_finished")
     val timesFinished: Int,
-): ContentModel()
 
-data class UserInfoGame(
-    @SerializedName("_id")
-    override val id: String,
-
-    @SerializedName("image_url")
-    override val imageURL: String,
-
-    @SerializedName("title")
-    override val title: String,
-
-    @SerializedName("title_original")
-    override val titleOriginal: String,
-
-    @SerializedName("times_finished")
-    val timesFinished: Int,
+    @SerializedName("content_type")
+    val contentType: String,
 ): ContentModel()
