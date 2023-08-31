@@ -25,6 +25,7 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
@@ -169,7 +170,7 @@ class PreviewSlideAdapter<T: ContentModel>(
                 previewTV.text = item.title
                 previewGameTitleTV.text = item.title
 
-                root.setOnClickListener {
+                root.setSafeOnClickListener {
                     interaction.onItemSelected(item, position)
                 }
             }

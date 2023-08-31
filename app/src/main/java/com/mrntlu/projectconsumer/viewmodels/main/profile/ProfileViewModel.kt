@@ -11,7 +11,6 @@ import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.repository.UserInteractionRepository
 import com.mrntlu.projectconsumer.repository.UserRepository
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.networkResponseFlowCollector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,19 +23,6 @@ class ProfileViewModel @Inject constructor(
     private val repository: UserRepository,
     private val userInteractionRepository: UserInteractionRepository,
 ): ViewModel() {
-    var didOrientationChange = false
-    private var currentOrientation: Orientation = Orientation.Idle
-
-    fun setNewOrientation(newOrientation: Orientation) {
-        if (currentOrientation == Orientation.Idle) {
-            currentOrientation = newOrientation
-        } else if (newOrientation != currentOrientation) {
-            didOrientationChange = true
-
-            currentOrientation = newOrientation
-        }
-    }
-
     private val _userInfoResponse = MutableLiveData<NetworkResponse<DataResponse<UserInfo>>>()
     val userInfoResponse: LiveData<NetworkResponse<DataResponse<UserInfo>>> = _userInfoResponse
 

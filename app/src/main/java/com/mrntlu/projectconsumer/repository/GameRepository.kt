@@ -7,6 +7,7 @@ import com.mrntlu.projectconsumer.models.main.game.mapper.asModel
 import com.mrntlu.projectconsumer.service.retrofit.GameApiService
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
 import com.mrntlu.projectconsumer.service.room.GameDao
+import com.mrntlu.projectconsumer.utils.Constants.SortGameRequests
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
@@ -34,9 +35,13 @@ class GameRepository @Inject constructor(
         },
         fetchNetwork = {
             when(tag) {
-                FetchType.UPCOMING.tag -> gameApiService.getUpcomingGames(page, sort)
-                FetchType.POPULAR.tag -> gameApiService.getPopularGames(page)
-                else -> gameApiService.getGamesBySortFilter(page, sort, null, null, null)
+                FetchType.UPCOMING.tag -> gameApiService.getUpcomingGames(page)
+                FetchType.TOP.tag -> gameApiService.getGamesBySortFilter(
+                    page, SortGameRequests[1].request, false, null, null
+                )
+                else -> gameApiService.getGamesBySortFilter(
+                    page, SortGameRequests[0].request, null, null, null
+                )
             }
         },
         mapper = {

@@ -25,7 +25,6 @@ class TVSeriesListFragment: BaseListFragment<TVSeries>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setMenu(args.fetchType) { viewModel.startTVSeriesFetch(it) }
         setObservers()
         setListeners()
     }
@@ -41,7 +40,7 @@ class TVSeriesListFragment: BaseListFragment<TVSeries>() {
             }
 
             setRecyclerView(
-                startFetch = { sortType -> viewModel.startTVSeriesFetch(sortType) },
+                startFetch = { viewModel.startTVSeriesFetch() },
                 onItemSelected = { itemId ->
                     val navWithAction = TVSeriesListFragmentDirections.actionTvListFragmentToTvDetailsFragment(itemId)
 

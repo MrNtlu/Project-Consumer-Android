@@ -13,6 +13,7 @@ data class GameEntity(
     val id: String,
     val description: String,
     val tba: Boolean,
+    val popularity: Float,
     val subreddit: String?,
     val genres: List<String>,
     val tags: List<String>,
@@ -61,7 +62,7 @@ data class GameEntity(
     val page: Int,
 ) {
     constructor(): this(
-        "", "", false, null, listOf(), listOf(), listOf(), listOf(), listOf(), listOf(),
+        "", "", false, 0.0f, null, listOf(), listOf(), listOf(), listOf(), listOf(), listOf(),
         "", "" , 0, 0.0f, 0, 0, listOf(), "",
         "", null, listOf(), false, "", 0,
     )

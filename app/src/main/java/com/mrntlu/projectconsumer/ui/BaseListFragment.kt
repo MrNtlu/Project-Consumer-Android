@@ -2,29 +2,17 @@ package com.mrntlu.projectconsumer.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.core.view.get
-import androidx.core.view.size
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentListBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.utils.Constants
-import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isFailed
@@ -34,9 +22,7 @@ import kotlinx.coroutines.launch
 
 abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBinding>() {
 
-    private var popupMenu: PopupMenu? = null
     protected var contentAdapter: ContentAdapter<T>? = null
-    private var sortType: String = Constants.SortRequests[0].request
     protected var gridCount = 3
 
     protected var isNavigatingBack = false
@@ -49,110 +35,9 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
         return binding.root
     }
 
-    protected fun setMenu(
-        fetchType: String,
-        fetch: (String) -> Unit,
-    ) {
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {}
-
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.sort_toolbar_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when(menuItem.itemId) {
-                    R.id.sortMenu -> {
-                        if (contentAdapter?.isLoading == false) {
-                            if (popupMenu == null) {
-                                val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
-                                popupMenu = PopupMenu(requireContext(), menuItemView)
-                                popupMenu!!.menuInflater.inflate(R.menu.sort_menu, popupMenu!!.menu)
-                                popupMenu!!.setForceShowIcon(true)
-                            }
-
-                            popupMenu?.let {
-                                val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-                                val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
-
-                                for (i in 0..it.menu.size.minus(1)) {
-                                    val popupMenuItem = it.menu[i]
-                                    val sortRequest = when(fetchType) {
-                                        FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[i]
-                                        else -> Constants.SortRequests[i]
-                                    }
-
-                                    popupMenuItem.iconTintList = ContextCompat.getColorStateList(
-                                        requireContext(),
-                                        if(sortType == sortRequest.request) selectedColor else unselectedColor
-                                    )
-                                    popupMenuItem.title = sortRequest.name
-                                }
-
-                                it.setOnMenuItemClickListener { item ->
-                                    val newSortType = when (item.itemId) {
-                                        R.id.firstSortMenu -> {
-                                            setPopupMenuItemVisibility(it, 0)
-
-                                            when(fetchType) {
-                                                FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[0].request
-                                                else -> Constants.SortRequests[0].request
-                                            }
-                                        }
-                                        R.id.secondSortMenu -> {
-                                            setPopupMenuItemVisibility(it, 1)
-
-                                            when(fetchType) {
-                                                FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[1].request
-                                                else -> Constants.SortRequests[1].request
-                                            }
-                                        }
-                                        R.id.thirdSortMenu -> {
-                                            setPopupMenuItemVisibility(it, 2)
-
-                                            when(fetchType) {
-                                                FetchType.UPCOMING.tag -> Constants.SortUpcomingRequests[2].request
-                                                else -> Constants.SortRequests[2].request
-                                            }
-                                        }
-                                        else -> { Constants.SortRequests[0].request }
-                                    }
-
-                                    item.isChecked = true
-
-                                    if (newSortType != sortType) {
-                                        sortType = newSortType
-                                        fetch(sortType)
-                                    }
-
-                                    true
-                                }
-
-                                it.show()
-                            }
-                        }
-                    }
-                }
-                return true
-            }
-
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
-    private fun setPopupMenuItemVisibility(popupMenu: PopupMenu, selectedIndex: Int) {
-        val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-        val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
-
-        for(i in 0..popupMenu.menu.size.minus(1)) {
-            popupMenu.menu[i].iconTintList = ContextCompat.getColorStateList(requireContext(), if(i == selectedIndex) selectedColor else unselectedColor)
-        }
-    }
-
     protected fun setRecyclerView(
         isRatioDifferent: Boolean = false,
-        startFetch: (String) -> Unit,
+        startFetch: () -> Unit,
         onItemSelected: (String) -> Unit,
         scrollViewModel: (Int) -> Unit,
         fetch: () -> Unit,
@@ -183,7 +68,7 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
                     }
 
                     override fun onErrorRefreshPressed() {
-                        startFetch(sortType)
+                        startFetch()
                     }
 
                     override fun onCancelPressed() {
@@ -274,7 +159,6 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
             sharedViewModel.windowSize.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
-        popupMenu = null
         contentAdapter = null
         super.onDestroyView()
     }

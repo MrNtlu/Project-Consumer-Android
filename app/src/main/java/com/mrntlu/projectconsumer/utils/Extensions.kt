@@ -236,7 +236,13 @@ fun String.convertToDate(): Date? {
 }
 
 fun String.convertToFormattedTime(): String? {
-    val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(this)
+    val date: Date? = try {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        dateFormat.parse(this)
+    } catch (_: Exception) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+        dateFormat.parse(this)
+    }
     return if(date != null) SimpleDateFormat("HH:mm z", Locale.getDefault()).format(date) else this
 }
 

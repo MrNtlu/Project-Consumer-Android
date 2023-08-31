@@ -21,6 +21,7 @@ import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.getFirstDateOfTheWeek
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.smoothScrollToCenteredPosition
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,16 +60,16 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private fun setListeners() {
         binding.apply {
-            errorLayoutInc.refreshButton.setOnClickListener {
+            errorLayoutInc.refreshButton.setSafeOnClickListener {
                 fetchRequest(forceFetch = true)
             }
 
-            calendarNextButton.setOnClickListener {
+            calendarNextButton.setSafeOnClickListener(interval = 700) {
                 if (LocalDate.now().plusWeeks(1).isAfter(focusedDate.plusWeeks(1)))
                     updateFocusedDate(focusedDate.plusWeeks(1))
             }
 
-            calendarPrevButton.setOnClickListener {
+            calendarPrevButton.setSafeOnClickListener(interval = 700) {
                 if (LocalDate.now().minusYears(1).isBefore(focusedDate.minusWeeks(1)))
                     updateFocusedDate(focusedDate.minusWeeks(1))
             }

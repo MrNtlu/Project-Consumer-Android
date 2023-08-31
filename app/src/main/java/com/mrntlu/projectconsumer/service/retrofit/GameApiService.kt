@@ -26,15 +26,9 @@ interface GameApiService {
     @GET("game/upcoming")
     suspend fun getUpcomingGames(
         @Query("page") page: Int,
-        @Query("sort") sort: String,
     ): Response<DataPaginationResponse<Game>>
 
-    @GET("game/popular")
-    suspend fun getPopularGames(
-        @Query("page") page: Int,
-    ): Response<DataPaginationResponse<Game>>
-
-    // Search
+    // TODO Search
 
     @GET("game/details")
     suspend fun getGameDetails(

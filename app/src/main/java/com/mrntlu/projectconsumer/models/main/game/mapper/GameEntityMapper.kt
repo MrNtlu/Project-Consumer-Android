@@ -9,7 +9,7 @@ object GameEntityMapper: EntityMapper<List<Game>, List<GameEntity>> {
         return model.map { game ->
             game.run {
                 GameEntity(
-                    id, description, tba, subreddit, genres, tags, platforms, developers, publishers, stores,
+                    id, description, tba, popularity, subreddit, genres, tags, platforms, developers, publishers, stores,
                     title, titleOriginal, rawgID, rawgRating, rawgRatingCount, metacriticScore, metacriticScoreByPlatform,
                     releaseDate, imageURL, ageRating, relatedGames, hasReleaseDate, tag, page,
                 )
@@ -21,7 +21,7 @@ object GameEntityMapper: EntityMapper<List<Game>, List<GameEntity>> {
         return entity.map { gameEntity ->
             gameEntity.run {
                 Game(
-                    id, description, tba, subreddit, genres, tags, platforms, developers, publishers, stores,
+                    id, description, tba, popularity, subreddit, genres, tags, platforms, developers, publishers, stores,
                     title, titleOriginal, rawgID, rawgRating, rawgRatingCount, metacriticScore, metacriticScoreByPlatform,
                     releaseDate, imageURL, ageRating, relatedGames, hasReleaseDate,
                 )

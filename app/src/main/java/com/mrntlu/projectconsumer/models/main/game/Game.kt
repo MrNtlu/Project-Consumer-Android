@@ -8,6 +8,7 @@ data class Game(
     override val id: String,
     val description: String,
     val tba: Boolean,
+    val popularity: Float,
     val subreddit: String?,
     val genres: List<String>,
     val tags: List<String>,

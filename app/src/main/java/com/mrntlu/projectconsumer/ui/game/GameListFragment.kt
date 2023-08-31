@@ -25,7 +25,6 @@ class GameListFragment : BaseListFragment<Game>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setMenu(args.fetchType) { viewModel.startGamesFetch(it) }
         setObservers()
         setListeners()
     }
@@ -42,7 +41,7 @@ class GameListFragment : BaseListFragment<Game>() {
 
             setRecyclerView(
                 isRatioDifferent = true,
-                startFetch = { sortType -> viewModel.startGamesFetch(sortType) },
+                startFetch = { viewModel.startGamesFetch() },
                 onItemSelected = { itemId ->
                     val navWithAction = GameListFragmentDirections.actionGameListFragmentToGameDetailsFragment(itemId)
 

@@ -26,6 +26,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isEmailValid
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.auth.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -112,12 +113,12 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
     private fun setListeners() {
         binding.apply {
-            googleSignInButton.setOnClickListener {
+            googleSignInButton.setSafeOnClickListener(interval = 750) {
                 val signInIntent: Intent = googleSignInClient.signInIntent
                 launcher.launch(signInIntent)
             }
 
-            signInButton.setOnClickListener {
+            signInButton.setSafeOnClickListener {
                 if (validate()) {
                     val body = LoginBody(
                         binding.mailET.text!!.toString(),
@@ -129,11 +130,11 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
                 }
             }
 
-            signUpButton.setOnClickListener {
+            signUpButton.setSafeOnClickListener {
                 navController.navigate(R.id.action_authFragment_to_registerFragment)
             }
 
-            forgotPasswordButton.setOnClickListener {
+            forgotPasswordButton.setSafeOnClickListener {
                 activity?.let {
                     val bottomSheet = ForgotPasswordBottomSheet()
                     bottomSheet.show(it.supportFragmentManager, ForgotPasswordBottomSheet.TAG)

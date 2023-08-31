@@ -10,7 +10,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.mrntlu.projectconsumer.models.main.tv.TVSeries
 import com.mrntlu.projectconsumer.repository.TVRepository
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.SortRequests
+import com.mrntlu.projectconsumer.utils.Constants.SortUpcomingRequests
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.isSuccessful
@@ -24,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val TV_PAGE_KEY = "rv.tv.page"
-private const val TV_SORT_KEY = "rv.tv.sort"
 private const val TV_SCROLL_POSITION_KEY = "rv.tv.scroll_position"
 private const val TV_TAG_KEY = "tv.fetch.tag"
 
@@ -41,7 +41,6 @@ class TVSeriesViewModel @AssistedInject constructor(
     var isRestoringData = false
     private var page: Int = savedStateHandle[TV_PAGE_KEY] ?: 1
     private var tag: String = savedStateHandle[TV_TAG_KEY] ?: FetchType.UPCOMING.tag
-    private var sort: String = savedStateHandle[TV_SORT_KEY] ?: Constants.SortUpcomingRequests[0].request
     var scrollPosition: Int = savedStateHandle[TV_SCROLL_POSITION_KEY] ?: 0
         private set
 
@@ -54,15 +53,12 @@ class TVSeriesViewModel @AssistedInject constructor(
         } else {
             setTag(vmTag)
 
-            startTVSeriesFetch(sort, true)
+            startTVSeriesFetch(true)
         }
     }
 
-    fun startTVSeriesFetch(newSort: String, refreshAnyway: Boolean = false) {
-        if (sort != newSort) {
-            setSort(newSort)
-            setPagePosition(1)
-        } else if (refreshAnyway)
+    fun startTVSeriesFetch(refreshAnyway: Boolean = false) {
+        if (refreshAnyway)
             setPagePosition(1)
 
         fetchTVSeries()
@@ -75,7 +71,7 @@ class TVSeriesViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            tvRepository.fetchTVSeries(page, sort, tag, isNetworkAvailable).collect { response ->
+            tvRepository.fetchTVSeries(page, getSort(), tag, isNetworkAvailable).collect { response ->
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful()) {
                         prevList.addAll(response.data!!)
@@ -100,7 +96,7 @@ class TVSeriesViewModel @AssistedInject constructor(
         val tempList = arrayListOf<TVSeries>()
         viewModelScope.launch(Dispatchers.IO) {
             launch(Dispatchers.IO) {
-                tvRepository.fetchTVSeries(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
+                tvRepository.fetchTVSeries(page, getSort(), tag, isNetworkAvailable, isRestoringData = true).collect { response ->
                     if (response.isSuccessful()) {
                         tempList.addAll(response.data!!)
                         isPaginationExhausted = response.isPaginationExhausted
@@ -118,6 +114,12 @@ class TVSeriesViewModel @AssistedInject constructor(
         }
     }
 
+    private fun getSort(): String = when(tag) {
+        FetchType.UPCOMING.tag -> SortUpcomingRequests.request
+        FetchType.TOP.tag -> SortRequests[1].request
+        else -> SortRequests[0].request
+    }
+
     private fun setTag(newTag: String) {
         if (tag != newTag) {
             tag = newTag
@@ -128,11 +130,6 @@ class TVSeriesViewModel @AssistedInject constructor(
     private fun setPagePosition(newPage: Int) {
         page = newPage
         savedStateHandle[TV_PAGE_KEY] = page
-    }
-
-    private fun setSort(newSort: String) {
-        sort = newSort
-        savedStateHandle[TV_SORT_KEY] = sort
     }
 
     fun setScrollPosition(newPosition: Int) {

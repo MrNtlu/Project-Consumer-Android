@@ -41,6 +41,9 @@ data class TVSeriesEntity(
     @ColumnInfo("tmdb_popularity")
     val tmdbPopularity: Double,
 
+    @ColumnInfo("top_rated")
+    val topRated: Double,
+
     @ColumnInfo("tmdb_vote")
     val tmdbVote: Double,
 
@@ -61,7 +64,7 @@ data class TVSeriesEntity(
 ) {
     constructor(): this(
         "", "", listOf(), listOf(), listOf(), listOf(), listOf(), "", listOf(), "",
-        "", "", "", "", "", 0.0, 0.0,
+        "", "", "", "", "", 0.0, 0.0, 0.0,
         0, 0, 0, listOf(), "", 0
     )
 }

@@ -15,6 +15,7 @@
         app:tabIndicatorHeight="0dp"
         app:tabMode="scrollable"
         app:tabGravity="start"
+        app:tabRippleColor="@null"
         app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
         app:tabTextColor="?attr/mainTextColor"
         app:tabBackground="?attr/mainBackgroundColor"

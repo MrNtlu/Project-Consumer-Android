@@ -25,7 +25,6 @@ class AnimeListFragment : BaseListFragment<Anime>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setMenu(args.fetchType) { viewModel.startAnimeFetch(it) }
         setObservers()
         setListeners()
     }
@@ -41,7 +40,7 @@ class AnimeListFragment : BaseListFragment<Anime>() {
             }
 
             setRecyclerView(
-                startFetch = { sortType -> viewModel.startAnimeFetch(sortType) },
+                startFetch = { viewModel.startAnimeFetch() },
                 onItemSelected = { itemId ->
                     val navWithAction = AnimeListFragmentDirections.actionAnimeListFragmentToAnimeDetailsFragment(itemId)
 

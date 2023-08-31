@@ -25,6 +25,7 @@ import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
@@ -100,7 +101,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             if (sharedViewModel.isLoggedIn()) {
                 accountSecondClickTile.settingsClickTileTV.text = getString(R.string.log_out)
 
-                accountSecondClickTile.root.setOnClickListener {
+                accountSecondClickTile.root.setSafeOnClickListener {
                     context?.showConfirmationDialog(getString(R.string.do_you_want_to_log_out_)) {
                         lifecycleScope.launch(Dispatchers.IO) {
                             tokenManager.deleteToken()
@@ -174,7 +175,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 navController.navigate(SettingsFragmentDirections.actionNavigationSettingsToPolicyFragment(false))
             }
 
-            deleteAccountButton.setOnClickListener {
+            deleteAccountButton.setSafeOnClickListener {
                 context?.showConfirmationDialog(getString(R.string.delete_user_info)) {
                     context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
                         if (deleteUserLiveData != null && deleteUserLiveData?.hasActiveObservers() == true)

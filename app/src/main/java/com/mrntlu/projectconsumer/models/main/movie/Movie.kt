@@ -40,6 +40,9 @@ data class Movie(
     @SerializedName("tmdb_popularity")
     val tmdbPopularity: Double,
 
+    @SerializedName("top_rated")
+    val topRated: Double,
+
     @SerializedName("tmdb_vote")
     val tmdbVote: Double,
 

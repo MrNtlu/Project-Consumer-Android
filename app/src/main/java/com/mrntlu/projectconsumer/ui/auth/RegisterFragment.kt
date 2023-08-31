@@ -20,6 +20,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isEmailValid
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.auth.RegisterViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,7 +79,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
 
     private fun setListeners() {
         binding.apply {
-            registerButton.setOnClickListener {
+            registerButton.setSafeOnClickListener {
                 if (validate()) {
                     val body = RegisterBody(
                         mailET.text!!.toString(),
@@ -92,7 +93,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
                 }
             }
 
-            signInButton.setOnClickListener {
+            signInButton.setSafeOnClickListener {
                 navController.popBackStack()
             }
 

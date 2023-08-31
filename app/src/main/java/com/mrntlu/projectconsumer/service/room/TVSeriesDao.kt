@@ -16,6 +16,7 @@ interface TVSeriesDao {
 
     @Query(
         "Select * From `tv-series` Where page = :page And tag = :tag Order By " +
+                "Case When :sort = 'top' Then top_rated End Desc," +
                 "Case When :sort = 'popularity' Then tmdb_popularity End Desc," +
                 "Case When :sort = 'new' Then first_air_date End Desc," +
                 "Case When :sort = 'old' Then first_air_date End Asc," +
@@ -26,6 +27,7 @@ interface TVSeriesDao {
 
     @Query(
         "Select * From `tv-series` Where page <= :page And tag = :tag Order By " +
+                "Case When :sort = 'top' Then top_rated End Desc," +
                 "Case When :sort = 'popularity' Then tmdb_popularity End Desc," +
                 "Case When :sort = 'new' Then first_air_date End Desc," +
                 "Case When :sort = 'old' Then first_air_date End Asc," +

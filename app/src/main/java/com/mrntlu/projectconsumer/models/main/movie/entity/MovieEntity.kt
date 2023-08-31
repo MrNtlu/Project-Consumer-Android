@@ -42,6 +42,9 @@ data class MovieEntity(
     @ColumnInfo("tmdb_popularity")
     val tmdbPopularity: Double,
 
+    @ColumnInfo("top_rated")
+    val topRated: Double,
+
     @ColumnInfo("tmdb_vote")
     val tmdbVote: Double,
 
@@ -56,7 +59,7 @@ data class MovieEntity(
 ) {
     constructor(): this(
         "","", listOf(), listOf(), listOf(), listOf(), 0,"", null,"",
-        "","","","","",
+        "","","","","", 0.0,
         0.0, 0.0, 0, listOf(), "", 0
     )
 }

@@ -42,6 +42,7 @@ import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.openInBrowser
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
@@ -261,7 +262,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                     navController.navigate(navWithAction)
                 }
             }
-            tvDetailsToolbarBackButton.setOnClickListener {
+            tvDetailsToolbarBackButton.setSafeOnClickListener {
                 navController.popBackStack()
             }
 

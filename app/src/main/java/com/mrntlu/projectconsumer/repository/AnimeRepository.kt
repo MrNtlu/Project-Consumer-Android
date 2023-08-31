@@ -7,7 +7,8 @@ import com.mrntlu.projectconsumer.models.main.anime.mapper.asModel
 import com.mrntlu.projectconsumer.service.retrofit.AnimeApiService
 import com.mrntlu.projectconsumer.service.room.AnimeDao
 import com.mrntlu.projectconsumer.service.room.CacheDatabase
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.AnimeStatusRequests
+import com.mrntlu.projectconsumer.utils.Constants.SortRequests
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.networkBoundResource
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
@@ -33,10 +34,13 @@ class AnimeRepository @Inject constructor(
         },
         fetchNetwork = {
             when(tag) {
-               FetchType.UPCOMING.tag -> animeApiService.getUpcomingAnimes(page, sort)
-               FetchType.POPULAR.tag -> animeApiService.getPopularAnimes(page)
+               FetchType.UPCOMING.tag -> animeApiService.getUpcomingAnimes(page)
+               FetchType.POPULAR.tag -> animeApiService.getAnimesBySortFilter(
+                   page, SortRequests[1].request, null,
+                   null, null, null, null,
+               )
                 else -> animeApiService.getAnimesBySortFilter(
-                    page, sort, Constants.AnimeStatusRequests[2].request,
+                    page, SortRequests[0].request, AnimeStatusRequests[2].request,
                     null, null, null, null,
                 )
             }

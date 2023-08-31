@@ -28,12 +28,6 @@ interface MovieApiService {
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
         @Query("page") page: Int,
-        @Query("sort") sort: String,
-    ): Response<DataPaginationResponse<Movie>>
-
-    @GET("movie/top")
-    suspend fun getTopRatedMovies(
-        @Query("page") page: Int,
     ): Response<DataPaginationResponse<Movie>>
 
     @GET("movie/search")

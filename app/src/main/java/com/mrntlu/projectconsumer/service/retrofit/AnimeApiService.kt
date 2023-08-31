@@ -29,12 +29,6 @@ interface AnimeApiService {
     @GET("anime/upcoming")
     suspend fun getUpcomingAnimes(
         @Query("page") page: Int,
-        @Query("sort") sort: String,
-    ): Response<DataPaginationResponse<Anime>>
-
-    @GET("anime/popular")
-    suspend fun getPopularAnimes(
-        @Query("page") page: Int,
     ): Response<DataPaginationResponse<Anime>>
 
     @GET("anime/search")

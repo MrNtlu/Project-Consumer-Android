@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuHost
@@ -31,10 +30,10 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
-import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
@@ -52,8 +51,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private val viewModel: ProfileViewModel by viewModels()
     private val userSharedViewModel: UserSharedViewModel by activityViewModels()
-
-    private var orientationEventListener: OrientationEventListener? = null
 
     private var isResponseFailed = false
     private var userInfo: UserInfo? = null
@@ -76,44 +73,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             dialog = LoadingDialog(it)
         }
 
-        orientationEventListener = object : OrientationEventListener(view.context) {
-            override fun onOrientationChanged(orientation: Int) {
-                val defaultPortrait = 0
-                val upsideDownPortrait = 180
-                val rightLandscape = 90
-                val leftLandscape = 270
-
-                when {
-                    isWithinOrientationRange(orientation, defaultPortrait) -> {
-                        viewModel.setNewOrientation(Orientation.Portrait)
-                    }
-
-                    isWithinOrientationRange(orientation, leftLandscape) -> {
-                        viewModel.setNewOrientation(Orientation.Landscape)
-                    }
-
-                    isWithinOrientationRange(orientation, upsideDownPortrait) -> {
-                        viewModel.setNewOrientation(Orientation.PortraitReverse)
-                    }
-
-                    isWithinOrientationRange(orientation, rightLandscape) -> {
-                        viewModel.setNewOrientation(Orientation.LandscapeReverse)
-                    }
-                }
-            }
-        }
-        orientationEventListener?.enable()
-
         setMenu()
         setConsumeLaterRV()
         setObservers()
-    }
-
-    private fun isWithinOrientationRange(
-        currentOrientation: Int, targetOrientation: Int, epsilon: Int = 30
-    ): Boolean {
-        return currentOrientation > targetOrientation - epsilon
-                && currentOrientation < targetOrientation + epsilon
     }
 
     override fun onStart() {
@@ -152,7 +114,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         viewModel.userInfoResponse.observe(viewLifecycleOwner) { response ->
             binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
-                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
+                if (response is NetworkResponse.Loading)
+                    loadingLayout.setVisible()
+                else if (response is NetworkResponse.Failure)
+                    loadingLayout.setGone()
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
                 legendContentRV.setVisibilityByCondition(response is NetworkResponse.Failure)
 
@@ -171,12 +136,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
                         setUI()
                         setListeners()
-                        if (!viewModel.didOrientationChange && userInfo != null) {
-                            setRecyclerView()
-                            consumeLaterAdapter?.setData(userInfo!!.watchLater?.toCollection(ArrayList()) ?: arrayListOf())
-
-                            viewModel.didOrientationChange = false
-                        }
+                        setRecyclerView()
+                        consumeLaterAdapter?.setData(userInfo?.watchLater?.toCollection(ArrayList()) ?: arrayListOf())
+                        loadingLayout.setGone()
                     }
                     else -> {}
                 }
@@ -216,19 +178,19 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private fun setListeners() {
         binding.apply {
-            profileUserListButton.setOnClickListener {
+            profileUserListButton.setSafeOnClickListener {
                 navController.navigate(R.id.action_navigation_profile_to_navigation_user_list)
             }
 
-            seeAllButtonFirst.setOnClickListener {
+            seeAllButtonFirst.setSafeOnClickListener {
                 navController.navigate(R.id.action_navigation_profile_to_navigation_later)
             }
 
-            errorLayoutInc.refreshButton.setOnClickListener {
+            errorLayoutInc.refreshButton.setSafeOnClickListener {
                 viewModel.getUserInfo()
             }
 
-            profileChangeImageButton.setOnClickListener {
+            profileChangeImageButton.setSafeOnClickListener {
                 activity?.let {
                     val bottomSheet = ProfileEditBottomSheet(userInfo?.image ?: "") { image ->
                         userSharedViewModel.updateUserImage(UpdateUserImageBody(image)).observe(viewLifecycleOwner) { response ->
@@ -257,11 +219,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 }
             }
 
-            profileDiaryButton.setOnClickListener {
+            profileDiaryButton.setSafeOnClickListener {
                 navController.navigate(R.id.action_navigation_profile_to_diaryFragment)
             }
 
-            legendInfoButton.setOnClickListener {
+            legendInfoButton.setSafeOnClickListener {
                 context?.showInfoDialog(getString(R.string.legend_content_info))
             }
         }
@@ -272,7 +234,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayoutManager
 
-            legendContentAdapter = LegendContentAdapter(!sharedViewModel.isLightTheme(), userInfo!!.legendContent) { item ->
+            legendContentAdapter = LegendContentAdapter(!sharedViewModel.isLightTheme(), userInfo?.legendContent ?: arrayListOf()) { item ->
                 when(Constants.ContentType.fromStringRequest(item.contentType)) {
                     Constants.ContentType.ANIME -> {
                         val navWithAction = ProfileFragmentDirections.actionGlobalAnimeDetailsFragment(item.id)
@@ -303,7 +265,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
             consumeLaterAdapter = ConsumeLaterPreviewAdapter(!sharedViewModel.isLightTheme(), object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
-                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                    context?.showConfirmationDialog(getString(R.string.remove_from_later)) {
                         val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
 
                         deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
@@ -371,9 +333,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     override fun onDestroyView() {
         legendContentAdapter = null
         consumeLaterAdapter = null
-
-        orientationEventListener?.disable()
-        orientationEventListener = null
 
         viewLifecycleOwner.apply {
             sharedViewModel.networkStatus.removeObservers(this)

@@ -17,6 +17,7 @@ interface MovieDao {
 
     @Query(
         "Select * From movies Where page = :page And tag = :tag Order By " +
+                "Case When :sort = 'top' Then top_rated End Desc," +
                 "Case When :sort = 'popularity' Then tmdb_popularity End Desc," +
                 "Case When :sort = 'new' Then release_date End Desc," +
                 "Case When :sort = 'old' Then release_date End Asc," +
@@ -27,6 +28,7 @@ interface MovieDao {
 
     @Query(
         "Select * From movies Where page <= :page And tag = :tag Order By " +
+                "Case When :sort = 'top' Then top_rated End Desc," +
                 "Case When :sort = 'popularity' Then tmdb_popularity End Desc," +
                 "Case When :sort = 'new' Then release_date End Desc," +
                 "Case When :sort = 'old' Then release_date End Asc," +

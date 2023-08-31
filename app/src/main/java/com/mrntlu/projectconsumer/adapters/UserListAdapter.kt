@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.adapters
 
 import android.annotation.SuppressLint
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -132,8 +133,14 @@ class UserListAdapter(
     private fun handlePopupMenu(binding: CellUserListBinding, position: Int) {
         val popupMenu = PopupMenu(binding.root.context, binding.userListButton)
         popupMenu.menuInflater.inflate(R.menu.user_list_item_menu, popupMenu.menu)
+        var lastTimeClicked: Long = 0
 
         popupMenu.setOnMenuItemClickListener { item ->
+            if (SystemClock.elapsedRealtime() - lastTimeClicked < 550) {
+                return@setOnMenuItemClickListener false
+            }
+            lastTimeClicked = SystemClock.elapsedRealtime()
+
             when(item.itemId) {
                 R.id.detailsMenu -> {
                     interaction.onDetailsPressed(userList, contentType, position)

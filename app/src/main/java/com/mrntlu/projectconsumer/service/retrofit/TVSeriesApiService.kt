@@ -29,17 +29,6 @@ interface TVSeriesApiService {
     @GET("tv/upcoming")
     suspend fun getUpcomingTVSeries(
         @Query("page") page: Int,
-        @Query("sort") sort: String,
-    ): Response<DataPaginationResponse<TVSeries>>
-
-    @GET("tv/popular")
-    suspend fun getPopularTVSeries(
-        @Query("page") page: Int,
-    ): Response<DataPaginationResponse<TVSeries>>
-
-    @GET("tv/top")
-    suspend fun getTopRatedTVSeries(
-        @Query("page") page: Int,
     ): Response<DataPaginationResponse<TVSeries>>
 
     @GET("tv/search")

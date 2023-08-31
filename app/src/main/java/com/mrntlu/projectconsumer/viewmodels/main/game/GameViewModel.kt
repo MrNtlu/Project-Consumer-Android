@@ -10,7 +10,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.mrntlu.projectconsumer.models.main.game.Game
 import com.mrntlu.projectconsumer.repository.GameRepository
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.SortGameRequests
+import com.mrntlu.projectconsumer.utils.Constants.SortUpcomingRequests
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.isSuccessful
@@ -24,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val GAME_PAGE_KEY = "rv.game.page"
-private const val GAME_SORT_KEY = "rv.game.sort"
 private const val GAME_SCROLL_POSITION_KEY = "rv.game.scroll_position"
 private const val GAME_TAG_KEY = "game.fetch.tag"
 
@@ -41,7 +41,6 @@ class GameViewModel @AssistedInject constructor(
     var isRestoringData = false
     private var page: Int = savedStateHandle[GAME_PAGE_KEY] ?: 1
     private var tag: String = savedStateHandle[GAME_TAG_KEY] ?: FetchType.UPCOMING.tag
-    private var sort: String = savedStateHandle[GAME_SORT_KEY] ?: Constants.SortUpcomingRequests[0].request
     var scrollPosition: Int = savedStateHandle[GAME_SCROLL_POSITION_KEY] ?: 0
         private set
 
@@ -54,15 +53,12 @@ class GameViewModel @AssistedInject constructor(
         } else {
             setTag(vmTag)
 
-            startGamesFetch(sort, true)
+            startGamesFetch(true)
         }
     }
 
-    fun startGamesFetch(newSort: String, refreshAnyway: Boolean = false) {
-        if (sort != newSort) {
-            setSort(newSort)
-            setPagePosition(1)
-        } else if (refreshAnyway)
+    fun startGamesFetch(refreshAnyway: Boolean = false) {
+        if (refreshAnyway)
             setPagePosition(1)
 
         fetchGames()
@@ -75,7 +71,7 @@ class GameViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            gameRepository.fetchGames(page, sort, tag, isNetworkAvailable).collect { response ->
+            gameRepository.fetchGames(page, getSort(), tag, isNetworkAvailable).collect { response ->
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful()) {
                         prevList.addAll(response.data!!)
@@ -99,7 +95,7 @@ class GameViewModel @AssistedInject constructor(
         var isPaginationExhausted = false
         val tempList = arrayListOf<Game>()
         viewModelScope.launch(Dispatchers.IO) {
-            gameRepository.fetchGames(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
+            gameRepository.fetchGames(page, getSort(), tag, isNetworkAvailable, isRestoringData = true).collect { response ->
                 if (response.isSuccessful()) {
                     tempList.addAll(response.data!!)
                     isPaginationExhausted = response.isPaginationExhausted
@@ -116,6 +112,12 @@ class GameViewModel @AssistedInject constructor(
         }
     }
 
+    private fun getSort(): String = when(tag) {
+        FetchType.UPCOMING.tag -> SortUpcomingRequests.request
+        FetchType.TOP.tag -> SortGameRequests[1].request
+        else -> SortGameRequests[0].request
+    }
+
     private fun setTag(newTag: String) {
         if (tag != newTag) {
             tag = newTag
@@ -126,11 +128,6 @@ class GameViewModel @AssistedInject constructor(
     private fun setPagePosition(newPage: Int) {
         page = newPage
         savedStateHandle[GAME_PAGE_KEY] = page
-    }
-
-    private fun setSort(newSort: String) {
-        sort = newSort
-        savedStateHandle[GAME_SORT_KEY] = sort
     }
 
     fun setScrollPosition(newPosition: Int) {

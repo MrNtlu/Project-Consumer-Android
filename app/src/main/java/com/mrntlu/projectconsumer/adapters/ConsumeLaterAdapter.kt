@@ -28,6 +28,7 @@ import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisible
 
 @Suppress("UNCHECKED_CAST")
@@ -216,15 +217,15 @@ class ConsumeLaterAdapter(
 
                 contentTypeTV.text = Constants.ContentType.fromStringRequest(item.contentType).value
 
-                deleteButton.setOnClickListener {
+                deleteButton.setSafeOnClickListener {
                     interaction.onDeletePressed(item, position)
                 }
 
-                finishedButton.setOnClickListener {
+                finishedButton.setSafeOnClickListener {
                     interaction.onAddToListPressed(item, position)
                 }
 
-                root.setOnClickListener {
+                root.setSafeOnClickListener {
                     interaction.onItemSelected(item, position)
                 }
             }

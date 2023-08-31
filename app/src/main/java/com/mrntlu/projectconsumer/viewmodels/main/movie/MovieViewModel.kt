@@ -10,7 +10,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.repository.MovieRepository
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.SortRequests
+import com.mrntlu.projectconsumer.utils.Constants.SortUpcomingRequests
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.isSuccessful
@@ -24,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 private const val MOVIE_PAGE_KEY = "rv.movie.page"
-private const val MOVIE_SORT_KEY = "rv.movie.sort"
 private const val MOVIE_SCROLL_POSITION_KEY = "rv.movie.scroll_position"
 private const val MOVIE_TAG_KEY = "movie.fetch.tag"
 
@@ -41,7 +41,6 @@ class MovieViewModel @AssistedInject constructor(
     var isRestoringData = false
     private var page: Int = savedStateHandle[MOVIE_PAGE_KEY] ?: 1
     private var tag: String = savedStateHandle[MOVIE_TAG_KEY] ?: FetchType.UPCOMING.tag
-    private var sort: String = savedStateHandle[MOVIE_SORT_KEY] ?: Constants.SortUpcomingRequests[0].request
     var scrollPosition: Int = savedStateHandle[MOVIE_SCROLL_POSITION_KEY] ?: 0
         private set
 
@@ -54,15 +53,12 @@ class MovieViewModel @AssistedInject constructor(
         } else {
             setTag(vmTag)
 
-            startMoviesFetch(sort, true)
+            startMoviesFetch(true)
         }
     }
 
-    fun startMoviesFetch(newSort: String, refreshAnyway: Boolean = false) {
-        if (sort != newSort) {
-            setSort(newSort)
-            setPagePosition(1)
-        } else if (refreshAnyway)
+    fun startMoviesFetch(refreshAnyway: Boolean = false) {
+        if (refreshAnyway)
             setPagePosition(1)
 
         fetchMovies()
@@ -75,7 +71,7 @@ class MovieViewModel @AssistedInject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable).collect { response ->
+            movieRepository.fetchMovies(page, getSort(), tag, isNetworkAvailable).collect { response ->
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful()) {
                         prevList.addAll(response.data!!)
@@ -99,7 +95,7 @@ class MovieViewModel @AssistedInject constructor(
         var isPaginationExhausted = false
         val tempList = arrayListOf<Movie>()
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.fetchMovies(page, sort, tag, isNetworkAvailable, isRestoringData = true).collect { response ->
+            movieRepository.fetchMovies(page, getSort(), tag, isNetworkAvailable, isRestoringData = true).collect { response ->
                 if (response.isSuccessful()) {
                     tempList.addAll(response.data!!)
                     isPaginationExhausted = response.isPaginationExhausted
@@ -116,6 +112,12 @@ class MovieViewModel @AssistedInject constructor(
         }
     }
 
+    private fun getSort(): String = when(tag) {
+        FetchType.UPCOMING.tag -> SortUpcomingRequests.request
+        FetchType.TOP.tag -> SortRequests[1].request
+        else -> SortRequests[0].request
+    }
+
     private fun setTag(newTag: String) {
         if (tag != newTag) {
             tag = newTag
@@ -126,11 +128,6 @@ class MovieViewModel @AssistedInject constructor(
     private fun setPagePosition(newPage: Int) {
         page = newPage
         savedStateHandle[MOVIE_PAGE_KEY] = page
-    }
-
-    private fun setSort(newSort: String) {
-        sort = newSort
-        savedStateHandle[MOVIE_SORT_KEY] = sort
     }
 
     fun setScrollPosition(newPosition: Int) {

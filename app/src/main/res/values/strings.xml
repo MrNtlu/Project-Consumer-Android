@@ -15,8 +15,6 @@
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width">
-      <title>Privacy Policy</title>
-      <style> body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; padding:1em; } </style>
     </head>
     <body>
     <strong>Privacy Policy</strong> <p>
@@ -128,8 +126,6 @@
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width">
-      <title>Terms &amp; Conditions</title>
-      <style> body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; padding:1em; } </style>
     </head>
     <body>
     <strong>Terms &amp; Conditions</strong> <p>
@@ -386,6 +382,7 @@
     <string name="read_privacy_policy"><![CDATA[Please read and accept the Privacy & Policy.]]></string>
     <string name="do_you_want_to_delete">Do you want to delete?</string>
     <string name="do_you_want_to_log_out_">Do you want to log out?</string>
+    <string name="remove_from_later">Do you want to remove from watch later?</string>
     <string name="fix_errors">Please fix the errors.</string>
     <string name="watch_later">Watch Later</string>
     <string name="play_later">Play Later</string>

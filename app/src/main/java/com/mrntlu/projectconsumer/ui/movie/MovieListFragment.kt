@@ -24,7 +24,6 @@ class MovieListFragment: BaseListFragment<Movie>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setMenu(args.fetchType) { viewModel.startMoviesFetch(it) }
         setObservers()
         setListeners()
     }
@@ -40,7 +39,7 @@ class MovieListFragment: BaseListFragment<Movie>() {
             }
 
             setRecyclerView(
-                startFetch = { sortType -> viewModel.startMoviesFetch(sortType) },
+                startFetch = { viewModel.startMoviesFetch() },
                 onItemSelected = { itemId ->
                     val navWithAction = MovieListFragmentDirections.actionMovieListFragmentToMovieDetailsFragment(itemId)
 
