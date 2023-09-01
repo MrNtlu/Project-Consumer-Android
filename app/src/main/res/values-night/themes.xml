@@ -152,6 +152,6 @@
 
     <style name="Theme.ProjectConsumer.FABOverlay" parent="">
         <item name="colorContainer">?attr/colorPrimary</item>
-        <item name="colorOnContainer">?attr/mainBackgroundColor</item>
+        <item name="colorOnContainer">@color/white</item>
     </style>
 </resources>

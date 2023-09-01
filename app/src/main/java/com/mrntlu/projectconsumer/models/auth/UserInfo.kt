@@ -22,6 +22,18 @@ data class UserInfo(
     @SerializedName("tv_count")
     val tvCount: Int,
 
+    @SerializedName("movie_watched_time")
+    val movieWatchedTime: Int,
+
+    @SerializedName("anime_watched_episodes")
+    val animeWatchedEpisodes: Int,
+
+    @SerializedName("tv_watched_episodes")
+    val tvWatchedEpisodes: Int,
+
+    @SerializedName("game_total_hours_played")
+    val gameTotalHoursPlayed: Int,
+
     @SerializedName("fcm_token")
     val fcmToken: String,
 

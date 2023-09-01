@@ -1,16 +1,20 @@
 package com.mrntlu.projectconsumer.adapters
 
 import android.annotation.SuppressLint
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.appcompat.widget.PopupMenu
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
 import com.mrntlu.projectconsumer.databinding.CellConsumeLaterBinding
 import com.mrntlu.projectconsumer.databinding.CellConsumeLaterEmptyBinding
@@ -27,6 +31,7 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -216,13 +221,39 @@ class ConsumeLaterAdapter(
                 }
 
                 contentTypeTV.text = Constants.ContentType.fromStringRequest(item.contentType).value
+                scoreTV.text = item.content.score.toDouble().roundSingleDecimal().toString()
 
-                deleteButton.setSafeOnClickListener {
-                    interaction.onDeletePressed(item, position)
-                }
+                contentTypeIV.setImageDrawable(ContextCompat.getDrawable(
+                    root.context,
+                    if (item.contentType == Constants.ContentType.GAME.request)
+                        R.drawable.ic_game_24
+                    else
+                        R.drawable.ic_content_type_24
+                ))
 
-                finishedButton.setSafeOnClickListener {
-                    interaction.onAddToListPressed(item, position)
+                actionButton.setSafeOnClickListener {
+                    val popupMenu = PopupMenu(root.context, actionButton)
+                    popupMenu.menuInflater.inflate(R.menu.consume_later_item_menu, popupMenu.menu)
+                    var lastTimeClicked: Long = 0
+
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        if (SystemClock.elapsedRealtime() - lastTimeClicked < 550) {
+                            return@setOnMenuItemClickListener false
+                        }
+                        lastTimeClicked = SystemClock.elapsedRealtime()
+
+                        when(menuItem.itemId) {
+                            R.id.removeMenu -> {
+                                interaction.onDeletePressed(item, position)
+                            }
+                            R.id.finishedMenu -> {
+                                interaction.onAddToListPressed(item, position)
+                            }
+                        }
+                        true
+                    }
+
+                    popupMenu.show()
                 }
 
                 root.setSafeOnClickListener {

@@ -50,7 +50,7 @@ import com.mrntlu.projectconsumer.viewmodels.ConsumeLaterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
+class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
 
     private val viewModel: ConsumeLaterViewModel by viewModels()
 
@@ -124,6 +124,7 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
         setMenu()
         setRecyclerView()
         setObservers()
+        setListeners()
     }
 
     private fun isWithinOrientationRange(
@@ -486,13 +487,29 @@ class ConsumeLaterFragment : BaseFragment<FragmentListBinding>() {
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
+                    val lastVisibleItemPosition = linearLayout.findLastVisibleItemPosition()
 
                     if (isScrolling) {
                         val centerScrollPosition = (linearLayout.findLastCompletelyVisibleItemPosition() + linearLayout.findFirstCompletelyVisibleItemPosition()) / 2
                         viewModel.setScrollPosition(centerScrollPosition)
                     }
+
+                    val isScrollingUp = dy <= -90
+                    val isScrollingDown = dy >= 10
+                    val isThresholdPassed = lastVisibleItemPosition > Constants.PAGINATION_LIMIT
+
+                    if (isThresholdPassed && isScrollingUp)
+                        binding.topFAB.show()
+                    else if (!isThresholdPassed || isScrollingDown)
+                        binding.topFAB.hide()
                 }
             })
+        }
+    }
+
+    private fun setListeners() {
+        binding.topFAB.setOnClickListener {
+            binding.listRV.scrollToPosition(0)
         }
     }
 

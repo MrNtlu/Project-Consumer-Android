@@ -1,104 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="6dp"
+    android:layout_marginHorizontal="3dp"
+    android:orientation="horizontal"
     android:background="?attr/mainBackgroundColor">
 
     <include
         android:id="@+id/imageInclude"
         layout="@layout/cell_preview_item"
         android:layout_width="wrap_content"
-        android:layout_height="75dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="125dp"
+        android:layout_marginStart="3dp" />
 
-    <TextView
-        android:id="@+id/titleTV"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:textAlignment="textStart"
-        android:textColor="?attr/mainTextColor"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageInclude"
-        app:layout_constraintTop_toTopOf="@+id/imageInclude"
-        tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
-
-    <TextView
-        android:id="@+id/titleOriginalTV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="?attr/subTextColor"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/titleTV"
-        app:layout_constraintStart_toStartOf="@+id/titleTV"
-        app:layout_constraintTop_toBottomOf="@+id/titleTV"
-        tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix"
-        tools:ignore="SmallSp" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/contentTypeCV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardBackgroundColor="?attr/colorSecondary"
-        app:cardCornerRadius="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/titleTV"
-        app:layout_constraintTop_toTopOf="@+id/finishedButton">
+        android:orientation="vertical"
+        android:layout_gravity="center">
 
         <TextView
-            android:id="@+id/contentTypeTV"
+            android:id="@+id/titleTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="6dp"
-            android:layout_marginVertical="3dp"
-            android:textColor="?attr/mainBackgroundColor"
-            android:textSize="12sp"
+            android:textAlignment="textStart"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="18sp"
             android:textStyle="bold"
-            tools:text="TV Series" />
-    </androidx.cardview.widget.CardView>
+            tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
+
+        <TextView
+            android:id="@+id/titleOriginalTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="?attr/subTextColor"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            tools:ignore="SmallSp"
+            tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
+
+        <LinearLayout
+            android:id="@+id/extraInfoLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/scoreIV"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_star_36"
+                app:tint="?attr/colorPrimary"
+                android:contentDescription="@string/rate_star_cd"/>
+
+            <TextView
+                android:id="@+id/scoreTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAlignment="textEnd"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="4.5" />
+
+            <ImageView
+                android:id="@+id/contentTypeIV"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/ic_content_type_24"
+                app:tint="?attr/colorPrimary"
+                android:contentDescription="@string/content_type_cd"/>
+
+            <TextView
+                android:id="@+id/contentTypeTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAlignment="textEnd"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="TV Series" />
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
-        android:id="@+id/deleteButton"
-        style="@style/Widget.Material3.Button.TextButton"
+        android:id="@+id/actionButton"
+        style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:minHeight="0dp"
-        android:padding="2dp"
-        android:text="@string/delete"
-        android:textColor="?attr/mainButtonBackgroundColor"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/titleTV"
-        app:layout_constraintTop_toBottomOf="@+id/titleOriginalTV"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/finishedButton"
-        style="@style/Widget.Material3.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:minHeight="0dp"
-        android:padding="2dp"
-        android:text="@string/finished"
-        android:textColor="?attr/mainButtonBackgroundColor"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/deleteButton"
-        app:layout_constraintTop_toTopOf="@+id/deleteButton" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/more_cd"
+        android:padding="6dp"
+        app:icon="@drawable/ic_more"
+        app:iconTint="?attr/mainTextColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageInclude" />
+</LinearLayout>

@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity() {
     private val sharedViewModel: ActivitySharedViewModel by viewModels()
     private val userSharedViewModel: UserSharedViewModel by viewModels()
 
+    private var notificationDialog: AlertDialog? = null
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val navController: NavController by lazy {
@@ -304,7 +306,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         sharedViewModel.setWindowSize(widthWindowSizeClass)
-        askNotificationPermission()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -417,6 +418,8 @@ class MainActivity : AppCompatActivity() {
             if (it) {
                 if (userSharedViewModel.userInfo == null)
                     userSharedViewModel.getBasicInfo()
+
+                askNotificationPermission()
             } else {
                 userSharedViewModel.userInfo = null
             }
@@ -454,16 +457,14 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 //Granted
-            } else if (shouldShowRequestPermissionRationale(POST_NOTIFICATIONS)) {
-                if (prefs.getBoolean(Constants.NOTIFICATION_PREF, true)) {
-                    showNotificationInfoDialog(getString(R.string.notification_permission_info), onPositive = {
+            } else if (sharedViewModel.isLoggedIn()) {
+                if (prefs.getBoolean(Constants.NOTIFICATION_PREF, true) && (notificationDialog == null || notificationDialog?.isShowing == false)) {
+                    notificationDialog = showNotificationInfoDialog(getString(R.string.notification_permission_info), onPositive = {
                         requestPermissionLauncher.launch(POST_NOTIFICATIONS)
                     }) {
                         setNotificationPref()
                     }
                 }
-            } else {
-                requestPermissionLauncher.launch(POST_NOTIFICATIONS)
             }
         }
     }
@@ -510,6 +511,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        notificationDialog?.dismiss()
+        notificationDialog = null
+
         sharedViewModel.shouldPreventBottomSelection.removeObservers(this)
         sharedViewModel.isAuthenticated.removeObservers(this)
         sharedViewModel.countryCode.removeObservers(this)

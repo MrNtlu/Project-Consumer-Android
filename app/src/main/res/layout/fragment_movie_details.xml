@@ -53,10 +53,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="?attr/toolbarBackButtonColor"
+                    android:contentDescription="@string/back_cd"
                     android:elevation="0dp"
                     android:src="@drawable/ic_arrow_back_24"
-                    app:tint="?attr/toolbarTintColor"
-                    android:contentDescription="@string/back_cd"/>
+                    app:tint="?attr/toolbarTintColor" />
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

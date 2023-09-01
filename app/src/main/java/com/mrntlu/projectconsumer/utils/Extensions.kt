@@ -14,6 +14,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -120,8 +121,8 @@ fun Context.showConfirmationDialog(message: String, onPositive: () -> Unit,) {
         .show()
 }
 
-fun Context.showNotificationInfoDialog(message: String, onPositive: () -> Unit, onNegative: () -> Unit) {
-    MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
+fun Context.showNotificationInfoDialog(message: String, onPositive: () -> Unit, onNegative: () -> Unit): AlertDialog {
+    return MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
         .setTitle(getString(R.string.info))
         .setMessage(message)
         .setPositiveButton(getString(R.string.ok)) { dialog, _ ->

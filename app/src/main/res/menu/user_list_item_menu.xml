@@ -3,17 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="Details"
+        android:title="@string/details"
         android:id="@+id/detailsMenu"
         app:showAsAction="never" />
 
     <item
-        android:title="Edit"
+        android:title="@string/edit"
         android:id="@+id/editMenu"
         app:showAsAction="never"/>
 
     <item
-        android:title="Delete"
+        android:title="@string/delete"
         android:id="@+id/deleteMenu"
         app:showAsAction="never" />
 </menu>

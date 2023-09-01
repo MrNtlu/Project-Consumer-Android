@@ -32,6 +32,7 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -168,6 +169,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 tvStatTV.text = it.tvCount.toString()
                 gameStatTV.text = it.gameCount.toString()
                 animeStatTV.text = it.animeCount.toString()
+
+                printLog("${it.animeWatchedEpisodes} ${it.tvWatchedEpisodes} ${it.gameTotalHoursPlayed} ${it.movieWatchedTime}")
 
                 val levelStr = "${it.level} lv."
                 profileLevelBar.progress = it.level
