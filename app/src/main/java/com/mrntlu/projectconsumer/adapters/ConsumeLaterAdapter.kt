@@ -225,10 +225,12 @@ class ConsumeLaterAdapter(
 
                 contentTypeIV.setImageDrawable(ContextCompat.getDrawable(
                     root.context,
-                    if (item.contentType == Constants.ContentType.GAME.request)
-                        R.drawable.ic_game_24
-                    else
-                        R.drawable.ic_content_type_24
+                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
+                        Constants.ContentType.ANIME -> R.drawable.ic_anime
+                        Constants.ContentType.MOVIE -> R.drawable.ic_content_type_24
+                        Constants.ContentType.TV -> R.drawable.ic_tv
+                        Constants.ContentType.GAME -> R.drawable.ic_game_24
+                    }
                 ))
 
                 actionButton.setSafeOnClickListener {

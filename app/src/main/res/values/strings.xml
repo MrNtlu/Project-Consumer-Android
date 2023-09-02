@@ -257,6 +257,11 @@
     <string name="next_cd">Next</string>
     <string name="previous_cd">Previous</string>
     <string name="content_type_cd">Content Type</string>
+    <string name="movie_icon_cd">Movie Icon</string>
+    <string name="tv_series_icon_cd">TV Series Icon</string>
+    <string name="anime_icon_cd">Anime Icon</string>
+    <string name="game_icon_cd">Game Icon</string>
+    <string name="profile_banner_cd">Profile Banner</string>
 
     <string name="login_register_toolbar">Login/Register</string>
     <string name="refresh_cd">Refresh</string>
@@ -349,6 +354,10 @@
     <string name="game_series">Game Series</string>
     <string name="poster">Poster</string>
     <string name="details">Details</string>
+    <string name="hrs">hrs</string>
+    <string name="played">Played</string>
+    <string name="watched">Watched</string>
+    <string name="eps">eps</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>
@@ -397,6 +406,7 @@
     <string name="delete_user_info">Do you want to delete your account? You can\'t undo this action and all your data will be deleted!</string>
     <string name="unexpected_try_again">Unexpected error, please try again.</string>
     <string name="mark_as_finished">Mark as Finished</string>
+    <string name="share_cd">Share</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -48,12 +48,12 @@ class GridAdapter(
 
         binding.genreTV.text = item.genre
         Glide.with(context).load(item.image).addListener(object: RequestListener<Drawable> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
                 binding.genreIV.setGone()
                 return false
             }
 
-            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean { return false }
+            override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean { return false }
 
         }).into(binding.genreIV)
 

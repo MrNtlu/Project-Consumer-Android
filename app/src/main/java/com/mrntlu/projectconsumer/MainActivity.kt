@@ -109,16 +109,21 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    private fun handleIntentData(extras: Bundle?) {
+    private fun handleIntentData(intent: Intent?) {
+        val extras = intent?.extras
         if (extras != null) {
             val data = extras.getString(DATA_EXTRA)
             val path = extras.getString(PATH_EXTRA)
             val deepLink = extras.getString(DEEPLINK_EXTRA)
 
             try {
-                val deepLinkUri = Uri.parse(deepLink)
+                if (deepLink != null) {
+                    val deepLinkUri = Uri.parse(deepLink)
 
-                navController.navigate(deepLink = deepLinkUri)
+                    navController.navigate(deepLink = deepLinkUri)
+                } else {
+                    navController.handleDeepLink(intent)
+                }
             } catch (_: Exception) {
                 if (data != null && path != null) {
                     when (path) {
@@ -150,7 +155,7 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        handleIntentData(intent?.extras)
+        handleIntentData(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -194,7 +199,7 @@ class MainActivity : AppCompatActivity() {
 
         computeWindowSizeClasses()
 
-        handleIntentData(intent?.extras)
+        handleIntentData(intent)
     }
 
     private fun setAppBarConfiguration() {

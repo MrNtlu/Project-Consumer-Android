@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.ui.game
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Html
@@ -196,7 +197,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.detailsToolbarProgress.setVisible()
             Glide.with(requireContext()).load(imageURL).addListener(object:
                 RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
                     binding.detailsToolbarProgress.setGone()
                     binding.detailsAppBarLayout.setExpanded(false)
 
@@ -208,7 +209,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                     return false
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
                     _binding?.detailsToolbarProgress?.setGone()
                     return false
                 }
@@ -255,6 +256,19 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
             detailsToolbarBackButton.setSafeOnClickListener {
                 navController.popBackStack()
+            }
+
+            detailsToolbarShareButton.setSafeOnClickListener {
+                val shareURL = "${Constants.BASE_DOMAIN_URL}/game/${gameDetails?.id}"
+
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, shareURL)
+                    type = "text/plain"
+                }
+
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
             }
 
             detailsDescriptionTV.setOnClickListener {

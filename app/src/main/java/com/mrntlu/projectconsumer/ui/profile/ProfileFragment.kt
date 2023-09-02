@@ -13,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.mrntlu.projectconsumer.MainActivity
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ConsumeLaterPreviewAdapter
@@ -32,7 +33,6 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.loadWithGlide
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -160,7 +160,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     profilePlaceHolderIV,
                     profileImageProgressBar,
                 ) {
-                    centerCrop()
+                    transform(CenterCrop())
                 }
 
                 profileUsernameTV.text = it.username
@@ -170,13 +170,26 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 gameStatTV.text = it.gameCount.toString()
                 animeStatTV.text = it.animeCount.toString()
 
-                printLog("${it.animeWatchedEpisodes} ${it.tvWatchedEpisodes} ${it.gameTotalHoursPlayed} ${it.movieWatchedTime}")
+                movieWatchedTV.text = convertLength(it.movieWatchedTime)
+                tvWatchedTV.text = it.tvWatchedEpisodes.toString()
+                animeWatchedTV.text = it.tvWatchedEpisodes.toString()
+                gamePlayedTV.text = convertLength(it.gameTotalHoursPlayed)
 
                 val levelStr = "${it.level} lv."
                 profileLevelBar.progress = it.level
                 profileLevelTV.text = levelStr
             }
         }
+    }
+
+    private fun convertLength(length: Int): String {
+        return if (length > 60) {
+            val hours = length / 60
+            if (hours < 10)
+                String.format("%01d", hours)
+            else
+                String.format("%02d", hours)
+        } else length.toString()
     }
 
     private fun setListeners() {

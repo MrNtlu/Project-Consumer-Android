@@ -70,13 +70,16 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         private val swipeVelocityThreshold = 100
 
         override fun onFling(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            val diffX = e2.x - e1.x
-            val diffY = e2.y - e1.y
+            val e1X = e1?.x ?: 0f
+            val e1Y = e1?.y ?: 0f
+
+            val diffX = e2.x - e1X
+            val diffY = e2.y - e1Y
 
             if (abs(diffX) > abs(diffY)) {
                 if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {

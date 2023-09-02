@@ -34,14 +34,15 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
         override fun onFling(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            if (e2.x - e1.x > SWIPE_THRESHOLD) {
+            val e1X = e1?.x ?: 0f
+            if (e2.x - e1X > SWIPE_THRESHOLD) {
                 selectTab(true)
-            } else if (e1.x - e2.x > SWIPE_THRESHOLD) {
+            } else if (e1X - e2.x > SWIPE_THRESHOLD) {
                 selectTab(false)
             }
             return true

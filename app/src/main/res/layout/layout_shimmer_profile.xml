@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:shimmer_auto_start="true"
@@ -108,86 +109,222 @@
             app:layout_constraintStart_toStartOf="@+id/guideline23"
             app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
 
-        <TextView
-            android:id="@+id/shimmerMovieStatTV"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/shimmer_color"
-            app:layout_constraintEnd_toStartOf="@+id/shimmerTvStatTV"
-            app:layout_constraintStart_toStartOf="@+id/guideline21"
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/materialDivider12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/firstShimmerLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shimmeProfileDiaryButton" />
 
-        <TextView
-            android:id="@+id/shimmerTvStatTV"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:background="@color/shimmer_color"
-            app:layout_constraintEnd_toStartOf="@+id/guideline23"
-            app:layout_constraintStart_toEndOf="@+id/shimmerMovieStatTV"
-            app:layout_constraintTop_toTopOf="@+id/shimmerMovieStatTV" />
+        <LinearLayout
+            android:id="@+id/firstShimmerLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="46dp"
+            android:layout_marginEnd="3dp"
+            android:background="?attr/mainBackgroundColor"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/secondShimmerLayout"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/shimmeProfileDiaryButton">
 
-        <TextView
-            android:id="@+id/shimmerAnimeStatTV"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_marginEnd="8dp"
-            android:background="@color/shimmer_color"
-            app:layout_constraintEnd_toStartOf="@+id/shimmerGameStatTV"
-            app:layout_constraintStart_toStartOf="@+id/guideline23"
-            app:layout_constraintTop_toTopOf="@+id/shimmerMovieStatTV" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_content_type_24"
+                app:tint="@color/shimmer_color" />
 
-        <TextView
-            android:id="@+id/shimmerGameStatTV"
-            android:layout_width="40dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="8dp"
-            android:background="@color/shimmer_color"
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="13dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="13dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/secondShimmerLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:background="?attr/mainBackgroundColor"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/thirdShimmerLayout"
+            app:layout_constraintStart_toEndOf="@+id/firstShimmerLayout"
+            app:layout_constraintTop_toTopOf="@+id/firstShimmerLayout">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_tv"
+                app:tint="@color/shimmer_color" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="13dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="13dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/thirdShimmerLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
+            android:background="?attr/mainBackgroundColor"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/fourthShimmerLayout"
+            app:layout_constraintStart_toEndOf="@+id/secondShimmerLayout"
+            app:layout_constraintTop_toTopOf="@+id/firstShimmerLayout">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_anime"
+                app:tint="@color/shimmer_color" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="13dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="13dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/fourthShimmerLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:background="?attr/mainBackgroundColor"
+            android:gravity="center"
+            android:orientation="vertical"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
-            app:layout_constraintStart_toEndOf="@+id/shimmerAnimeStatTV"
-            app:layout_constraintTop_toTopOf="@+id/shimmerMovieStatTV" />
+            app:layout_constraintStart_toEndOf="@+id/thirdShimmerLayout"
+            app:layout_constraintTop_toTopOf="@+id/firstShimmerLayout">
 
-        <TextView
-            android:id="@+id/shimmerMovieStatTitleTV"
-            android:layout_width="30dp"
-            android:layout_height="15dp"
-            android:layout_marginTop="6dp"
-            android:background="@color/shimmer_color"
-            app:layout_constraintEnd_toEndOf="@+id/shimmerMovieStatTV"
-            app:layout_constraintStart_toStartOf="@+id/shimmerMovieStatTV"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerMovieStatTV" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_game_24"
+                app:tint="@color/shimmer_color" />
 
-        <TextView
-            android:id="@+id/shimmerTvStatTitleTV"
-            android:layout_width="30dp"
-            android:layout_height="15dp"
-            android:layout_marginTop="6dp"
-            android:background="@color/shimmer_color"
-            app:layout_constraintEnd_toEndOf="@+id/shimmerTvStatTV"
-            app:layout_constraintStart_toStartOf="@+id/shimmerTvStatTV"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerTvStatTV" />
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/shimmerAnimeStatTitleTV"
-            android:layout_width="30dp"
-            android:layout_height="15dp"
-            android:layout_marginTop="6dp"
-            android:background="@color/shimmer_color"
-            app:layout_constraintEnd_toEndOf="@+id/shimmerAnimeStatTV"
-            app:layout_constraintStart_toStartOf="@+id/shimmerAnimeStatTV"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerAnimeStatTV" />
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="13dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/shimmerGameStatTitleTV"
-            android:layout_width="30dp"
-            android:layout_height="15dp"
-            android:layout_marginTop="6dp"
-            android:background="@color/shimmer_color"
-            app:layout_constraintEnd_toEndOf="@+id/shimmerGameStatTV"
-            app:layout_constraintStart_toStartOf="@+id/shimmerGameStatTV"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerGameStatTV" />
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/shimmer_color"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="13dp"
+                android:layout_marginTop="6dp"
+                android:background="@color/shimmer_color"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/materialDivider10"
@@ -196,7 +333,7 @@
             app:layout_constraintBottom_toTopOf="@+id/textView20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerMovieStatTitleTV" />
+            app:layout_constraintTop_toBottomOf="@+id/firstShimmerLayout" />
 
         <TextView
             android:id="@+id/textView20"
@@ -211,10 +348,10 @@
             android:id="@+id/shimmerSeeAllButton"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:layout_marginTop="52dp"
+            android:layout_marginTop="46dp"
             android:background="@color/shimmer_color"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerMovieStatTitleTV" />
+            app:layout_constraintTop_toBottomOf="@+id/firstShimmerLayout" />
 
         <View
             android:id="@+id/shimmerWatchLaterRV"

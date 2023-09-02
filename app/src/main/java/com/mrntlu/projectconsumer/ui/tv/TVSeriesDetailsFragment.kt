@@ -1,12 +1,12 @@
 package com.mrntlu.projectconsumer.ui.tv
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -199,7 +199,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             binding.tvDetailsToolbarProgress.setVisible()
             Glide.with(requireContext()).load(backdrop ?: imageURL).addListener(object:
                 RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
                     binding.tvDetailsToolbarProgress.setGone()
                     binding.tvDetailsAppBarLayout.setExpanded(false)
 
@@ -211,7 +211,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                     return false
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
                     binding.tvDetailsToolbarProgress.setGone()
                     return false
                 }
@@ -262,8 +262,22 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                     navController.navigate(navWithAction)
                 }
             }
+
             tvDetailsToolbarBackButton.setSafeOnClickListener {
                 navController.popBackStack()
+            }
+
+            detailsToolbarShareButton.setSafeOnClickListener {
+                val shareURL = "${Constants.BASE_DOMAIN_URL}/tv/${tvDetails?.id}"
+
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, shareURL)
+                    type = "text/plain"
+                }
+
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
             }
 
             tvDetailsDescriptionTV.setOnClickListener {
@@ -434,9 +448,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             detailsConsumeLaterViewModel.consumeLater.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
-        activity?.let {
-            it.window.statusBarColor = ContextCompat.getColor(it, if (sharedViewModel.isLightTheme()) R.color.darkWhite else R.color.androidBlack)
-        }
+        seasonAdapter = null
         genreAdapter = null
         actorAdapter = null
         networkAdapter = null

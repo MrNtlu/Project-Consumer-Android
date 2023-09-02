@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.ui.movie
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,6 +35,7 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLa
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
@@ -195,7 +197,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             binding.detailsToolbarProgress.setVisible()
             Glide.with(requireContext()).load(backdrop ?: imageURL).addListener(object:
                 RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
                     binding.detailsToolbarProgress.setGone()
                     binding.detailsAppBarLayout.setExpanded(false)
 
@@ -207,7 +209,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     return false
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
                     _binding?.detailsToolbarProgress?.setGone()
                     return false
                 }
@@ -264,6 +266,19 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
             detailsToolbarBackButton.setSafeOnClickListener {
                 navController.popBackStack()
+            }
+
+            detailsToolbarShareButton.setSafeOnClickListener {
+                val shareURL = "$BASE_DOMAIN_URL/movie/${movieDetails?.id}"
+
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, shareURL)
+                    type = "text/plain"
+                }
+
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
             }
 
             detailsDescriptionTV.setOnClickListener {

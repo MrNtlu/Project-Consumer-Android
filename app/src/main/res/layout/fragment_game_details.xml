@@ -56,6 +56,17 @@
                     android:src="@drawable/ic_arrow_back_24"
                     app:tint="?attr/toolbarTintColor"
                     android:contentDescription="@string/back_cd"/>
+
+                <ImageButton
+                    android:id="@+id/detailsToolbarShareButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="?attr/toolbarBackButtonColor"
+                    android:contentDescription="@string/share_cd"
+                    android:elevation="0dp"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_share"
+                    app:tint="?attr/toolbarTintColor" />
             </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
