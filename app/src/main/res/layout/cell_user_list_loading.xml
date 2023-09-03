@@ -18,14 +18,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/shimmer_color" />
+            android:background="?attr/shimmerColor" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/shimmerIV"
             android:layout_width="76dp"
             android:layout_height="115dp"
             app:cardCornerRadius="6dp"
-            app:cardBackgroundColor="@color/shimmer_color"
+            app:cardBackgroundColor="?attr/shimmerColor"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -39,7 +39,7 @@
             android:layout_height="22dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/shimmerUserListButton"
             app:layout_constraintStart_toEndOf="@+id/shimmerIV"
             app:layout_constraintTop_toTopOf="@+id/shimmerIV" />
@@ -54,7 +54,7 @@
             android:contentDescription="@string/more_cd"
             android:padding="6dp"
             app:icon="@drawable/ic_more"
-            app:iconTint="@color/shimmer_color"
+            app:iconTint="?attr/shimmerColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/shimmerIV" />
 
@@ -72,7 +72,7 @@
             android:progress="35"
             app:trackCornerRadius="5dp"
             app:trackThickness="10dp"
-            app:indicatorColor="@color/shimmer_color"/>
+            app:indicatorColor="?attr/shimmerColor"/>
 
         <ImageView
             android:id="@+id/shimmerScoreStarIV"
@@ -81,14 +81,14 @@
             android:src="@drawable/ic_star_36"
             app:layout_constraintBottom_toBottomOf="@+id/shimmerIV"
             app:layout_constraintStart_toStartOf="@+id/shimmerTitleTV"
-            app:tint="@color/shimmer_color" />
+            app:tint="?attr/shimmerColor" />
 
         <TextView
             android:id="@+id/shimmerScoreTV"
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintBottom_toBottomOf="@+id/shimmerScoreStarIV"
             app:layout_constraintStart_toEndOf="@+id/shimmerScoreStarIV"
             app:layout_constraintTop_toTopOf="@+id/shimmerScoreStarIV" />
@@ -97,7 +97,7 @@
             android:id="@+id/shimmerTotalEpisodeTV"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintBottom_toBottomOf="@+id/shimmerIV"
             app:layout_constraintEnd_toEndOf="@+id/shimmerContentProgress" />
 
@@ -107,6 +107,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:dividerColor="@color/shimmer_color" />
+            app:dividerColor="?attr/shimmerColor" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.facebook.shimmer.ShimmerFrameLayout>

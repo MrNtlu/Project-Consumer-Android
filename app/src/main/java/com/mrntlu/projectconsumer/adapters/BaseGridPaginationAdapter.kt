@@ -36,7 +36,7 @@ abstract class BaseGridPaginationAdapter<T>(
                 (holder as PaginationLoadingViewHolderBind).bind(gridCount, aspectRatio, isDarkTheme)
             }
             RecyclerViewEnum.Loading.value -> {
-                (holder as LoadingViewHolderBind).bind(aspectRatio, isDarkTheme)
+                (holder as LoadingViewHolderBind).bind(aspectRatio, isDarkTheme, false)
             }
             RecyclerViewEnum.PaginationExhaust.value -> {
                 (holder as PaginationExhaustViewHolderBind<T>).bind(interaction)

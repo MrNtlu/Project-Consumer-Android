@@ -8,17 +8,16 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
-import com.mrntlu.projectconsumer.R
+import com.google.android.material.carousel.CarouselLayoutManager
+import com.google.android.material.carousel.HeroCarouselStrategy
+import com.mrntlu.projectconsumer.adapters.CarouselAdapter
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
-import com.mrntlu.projectconsumer.adapters.PreviewSlideAdapter
-import com.mrntlu.projectconsumer.adapters.ProminentLayoutManager
-import com.mrntlu.projectconsumer.adapters.decorations.BoundsOffsetDecoration
-import com.mrntlu.projectconsumer.adapters.decorations.LinearHorizontalSpacingDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentPreviewBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
 
 abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPreviewBinding>() {
@@ -27,7 +26,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
 
     protected var upcomingAdapter: PreviewAdapter<T>? = null
     protected var topRatedAdapter: PreviewAdapter<T>? = null
-    private var showCaseAdapter: PreviewSlideAdapter<T>? = null
+    private var showCaseAdapter: CarouselAdapter<T>? = null
 
     private var snapHelper: PagerSnapHelper? = null
 
@@ -46,15 +45,26 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     }
 
     protected fun setShowcaseRecyclerView(
-        isRatioDifferent: Boolean = false,
+        isGame: Boolean = false,
         onItemClicked: (String) -> Unit,
         onRefreshPressed: () -> Unit,
     ) {
         binding.previewShowcaseRV.apply {
-            val linearLayoutManager = ProminentLayoutManager(context)
-            layoutManager = linearLayoutManager
+            val carouselLayoutManager = if (isGame)
+                CarouselLayoutManager(HeroCarouselStrategy())
+            else
+                CarouselLayoutManager()
+            layoutManager = carouselLayoutManager
 
-            showCaseAdapter = PreviewSlideAdapter(
+            val rvHeight = binding.root.context.resources.displayMetrics.heightPixels.times(0.32).minus(
+                binding.root.context.dpToPx(8f)
+            )
+            val rvItemWidth = if(isGame)
+                (rvHeight * 16) / 9
+            else
+                (rvHeight * 2) / 3
+
+            showCaseAdapter = CarouselAdapter<T>(
                 object: Interaction<T> {
                     override fun onItemSelected(item: T, position: Int) {
                         onItemClicked(item.id)
@@ -68,19 +78,10 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
 
                     override fun onExhaustButtonPressed() {}
                 },
-                isRatioDifferent = isRatioDifferent,
-                isDarkTheme = !sharedViewModel.isLightTheme(),
+                isGame = isGame,
+                itemWidth = rvItemWidth.toInt(),
             )
             adapter = showCaseAdapter
-
-            val spacing = resources.getDimensionPixelSize(R.dimen.carousel_spacing)
-            addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
-            addItemDecoration(BoundsOffsetDecoration())
-
-            snapHelper = PagerSnapHelper()
-            snapHelper?.attachToRecyclerView(this)
-
-            initRecyclerViewPosition(linearLayoutManager)
         }
     }
 

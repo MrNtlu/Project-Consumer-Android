@@ -33,6 +33,8 @@
 
         <item name="highlightColor">@color/red500</item>
 
+        <item name="shimmerColor">@color/shimmerLight</item>
+
         <item name="toolbarTintColor">@color/materialBlack</item>
         <item name="toolbarBackButtonColor">#BFFFFFFF</item>
         <item name="toolbarBackgroundColor">@color/darkWhite</item>

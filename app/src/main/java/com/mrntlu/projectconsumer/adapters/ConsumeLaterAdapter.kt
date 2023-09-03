@@ -6,9 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.PopupMenu
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +20,6 @@ import com.mrntlu.projectconsumer.databinding.CellErrorBinding
 import com.mrntlu.projectconsumer.interfaces.ConsumeLaterInteraction
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
-import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
@@ -181,17 +177,9 @@ class ConsumeLaterAdapter(
                 val radiusInPx = root.context.dpToPxFloat(6f)
 
                 imageInclude.apply {
-                    previewComposeView.apply {
-                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                        setContent {
-                            LoadingShimmer(isDarkTheme = false, roundedCornerSize = 6.dp) {
-                                fillMaxHeight()
-                            }
-                        }
-                    }
-
                     previewCard.setGone()
-                    previewComposeView.setVisible()
+                    previewShimmerLayout.setVisible()
+                    previewShimmerCV.radius = radiusInPx
                     previewGameCV.setGone()
                     previewTV.setGone()
 
@@ -200,7 +188,7 @@ class ConsumeLaterAdapter(
                     else
                         ImageView.ScaleType.FIT_XY
 
-                    previewIV.loadWithGlide(item.content.imageURL, previewCard, previewComposeView) {
+                    previewIV.loadWithGlide(item.content.imageURL, previewCard, previewShimmerLayout) {
                         if (item.contentType == "game")
                             transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
                         else

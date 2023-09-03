@@ -2,14 +2,10 @@ package com.mrntlu.projectconsumer.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.databinding.CellSeasonBinding
 import com.mrntlu.projectconsumer.models.main.tv.Season
-import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -32,17 +28,9 @@ class SeasonAdapter(
         holder.binding.apply {
             val radiusInPx = root.context.dpToPxFloat(6f)
 
-            seasonComposeView.apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    LoadingShimmer(isDarkTheme = false, roundedCornerSize = 6.dp) {
-                        fillMaxHeight()
-                    }
-                }
-            }
-
             placeHolderCV.setGone()
-            seasonComposeView.setVisible()
+            previewShimmerLayout.setVisible()
+            previewShimmerCV.radius = radiusInPx
 
             if (season.episodeCount > 0) {
                 val episodeStr = "${season.episodeCount} eps."
@@ -50,8 +38,7 @@ class SeasonAdapter(
             }
             seasonEpisodeCV.setVisibilityByCondition(season.episodeCount == 0)
 
-            seasonComposeView.setVisible()
-            seasonIV.loadWithGlide(season.imageURL, placeHolderCV, seasonComposeView) {
+            seasonIV.loadWithGlide(season.imageURL, placeHolderCV, previewShimmerLayout) {
                 transform(RoundedCorners(radiusInPx.toInt()))
             }
 

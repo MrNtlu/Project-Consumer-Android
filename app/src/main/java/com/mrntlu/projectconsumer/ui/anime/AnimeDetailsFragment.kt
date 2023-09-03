@@ -8,9 +8,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.unit.dp
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
@@ -40,7 +37,6 @@ import com.mrntlu.projectconsumer.models.main.anime.AnimeDetails
 import com.mrntlu.projectconsumer.models.main.anime.AnimeNameURL
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
-import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
@@ -231,18 +227,10 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             binding.imageInclude.apply {
                 val radiusInPx = root.context.dpToPxFloat(6f)
 
-                previewComposeView.apply {
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        LoadingShimmer(isDarkTheme = false, roundedCornerSize = radiusInPx.dp) {
-                            fillMaxHeight()
-                        }
-                    }
-                }
-
                 previewCard.setGone()
-                previewComposeView.setVisible()
-                previewIV.loadWithGlide(animeDetails?.imageURL ?: "", previewCard, previewComposeView) {
+                previewShimmerLayout.setVisible()
+                previewShimmerCV.radius = radiusInPx
+                previewIV.loadWithGlide(animeDetails?.imageURL ?: "", previewCard, previewShimmerLayout) {
                     transform(RoundedCorners(radiusInPx.toInt()))
                 }
             }

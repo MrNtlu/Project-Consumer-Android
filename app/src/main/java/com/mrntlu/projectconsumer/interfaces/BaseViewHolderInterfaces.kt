@@ -9,7 +9,7 @@ interface ErrorViewHolderBind<T> {
 }
 
 interface LoadingViewHolderBind {
-    fun bind(aspectRatio: Float?, isDarkTheme: Boolean)
+    fun bind(aspectRatio: Float?, isDarkTheme: Boolean, isPreview: Boolean)
 }
 
 interface PaginationLoadingViewHolderBind {

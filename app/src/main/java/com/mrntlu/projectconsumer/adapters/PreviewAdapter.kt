@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.mrntlu.projectconsumer.adapters.viewholders.LoadingPreviewViewHolder
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.ShapeAppearanceModel
+import com.mrntlu.projectconsumer.adapters.viewholders.LoadingViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.PreviewErrorViewHolder
 import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
 import com.mrntlu.projectconsumer.databinding.CellPreviewErrorBinding
@@ -19,7 +19,6 @@ import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
-import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.Constants.DEFAULT_RATIO
 import com.mrntlu.projectconsumer.utils.Constants.GAME_RATIO
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
@@ -46,7 +45,7 @@ class PreviewAdapter<T: ContentModel>(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             RecyclerViewEnum.Error.value -> PreviewErrorViewHolder<T>(CellPreviewErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            RecyclerViewEnum.Loading.value -> LoadingPreviewViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.Loading.value -> LoadingViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             else -> return ItemPreviewHolder<T>(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
@@ -60,7 +59,7 @@ class PreviewAdapter<T: ContentModel>(
                 (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
             }
             RecyclerViewEnum.Loading.value -> {
-                (holder as LoadingPreviewViewHolder).bind(if (isRatioDifferent) GAME_RATIO else DEFAULT_RATIO, isDarkTheme)
+                (holder as LoadingViewHolder).bind(if (isRatioDifferent) GAME_RATIO else DEFAULT_RATIO, isDarkTheme, true)
             }
         }
     }
@@ -137,35 +136,30 @@ class PreviewAdapter<T: ContentModel>(
 
                 binding.root.layoutParams = params
 
-                previewComposeView.apply {
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        LoadingShimmer(
-                            aspectRatio = if (isRatioDifferent) GAME_RATIO else DEFAULT_RATIO,
-                            isDarkTheme = false,
-                        ) {
-                            fillMaxHeight()
-                        }
-                    }
-                }
-
                 previewCard.setGone()
-                previewComposeView.setVisible()
+                previewShimmerLayout.setVisible()
+                previewShimmerCV.radius = radiusInPx
                 previewGameCV.setVisibilityByCondition(!isRatioDifferent)
 
                 (previewIV.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
                 (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
-                (previewComposeView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
+                (previewShimmerLayout.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
 
-                if (isRatioDifferent)
-                    previewGameCV.radius = radiusInPx
+                if (isRatioDifferent) {
+                    val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
+                        setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
+                        setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
+                    }
+                    val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
+                    previewGameCV.shapeAppearanceModel = shapeAppearanceModel
+                }
 
                 previewIV.scaleType = if (isRatioDifferent)
                     ImageView.ScaleType.CENTER_CROP
                 else
                     ImageView.ScaleType.FIT_XY
 
-                previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
+                previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout) {
                     if (isRatioDifferent)
                         transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
                     else

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.carousel.MaskableFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/errorText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:textColor="?attr/mainTextColor"
+        android:textSize="18sp"
+        android:ellipsize="end"
+        tools:text="Error" />
+
+    <Button
+        android:id="@+id/refreshButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/refresh_cd"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
+        android:scaleType="fitCenter"
+        android:text="@string/try_again"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:layout_gravity="bottom|center"
+        app:icon="@drawable/ic_refresh"
+        app:iconPadding="4dp"
+        app:iconSize="24dp"
+        app:iconTint="@color/white"/>
+</com.google.android.material.carousel.MaskableFrameLayout>

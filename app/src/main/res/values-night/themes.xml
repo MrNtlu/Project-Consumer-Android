@@ -33,6 +33,8 @@
 
         <item name="highlightColor">@color/yellow500</item>
 
+        <item name="shimmerColor">@color/shimmerDark</item>
+
         <item name="toolbarTintColor">@color/white</item>
         <item name="toolbarBackButtonColor">#BF121212</item>
         <item name="toolbarBackgroundColor">@color/androidBlack</item>

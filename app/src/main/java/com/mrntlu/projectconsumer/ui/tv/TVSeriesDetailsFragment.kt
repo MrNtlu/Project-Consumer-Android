@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.mrntlu.projectconsumer.R
@@ -359,7 +359,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                     )
                 },
                 cardCornerRadius = radiusInPx,
-                transformImage = { transform(CenterCrop(), RoundedCorners(radiusInPx.toInt())) }
+                transformImage = { transform(CenterCrop()) }
             ) {
                 actorAdapter = it
                 it
@@ -383,7 +383,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 },
                 placeHolderImage = R.drawable.ic_company_75,
                 cardCornerRadius = radiusInPx,
-                transformImage = { transform(CenterCrop(), RoundedCorners(radiusInPx.toInt())) }
+                transformImage = { transform(CenterInside()) }
             ) {
                 networkAdapter = it
                 it
@@ -407,7 +407,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 },
                 placeHolderImage = R.drawable.ic_company_75,
                 cardCornerRadius = radiusInPx,
-                transformImage = { transform(CenterCrop(), RoundedCorners(radiusInPx.toInt())) }
+                transformImage = { transform(CenterInside()) }
             ) {
                 companiesAdapter = it
                 it

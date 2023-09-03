@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:shimmer_auto_start="true"
@@ -38,7 +37,7 @@
             android:layout_height="100dp"
             android:layout_marginTop="16dp"
             app:cardCornerRadius="50dp"
-            app:cardBackgroundColor="@color/shimmer_color"
+            app:cardBackgroundColor="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -50,7 +49,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toBottomOf="@+id/shimmerProfileIV"/>
@@ -73,7 +72,7 @@
                 android:layout_weight="1"
                 android:indeterminate="false"
                 android:progress="35"
-                app:indicatorColor="@color/shimmer_color"
+                app:indicatorColor="?attr/shimmerColor"
                 app:trackCornerRadius="8dp"
                 app:trackThickness="5dp" />
 
@@ -81,7 +80,7 @@
                 android:id="@+id/shimmerProfileLevelTV"
                 android:layout_width="30dp"
                 android:layout_height="wrap_content"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
 
@@ -92,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/shimmer_color"
+            android:backgroundTint="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline23"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
@@ -104,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="24dp"
-            android:backgroundTint="@color/shimmer_color"
+            android:backgroundTint="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline23"
             app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
@@ -135,13 +134,13 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_content_type_24"
-                app:tint="@color/shimmer_color" />
+                app:tint="?attr/shimmerColor" />
 
             <TextView
                 android:layout_width="40dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -149,7 +148,7 @@
                 android:layout_width="30dp"
                 android:layout_height="13dp"
                 android:layout_marginTop="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -157,7 +156,7 @@
                 android:layout_width="40dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -165,7 +164,7 @@
                 android:layout_width="30dp"
                 android:layout_height="13dp"
                 android:layout_marginTop="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -187,13 +186,13 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_tv"
-                app:tint="@color/shimmer_color" />
+                app:tint="?attr/shimmerColor" />
 
             <TextView
                 android:layout_width="40dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -201,7 +200,7 @@
                 android:layout_width="30dp"
                 android:layout_height="13dp"
                 android:layout_marginTop="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -209,7 +208,7 @@
                 android:layout_width="40dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -217,7 +216,7 @@
                 android:layout_width="30dp"
                 android:layout_height="13dp"
                 android:layout_marginTop="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -239,13 +238,13 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_anime"
-                app:tint="@color/shimmer_color" />
+                app:tint="?attr/shimmerColor" />
 
             <TextView
                 android:layout_width="40dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -253,7 +252,7 @@
                 android:layout_width="30dp"
                 android:layout_height="13dp"
                 android:layout_marginTop="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -261,7 +260,7 @@
                 android:layout_width="40dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -269,7 +268,7 @@
                 android:layout_width="30dp"
                 android:layout_height="13dp"
                 android:layout_marginTop="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -290,13 +289,13 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_game_24"
-                app:tint="@color/shimmer_color" />
+                app:tint="?attr/shimmerColor" />
 
             <TextView
                 android:layout_width="40dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -304,7 +303,7 @@
                 android:layout_width="30dp"
                 android:layout_height="13dp"
                 android:layout_marginTop="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -312,7 +311,7 @@
                 android:layout_width="40dp"
                 android:layout_height="25dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -320,7 +319,7 @@
                 android:layout_width="30dp"
                 android:layout_height="13dp"
                 android:layout_marginTop="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -339,7 +338,7 @@
             android:id="@+id/textView20"
             android:layout_width="170dp"
             android:layout_height="27dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintBottom_toBottomOf="@+id/shimmerSeeAllButton"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toTopOf="@+id/shimmerSeeAllButton" />
@@ -349,7 +348,7 @@
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_marginTop="46dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintTop_toBottomOf="@+id/firstShimmerLayout" />
 
@@ -358,7 +357,7 @@
             android:layout_width="0dp"
             android:layout_height="230dp"
             android:layout_marginTop="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:minHeight="350dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
@@ -369,7 +368,7 @@
             android:layout_width="170dp"
             android:layout_height="27dp"
             android:layout_marginTop="24dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toBottomOf="@+id/shimmerWatchLaterRV" />
 
@@ -377,7 +376,7 @@
             android:id="@+id/shimmerLegendInfoButton"
             android:layout_width="42dp"
             android:layout_height="42dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintBottom_toBottomOf="@+id/textView21"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
             app:layout_constraintTop_toTopOf="@+id/textView21" />
@@ -388,7 +387,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="78dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:minHeight="350dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"

@@ -3,13 +3,10 @@ package com.mrntlu.projectconsumer.ui.game
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import com.google.android.material.carousel.CarouselLayoutManager
-import com.mrntlu.projectconsumer.adapters.ImageAdapter
 import com.mrntlu.projectconsumer.models.main.game.Game
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
-import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.viewmodels.main.game.GamePreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,25 +19,20 @@ class GameFragment : BasePreviewFragment<Game>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.guideline14.setGuidelinePercent(0.25f)
+//        binding.guideline14.setGuidelinePercent(0.25f)
         binding.upcomingPreviewRV.layoutParams.height = view.context.dpToPx(150f)
         binding.topRatedPreviewRV.layoutParams.height = view.context.dpToPx(150f)
 
-        //Carousel Docs
-        // https://github.com/material-components/material-components-android/blob/master/docs/components/Carousel.md
-        // https://medium.com/@everydayprogrammer/implementing-material-3-carousel-in-android-studio-245435a5cdc5
-
         setListeners()
-//        setShowcaseRecyclerView(
-//            isRatioDifferent = true,
-//            onItemClicked = { id ->
-//                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
-//
-//                navController.navigate(navWithAction)
-//            },
-//            onRefreshPressed = { viewModel.fetchPreviewGames() }
-//        )
+        setShowcaseRecyclerView(
+            isGame = true,
+            onItemClicked = { id ->
+                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
 
+                navController.navigate(navWithAction)
+            },
+            onRefreshPressed = { viewModel.fetchPreviewGames() }
+        )
         setRecyclerView(
             isRatioDifferent = true,
             firstOnItemSelected = { id ->
@@ -78,19 +70,7 @@ class GameFragment : BasePreviewFragment<Game>() {
     }
 
     private fun setObservers() {
-        viewModel.previewList.observe(viewLifecycleOwner) {
-            handleObserver(it)
-
-            binding.previewShowcaseRV.apply {
-                val carouselLayoutManager = CarouselLayoutManager()
-                layoutManager = carouselLayoutManager
-
-                if (it is NetworkResponse.Success) {
-                    val imageAdapter = ImageAdapter(context, it.data.popular.map { it.imageURL }.toCollection(ArrayList()))
-                    adapter = imageAdapter
-                }
-            }
-        }
+        viewModel.previewList.observe(viewLifecycleOwner) { handleObserver(it) }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
             if (

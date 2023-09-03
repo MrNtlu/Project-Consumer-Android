@@ -21,7 +21,7 @@
             android:layout_width="83dp"
             android:layout_height="125dp"
             android:layout_marginStart="3dp"
-            app:cardBackgroundColor="@color/shimmer_color"
+            app:cardBackgroundColor="?attr/shimmerColor"
             app:cardCornerRadius="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,14 +39,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:background="@color/shimmer_color" />
+                android:background="?attr/shimmerColor" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textSize="10sp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 tools:ignore="SmallSp" />
 
             <LinearLayout
@@ -59,7 +59,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_star_36"
-                    app:tint="@color/shimmer_color"
+                    app:tint="?attr/shimmerColor"
                     android:contentDescription="@string/rate_star_cd"/>
 
                 <TextView
@@ -68,7 +68,7 @@
                     android:layout_marginStart="3dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:background="@color/shimmer_color"
+                    android:background="?attr/shimmerColor"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
@@ -77,7 +77,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="12dp"
                     android:src="@drawable/ic_content_type_24"
-                    app:tint="@color/shimmer_color"
+                    app:tint="?attr/shimmerColor"
                     android:contentDescription="@string/content_type_cd"/>
 
                 <TextView
@@ -86,7 +86,7 @@
                     android:layout_marginStart="3dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:background="@color/shimmer_color"
+                    android:background="?attr/shimmerColor"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -100,7 +100,7 @@
             android:contentDescription="@string/more_cd"
             android:padding="6dp"
             app:icon="@drawable/ic_more"
-            app:iconTint="@color/shimmer_color"/>
+            app:iconTint="?attr/shimmerColor"/>
     </LinearLayout>
 
 </com.facebook.shimmer.ShimmerFrameLayout>

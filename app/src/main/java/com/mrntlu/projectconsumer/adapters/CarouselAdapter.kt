@@ -4,23 +4,17 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.mrntlu.projectconsumer.adapters.viewholders.LoadingPreviewViewHolder
-import com.mrntlu.projectconsumer.adapters.viewholders.PreviewErrorViewHolder
-import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
-import com.mrntlu.projectconsumer.databinding.CellPreviewErrorBinding
-import com.mrntlu.projectconsumer.databinding.CellSlidePreviewBinding
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.ShapeAppearanceModel
+import com.mrntlu.projectconsumer.databinding.CellCarouselBinding
+import com.mrntlu.projectconsumer.databinding.CellCarouselErrorBinding
+import com.mrntlu.projectconsumer.databinding.CellCarouselShimmerBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
-import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
-import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
-import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
@@ -31,10 +25,10 @@ import com.mrntlu.projectconsumer.utils.setVisible
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
-class PreviewSlideAdapter<T: ContentModel>(
+class CarouselAdapter<T: ContentModel>(
     private val interaction: Interaction<T>,
-    private val isRatioDifferent: Boolean = false,
-    private val isDarkTheme: Boolean,
+    private val isGame: Boolean = false,
+    private val itemWidth: Int,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var errorMessage: String? = null
@@ -42,13 +36,13 @@ class PreviewSlideAdapter<T: ContentModel>(
 
     private var arrayList: ArrayList<T> = arrayListOf()
 
-    private val infiniteItemCount: Int = Int.MAX_VALUE
+    private val radius = 8f
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            RecyclerViewEnum.Error.value -> PreviewErrorViewHolder<T>(CellPreviewErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            RecyclerViewEnum.Loading.value -> LoadingPreviewViewHolder(CellLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else -> return ItemSlidePreviewHolder<T>(CellSlidePreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.Error.value -> CarouselErrorViewHolder(CellCarouselErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            RecyclerViewEnum.Loading.value -> CarouselShimmerViewHolder(CellCarouselShimmerBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            else -> return ItemSlidePreviewHolder<T>(CellCarouselBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
@@ -58,7 +52,7 @@ class PreviewSlideAdapter<T: ContentModel>(
         else if (errorMessage != null)
             1
         else
-            infiniteItemCount
+            arrayList.size
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -71,18 +65,16 @@ class PreviewSlideAdapter<T: ContentModel>(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val dividedPosition = if (arrayList.isEmpty()) position else position % arrayList.size
-
-        when(getItemViewType(dividedPosition)) {
+        when(getItemViewType(position)) {
             RecyclerViewEnum.View.value -> {
-                val item = arrayList[dividedPosition]
-                (holder as ItemSlidePreviewHolder<T>).bind(item, dividedPosition, interaction)
+                val item = arrayList[position]
+                (holder as ItemSlidePreviewHolder<T>).bind(item, position, interaction)
             }
             RecyclerViewEnum.Error.value -> {
-                (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
+                (holder as CarouselAdapter<T>.CarouselErrorViewHolder).bind(errorMessage, interaction)
             }
             RecyclerViewEnum.Loading.value -> {
-                (holder as LoadingPreviewViewHolder).bind(if (isRatioDifferent) Constants.GAME_RATIO else Constants.DEFAULT_RATIO, isDarkTheme)
+                (holder as CarouselAdapter<T>.CarouselShimmerViewHolder).setWidthAndRadius(itemWidth, radius)
             }
         }
     }
@@ -124,43 +116,51 @@ class PreviewSlideAdapter<T: ContentModel>(
         }
     }
 
+    inner class CarouselShimmerViewHolder(private val binding: CellCarouselShimmerBinding): RecyclerView.ViewHolder(binding.root) {
+        fun setWidthAndRadius(width: Int, radius: Float) {
+            binding.apply {
+                root.layoutParams.width = width
+
+                val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
+                    setAllCorners(CornerFamily.ROUNDED, root.context.dpToPxFloat(radius))
+                }
+                val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
+                binding.shimmerCarouselLayout.shapeAppearanceModel = shapeAppearanceModel
+            }
+        }
+    }
+
+    inner class CarouselErrorViewHolder(private val binding: CellCarouselErrorBinding): RecyclerView.ViewHolder(binding.root) {
+        fun bind(errorMessage: String?, interaction: Interaction<T>) {
+            binding.errorText.text = errorMessage
+
+            binding.refreshButton.setOnClickListener { interaction.onErrorRefreshPressed() }
+        }
+    }
+
     inner class ItemSlidePreviewHolder<T: ContentModel>(
-        private val binding: CellSlidePreviewBinding,
+        private val binding: CellCarouselBinding,
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
         override fun bind(item: T, position: Int, interaction: Interaction<T>) {
-            binding.apply {
-                val radiusInPx = root.context.dpToPxFloat(8f)
+            binding.root.layoutParams.width = itemWidth
 
-                previewComposeView.apply {
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        LoadingShimmer(
-                            aspectRatio = if (isRatioDifferent) Constants.GAME_RATIO else Constants.DEFAULT_RATIO,
-                            isDarkTheme = false,
-                        ) {
-                            fillMaxHeight()
-                        }
-                    }
+            binding.apply {
+                val radiusInPx = root.context.dpToPxFloat(radius)
+
+                val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
+                    setAllCorners(CornerFamily.ROUNDED, radiusInPx)
                 }
+                val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
+                binding.carouselLayout.shapeAppearanceModel = shapeAppearanceModel
 
                 previewCard.setGone()
+                previewGameCV.setVisibilityByCondition(!isGame)
+
+                previewIV.scaleType = ImageView.ScaleType.CENTER_CROP
+
                 previewComposeView.setVisible()
-                previewGameCV.setVisibilityByCondition(!isRatioDifferent)
-
-                (previewIV.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
-                (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
-                (previewComposeView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
-
-                if (isRatioDifferent)
-                    previewGameCV.radius = radiusInPx
-
-                previewIV.scaleType = if (isRatioDifferent)
-                    ImageView.ScaleType.CENTER_CROP
-                else
-                    ImageView.ScaleType.FIT_XY
-
                 previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
-                    if (isRatioDifferent)
+                    if (isGame)
                         transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
                     else
                         transform(RoundedCorners(radiusInPx.toInt()))

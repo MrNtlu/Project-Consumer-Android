@@ -407,6 +407,7 @@
     <string name="unexpected_try_again">Unexpected error, please try again.</string>
     <string name="mark_as_finished">Mark as Finished</string>
     <string name="share_cd">Share</string>
+    <string name="loading_cd">Loading</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

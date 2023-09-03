@@ -49,13 +49,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/shimmer_color" />
+                app:tint="?attr/shimmerColor" />
 
             <TextView
                 android:id="@+id/textView13"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -67,7 +67,7 @@
                 android:id="@+id/textView"
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -80,7 +80,7 @@
                 android:layout_width="38dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="6dp"
-                android:background="@color/shimmer_color"
+                android:background="?attr/shimmerColor"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -93,7 +93,7 @@
             android:id="@+id/shimmerImageInc"
             android:layout_width="83dp"
             android:layout_height="125dp"
-            app:cardBackgroundColor="@color/shimmer_color"
+            app:cardBackgroundColor="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
             app:layout_constraintTop_toTopOf="@+id/shimmerDetailsTitleTV" />
 
@@ -104,7 +104,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:textSize="22sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/shimmerImageInc"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerIntLayout" />
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:textSize="12sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintEnd_toEndOf="@+id/shimmerDetailsTitleTV"
             app:layout_constraintStart_toStartOf="@+id/shimmerDetailsTitleTV"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsTitleTV" />
@@ -133,14 +133,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsBarrier" />
 
         <TextView
             android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/shimmerDetailsTypeTV"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
@@ -151,7 +151,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="16dp"
-            app:dividerColor="@color/shimmer_color"
+            app:dividerColor="?attr/shimmerColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsTypeTV" />
@@ -160,7 +160,7 @@
             android:id="@+id/shimmerDetailsGenreRV"
             android:layout_width="0dp"
             android:layout_height="30dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
@@ -171,7 +171,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
-            app:dividerColor="@color/shimmer_color"
+            app:dividerColor="?attr/shimmerColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsGenreRV" />
@@ -181,7 +181,7 @@
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDivider8" />
@@ -191,7 +191,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
             app:layout_constraintHorizontal_bias="0.0"
@@ -203,7 +203,7 @@
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsDescriptionTV" />
@@ -214,7 +214,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/shimmerDetailsInformationTV"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsInformationTV" />
 
@@ -223,7 +223,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/textView15"
@@ -234,7 +234,7 @@
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/guideline30"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsInformationTV" />
@@ -244,7 +244,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/textView16"
             app:layout_constraintTop_toBottomOf="@+id/textView16" />
 
@@ -254,7 +254,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsSourceTV" />
 
@@ -264,7 +264,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/textView17"
             app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
@@ -274,7 +274,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline30"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsSourceTV" />
 
@@ -283,7 +283,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline30"
             app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
@@ -293,7 +293,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsEpisodeTV" />
 
@@ -303,7 +303,7 @@
             android:layout_height="100dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline30"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsStudiosTV" />
@@ -313,7 +313,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="16sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline30"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsEpisodeTV" />
 
@@ -322,7 +322,7 @@
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_marginTop="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
             app:layout_constraintStart_toStartOf="@+id/guideline30"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsStudiosTV" />
@@ -340,7 +340,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:textSize="18sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/barrier3" />
 
@@ -349,7 +349,7 @@
             android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_marginTop="8dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsRelationTV" />
@@ -360,7 +360,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:textSize="18sp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsRelationRV" />
 
@@ -369,7 +369,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
-            android:background="@color/shimmer_color"
+            android:background="?attr/shimmerColor"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
             app:layout_constraintStart_toStartOf="@+id/guideline28"

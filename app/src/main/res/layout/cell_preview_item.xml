@@ -8,16 +8,18 @@
     android:layout_centerHorizontal="true"
     android:layout_margin="4dp">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/previewGameCV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:alpha="0.85"
         android:outlineProvider="none"
         android:visibility="gone"
+        app:cardPreventCornerOverlap="false"
         app:cardBackgroundColor="?attr/toolbarBackgroundColor"
-        app:cardCornerRadius="0dp"
         app:cardElevation="5dp"
+        app:cardCornerRadius="0dp"
+        app:strokeWidth="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/previewIV"
         app:layout_constraintEnd_toEndOf="@+id/previewIV"
         app:layout_constraintStart_toStartOf="@+id/previewIV"
@@ -33,7 +35,7 @@
             android:textSize="12sp"
             android:textStyle="bold"
             tools:text="TextView" />
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <ImageView
         android:id="@+id/previewIV"
@@ -63,11 +65,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
@@ -79,36 +79,41 @@
                 android:textColor="?attr/mainBackgroundColor"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center"/>
 
             <TextView
                 android:id="@+id/previewTV"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:textAlignment="center"
                 android:textColor="?attr/mainBackgroundColor"
                 android:textSize="22sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_gravity="center"
                 tools:text="TextView" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
     </androidx.cardview.widget.CardView>
 
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/previewComposeView"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/previewShimmerLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:shimmer_auto_start="true"
+        app:shimmer_duration="600"
         app:layout_constraintDimensionRatio="2:3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        android:visibility="visible">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/previewShimmerCV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="?attr/shimmerColor"
+            android:contentDescription="@string/loading_cd"/>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

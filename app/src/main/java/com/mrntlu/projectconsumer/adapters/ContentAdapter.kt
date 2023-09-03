@@ -3,8 +3,6 @@ package com.mrntlu.projectconsumer.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +22,6 @@ import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
-import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.Constants.DEFAULT_RATIO
 import com.mrntlu.projectconsumer.utils.Constants.GAME_RATIO
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
@@ -39,7 +36,7 @@ class ContentAdapter<T: ContentModel>(
     override val interaction: Interaction<T>,
     private val isRatioDifferent: Boolean = false,
     gridCount: Int,
-    private val isDarkTheme: Boolean,
+    isDarkTheme: Boolean,
 ): BaseGridPaginationAdapter<T>(
     interaction, gridCount, isDarkTheme,
     if (isRatioDifferent) GAME_RATIO else DEFAULT_RATIO
@@ -74,25 +71,13 @@ class ContentAdapter<T: ContentModel>(
             binding.apply {
                 val radiusInPx = root.context.dpToPxFloat(8f)
 
-                previewComposeView.apply {
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        LoadingShimmer(
-                            aspectRatio = if (isRatioDifferent) GAME_RATIO else DEFAULT_RATIO,
-                            isDarkTheme = isDarkTheme,
-                        ) {
-                            fillMaxHeight()
-                        }
-                    }
-                }
-
                 previewCard.setGone()
-                previewComposeView.setVisible()
+                previewShimmerLayout.setVisible()
                 previewGameCV.setVisibilityByCondition(!isRatioDifferent)
 
                 (previewIV.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
                 (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
-                (previewComposeView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
+                (previewShimmerLayout.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
 
                 if (isRatioDifferent)
                     previewGameCV.radius = radiusInPx
@@ -102,7 +87,7 @@ class ContentAdapter<T: ContentModel>(
                 else
                     ImageView.ScaleType.FIT_XY
 
-                previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
+                previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout) {
                     if (isRatioDifferent)
                         transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
                     else

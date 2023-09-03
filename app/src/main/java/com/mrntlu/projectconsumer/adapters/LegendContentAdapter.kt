@@ -4,9 +4,6 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -16,7 +13,6 @@ import com.mrntlu.projectconsumer.adapters.viewholders.EmptyHorizontalViewHolder
 import com.mrntlu.projectconsumer.databinding.CellEmptyHorizontalBinding
 import com.mrntlu.projectconsumer.databinding.CellLegendContentBinding
 import com.mrntlu.projectconsumer.models.auth.UserInfoCommon
-import com.mrntlu.projectconsumer.ui.compose.LoadingShimmer
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
@@ -72,28 +68,17 @@ class LegendContentAdapter(
                 val isRatioDifferent = item.contentType == Constants.ContentType.GAME.request
 
                 imageInclude.apply {
-                    previewComposeView.apply {
-                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                        setContent {
-                            LoadingShimmer(
-                                isDarkTheme = isDarkTheme,
-                                roundedCornerSize = radiusInPx.dp
-                            ) {
-                                fillMaxHeight()
-                            }
-                        }
-                    }
-
                     previewCard.setGone()
+                    previewShimmerLayout.setVisible()
+                    previewShimmerCV.radius = radiusInPx
                     previewTV.setGone()
-                    previewComposeView.setVisible()
 
                     previewIV.scaleType = if (isRatioDifferent)
                         ImageView.ScaleType.CENTER_CROP
                     else
                         ImageView.ScaleType.FIT_XY
 
-                    previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
+                    previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout) {
                         if (isRatioDifferent)
                             transform(CenterCrop(), GranularRoundedCorners(
                                 radiusInPx, radiusInPx, 0f, 0f

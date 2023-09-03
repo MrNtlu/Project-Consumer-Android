@@ -21,16 +21,26 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-    <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/seasonComposeView"
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/previewShimmerLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:shimmer_auto_start="true"
+        app:shimmer_duration="600"
         app:layout_constraintDimensionRatio="2:3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        android:visibility="visible">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/previewShimmerCV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="?attr/shimmerColor"
+            android:contentDescription="@string/loading_cd"/>
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/placeHolderCV"
