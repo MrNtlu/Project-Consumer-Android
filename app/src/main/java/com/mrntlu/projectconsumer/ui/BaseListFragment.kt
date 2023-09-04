@@ -8,11 +8,13 @@ import android.widget.AbsListView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentListBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.isFailed
@@ -33,6 +35,19 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
     ): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    protected fun setToolbar(fetchType: String) {
+        binding.listToolbar.apply {
+            title = when (fetchType) {
+                FetchType.UPCOMING.tag -> getString(R.string.upcoming)
+                FetchType.TOP.tag -> getString(R.string.top_rated)
+                FetchType.POPULAR.tag -> getString(R.string.popular)
+                else -> ""
+            }
+
+            setNavigationOnClickListener { navController.popBackStack() }
+        }
     }
 
     protected fun setRecyclerView(

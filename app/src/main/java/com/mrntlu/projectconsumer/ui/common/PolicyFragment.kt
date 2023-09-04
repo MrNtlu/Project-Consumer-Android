@@ -26,6 +26,11 @@ class PolicyFragment : BaseFragment<FragmentPolicyBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.policyToolbar.apply {
+            title = if(args.isPrivacy) getString(R.string.privacy_and_policy) else getString(R.string.terms_and_conditions)
+            setNavigationOnClickListener { navController.popBackStack() }
+        }
+
         val policy = if (args.isPrivacy) getString(R.string.privacy_policy) else getString(R.string.terms_conditions)
         binding.htmlText.apply {
             text = Html.fromHtml(policy, Html.FROM_HTML_MODE_COMPACT)

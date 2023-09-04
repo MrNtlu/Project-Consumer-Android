@@ -8,22 +8,63 @@
     android:background="?attr/mainBackgroundColor"
     tools:context=".ui.common.HomeFragment">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/homeToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="@string/home"
+        android:theme="@style/Theme.ProjectConsumer.Toolbar"
+        android:elevation="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/anonymousInc"
+            layout="@layout/layout_user_anonymous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:visibility="visible" />
+        <include
+            android:id="@+id/userInc"
+            layout="@layout/layout_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/userLoadingProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="?attr/mainTextColor"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="end"
+            tools:visibility="visible" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/homeTabLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="scrollable"
-        app:tabGravity="start"
-        app:tabRippleColor="@null"
-        app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
-        app:tabTextColor="?attr/mainTextColor"
-        app:tabBackground="?attr/mainBackgroundColor"
-        app:tabMinWidth="0dp"
         android:background="?attr/mainBackgroundColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/homeToolbar"
+        app:tabBackground="?attr/mainBackgroundColor"
+        android:contentDescription="@string/content_type_cd"
+        app:tabGravity="start"
+        app:tabIndicatorHeight="0dp"
+        app:tabMinWidth="0dp"
+        app:tabMode="scrollable"
+        app:tabRippleColor="@null"
+        app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
+        app:tabTextColor="?attr/mainTextColor" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/homeViewPager"

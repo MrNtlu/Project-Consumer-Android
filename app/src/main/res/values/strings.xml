@@ -262,6 +262,9 @@
     <string name="anime_icon_cd">Anime Icon</string>
     <string name="game_icon_cd">Game Icon</string>
     <string name="profile_banner_cd">Profile Banner</string>
+    <string name="share_cd">Share</string>
+    <string name="loading_cd">Loading</string>
+    <string name="discover_content_type_cd">Discover Content Type</string>
 
     <string name="login_register_toolbar">Login/Register</string>
     <string name="refresh_cd">Refresh</string>
@@ -317,9 +320,9 @@
     <string name="discover">Discover</string>
     <string name="discover_title">🕵️ Discover</string>
     <string name="profile">Profile</string>
-    <string name="upcoming">📅 Upcoming</string>
-    <string name="top_rated">🍿 Top Rated</string>
-    <string name="popular">🔥 Popular</string>
+    <string name="upcoming">📅&#032;Upcoming</string>
+    <string name="top_rated">🍿&#032;Top Rated</string>
+    <string name="popular">🔥&#032;Popular</string>
     <string name="episodes">Episodes</string>
     <string name="watched_seasons">Watched Seasons</string>
     <string name="watched_episodes">Watched Episodes</string>
@@ -358,6 +361,7 @@
     <string name="played">Played</string>
     <string name="watched">Watched</string>
     <string name="eps">eps</string>
+    <string name="diary_title">📘&#032;Diary</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>
@@ -406,8 +410,6 @@
     <string name="delete_user_info">Do you want to delete your account? You can\'t undo this action and all your data will be deleted!</string>
     <string name="unexpected_try_again">Unexpected error, please try again.</string>
     <string name="mark_as_finished">Mark as Finished</string>
-    <string name="share_cd">Share</string>
-    <string name="loading_cd">Loading</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

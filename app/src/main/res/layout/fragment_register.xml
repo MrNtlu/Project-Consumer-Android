@@ -12,6 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/registerToolbar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="3dp"
+            android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_arrow_back_24" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/registerBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="guideline15,registerToolbar"/>
+
         <TextView
             android:id="@+id/textView7"
             android:layout_width="wrap_content"
@@ -22,7 +41,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guideline12"
             app:layout_constraintStart_toStartOf="@+id/guideline11"
-            app:layout_constraintTop_toTopOf="@+id/guideline15" />
+            app:layout_constraintTop_toBottomOf="@+id/registerBarrier" />
 
         <TextView
             android:id="@+id/textView8"

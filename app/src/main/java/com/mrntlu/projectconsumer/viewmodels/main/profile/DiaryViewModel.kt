@@ -15,24 +15,6 @@ import javax.inject.Inject
 class DiaryViewModel @Inject constructor(
     private val repository: UserListRepository,
 ): ViewModel() {
-    // Scroll Y
-    val totalYScroll: MutableLiveData<Int> by lazy {
-        MutableLiveData(0)
-    }
-
-    fun setTotalYPosition(dy: Int) {
-        val newTotal = this.totalYScroll.value?.plus(dy)
-        this.totalYScroll.value = if (newTotal != null) {
-            if (newTotal > 800) 801
-            else if (newTotal < 0) 0
-            else newTotal
-        } else null
-    }
-
-    fun resetTotalYPosition() {
-        this.totalYScroll.value = 0
-    }
-
     private val _logsResponse = MutableLiveData<NetworkResponse<DataResponse<List<LogsByDate>?>>>()
     val logsResponse: LiveData<NetworkResponse<DataResponse<List<LogsByDate>?>>> = _logsResponse
 

@@ -9,11 +9,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.mrntlu.projectconsumer.adapters.HomeFragmentFactory
 import com.mrntlu.projectconsumer.adapters.HomePagerAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentHomeBinding
-import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.BaseToolbarAuthFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
 
-class HomeFragment : BaseFragment<FragmentHomeBinding>() {
+class HomeFragment : BaseToolbarAuthFragment<FragmentHomeBinding>() {
 
     private val viewModel: ViewPagerSharedViewModel by activityViewModels()
 
@@ -32,7 +32,21 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         setUI()
+        setListeners()
+        setSharedObservers(binding.userLoadingProgressBar, binding.userInc, binding.anonymousInc)
         setObservers()
+    }
+
+    private fun setListeners() {
+        binding.apply {
+            anonymousInc.root.setOnClickListener {
+                onAnonymousIncClicked()
+            }
+
+            userInc.root.setOnClickListener {
+                onUserIncClicked()
+            }
+        }
     }
 
     private fun setUI() {

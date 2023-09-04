@@ -79,6 +79,8 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            registerToolbar.setNavigationOnClickListener { navController.popBackStack() }
+
             registerButton.setSafeOnClickListener {
                 if (validate()) {
                     val body = RegisterBody(

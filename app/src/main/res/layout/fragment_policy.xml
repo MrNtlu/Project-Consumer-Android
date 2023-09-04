@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
-    android:id="@+id/htmlText"
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.common.PolicyFragment"/>
+    tools:context=".ui.common.PolicyFragment"
+    android:orientation="vertical">
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/policyToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        android:theme="@style/Theme.ProjectConsumer.Toolbar"
+        android:elevation="3dp"/>
+
+    <TextView
+        android:id="@+id/htmlText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

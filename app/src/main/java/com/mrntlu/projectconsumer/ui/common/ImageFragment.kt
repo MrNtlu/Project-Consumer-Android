@@ -32,6 +32,8 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
     }
 
     private fun setUI() {
+        binding.imageToolbar.setNavigationOnClickListener { navController.popBackStack() }
+
         binding.imageLayout.apply {
             previewCard.setGone()
             previewShimmerLayout.setVisible()

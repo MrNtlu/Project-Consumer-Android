@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.adapters.CalendarAdapter
 import com.mrntlu.projectconsumer.adapters.DiaryAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiaryBinding
@@ -60,6 +58,8 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            diaryToolbar.setNavigationOnClickListener { navController.popBackStack() }
+
             errorLayoutInc.refreshButton.setSafeOnClickListener {
                 fetchRequest(forceFetch = true)
             }
@@ -83,18 +83,6 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
     private fun setObservers() {
         fetchRequest(forceFetch = false)
-
-        val layoutParams = binding.calendarLayout.layoutParams as ViewGroup.MarginLayoutParams
-
-        viewModel.totalYScroll.observe(viewLifecycleOwner) { totalYScroll ->
-            if (totalYScroll in 0..900) {
-                layoutParams.topMargin = (-totalYScroll / 1.5).toInt()
-                binding.calendarLayout.layoutParams = layoutParams
-            } else {
-                layoutParams.topMargin = -600
-                binding.calendarLayout.layoutParams = layoutParams
-            }
-        }
 
         viewModel.logsResponse.observe(viewLifecycleOwner) { response ->
             when(response) {
@@ -187,21 +175,6 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
 
             diaryAdapter = DiaryAdapter()
             adapter = diaryAdapter
-
-            var isScrolling = false
-            addOnScrollListener(object: RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    isScrolling = newState != AbsListView.OnScrollListener.SCROLL_STATE_IDLE
-                }
-
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-
-                    if (isScrolling)
-                        viewModel.setTotalYPosition(dy)
-                }
-            })
         }
     }
 
@@ -225,7 +198,6 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
             fetchRequest()
         }
 
-        viewModel.resetTotalYPosition()
         binding.logsRV.scrollToPosition(0)
 
         val headerDateText = "${focusedDate.month.toString().lowercase().capitalizeFirstLetter()} ${focusedDate.year}"
@@ -233,12 +205,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
     }
 
     override fun onDestroyView() {
-        viewLifecycleOwner.apply {
-            viewModel.resetTotalYPosition()
-
-            viewModel.logsResponse.removeObservers(this)
-            viewModel.totalYScroll.removeObservers(this)
-        }
+        viewModel.logsResponse.removeObservers(viewLifecycleOwner)
 
         calendarAdapter = null
         diaryAdapter = null

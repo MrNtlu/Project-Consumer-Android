@@ -3,8 +3,6 @@ package com.mrntlu.projectconsumer.ui.common
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.OrientationEventListener
 import android.view.View
@@ -17,12 +15,9 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.MainActivity
@@ -121,7 +116,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
         }
         orientationEventListener?.enable()
 
-        setMenu()
+        setToolbar()
         setRecyclerView()
         setObservers()
         setListeners()
@@ -143,35 +138,38 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
         }
     }
 
-    private fun setMenu() {
-        val menuHost: MenuHost = requireActivity()
+    private fun setToolbar() {
+        binding.listToolbar.apply {
+            title = getString(R.string.watch_later)
+            setNavigationOnClickListener { navController.popBackStack() }
 
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.consume_later_menu, menu)
+            inflateMenu(R.menu.search_toolbar_menu)
 
-                searchMenu = menu.findItem(R.id.searchMenu)
-                searchView = searchMenu!!.actionView as SearchView
-                searchView.queryHint = getString(R.string.search)
-                searchView.setQuery(viewModel.search, false)
-                searchView.clearFocus()
+            searchMenu = menu.findItem(R.id.searchMenu)
+            searchView = searchMenu?.actionView as SearchView
+            searchView.queryHint = getString(R.string.search)
+            searchView.setQuery(viewModel.search, false)
+            searchView.clearFocus()
 
-                searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        context?.hideKeyboard(searchView)
+            searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    context?.hideKeyboard(searchView)
 
-                        return true
-                    }
+                    return true
+                }
 
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        viewModel.search(newText)
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.search(newText)
 
-                        return true
-                    }
-                })
+                    return true
+                }
+            })
 
-                val closeBtn = searchView.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_close_btn)
-                closeBtn.setOnClickListener {
+            val closeBtn = searchView.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_close_btn)
+            closeBtn.setOnClickListener {
+                if (viewModel.search == null)
+                    resetSearchView()
+                else {
                     viewModel.setSearch(null)
                     searchView.setQuery(null, false)
 
@@ -179,7 +177,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                 }
             }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            setOnMenuItemClickListener { menuItem ->
                 hideKeyboard()
 
                 when(menuItem.itemId) {
@@ -314,10 +312,9 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                         }
                     }
                 }
-                return true
+                true
             }
-
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        }
     }
 
     private fun setPopupMenuItemVisibility(popupMenu: PopupMenu, selectedIndex: Int) {

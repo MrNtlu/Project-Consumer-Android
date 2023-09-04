@@ -2,16 +2,10 @@ package com.mrntlu.projectconsumer.ui.discover
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -56,6 +50,8 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
             genre: String?, status: String?, sort: String, from: Int?, to: Int?,
             animeTheme: String?, animeDemographics: String?, gameTBA: Boolean?, gamePlatform: String?
         ) {
+            binding.listToolbar.title = genre
+
             viewModel.startDiscoveryFetch(
                 contentType, sort, status, genre, from, to,
                 animeTheme, animeDemographics, gameTBA, gamePlatform,
@@ -75,22 +71,17 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
         super.onViewCreated(view, savedInstanceState)
         contentType = args.contentType
 
-        setMenu()
+        setToolbar()
         setObservers()
     }
 
-    private fun setMenu() {
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {}
-
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.sort_toolbar_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when(menuItem.itemId) {
+    private fun setToolbar() {
+        binding.listToolbar.apply {
+            title = viewModel.genre
+            subtitle = getString(R.string.discover_title)
+            inflateMenu(R.menu.sort_toolbar_menu)
+            setOnMenuItemClickListener {
+                when(it.itemId) {
                     R.id.sortMenu -> {
                         activity?.let {
                             viewModel.apply {
@@ -111,9 +102,13 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
                         }
                     }
                 }
-                return true
+                true
             }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+            setNavigationOnClickListener {
+                navController.popBackStack()
+            }
+        }
     }
 
     private fun setObservers() {

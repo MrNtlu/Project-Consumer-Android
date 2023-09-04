@@ -2,16 +2,10 @@ package com.mrntlu.projectconsumer.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.mrntlu.projectconsumer.MainActivity
@@ -74,9 +68,26 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             dialog = LoadingDialog(it)
         }
 
-        setMenu()
+        setToolbar()
         setConsumeLaterRV()
         setObservers()
+    }
+
+    private fun setToolbar() {
+        binding.profileToolbar.apply {
+            title = getString(R.string.profile)
+            setOnMenuItemClickListener {
+                hideKeyboard()
+
+                when(it.itemId) {
+                    R.id.settingsMenu -> {
+                        navController.navigate(R.id.action_global_settingsFragment)
+                    }
+                }
+
+                true
+            }
+        }
     }
 
     override fun onStart() {
@@ -84,28 +95,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
         binding.loadingLayout.setVisible()
         viewModel.getUserInfo()
-    }
-
-    private fun setMenu() {
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.profile_menu, menu)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                hideKeyboard()
-
-                when(menuItem.itemId) {
-                    R.id.settingsMenu -> {
-                        navController.navigate(R.id.action_global_settingsFragment)
-                    }
-                }
-                return true
-            }
-
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     private fun setObservers() {

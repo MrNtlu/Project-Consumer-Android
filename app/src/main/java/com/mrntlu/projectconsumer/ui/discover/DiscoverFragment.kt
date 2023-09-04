@@ -13,14 +13,14 @@ import androidx.core.view.GestureDetectorCompat
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.adapters.GridAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiscoverBinding
-import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.BaseToolbarAuthFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
-class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
+class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
 
     private companion object {
         private const val KEY_VALUE = "content_type"
@@ -68,6 +68,7 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
 
         setUI()
         setListeners()
+        setSharedObservers(binding.userLoadingProgressBar, binding.userInc, binding.anonymousInc)
         setXMLGridLayout()
     }
 
@@ -103,6 +104,14 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         binding.apply {
+            anonymousInc.root.setOnClickListener {
+                onAnonymousIncClicked()
+            }
+
+            userInc.root.setOnClickListener {
+                onUserIncClicked()
+            }
+
             discoverConstraintLayout.setOnTouchListener { _, event ->
                 gestureDetector?.onTouchEvent(event)
                 true
@@ -149,26 +158,26 @@ class DiscoverFragment : BaseFragment<FragmentDiscoverBinding>() {
                 setOnClickListener {
                     isIconified = false
                 }
-            }
 
-            discoverSearchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    if (query?.isNotEmptyOrBlank() == true) {
-                        discoverSearchView.isIconified = true
-                        discoverSearchView.isIconified = true
+                setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        if (query?.isNotEmptyOrBlank() == true) {
+                            discoverSearchView.isIconified = true
+                            discoverSearchView.isIconified = true
 
-                        val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToMovieSearchFragment(
-                            query, contentType,
-                        )
+                            val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToMovieSearchFragment(
+                                query, contentType,
+                            )
 
-                        navController.navigate(navWithAction)
+                            navController.navigate(navWithAction)
+                        }
+
+                        return true
                     }
 
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String?) = true
-            })
+                    override fun onQueryTextChange(newText: String?) = true
+                })
+            }
         }
     }
 

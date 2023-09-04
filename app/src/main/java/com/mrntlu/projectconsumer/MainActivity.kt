@@ -25,9 +25,7 @@ import androidx.core.view.get
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -45,12 +43,9 @@ import com.mrntlu.projectconsumer.ui.game.GameDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragmentDirections
 import com.mrntlu.projectconsumer.utils.Constants
-import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
-import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -97,11 +92,14 @@ class MainActivity : AppCompatActivity() {
             setNotificationPref()
     }
 
-    private var isUserInfoFailed = false
     private lateinit var binding: ActivityMainBinding
 
     fun navigateToDiscover() {
         binding.navView.selectedItemId = R.id.navigation_discover
+    }
+
+    fun navigateToProfile() {
+        binding.navView.selectedItemId = R.id.navigation_profile
     }
 
     override fun onBackPressed() {
@@ -173,9 +171,6 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        setAppBarConfiguration()
         navView.setupWithNavController(navController)
 
         coroutineScope.launch {
@@ -202,33 +197,10 @@ class MainActivity : AppCompatActivity() {
         handleIntentData(intent)
     }
 
-    private fun setAppBarConfiguration() {
-        val appBarConfiguration = AppBarConfiguration(
-            if (sharedViewModel.isLoggedIn())
-                setOf(
-                    R.id.navigation_home, R.id.navigation_discover, R.id.navigation_profile,
-                )
-            else
-                setOf(
-                    R.id.navigation_home, R.id.navigation_discover, R.id.navigation_settings
-                )
-        )
-
-        setupActionBarWithNavController(navController, appBarConfiguration)
-    }
-
     private fun setListeners() {
         binding.apply {
             messageBoxButton.setOnClickListener {
                 binding.messageBoxLayout.setGone()
-            }
-
-            anonymousInc.root.setOnClickListener {
-                navController.navigate(R.id.action_global_authFragment)
-            }
-
-            userInc.root.setOnClickListener {
-                binding.navView.selectedItemId = R.id.navigation_profile
             }
 
             navView.setOnItemSelectedListener {
@@ -245,55 +217,19 @@ class MainActivity : AppCompatActivity() {
             navView.setOnItemReselectedListener {}
         }
 
-        navController.addOnDestinationChangedListener { _, destination, args ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             invalidateOptionsMenu()
 
             when(destination.id) {
-                R.id.navigation_home, R.id.navigation_discover -> {
-                    binding.toolbar.setVisible()
+                R.id.navigation_home, R.id.navigation_discover, R.id.navigation_profile -> {
                     binding.navView.setVisible()
-                    handleUserIncVisibility(false)
                 }
                 R.id.navigation_settings -> {
-                    binding.toolbar.setVisible()
                     binding.navView.setVisibilityByCondition(sharedViewModel.isLoggedIn())
-                    handleUserIncVisibility(sharedViewModel.isLoggedIn())
-                }
-                R.id.navigation_profile -> {
-                    binding.toolbar.setVisible()
-                    binding.navView.setVisible()
-                    handleUserIncVisibility(true)
-                }
-                R.id.movieDetailsFragment, R.id.tvDetailsFragment, R.id.gameDetailsFragment -> {
-                    binding.toolbar.setGone()
-                    binding.navView.setGone()
-                    handleUserIncVisibility(true)
                 }
                 else -> {
-                    binding.toolbar.setVisible()
                     binding.navView.setGone()
-                    handleUserIncVisibility(true)
                 }
-            }
-
-            binding.toolbar.title = when(destination.id) {
-                R.id.movieListFragment, R.id.tvListFragment, R.id.animeListFragment, R.id.gameListFragment -> {
-                    when (args?.getString("fetchType")) {
-                        FetchType.UPCOMING.tag -> getString(R.string.upcoming)
-                        FetchType.TOP.tag -> getString(R.string.top_rated)
-                        FetchType.POPULAR.tag -> getString(R.string.popular)
-                        else -> ""
-                    }
-                }
-                R.id.navigation_settings -> getString(R.string.settings)
-                R.id.discoverListFragment -> getString(R.string.discover_title)
-                R.id.imageFragment -> getString(R.string.poster)
-                R.id.navigation_home -> getString(R.string.home)
-                R.id.navigation_discover -> getString(R.string.discover)
-                R.id.navigation_profile -> getString(R.string.profile)
-                R.id.navigation_later -> getString(R.string.watch_later)
-                R.id.navigation_user_list -> getString(R.string.my_list)
-                else -> ""
             }
         }
     }
@@ -351,38 +287,13 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     ConnectivityObserver.Status.Available -> {
-                        if (sharedViewModel.isLoggedIn() && isUserInfoFailed && userSharedViewModel.userInfo == null)
+                        if (sharedViewModel.isLoggedIn() && userSharedViewModel.userInfo == null)
                             userSharedViewModel.getBasicInfo()
 
                         sharedViewModel.setNetworkStatus(true)
 
                         sharedViewModel.setMessageBox(Triple(MessageBoxType.NOTHING, null, null))
                     }
-                }
-            }
-        }
-
-        userSharedViewModel.userInfoResponse.observe(this) { response ->
-            binding.apply {
-                val currentItem = navController.currentDestination?.id
-                val shouldShow = currentItem == R.id.navigation_home ||
-                        currentItem == R.id.navigation_discover
-
-                userLoadingProgressBar.setVisibilityByCondition(!(response == NetworkResponse.Loading && shouldShow))
-                userInc.root.setVisibilityByCondition(!(response is NetworkResponse.Success && shouldShow))
-            }
-
-            isUserInfoFailed = response is NetworkResponse.Failure
-
-            if (response is NetworkResponse.Success) {
-                userSharedViewModel.userInfo = response.data.data
-
-                binding.userInc.userIV.loadWithGlide(
-                    response.data.data.image ?: "",
-                    binding.userInc.userPlaceHolderIV,
-                    binding.userInc.userIVProgressBar,
-                ) {
-                    centerCrop()
                 }
             }
         }
@@ -406,19 +317,6 @@ class MainActivity : AppCompatActivity() {
                 binding.navView.menu.clear()
                 binding.navView.inflateMenu(R.menu.bottom_nav_menu)
             }
-            setAppBarConfiguration()
-
-            if (!it) {
-                binding.userInc.root.setGone()
-                binding.userLoadingProgressBar.setGone()
-            }
-
-            val currentItem = navController.currentDestination?.id
-            val shouldShow = currentItem == R.id.navigation_home ||
-                    currentItem == R.id.navigation_discover
-
-            if (shouldShow)
-                binding.anonymousInc.root.setVisibilityByCondition(it)
 
             if (it) {
                 if (userSharedViewModel.userInfo == null)
@@ -470,24 +368,6 @@ class MainActivity : AppCompatActivity() {
                         setNotificationPref()
                     }
                 }
-            }
-        }
-    }
-
-    private fun handleUserIncVisibility(shouldHide: Boolean) {
-        binding.apply {
-            if (sharedViewModel.isLoggedIn()) {
-                anonymousInc.root.setGone()
-                userLoadingProgressBar.setGone()
-
-                if (userSharedViewModel.userInfo != null || sharedViewModel.isNetworkAvailable())
-                    userInc.root.setVisibilityByCondition(shouldHide)
-                else
-                    userInc.root.setGone()
-            } else {
-                anonymousInc.root.setVisibilityByCondition(shouldHide)
-                userInc.root.setGone()
-                userLoadingProgressBar.setGone()
             }
         }
     }

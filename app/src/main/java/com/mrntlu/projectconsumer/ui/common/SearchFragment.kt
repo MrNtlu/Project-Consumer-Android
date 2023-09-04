@@ -2,8 +2,6 @@ package com.mrntlu.projectconsumer.ui.common
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +9,9 @@ import android.widget.AbsListView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,6 +25,7 @@ import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isSuccessful
@@ -49,7 +45,10 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
         SearchViewModel.provideSearchViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
     }
 
+    private lateinit var searchView: SearchView
+
     private var contentAdapter: ContentAdapter<ContentModel>? = null
+    private var searchMenu: MenuItem? = null
     private var popupMenu: PopupMenu? = null
     private var gridCount = 3
 
@@ -64,43 +63,41 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setMenu()
+        setToolbar()
         setObservers()
     }
 
-    private fun setMenu() {
-        val menuHost: MenuHost = requireActivity()
+    private fun setToolbar() {
+        binding.searchToolbar.apply {
+            title = viewModel.contentType.value
+            subtitle = "🔍 ${viewModel.search}"
+            setNavigationOnClickListener { navController.popBackStack() }
 
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {
-                menu.removeItem(R.id.settingsMenu)
-            }
+            inflateMenu(R.menu.search_toolbar_menu)
 
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.search_toolbar_menu, menu)
+            searchMenu = menu.findItem(R.id.searchMenu)
+            searchView = searchMenu?.actionView as SearchView
+            searchView.queryHint = getString(R.string.search)
+            searchView.setQuery(viewModel.search, false)
+            searchView.clearFocus()
 
-                val searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
-                searchView.queryHint = getString(R.string.search)
-                searchView.setQuery(viewModel.search, false)
-                searchView.isIconified = false
-                searchView.clearFocus()
-
-                searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        if (query?.isNotEmptyOrBlank() == true) {
-                            searchView.clearFocus()
-
-                            viewModel.startContentFetch(query)
-                        }
-
-                        return true
+            searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (query?.isNotEmptyOrBlank() == true) {
+                        searchView.clearFocus()
+                        hideKeyboard()
+                        viewModel.startContentFetch(query)
                     }
 
-                    override fun onQueryTextChange(newText: String?) = true
-                })
-            }
+                    return true
+                }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                override fun onQueryTextChange(newText: String?) = true
+            })
+
+            setOnMenuItemClickListener { menuItem ->
+                hideKeyboard()
+
                 when(menuItem.itemId) {
                     R.id.filterMenu -> {
                         if (contentAdapter?.isLoading == false) {
@@ -168,9 +165,9 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                         }
                     }
                 }
-                return true
+                true
             }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        }
     }
 
     private fun setPopupMenuItemVisibility(popupMenu: PopupMenu, selectedIndex: Int) {
@@ -205,6 +202,10 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
             } else if (response.isLoading) {
                 contentAdapter?.setLoadingView()
             } else if (response.isSuccessful() || response.isPaginating) {
+                binding.searchToolbar.apply {
+                    title = viewModel.contentType.value
+                    subtitle = "🔍 ${viewModel.search}"
+                }
 
                 contentAdapter?.setData(
                     response.data!!.toCollection(ArrayList()),
@@ -330,6 +331,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
             sharedViewModel.windowSize.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
+        searchMenu = null
         popupMenu = null
         contentAdapter = null
         super.onDestroyView()

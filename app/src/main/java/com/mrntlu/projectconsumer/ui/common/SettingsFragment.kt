@@ -2,17 +2,11 @@ package com.mrntlu.projectconsumer.ui.common
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -72,17 +66,23 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             dialog = LoadingDialog(it)
         }
 
-        val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {
-                menu.clear()
-            }
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
-            override fun onMenuItemSelected(menuItem: MenuItem) = false
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
+        setToolbar()
         setUI()
         setListeners()
+    }
+
+    private fun setToolbar() {
+        binding.apply {
+            settingsToolbar.apply {
+                if (sharedViewModel.isLoggedIn()) {
+                    setNavigationIcon(R.drawable.ic_arrow_back_24)
+
+                    setNavigationOnClickListener { navController.popBackStack() }
+                }
+            }
+
+            anonymousInc.root.setVisibilityByCondition(sharedViewModel.isLoggedIn())
+        }
     }
 
     private fun setUI() {
@@ -144,6 +144,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            anonymousInc.root.setOnClickListener {
+                navController.navigate(R.id.action_global_authFragment)
+            }
+
             themeSwitch.setOnCheckedChangeListener { _, isChecked ->
                 sharedViewModel.toggleTheme()
 

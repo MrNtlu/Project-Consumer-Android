@@ -3,15 +3,9 @@ package com.mrntlu.projectconsumer.ui.anime
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -97,20 +91,20 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setObservers()
     }
 
-    private fun setMenu() {
-        val menuHost: MenuHost = requireActivity()
-
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.details_share_menu, menu)
+    private fun setToolbar() {
+        binding.animeDetailsToolbar.apply {
+            setNavigationIcon(R.drawable.ic_arrow_back_24)
+            setNavigationOnClickListener {
+                navController.popBackStack()
             }
 
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                when(menuItem.itemId) {
+            inflateMenu(R.menu.details_share_menu)
+            setOnMenuItemClickListener {
+                when(it.itemId) {
                     R.id.shareMenu -> {
                         val shareURL = "${Constants.BASE_DOMAIN_URL}/anime/${animeDetails?.id}"
 
@@ -124,10 +118,9 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                         startActivity(shareIntent)
                     }
                 }
-                return true
+                true
             }
-
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        }
     }
 
     private fun setObservers() {
@@ -152,7 +145,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                         animeDetails = response.data.data
 
                         setUI()
-                        setMenu()
+                        setToolbar()
                         setLottieUI(
                             detailsInclude,
                             animeDetails,

@@ -41,24 +41,6 @@ class UserListViewModel @Inject constructor(
     private val repository: UserListRepository,
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
-    // Scroll Y
-    val totalYScroll: MutableLiveData<Int> by lazy {
-        MutableLiveData(0)
-    }
-
-    fun setTotalYPosition(dy: Int) {
-        val newTotal = this.totalYScroll.value?.plus(dy)
-        this.totalYScroll.value = if (newTotal != null) {
-            if (newTotal > 200) 201
-            else if (newTotal < 0) 0
-            else newTotal
-        } else null
-    }
-
-    fun resetTotalYPosition() {
-        this.totalYScroll.value = 0
-    }
-
     // Variable for detecting orientation change
     var didOrientationChange = false
     private var currentOrientation: Orientation = Orientation.Idle
@@ -67,7 +49,6 @@ class UserListViewModel @Inject constructor(
         if (currentOrientation == Orientation.Idle) {
             currentOrientation = newOrientation
         } else if (newOrientation != currentOrientation) {
-            resetTotalYPosition()
             didOrientationChange = true
 
             currentOrientation = newOrientation
@@ -234,7 +215,6 @@ class UserListViewModel @Inject constructor(
 
             _userList.value = NetworkResponse.Success(DataResponse(currentUserList))
         } else if (searchHolder != null) {
-            resetTotalYPosition()
             resetSearch()
         }
     }

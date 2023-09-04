@@ -25,6 +25,7 @@ class TVSeriesListFragment: BaseListFragment<TVSeries>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setToolbar(args.fetchType)
         setObservers()
         setListeners()
     }

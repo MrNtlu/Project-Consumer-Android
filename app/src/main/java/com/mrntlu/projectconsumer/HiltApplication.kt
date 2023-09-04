@@ -8,6 +8,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.CHANNEL_NAME
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.GROUP_ID
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.GROUP_NAME
@@ -19,6 +20,8 @@ class HiltApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
 
     private fun createNotificationChannel() {

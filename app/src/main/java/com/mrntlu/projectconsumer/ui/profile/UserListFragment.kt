@@ -3,23 +3,19 @@ package com.mrntlu.projectconsumer.ui.profile
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,6 +56,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private var orientationEventListener: OrientationEventListener? = null
 
     private var popupMenu: PopupMenu? = null
+    private var searchMenu: MenuItem? = null
     private var userListAdapter: UserListAdapter? = null
     private var gestureDetector: GestureDetector? = null
 
@@ -167,7 +164,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         orientationEventListener?.enable()
 
         setUI()
-        setMenu()
+        setToolbar()
         setListeners()
         setRecyclerView()
         setObservers()
@@ -375,8 +372,6 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     super.onScrolled(recyclerView, dx, dy)
 
                     if (isScrolling) {
-                        viewModel.setTotalYPosition(dy)
-
                         val centerScrollPosition = (linearLayout.findLastCompletelyVisibleItemPosition() + linearLayout.findFirstCompletelyVisibleItemPosition()) / 2
                         viewModel.setScrollPosition(centerScrollPosition)
                     }
@@ -399,25 +394,11 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     }
 
     private fun setObservers() {
-        val layoutParams = binding.userListTabLayout.layoutParams as ViewGroup.MarginLayoutParams
-
-        viewModel.totalYScroll.observe(viewLifecycleOwner) { totalYScroll ->
-            if (totalYScroll in 0..binding.userListTabLayout.height.times(2)) {
-                layoutParams.topMargin = -totalYScroll / 2
-                binding.userListTabLayout.layoutParams = layoutParams
-            } else {
-                layoutParams.topMargin = -binding.userListTabLayout.height
-                binding.userListTabLayout.layoutParams = layoutParams
-            }
-        }
-
         viewModel.userList.observe(viewLifecycleOwner) { response ->
             when(response) {
                 is NetworkResponse.Failure -> userListAdapter?.setErrorView(response.errorMessage)
                 NetworkResponse.Loading -> userListAdapter?.setLoadingView()
                 is NetworkResponse.Success -> {
-                    viewModel.resetTotalYPosition()
-
                     userListAdapter?.setData(response.data.data)
 
                     if (viewModel.didOrientationChange) {
@@ -430,38 +411,46 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         }
     }
 
-    private fun setMenu() {
-        val menuHost: MenuHost = requireActivity()
+    private fun setToolbar() {
+        binding.userListToolbar.apply {
+            title = getString(R.string.my_list)
+            setNavigationOnClickListener { navController.popBackStack() }
 
-        menuHost.addMenuProvider(object: MenuProvider {
-            override fun onPrepareMenu(menu: Menu) {
-                menu.removeItem(R.id.settingsMenu)
+            inflateMenu(R.menu.user_list_menu)
+
+            searchMenu = menu.findItem(R.id.searchMenu)
+            searchView = searchMenu?.actionView as SearchView
+            searchView.queryHint = getString(R.string.search)
+            searchView.setQuery(viewModel.search, false)
+            searchView.clearFocus()
+
+            searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    context?.hideKeyboard(searchView)
+
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.search(newText)
+
+                    return true
+                }
+            })
+
+            val closeBtn = searchView.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_close_btn)
+            closeBtn.setOnClickListener {
+                if (viewModel.search == null)
+                    resetSearchView()
+                else {
+                    viewModel.setSearch(null)
+                    searchView.setQuery(null, false)
+
+                    hideKeyboard()
+                }
             }
 
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.user_list_menu, menu)
-
-                searchView = menu.findItem(R.id.searchMenu).actionView as SearchView
-                searchView.queryHint = getString(R.string.search)
-                searchView.setQuery(viewModel.search, false)
-                searchView.clearFocus()
-
-                searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        context?.hideKeyboard(searchView)
-
-                        return true
-                    }
-
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        viewModel.search(newText)
-
-                        return true
-                    }
-                })
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+            setOnMenuItemClickListener { menuItem ->
                 hideKeyboard()
 
                 when(menuItem.itemId) {
@@ -469,13 +458,18 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                         if (popupMenu == null) {
                             val menuItemView = requireActivity().findViewById<View>(R.id.sortMenu)
                             popupMenu = PopupMenu(requireContext(), menuItemView)
-                            popupMenu!!.menuInflater.inflate(R.menu.sort_dual_menu, popupMenu!!.menu)
+                            popupMenu!!.menuInflater.inflate(
+                                R.menu.sort_dual_menu,
+                                popupMenu!!.menu
+                            )
                             popupMenu!!.setForceShowIcon(true)
                         }
 
                         popupMenu?.let {
-                            val selectedColor = if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
-                            val unselectedColor = if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
+                            val selectedColor =
+                                if (sharedViewModel.isLightTheme()) R.color.materialBlack else R.color.white
+                            val unselectedColor =
+                                if (sharedViewModel.isLightTheme()) R.color.white else R.color.materialBlack
 
                             for (i in 0..it.menu.size.minus(1)) {
                                 val popupMenuItem = it.menu[i]
@@ -483,24 +477,28 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                                 popupMenuItem.iconTintList = ContextCompat.getColorStateList(
                                     requireContext(),
-                                    if(viewModel.sort == sortType.request) selectedColor else unselectedColor
+                                    if (viewModel.sort == sortType.request) selectedColor else unselectedColor
                                 )
                                 popupMenuItem.title = sortType.name
                             }
 
                             it.setOnMenuItemClickListener { item ->
-                                val newSortType = when(item.itemId) {
+                                val newSortType = when (item.itemId) {
                                     R.id.firstSortMenu -> {
                                         setPopupMenuItemVisibility(it, 0)
 
                                         Constants.SortUserListRequests[0].request
                                     }
+
                                     R.id.secondSortMenu -> {
                                         setPopupMenuItemVisibility(it, 1)
 
                                         Constants.SortUserListRequests[1].request
                                     }
-                                    else -> { Constants.SortUserListRequests[0].request }
+
+                                    else -> {
+                                        Constants.SortUserListRequests[0].request
+                                    }
                                 }
 
                                 item.isChecked = true
@@ -518,10 +516,9 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                         }
                     }
                 }
-                return true
+                true
             }
-
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        }
     }
 
     private fun setPopupMenuItemVisibility(popupMenu: PopupMenu, selectedIndex: Int) {
@@ -538,6 +535,9 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         searchView.setQuery(null, false)
         searchView.isIconified = true
         searchView.clearFocus()
+
+        searchView.onActionViewCollapsed()
+        searchMenu?.collapseActionView()
 
         hideKeyboard()
     }
@@ -559,21 +559,18 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     }
 
     private fun resetRVPositionAndMargin() {
-        viewModel.resetTotalYPosition()
         viewModel.setScrollPosition(0)
         binding.userListRV.scrollToPosition(0)
     }
 
     override fun onDestroyView() {
-        viewLifecycleOwner.apply {
-            viewModel.userList.removeObservers(this)
-            viewModel.totalYScroll.removeObservers(this)
-        }
+        viewModel.userList.removeObservers(viewLifecycleOwner)
 
         orientationEventListener?.disable()
         orientationEventListener = null
 
         popupMenu = null
+        searchMenu = null
         gestureDetector = null
         userListAdapter = null
         super.onDestroyView()

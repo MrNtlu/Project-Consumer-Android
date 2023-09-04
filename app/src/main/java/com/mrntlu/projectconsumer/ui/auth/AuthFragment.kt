@@ -113,6 +113,8 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
     private fun setListeners() {
         binding.apply {
+            authToolbar.setNavigationOnClickListener { navController.popBackStack() }
+
             googleSignInButton.setSafeOnClickListener(interval = 800) {
                 val signInIntent: Intent = googleSignInClient.signInIntent
                 launcher.launch(signInIntent)

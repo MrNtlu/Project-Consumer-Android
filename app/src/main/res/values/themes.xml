@@ -82,6 +82,7 @@
     <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.Material3.Toolbar.Surface">
         <item name="android:background">?attr/toolbarBackgroundColor</item>
         <item name="android:textColorPrimary">@color/materialBlack</item>
+        <item name="navigationIconTint">@color/materialBlack</item>
         <item name="iconTint">@color/materialBlack</item>
         <item name="colorControlNormal">@color/materialBlack</item>
     </style>
