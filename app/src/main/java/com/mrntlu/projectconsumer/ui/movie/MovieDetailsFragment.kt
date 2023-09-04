@@ -253,7 +253,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
     private fun setListeners() {
         binding.apply {
-            detailsToolbarIV.setOnClickListener {
+            detailsToolbarIV.setSafeOnClickListener(interval = 750) {
                 if (movieDetails?.imageURL?.isNotEmptyOrBlank() == true) {
                     val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToImageFragment(
                         movieDetails!!.imageURL

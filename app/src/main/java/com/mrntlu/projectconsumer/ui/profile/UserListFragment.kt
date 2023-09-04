@@ -57,6 +57,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private var popupMenu: PopupMenu? = null
     private var searchMenu: MenuItem? = null
+    private var userListBottomSheet: UserListBottomSheet? = null
     private var userListAdapter: UserListAdapter? = null
     private var gestureDetector: GestureDetector? = null
 
@@ -290,7 +291,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     }
 
                     activity?.let {
-                        val userListBottomSheet = UserListBottomSheet(
+                        userListBottomSheet = UserListBottomSheet(
                             userListModel,
                             contentType,
                             BottomSheetState.EDIT,
@@ -300,7 +301,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                             userListModel.totalEpisodes,
                             onBottomSheetClosedCallback,
                         )
-                        userListBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                        userListBottomSheet?.show(it.supportFragmentManager, UserListBottomSheet.TAG)
                     }
                 }
 
@@ -317,7 +318,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     }
 
                     activity?.let {
-                        val userListBottomSheet = UserListBottomSheet(
+                        userListBottomSheet = UserListBottomSheet(
                             userListModel,
                             contentType,
                             BottomSheetState.VIEW,
@@ -327,11 +328,13 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                             userListModel.totalEpisodes,
                             onBottomSheetClosedCallback,
                         )
-                        userListBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                        userListBottomSheet?.show(it.supportFragmentManager, UserListBottomSheet.TAG)
                     }
                 }
 
                 override fun onItemSelected(item: UserList, position: Int) {
+                    userListBottomSheet?.dismiss()
+
                     val navWithAction = when(viewModel.contentType) {
                         Constants.ContentType.ANIME -> UserListFragmentDirections.actionNavigationUserListToAnimeDetailsFragment(
                             item.animeList[position].contentId
@@ -568,6 +571,9 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
         orientationEventListener?.disable()
         orientationEventListener = null
+
+        userListBottomSheet?.dismiss()
+        userListBottomSheet = null
 
         popupMenu = null
         searchMenu = null

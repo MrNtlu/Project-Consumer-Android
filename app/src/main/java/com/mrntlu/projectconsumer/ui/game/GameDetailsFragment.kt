@@ -243,7 +243,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
     private fun setListeners() {
         binding.apply {
-            detailsToolbarIV.setOnClickListener {
+            detailsToolbarIV.setSafeOnClickListener(interval = 750) {
                 if (gameDetails?.imageURL?.isNotEmptyOrBlank() == true) {
                     val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToImageFragment(
                         gameDetails!!.imageURL,

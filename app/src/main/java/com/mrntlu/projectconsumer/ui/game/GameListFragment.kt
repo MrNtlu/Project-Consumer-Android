@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.models.main.game.Game
 import com.mrntlu.projectconsumer.ui.BaseListFragment
@@ -44,9 +45,11 @@ class GameListFragment : BaseListFragment<Game>() {
                 isRatioDifferent = true,
                 startFetch = { viewModel.startGamesFetch() },
                 onItemSelected = { itemId ->
-                    val navWithAction = GameListFragmentDirections.actionGameListFragmentToGameDetailsFragment(itemId)
+                    if (navController.currentDestination?.id == R.id.gameListFragment) {
+                        val navWithAction = GameListFragmentDirections.actionGameListFragmentToGameDetailsFragment(itemId)
 
-                    navController.navigate(navWithAction)
+                        navController.navigate(navWithAction)
+                    }
                 },
                 scrollViewModel = { position -> viewModel.setScrollPosition(position) },
                 fetch = { viewModel.fetchGames() }

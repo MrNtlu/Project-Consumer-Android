@@ -253,7 +253,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     private fun setListeners() {
         binding.apply {
-            tvDetailsToolbarIV.setOnClickListener {
+            tvDetailsToolbarIV.setSafeOnClickListener(interval = 750) {
                 if (tvDetails?.imageURL?.isNotEmptyOrBlank() == true) {
                     val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToImageFragment(
                         tvDetails!!.imageURL

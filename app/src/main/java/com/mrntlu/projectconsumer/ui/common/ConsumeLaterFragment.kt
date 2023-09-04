@@ -57,6 +57,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
     private var consumeLaterAdapter: ConsumeLaterAdapter? = null
     private var searchMenu: MenuItem? = null
     private var scoreDialog: AlertDialog? = null
+    private var confirmDialog: AlertDialog? = null
     private var sortPopupMenu: PopupMenu? = null
     private var popupMenu: PopupMenu? = null
 
@@ -358,7 +359,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
 
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
-                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                    confirmDialog = context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
                         val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
 
                         deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
@@ -440,6 +441,8 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                 }
 
                 override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {
+                    confirmDialog?.dismiss()
+
                     when(Constants.ContentType.fromStringRequest(item.contentType)) {
                         Constants.ContentType.ANIME -> {
                             val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToAnimeDetailsFragment(item.contentID)
@@ -528,6 +531,8 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
         orientationEventListener?.disable()
         orientationEventListener = null
 
+        confirmDialog?.dismiss()
+        confirmDialog = null
         searchMenu = null
         popupMenu = null
         sortPopupMenu = null

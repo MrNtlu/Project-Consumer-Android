@@ -93,6 +93,7 @@
         <item name="colorSecondary">?attr/messageBoxBackgroundColor</item>
         <item name="colorSurface">?attr/messageBoxBackgroundColor</item>
         <item name="colorOnSurface">?attr/messageBoxBackgroundColor</item>
+        <item name="colorSurfaceContainerHigh">?attr/messageBoxBackgroundColor</item>
         <item name="materialAlertDialogTitleTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorTitleText</item>
         <item name="materialAlertDialogBodyTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.ErrorBodyText</item>
         <item name="buttonBarPositiveButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.ErrorButton</item>
@@ -120,6 +121,7 @@
         <item name="colorSecondary">?attr/mainBackgroundColor</item>
         <item name="colorSurface">?attr/mainBackgroundColor</item>
         <item name="colorOnSurface">?attr/mainBackgroundColor</item>
+        <item name="colorSurfaceContainerHigh">?attr/mainBackgroundColor</item>
         <item name="materialAlertDialogTitleTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.InfoTitleText</item>
         <item name="materialAlertDialogBodyTextStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.Title.InfoBodyText</item>
         <item name="buttonBarPositiveButtonStyle">@style/Theme.ProjectConsumer.MaterialAlertDialog.App.InfoButton</item>

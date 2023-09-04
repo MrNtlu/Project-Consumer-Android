@@ -24,6 +24,7 @@ import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isEmailValid
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -116,12 +117,16 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
             authToolbar.setNavigationOnClickListener { navController.popBackStack() }
 
             googleSignInButton.setSafeOnClickListener(interval = 800) {
+                hideKeyboard()
+
                 val signInIntent: Intent = googleSignInClient.signInIntent
                 launcher.launch(signInIntent)
             }
 
             signInButton.setSafeOnClickListener {
                 if (validate()) {
+                    hideKeyboard()
+
                     val body = LoginBody(
                         binding.mailET.text!!.toString(),
                         fcmToken,

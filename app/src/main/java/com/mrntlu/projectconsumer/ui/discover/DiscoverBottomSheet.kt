@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.FilterAdapter
@@ -67,6 +69,11 @@ class DiscoverBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        dialog?.setOnShowListener {
+            (it as? BottomSheetDialog)?.apply {
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
 
         setListeners()
         setRecyclerView()

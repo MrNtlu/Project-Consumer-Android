@@ -18,6 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/Theme.ProjectConsumer.Toolbar"
             app:navigationIcon="@drawable/ic_arrow_back_24"
+            app:navigationContentDescription="@string/back_cd"
             app:layout_scrollFlags="scroll|enterAlways" />
     </com.google.android.material.appbar.AppBarLayout>
 

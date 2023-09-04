@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.ui.tv
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.models.main.tv.TVSeries
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
@@ -21,23 +22,29 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
         setListeners()
         setShowcaseRecyclerView(
             onItemClicked = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             onRefreshPressed = { viewModel.fetchPreviewTVSeries() }
         )
         setRecyclerView(
             firstOnItemSelected = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             firstOnRefreshPressed = { viewModel.fetchPreviewTVSeries() },
             secondOnItemSelected = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             secondOnRefreshPressed = { viewModel.fetchPreviewTVSeries() }
         )
@@ -49,15 +56,19 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
             setScrollListener()
 
             seeAllButtonFirst.setOnClickListener {
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.UPCOMING.tag)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.UPCOMING.tag)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             }
 
             seeAllButtonSecond.setOnClickListener {
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.TOP.tag)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.TOP.tag)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             }
         }
     }

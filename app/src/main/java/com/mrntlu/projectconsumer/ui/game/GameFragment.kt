@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.ui.game
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.models.main.game.Game
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
@@ -27,24 +28,30 @@ class GameFragment : BasePreviewFragment<Game>() {
         setShowcaseRecyclerView(
             isGame = true,
             onItemClicked = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             onRefreshPressed = { viewModel.fetchPreviewGames() }
         )
         setRecyclerView(
             isRatioDifferent = true,
             firstOnItemSelected = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             firstOnRefreshPressed = { viewModel.fetchPreviewGames() },
             secondOnItemSelected = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             secondOnRefreshPressed = { viewModel.fetchPreviewGames() }
         )
@@ -56,15 +63,19 @@ class GameFragment : BasePreviewFragment<Game>() {
             setScrollListener()
 
             seeAllButtonFirst.setOnClickListener {
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameListFragment(FetchType.UPCOMING.tag)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameListFragment(FetchType.UPCOMING.tag)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             }
 
             seeAllButtonSecond.setOnClickListener {
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameListFragment(FetchType.TOP.tag)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameListFragment(FetchType.TOP.tag)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             }
         }
     }

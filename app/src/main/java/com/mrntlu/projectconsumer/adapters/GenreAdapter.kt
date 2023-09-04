@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.databinding.CellGenreBinding
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 
 class GenreAdapter(
     private val genreList: List<String>,
@@ -20,7 +21,7 @@ class GenreAdapter(
 
         holder.binding.genreTV.text = genre
 
-        holder.binding.root.setOnClickListener {
+        holder.binding.root.setSafeOnClickListener {
             onClick(position)
         }
     }

@@ -18,6 +18,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
 class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
@@ -104,11 +105,11 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         binding.apply {
-            anonymousInc.root.setOnClickListener {
+            anonymousInc.root.setSafeOnClickListener(interval = 750) {
                 onAnonymousIncClicked()
             }
 
-            userInc.root.setOnClickListener {
+            userInc.root.setSafeOnClickListener(interval = 750) {
                 onUserIncClicked()
             }
 

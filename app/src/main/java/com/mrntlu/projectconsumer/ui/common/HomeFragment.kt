@@ -11,6 +11,7 @@ import com.mrntlu.projectconsumer.adapters.HomePagerAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentHomeBinding
 import com.mrntlu.projectconsumer.ui.BaseToolbarAuthFragment
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
 
 class HomeFragment : BaseToolbarAuthFragment<FragmentHomeBinding>() {
@@ -39,11 +40,11 @@ class HomeFragment : BaseToolbarAuthFragment<FragmentHomeBinding>() {
 
     private fun setListeners() {
         binding.apply {
-            anonymousInc.root.setOnClickListener {
+            anonymousInc.root.setSafeOnClickListener(interval = 750) {
                 onAnonymousIncClicked()
             }
 
-            userInc.root.setOnClickListener {
+            userInc.root.setSafeOnClickListener(interval = 750) {
                 onUserIncClicked()
             }
         }

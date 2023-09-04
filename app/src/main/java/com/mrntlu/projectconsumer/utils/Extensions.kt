@@ -107,8 +107,8 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun Context.showConfirmationDialog(message: String, onPositive: () -> Unit) {
-    MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
+fun Context.showConfirmationDialog(message: String, onPositive: () -> Unit): AlertDialog {
+    return MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
         .setTitle(getString(R.string.confirm))
         .setMessage(message)
         .setPositiveButton(getString(R.string.yes)) { dialog, _ ->

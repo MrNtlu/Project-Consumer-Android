@@ -76,6 +76,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             settingsToolbar.apply {
                 if (sharedViewModel.isLoggedIn()) {
                     setNavigationIcon(R.drawable.ic_arrow_back_24)
+                    setNavigationContentDescription(R.string.back_cd)
 
                     setNavigationOnClickListener { navController.popBackStack() }
                 }
@@ -173,7 +174,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
             }
 
-            anonymousInc.root.setOnClickListener {
+            anonymousInc.root.setSafeOnClickListener(interval = 750) {
                 navController.navigate(R.id.action_global_authFragment)
             }
 

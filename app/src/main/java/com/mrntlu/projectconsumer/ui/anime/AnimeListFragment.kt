@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.models.main.anime.Anime
 import com.mrntlu.projectconsumer.ui.BaseListFragment
@@ -43,9 +44,12 @@ class AnimeListFragment : BaseListFragment<Anime>() {
             setRecyclerView(
                 startFetch = { viewModel.startAnimeFetch() },
                 onItemSelected = { itemId ->
-                    val navWithAction = AnimeListFragmentDirections.actionAnimeListFragmentToAnimeDetailsFragment(itemId)
+                    if (navController.currentDestination?.id == R.id.animeListFragment) {
+                        val navWithAction = AnimeListFragmentDirections.actionAnimeListFragmentToAnimeDetailsFragment(itemId)
 
-                    navController.navigate(navWithAction)
+                        navController.navigate(navWithAction)
+                    }
+
                 },
                 scrollViewModel = { position -> viewModel.setScrollPosition(position) },
                 fetch = { viewModel.fetchAnime() }

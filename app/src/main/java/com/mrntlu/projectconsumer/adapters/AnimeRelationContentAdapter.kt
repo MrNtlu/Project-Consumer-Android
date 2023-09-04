@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.databinding.CellAnimeRelationContentBinding
 import com.mrntlu.projectconsumer.models.main.anime.AnimeRelationDetails
 import com.mrntlu.projectconsumer.utils.openInBrowser
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
 class AnimeRelationContentAdapter(
@@ -28,7 +29,7 @@ class AnimeRelationContentAdapter(
 
             bulletTV.setVisibilityByCondition(itemCount <= 1 || position == itemCount.minus(1))
 
-            root.setOnClickListener {
+            root.setSafeOnClickListener {
                 if (animeDetails.malID != -1 && animeDetails.type == "anime")
                     onClick(animeDetails.malID)
                 else if (URLUtil.isValidUrl(animeDetails.redirectURL))

@@ -171,7 +171,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
     }
 
-    private fun convertLength(length: Int): String {
+    private fun convertLength(length: Long): String {
         return if (length > 60) {
             val hours = length / 60
             if (hours < 10)

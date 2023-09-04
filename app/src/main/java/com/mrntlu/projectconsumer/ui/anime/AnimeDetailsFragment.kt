@@ -41,6 +41,7 @@ import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
@@ -98,6 +99,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
     private fun setToolbar() {
         binding.animeDetailsToolbar.apply {
             setNavigationIcon(R.drawable.ic_arrow_back_24)
+            setNavigationContentDescription(R.string.back_cd)
             setNavigationOnClickListener {
                 navController.popBackStack()
             }
@@ -256,7 +258,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
     private fun setListeners() {
         binding.apply {
-            imageInclude.root.setOnClickListener {
+            imageInclude.root.setSafeOnClickListener(interval = 750) {
                 if (animeDetails?.imageURL?.isNotEmptyOrBlank() == true) {
                     val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToImageFragment(
                         animeDetails!!.imageURL

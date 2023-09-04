@@ -23,16 +23,16 @@ data class UserInfo(
     val tvCount: Int,
 
     @SerializedName("movie_watched_time")
-    val movieWatchedTime: Int,
+    val movieWatchedTime: Long,
 
     @SerializedName("anime_watched_episodes")
-    val animeWatchedEpisodes: Int,
+    val animeWatchedEpisodes: Long,
 
     @SerializedName("tv_watched_episodes")
-    val tvWatchedEpisodes: Int,
+    val tvWatchedEpisodes: Long,
 
     @SerializedName("game_total_hours_played")
-    val gameTotalHoursPlayed: Int,
+    val gameTotalHoursPlayed: Long,
 
     @SerializedName("fcm_token")
     val fcmToken: String,

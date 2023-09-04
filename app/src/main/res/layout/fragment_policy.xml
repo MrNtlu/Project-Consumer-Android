@@ -12,9 +12,10 @@
         android:id="@+id/policyToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:navigationIcon="@drawable/ic_arrow_back_24"
+        android:elevation="3dp"
         android:theme="@style/Theme.ProjectConsumer.Toolbar"
-        android:elevation="3dp"/>
+        app:navigationContentDescription="@string/back_cd"
+        app:navigationIcon="@drawable/ic_arrow_back_24" />
 
     <TextView
         android:id="@+id/htmlText"

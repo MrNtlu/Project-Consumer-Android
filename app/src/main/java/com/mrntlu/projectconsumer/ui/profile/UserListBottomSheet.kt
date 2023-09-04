@@ -13,6 +13,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
@@ -83,7 +85,12 @@ class UserListBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        dialog?.setOnShowListener {
+            (it as? BottomSheetDialog)?.apply {
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+        
         setUI()
         setListeners()
         setObservers()

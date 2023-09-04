@@ -14,9 +14,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:title="@string/poster"
-        app:navigationIcon="@drawable/ic_arrow_back_24"
         android:theme="@style/Theme.ProjectConsumer.Toolbar"
-        android:elevation="3dp"/>
+        android:elevation="3dp"
+        app:navigationContentDescription="@string/back_cd"
+        app:navigationIcon="@drawable/ic_arrow_back_24" />
 
     <include
         android:id="@+id/imageLayout"

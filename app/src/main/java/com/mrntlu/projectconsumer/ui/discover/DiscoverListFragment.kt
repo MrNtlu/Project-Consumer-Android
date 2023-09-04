@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.ui.discover
 
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,7 +81,15 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
             title = viewModel.genre
             subtitle = getString(R.string.discover_title)
             inflateMenu(R.menu.sort_toolbar_menu)
+
+            var lastTimeClicked: Long = 0
+
             setOnMenuItemClickListener {
+                if (SystemClock.elapsedRealtime() - lastTimeClicked < 550) {
+                    return@setOnMenuItemClickListener false
+                }
+                lastTimeClicked = SystemClock.elapsedRealtime()
+
                 when(it.itemId) {
                     R.id.sortMenu -> {
                         activity?.let {
@@ -178,24 +187,26 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
-                        val contentType: Constants.ContentType = args.contentType
+                        if (navController.currentDestination?.id == R.id.discoverListFragment) {
+                            val contentType: Constants.ContentType = args.contentType
 
-                        val navWithAction = when(contentType) {
-                            Constants.ContentType.ANIME -> DiscoverListFragmentDirections.actionDiscoverListFragmentToAnimeDetailsFragment(
-                                item.id
-                            )
-                            Constants.ContentType.MOVIE -> DiscoverListFragmentDirections.actionDiscoverListFragmentToMovieDetailsFragment(
-                                item.id
-                            )
-                            Constants.ContentType.TV -> DiscoverListFragmentDirections.actionDiscoverListFragmentToTvDetailsFragment(
-                                item.id
-                            )
-                            Constants.ContentType.GAME -> DiscoverListFragmentDirections.actionDiscoverListFragmentToGameDetailsFragment(
-                                item.id
-                            )
+                            val navWithAction = when(contentType) {
+                                Constants.ContentType.ANIME -> DiscoverListFragmentDirections.actionDiscoverListFragmentToAnimeDetailsFragment(
+                                    item.id
+                                )
+                                Constants.ContentType.MOVIE -> DiscoverListFragmentDirections.actionDiscoverListFragmentToMovieDetailsFragment(
+                                    item.id
+                                )
+                                Constants.ContentType.TV -> DiscoverListFragmentDirections.actionDiscoverListFragmentToTvDetailsFragment(
+                                    item.id
+                                )
+                                Constants.ContentType.GAME -> DiscoverListFragmentDirections.actionDiscoverListFragmentToGameDetailsFragment(
+                                    item.id
+                                )
+                            }
+
+                            navController.navigate(navWithAction)
                         }
-
-                        navController.navigate(navWithAction)
                     }
 
                     override fun onErrorRefreshPressed() {

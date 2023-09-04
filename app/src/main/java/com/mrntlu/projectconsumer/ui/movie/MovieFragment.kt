@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.ui.movie
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.models.main.movie.Movie
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
@@ -21,23 +22,29 @@ class MovieFragment: BasePreviewFragment<Movie>() {
         setListeners()
         setShowcaseRecyclerView(
             onItemClicked = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             onRefreshPressed = { viewModel.fetchPreviewMovies() }
         )
         setRecyclerView(
             firstOnItemSelected = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             firstOnRefreshPressed = { viewModel.fetchPreviewMovies() },
             secondOnItemSelected = { id ->
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             secondOnRefreshPressed = { viewModel.fetchPreviewMovies() }
         )
@@ -49,15 +56,19 @@ class MovieFragment: BasePreviewFragment<Movie>() {
             setScrollListener()
 
             seeAllButtonFirst.setOnClickListener {
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieListFragment(FetchType.UPCOMING.tag)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieListFragment(FetchType.UPCOMING.tag)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             }
 
             seeAllButtonSecond.setOnClickListener {
-                val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieListFragment(FetchType.TOP.tag)
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieListFragment(FetchType.TOP.tag)
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             }
         }
     }
