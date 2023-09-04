@@ -94,7 +94,8 @@
             android:layout_height="wrap_content"
             android:imeOptions="actionDone"
             android:inputType="none"
-            app:simpleItems="@array/score_list" />
+            app:simpleItems="@array/score_list"
+            android:labelFor="@id/scoreSelection"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout

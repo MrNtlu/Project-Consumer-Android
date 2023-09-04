@@ -82,7 +82,8 @@
         android:src="@drawable/ic_star_36"
         app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
         app:layout_constraintStart_toStartOf="@+id/titleTV"
-        app:tint="#F5C518" />
+        app:tint="#F5C518"
+        android:contentDescription="@string/rate_star_cd"/>
 
     <TextView
         android:id="@+id/scoreTV"

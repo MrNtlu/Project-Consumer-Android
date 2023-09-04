@@ -13,7 +13,8 @@
         android:src="@drawable/ic_star_48"
         app:layout_constraintBottom_toBottomOf="@+id/watchLaterLottie"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/watchLaterLottie" />
+        app:layout_constraintTop_toTopOf="@+id/watchLaterLottie"
+        android:contentDescription="@string/rate_star_cd"/>
 
     <TextView
         android:id="@+id/interactionRateTV"

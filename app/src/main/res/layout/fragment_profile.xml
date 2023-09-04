@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/mainBackgroundColor"
+    android:fitsSystemWindows="true"
     tools:context=".ui.profile.ProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -640,7 +641,6 @@
                 android:layout_height="0dp"
                 android:background="?attr/mainBackgroundColor"
                 android:elevation="9dp"
-                android:fitsSystemWindows="true"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -81,7 +81,8 @@
             android:src="@drawable/ic_star_36"
             app:layout_constraintBottom_toBottomOf="@+id/shimmerIV"
             app:layout_constraintStart_toStartOf="@+id/shimmerTitleTV"
-            app:tint="?attr/shimmerColor" />
+            app:tint="?attr/shimmerColor"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:id="@+id/shimmerScoreTV"

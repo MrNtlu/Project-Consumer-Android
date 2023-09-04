@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.discover.DiscoverFragment"
     android:id="@+id/discoverScrollView"
-    android:fillViewport="true"
+    android:fitsSystemWindows="true"
     android:background="?attr/mainBackgroundColor">
 
     <com.google.android.material.appbar.AppBarLayout

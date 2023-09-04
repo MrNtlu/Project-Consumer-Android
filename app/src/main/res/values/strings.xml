@@ -265,6 +265,9 @@
     <string name="share_cd">Share</string>
     <string name="loading_cd">Loading</string>
     <string name="discover_content_type_cd">Discover Content Type</string>
+    <string name="remove_bookmark_cd">Remove Bookmark</string>
+    <string name="placeholder_cd">Placeholder</string>
+    <string name="drag_bottom_sheet_cd">Drag Bottom Sheet</string>
 
     <string name="login_register_toolbar">Login/Register</string>
     <string name="refresh_cd">Refresh</string>
@@ -362,6 +365,7 @@
     <string name="watched">Watched</string>
     <string name="eps">eps</string>
     <string name="diary_title">📘&#032;Diary</string>
+    <string name="send">Send</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>

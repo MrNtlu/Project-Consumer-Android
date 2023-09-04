@@ -16,7 +16,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="?attr/mainTextColor" />
+        app:tint="?attr/mainTextColor"
+        android:contentDescription="@string/drag_bottom_sheet_cd"/>
 
     <include
         android:id="@+id/layoutEditInc"

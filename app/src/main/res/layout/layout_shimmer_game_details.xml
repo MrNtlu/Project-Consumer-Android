@@ -58,7 +58,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="?attr/shimmerColor" />
+                    app:tint="?attr/shimmerColor"
+                    android:importantForAccessibility="no" />
 
                 <TextView
                     android:id="@+id/textView13"

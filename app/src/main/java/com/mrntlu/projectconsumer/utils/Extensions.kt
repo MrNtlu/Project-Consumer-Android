@@ -107,7 +107,7 @@ fun Context.hideKeyboard(view: View) {
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
-fun Context.showConfirmationDialog(message: String, onPositive: () -> Unit,) {
+fun Context.showConfirmationDialog(message: String, onPositive: () -> Unit) {
     MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
         .setTitle(getString(R.string.confirm))
         .setMessage(message)
@@ -146,7 +146,7 @@ fun Context.showInfoDialog(message: String) {
         .show()
 }
 
-fun Context.showLoginRegisterDialog(isConsumeLater: Boolean, onPositive: () -> Unit,) {
+fun Context.showLoginRegisterDialog(isConsumeLater: Boolean, onPositive: () -> Unit) {
     MaterialAlertDialogBuilder(this)
         .setTitle(getString(R.string.error))
         .setMessage("Unauthorized access. You need to login to add this to your ${if (isConsumeLater) "watch later queue" else "list"}.")

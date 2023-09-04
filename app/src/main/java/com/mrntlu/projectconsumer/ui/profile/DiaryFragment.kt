@@ -159,7 +159,7 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
         binding.calendarRV.apply {
             layoutManager = GridLayoutManager(this.context, 7)
 
-            calendarAdapter = CalendarAdapter() { date ->
+            calendarAdapter = CalendarAdapter { date ->
                 val position = diaryAdapter?.getScrollPosition(date.convertToHumanReadableDateString()) ?: 0
 
                 if (position > -1)

@@ -31,6 +31,7 @@
             android:src="@drawable/ic_finish_24"
             app:layout_constraintStart_toStartOf="@+id/imageInclude"
             app:layout_constraintTop_toBottomOf="@+id/imageInclude"
+            android:contentDescription="@string/times_finished"
             app:tint="?attr/colorPrimary" />
 
         <TextView
@@ -62,6 +63,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/imageInclude"
             app:layout_constraintTop_toBottomOf="@+id/imageView5"
+            android:contentDescription="@string/content_type_cd"
             app:tint="?attr/colorPrimary" />
 
         <TextView

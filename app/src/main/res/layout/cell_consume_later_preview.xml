@@ -38,7 +38,8 @@
             android:src="@drawable/ic_bookmark_filled"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageInclude"
-            app:tint="?attr/colorPrimaryVariant" />
+            app:tint="?attr/colorPrimaryVariant"
+            android:contentDescription="@string/remove_bookmark_cd"/>
 
         <TextView
             android:id="@+id/titleTV"

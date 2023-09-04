@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="?attr/mainBackgroundColor"
     tools:context=".ui.common.SettingsFragment">
 
@@ -201,59 +202,51 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp" />
 
-                    <LinearLayout
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/settingsSpinner"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:padding="8dp"
                         android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:padding="12dp">
+                        android:layout_height="wrap_content"
+                        android:minWidth="225dp"
+                        android:hint="@string/change_country"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:startIconDrawable="@drawable/ic_country"
+                        app:startIconTint="?attr/colorPrimary"
+                        app:endIconTint="?attr/colorPrimary">
 
-                        <TextView
-                            android:id="@+id/settingsSpinnerTileTV"
-                            android:layout_width="0dp"
+                        <AutoCompleteTextView
+                            android:id="@+id/settingsSelectionACTV"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:textColor="?attr/mainTextColor"
-                            android:textSize="16sp"
-                            tools:text="Language"/>
+                            android:inputType="none"
+                            android:labelFor="@id/settingsSpinner"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                        <Spinner
-                            android:id="@+id/settingsSpinner"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
-                    </LinearLayout>
-
-                    <com.google.android.material.divider.MaterialDivider
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/applicationSecondSpinner"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:padding="8dp"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp" />
+                        android:layout_height="wrap_content"
+                        android:minWidth="225dp"
+                        android:hint="@string/change_language"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:startIconDrawable="@drawable/ic_language"
+                        app:startIconTint="?attr/colorPrimary"
+                        app:endIconTint="?attr/colorPrimary">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:orientation="horizontal"
-                        android:gravity="center"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:id="@+id/applicationSecondSpinnerTileTV"
-                            android:layout_width="0dp"
+                        <AutoCompleteTextView
+                            android:id="@+id/settingsSecondSelectionACTV"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:textColor="?attr/mainTextColor"
-                            android:textSize="16sp"
-                            tools:text="Language"/>
-
-                        <Spinner
-                            android:id="@+id/applicationSecondSpinner"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            tools:ignore="TouchTargetSizeCheck"/>
-                    </LinearLayout>
+                            android:inputType="none"
+                            android:labelFor="@+id/applicationSecondSpinner"/>
+                    </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

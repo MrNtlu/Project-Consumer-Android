@@ -29,6 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/backgrounds/scenic"
+            android:contentDescription="@string/content_image_cd"
             tools:visibility="gone" />
 
         <ImageView
@@ -41,6 +42,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/placeholder_cd"
             app:tint="?attr/mainTextColor" />
 
         <ProgressBar

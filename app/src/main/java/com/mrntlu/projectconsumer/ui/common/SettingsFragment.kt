@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
@@ -100,6 +100,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
             if (sharedViewModel.isLoggedIn()) {
                 accountSecondClickTile.settingsClickTileTV.text = getString(R.string.log_out)
+                accountSecondClickTile.settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_logout_24, 0)
 
                 accountSecondClickTile.root.setSafeOnClickListener {
                     context?.showConfirmationDialog(getString(R.string.do_you_want_to_log_out_)) {
@@ -118,32 +119,60 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             themeSwitch.isChecked = !sharedViewModel.isLightTheme()
             themeSwitchTV.text = getString(if (sharedViewModel.isLightTheme()) R.string.light_theme else R.string.dark_theme)
 
-            settingsSpinnerTileTV.text = getString(R.string.change_country)
+            val countryArray = countryList.map { it.first }.toTypedArray()
+            (settingsSpinner.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(countryArray)
+            setACTVSelection(binding.settingsSelectionACTV, countryList.indexOfFirst {
+                it.second == sharedViewModel.getCountryCode()
+            })
 
-            val spinnerAdapter = ArrayAdapter(this.root.context, android.R.layout.simple_spinner_item, countryList.map { it.first })
-            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            settingsSpinner.adapter = spinnerAdapter
-            settingsSpinner.setSelection(
-                countryList.indexOfFirst {
-                    it.second == sharedViewModel.getCountryCode()
-                }
-            )
+            val languageArray = languageList.map { it.first }.toTypedArray()
+            (applicationSecondSpinner.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(languageArray)
+            setACTVSelection(binding.settingsSecondSelectionACTV, languageList.indexOfFirst {
+                it.second == sharedViewModel.getLanguageCode()
+            })
+        }
+    }
 
-            applicationSecondSpinnerTileTV.text = getString(R.string.change_language)
-
-            val languageSpinnerAdapter = ArrayAdapter(this.root.context, android.R.layout.simple_spinner_item, languageList.map { it.first })
-            languageSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            applicationSecondSpinner.adapter = languageSpinnerAdapter
-            applicationSecondSpinner.setSelection(
-                languageList.indexOfFirst {
-                    it.second == sharedViewModel.getLanguageCode()
-                }
-            )
+    private fun setACTVSelection(actv: AutoCompleteTextView, position: Int) {
+        actv.apply {
+            if (position >= 0)
+                setText(adapter.getItem(position).toString(), false)
+            dismissDropDown()
         }
     }
 
     private fun setListeners() {
         binding.apply {
+            settingsSelectionACTV.setOnDismissListener {
+                if (settingsSelectionACTV.text.toString().run { isEmpty() || isBlank() })
+                    setACTVSelection(settingsSelectionACTV, 0)
+                else {
+                    val selectedIndex = countryList.indexOfFirst {
+                        it.first == settingsSelectionACTV.text.toString()
+                    }
+
+                    if (selectedIndex >= 0)
+                        sharedViewModel.setCountryCode(countryList[selectedIndex].second)
+
+                    settingsSelectionACTV.clearFocus()
+                }
+            }
+
+            settingsSecondSelectionACTV.setOnDismissListener {
+                if (settingsSecondSelectionACTV.text.toString().run { isEmpty() || isBlank() })
+                    setACTVSelection(settingsSecondSelectionACTV, 0)
+                else {
+                    val selectedIndex = languageList.indexOfFirst {
+                        it.first == settingsSecondSelectionACTV.text.toString()
+                    }
+
+                    if (selectedIndex >= 0)
+                        sharedViewModel.setCountryCode(languageList[selectedIndex].second)
+
+                    settingsSecondSelectionACTV.clearFocus()
+                }
+            }
+
             anonymousInc.root.setOnClickListener {
                 navController.navigate(R.id.action_global_authFragment)
             }
@@ -152,23 +181,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 sharedViewModel.toggleTheme()
 
                 themeSwitchTV.text = getString(if (isChecked) R.string.dark_theme else R.string.light_theme)
-            }
-
-
-            settingsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    sharedViewModel.setCountryCode(countryList[position].second)
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
-
-            applicationSecondSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    sharedViewModel.setLanguageCode(languageList[position].second)
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
 
             privacyButton.setOnClickListener {
