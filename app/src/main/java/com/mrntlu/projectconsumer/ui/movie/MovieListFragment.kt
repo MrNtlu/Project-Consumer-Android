@@ -34,7 +34,9 @@ class MovieListFragment: BaseListFragment<Movie>() {
         sharedViewModel.windowSize.observe(viewLifecycleOwner) {
             val widthSize: WindowSizeClass = it
 
-            gridCount = when(widthSize) {
+            gridCount = if (sharedViewModel.isAltLayout())
+                1
+            else when(widthSize) {
                 WindowSizeClass.COMPACT -> 2
                 WindowSizeClass.MEDIUM -> 3
                 WindowSizeClass.EXPANDED -> 5

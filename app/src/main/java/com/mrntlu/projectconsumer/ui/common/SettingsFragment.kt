@@ -8,6 +8,9 @@ import android.widget.AutoCompleteTextView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -18,11 +21,16 @@ import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
+import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
+import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.common.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -92,8 +100,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             accountSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
             deleteAccountButton.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
 
-            applicationFirstClickTile.root.setGone()
-            applicationFirstTileDivider.setGone()
             accountFirstClickTile.root.setGone()
             accountFirstTileDivider.setGone()
             accountSwitchTileDivider.setGone()
@@ -117,6 +123,23 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             }
 
             //Application settings
+            applicationFirstClickTile.apply {
+                settingsClickTileTV.text = getString(R.string.clear_image_cache)
+                settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_delete, 0)
+
+                root.setSafeOnClickListener {
+                    context?.showConfirmationDialog(getString(R.string.do_you_want_clear_image_cache)) {
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                            Glide.get(root.context).clearDiskCache()
+
+                            withContext(Dispatchers.Main) {
+                                context?.showInfoDialog(getString(R.string.caches_are_deleted))
+                            }
+                        }
+                    }
+                }
+            }
+
             themeSwitch.isChecked = !sharedViewModel.isLightTheme()
             themeSwitchTV.text = getString(if (sharedViewModel.isLightTheme()) R.string.light_theme else R.string.dark_theme)
 
@@ -131,6 +154,45 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             setACTVSelection(binding.settingsSecondSelectionACTV, languageList.indexOfFirst {
                 it.second == sharedViewModel.getLanguageCode()
             })
+
+            if (sharedViewModel.isAltLayout())
+                alternativeLayout.isChecked = true
+            else
+                defaultLayout.isChecked = true
+
+            radioGroup.setOnCheckedChangeListener { _, checkedId ->
+                sharedViewModel.setLayoutSelection(checkedId == R.id.alternativeLayout)
+            }
+
+            val image = "https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg"
+            val title = "The Dark Knight"
+            val titleOriginal = "The Dark Knight"
+            val description = "Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker."
+            val score = "8.5"
+            val length = "2h 32m"
+            val cornerRadius = root.context.dpToPxFloat(8f)
+
+            defaultInc.apply {
+                previewIV.loadWithGlide(image, previewCard, previewShimmerLayout) {
+                    transform(CenterCrop(), RoundedCorners(cornerRadius.toInt()))
+                }
+            }
+
+            alternativeInc.apply {
+                imageInclude.apply {
+                    previewIV.loadWithGlide(image, previewCard, previewShimmerLayout) {
+                        transform(CenterCrop(), RoundedCorners(cornerRadius.toInt()))
+                    }
+                }
+
+                titleTV.text = title
+                titleOriginalTV.text = titleOriginal
+                descriptionTV.text = description
+                scoreTV.text = score
+                extraInfoTV.text = length
+
+                root.setBackgroundColor(root.context.getColorFromAttr(R.attr.bottomNavBackgroundColor))
+            }
         }
     }
 

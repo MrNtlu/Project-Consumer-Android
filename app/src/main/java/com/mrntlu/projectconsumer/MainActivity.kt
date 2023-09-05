@@ -42,7 +42,14 @@ import com.mrntlu.projectconsumer.ui.anime.AnimeDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.game.GameDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragmentDirections
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.COUNTRY_PREF
+import com.mrntlu.projectconsumer.utils.Constants.DARK_THEME
+import com.mrntlu.projectconsumer.utils.Constants.LAN_PREF
+import com.mrntlu.projectconsumer.utils.Constants.LAYOUT_PREF
+import com.mrntlu.projectconsumer.utils.Constants.LIGHT_THEME
+import com.mrntlu.projectconsumer.utils.Constants.NOTIFICATION_PREF
+import com.mrntlu.projectconsumer.utils.Constants.PREF_NAME
+import com.mrntlu.projectconsumer.utils.Constants.THEME_PREF
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
@@ -82,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val prefs: SharedPreferences by lazy {
-        getSharedPreferences(Constants.PREF_NAME, Context.MODE_PRIVATE)
+        getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -157,9 +164,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        sharedViewModel.setCountryCode(prefs.getString(Constants.COUNTRY_PREF, Locale.getDefault().country.uppercase()))
-        sharedViewModel.setLanguageCode(prefs.getString(Constants.LAN_PREF, Locale.getDefault().language.uppercase()))
-        sharedViewModel.setThemeCode(prefs.getInt(Constants.THEME_PREF, Constants.DARK_THEME))
+        sharedViewModel.setCountryCode(prefs.getString(COUNTRY_PREF, Locale.getDefault().country.uppercase()))
+        sharedViewModel.setLanguageCode(prefs.getString(LAN_PREF, Locale.getDefault().language.uppercase()))
+        sharedViewModel.setThemeCode(prefs.getInt(THEME_PREF, DARK_THEME))
+        sharedViewModel.setLayoutSelection(prefs.getBoolean(LAYOUT_PREF, false))
         AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
 
         super.onCreate(savedInstanceState)
@@ -328,16 +336,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        sharedViewModel.layoutSelection.observe(this) { isAltLayout ->
+            setLayoutSelectionPref(isAltLayout)
+        }
+
         sharedViewModel.countryCode.observe(this) {
-            setCodePref(Constants.COUNTRY_PREF, it)
+            setCodePref(COUNTRY_PREF, it)
         }
 
         sharedViewModel.languageCode.observe(this) {
-            setCodePref(Constants.LAN_PREF, it)
+            setCodePref(LAN_PREF, it)
         }
 
         sharedViewModel.themeCode.observe(this) {
-            AppCompatDelegate.setDefaultNightMode(if (it == Constants.LIGHT_THEME) MODE_NIGHT_NO else MODE_NIGHT_YES)
+            AppCompatDelegate.setDefaultNightMode(if (it == LIGHT_THEME) MODE_NIGHT_NO else MODE_NIGHT_YES)
             setThemePref(it)
         }
 
@@ -361,7 +373,7 @@ class MainActivity : AppCompatActivity() {
             if (ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 //Granted
             } else if (sharedViewModel.isLoggedIn()) {
-                if (prefs.getBoolean(Constants.NOTIFICATION_PREF, true) && (notificationDialog == null || notificationDialog?.isShowing == false)) {
+                if (prefs.getBoolean(NOTIFICATION_PREF, true) && (notificationDialog == null || notificationDialog?.isShowing == false)) {
                     notificationDialog = showNotificationInfoDialog(getString(R.string.notification_permission_info), onPositive = {
                         requestPermissionLauncher.launch(POST_NOTIFICATIONS)
                     }) {
@@ -374,19 +386,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun setThemePref(value: Int){
         val editor = prefs.edit()
-        editor.putInt(Constants.THEME_PREF, value)
+        editor.putInt(THEME_PREF, value)
         editor.apply()
     }
 
     private fun setNotificationPref(){
         val editor = prefs.edit()
-        editor.putBoolean(Constants.NOTIFICATION_PREF, false)
+        editor.putBoolean(NOTIFICATION_PREF, false)
         editor.apply()
     }
 
     private fun setCodePref(key: String, value: String){
         val editor = prefs.edit()
         editor.putString(key, value)
+        editor.apply()
+    }
+
+    private fun setLayoutSelectionPref(value: Boolean) {
+        val editor = prefs.edit()
+        editor.putBoolean(LAYOUT_PREF, value)
         editor.apply()
     }
 
@@ -399,6 +417,7 @@ class MainActivity : AppCompatActivity() {
         notificationDialog?.dismiss()
         notificationDialog = null
 
+        sharedViewModel.layoutSelection.removeObservers(this)
         sharedViewModel.shouldPreventBottomSelection.removeObservers(this)
         sharedViewModel.isAuthenticated.removeObservers(this)
         sharedViewModel.countryCode.removeObservers(this)

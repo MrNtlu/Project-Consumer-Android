@@ -7,6 +7,17 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 
 class ActivitySharedViewModel: ViewModel() {
+    // Layout Selection
+    val layoutSelection: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    fun isAltLayout() = layoutSelection.value == true
+
+    fun setLayoutSelection(isAltLayout: Boolean) {
+        layoutSelection.value = isAltLayout
+    }
+
     // Theme
     val themeCode: MutableLiveData<Int> by lazy {
         MutableLiveData<Int>()

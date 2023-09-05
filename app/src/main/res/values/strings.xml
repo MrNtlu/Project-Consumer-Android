@@ -414,6 +414,9 @@
     <string name="delete_user_info">Do you want to delete your account? You can\'t undo this action and all your data will be deleted!</string>
     <string name="unexpected_try_again">Unexpected error, please try again.</string>
     <string name="mark_as_finished">Mark as Finished</string>
+    <string name="do_you_want_clear_image_cache">Do you want to delete image caches? This action will free up storage space on your device, potentially improving performance by reducing load times. However, it may temporarily slow down image loading as the cache rebuilds.</string>
+    <string name="clear_image_cache">Clear Image Cache</string>
+    <string name="caches_are_deleted">Caches are deleted.</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

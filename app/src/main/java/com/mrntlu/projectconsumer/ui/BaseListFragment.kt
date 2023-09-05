@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
@@ -58,23 +59,31 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
         fetch: () -> Unit,
     ) {
         binding.listRV.apply {
-            val gridLayoutManager = GridLayoutManager(this.context, gridCount)
+            val rvLayoutManager = if(sharedViewModel.isAltLayout()) {
+                val linearLayoutManager = LinearLayoutManager(this.context)
+                gridCount = 1
+                linearLayoutManager
+            } else {
+                val gridLayoutManager = GridLayoutManager(this.context, gridCount)
 
-            gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    val itemViewType = contentAdapter?.getItemViewType(position)
-                    return if (
-                        itemViewType == RecyclerViewEnum.View.value ||
-                        itemViewType == RecyclerViewEnum.Loading.value
-                    ) 1 else gridCount
+                gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        val itemViewType = contentAdapter?.getItemViewType(position)
+                        return if (
+                            itemViewType == RecyclerViewEnum.View.value ||
+                            itemViewType == RecyclerViewEnum.Loading.value
+                        ) 1 else gridCount
+                    }
                 }
+                gridLayoutManager
             }
+            layoutManager = rvLayoutManager
 
-            layoutManager = gridLayoutManager
             contentAdapter = ContentAdapter(
                 gridCount = gridCount,
                 isRatioDifferent = isRatioDifferent,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
+                isAltLayout = sharedViewModel.isAltLayout(),
                 interaction = object: Interaction<T> {
                     override fun onItemSelected(item: T, position: Int) {
                         isNavigatingBack = true
@@ -108,11 +117,11 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    val itemCount = gridLayoutManager.itemCount / gridCount
-                    val lastVisibleItemPosition = gridLayoutManager.findLastVisibleItemPosition() / gridCount
+                    val itemCount = rvLayoutManager.itemCount / gridCount
+                    val lastVisibleItemPosition = rvLayoutManager.findLastVisibleItemPosition() / gridCount
 
                     if (isScrolling && !isNavigatingBack) {
-                        val centerScrollPosition = (gridLayoutManager.findLastCompletelyVisibleItemPosition() + gridLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
+                        val centerScrollPosition = (rvLayoutManager.findLastCompletelyVisibleItemPosition() + rvLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
                         scrollViewModel(centerScrollPosition)
                     }
 

@@ -15,6 +15,7 @@ import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.LoadingViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.PaginationExhaustViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.PaginationLoadingViewHolder
+import com.mrntlu.projectconsumer.databinding.CellContentAltBinding
 import com.mrntlu.projectconsumer.databinding.CellEmptyBinding
 import com.mrntlu.projectconsumer.databinding.CellErrorBinding
 import com.mrntlu.projectconsumer.databinding.CellLoadingBinding
@@ -39,6 +40,7 @@ class ContentAdapter<T: ContentModel>(
     private val isRatioDifferent: Boolean = false,
     gridCount: Int,
     isDarkTheme: Boolean,
+    private val isAltLayout: Boolean = false,
 ): BaseGridPaginationAdapter<T>(
     interaction, gridCount, isDarkTheme,
     if (isRatioDifferent) GAME_RATIO else DEFAULT_RATIO
@@ -62,7 +64,22 @@ class ContentAdapter<T: ContentModel>(
             RecyclerViewEnum.Error.value -> ErrorViewHolder<T>(CellErrorBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.PaginationLoading.value -> PaginationLoadingViewHolder(CellPaginationLoadingBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             RecyclerViewEnum.PaginationExhaust.value -> PaginationExhaustViewHolder(CellPaginationExhaustBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else -> return ItemViewHolder<T>(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            else -> {
+                return if (isAltLayout)
+                    ItemAltViewHolder<T>(CellContentAltBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+                else
+                    return ItemViewHolder<T>(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            }
+        }
+    }
+
+    inner class ItemAltViewHolder<T: ContentModel>(
+        private val binding: CellContentAltBinding,
+    ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
+        override fun bind(item: T, position: Int, interaction: Interaction<T>) {
+            binding.apply {
+
+            }
         }
     }
 

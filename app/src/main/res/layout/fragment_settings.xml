@@ -161,15 +161,6 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <include
-                        android:id="@+id/applicationFirstClickTile"
-                        layout="@layout/settings_click_tile" />
-
-                    <com.google.android.material.divider.MaterialDivider
-                        android:id="@+id/applicationFirstTileDivider"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="70dp"
@@ -200,6 +191,78 @@
                     </LinearLayout>
 
                     <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/applicationSpinnerDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:checkedButton="@+id/defaultLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Change Content Layout"
+                            android:textColor="?attr/mainTextColor"
+                            android:textSize="16sp"
+                            android:padding="8dp"
+                            android:layout_marginBottom="16dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="16dp">
+
+                            <RadioButton
+                                android:id="@+id/defaultLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:minWidth="0dp"
+                                android:textColor="?attr/mainTextColor"/>
+
+                            <include
+                                android:id="@+id/defaultInc"
+                                android:layout_height="wrap_content"
+                                android:layout_width="120dp"
+                                layout="@layout/cell_preview_item"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="16dp">
+
+                            <RadioButton
+                                android:id="@+id/alternativeLayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:minWidth="0dp"
+                                android:textColor="?attr/mainTextColor"/>
+
+                            <include
+                                android:id="@+id/alternativeInc"
+                                android:layout_height="wrap_content"
+                                android:layout_width="match_parent"
+                                layout="@layout/cell_content_alt"/>
+                        </LinearLayout>
+                    </RadioGroup>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/applicationFirstTileDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <include
+                        android:id="@+id/applicationFirstClickTile"
+                        layout="@layout/settings_click_tile" />
+
+                    <com.google.android.material.divider.MaterialDivider
                         android:layout_width="match_parent"
                         android:layout_height="1dp" />
 
@@ -223,7 +286,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
-                            android:labelFor="@id/settingsSpinner"/>
+                            android:labelFor="@id/settingsSpinner"
+                            android:hint="@string/change_country"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -246,7 +310,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
-                            android:labelFor="@+id/applicationSecondSpinner"/>
+                            android:hint="@string/change_language" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
