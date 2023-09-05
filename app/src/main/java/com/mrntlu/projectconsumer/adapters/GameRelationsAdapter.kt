@@ -8,6 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.models.main.game.GameDetailsRelation
 import com.mrntlu.projectconsumer.utils.dpToPx
@@ -15,11 +17,11 @@ import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisible
 
 class GameRelationsAdapter(
     private val relationList: List<GameDetailsRelation>,
-    private val isDarkTheme: Boolean,
     private val onClick: (Int) -> Unit,
 ): RecyclerView.Adapter<GameRelationsAdapter.ItemHolder>() {
 
@@ -51,7 +53,12 @@ class GameRelationsAdapter(
             val marginParams = root.layoutParams as ViewGroup.MarginLayoutParams
             marginParams.setMargins(0, 4, 16, 4)
 
-            previewGameCV.radius = radiusInPx
+            val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
+                setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
+                setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
+            }
+            val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
+            previewGameCV.shapeAppearanceModel = shapeAppearanceModel
 
             previewIV.scaleType = ImageView.ScaleType.CENTER_CROP
             previewIV.loadWithGlide(relation.imageURL, previewCard, previewShimmerLayout) {
@@ -62,7 +69,7 @@ class GameRelationsAdapter(
             previewTV.text = titleStr
             previewGameTitleTV.text = titleStr
 
-            root.setOnClickListener {
+            root.setSafeOnClickListener {
                 onClick(relation.rawgID)
             }
         }

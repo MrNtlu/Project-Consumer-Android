@@ -247,6 +247,8 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
             val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayout
 
+            setHasFixedSize(true)
+
             adapter = setAdapter(DetailsAdapter(placeHolderImage, cardCornerRadius, detailsList, transformImage))
         }
     }
@@ -258,6 +260,8 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         recyclerView.apply {
             val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayout
+
+            setHasFixedSize(true)
 
             adapter = setAdapter(StreamingAdapter(streamingList ?: listOf()))
         }

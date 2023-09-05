@@ -356,14 +356,22 @@
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toTopOf="@+id/shimmerSeeAllButton" />
 
-        <View
+        <Button
             android:id="@+id/shimmerSeeAllButton"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?attr/materialIconButtonStyle"
+            android:clickable="false"
+            android:focusable="false"
+            android:enabled="false"
             android:layout_marginTop="46dp"
-            android:background="?attr/shimmerColor"
+            app:icon="@drawable/ic_arrow_right_24"
+            app:iconTint="?attr/shimmerColor"
+            android:minHeight="0dp"
+            android:padding="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
-            app:layout_constraintTop_toBottomOf="@+id/firstShimmerLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/firstShimmerLayout"
+            android:importantForAccessibility="no" />
 
         <View
             android:id="@+id/shimmerWatchLaterRV"
@@ -385,14 +393,22 @@
             app:layout_constraintStart_toStartOf="@+id/guideline21"
             app:layout_constraintTop_toBottomOf="@+id/shimmerWatchLaterRV" />
 
-        <View
+        <Button
             android:id="@+id/shimmerLegendInfoButton"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:background="?attr/shimmerColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?attr/materialIconButtonStyle"
+            android:clickable="false"
+            android:focusable="false"
+            android:enabled="false"
+            app:icon="@drawable/ic_info_24"
+            app:iconTint="?attr/shimmerColor"
+            android:minHeight="0dp"
+            android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/textView21"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
-            app:layout_constraintTop_toTopOf="@+id/textView21" />
+            app:layout_constraintTop_toTopOf="@+id/textView21"
+            android:importantForAccessibility="no" />
 
         <View
             android:id="@+id/shimmerLegendContentRV"

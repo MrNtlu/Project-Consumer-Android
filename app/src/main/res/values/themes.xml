@@ -1,21 +1,21 @@
 <resources>
-    <!-- Base application theme. -->
+<!-- Base application theme. -->
     <style name="Theme.ProjectConsumer" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
+<!-- Primary brand color. -->
         <item name="colorPrimary">@color/blue500</item>
         <item name="colorPrimaryVariant">@color/blue900</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
+<!-- Secondary brand color. -->
         <item name="colorSecondary">@color/materialBlack</item>
         <item name="colorSecondaryVariant">@color/black</item>
         <item name="colorOnSecondary">@color/darkWhite</item>
-        <!-- Status bar color. -->
+<!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/toolbarBackgroundColor</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">?attr/bottomNavBackgroundColor</item>
         <item name="android:windowLightNavigationBar">true</item>
 
-        <!-- Customize your theme here. -->
+<!-- Customize your theme here. -->
         <item name="popupMenuStyle">@style/CustomPopupMenu</item>
 
         <item name="mainTextColor">@color/black</item>
@@ -80,7 +80,8 @@
 
 <!--   Toolbar Style   -->
     <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.Material3.Toolbar.Surface">
-        <item name="android:background">?attr/toolbarBackgroundColor</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="elevation">3dp</item>
         <item name="android:textColorPrimary">@color/materialBlack</item>
         <item name="navigationIconTint">@color/materialBlack</item>
         <item name="iconTint">@color/materialBlack</item>

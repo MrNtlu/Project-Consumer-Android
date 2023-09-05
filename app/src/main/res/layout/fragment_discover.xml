@@ -16,11 +16,12 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/discoverToolbar"
-            android:theme="@style/Theme.ProjectConsumer.Toolbar"
-            app:title="@string/discover"
             android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/discover"
+            android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
+            app:layout_scrollFlags="scroll|enterAlways">
 
             <include
                 android:id="@+id/anonymousInc"

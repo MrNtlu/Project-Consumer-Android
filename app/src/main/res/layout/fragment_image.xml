@@ -15,7 +15,7 @@
         android:layout_height="?attr/actionBarSize"
         app:title="@string/poster"
         android:theme="@style/Theme.ProjectConsumer.Toolbar"
-        android:elevation="3dp"
+        android:background="?attr/toolbarBackgroundColor"
         app:navigationContentDescription="@string/back_cd"
         app:navigationIcon="@drawable/ic_arrow_back_24" />
 

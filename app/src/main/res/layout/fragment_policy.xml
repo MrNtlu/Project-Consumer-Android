@@ -7,13 +7,14 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".ui.common.PolicyFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="?attr/mainBackgroundColor">
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/policyToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="3dp"
         android:theme="@style/Theme.ProjectConsumer.Toolbar"
+        android:background="?attr/toolbarBackgroundColor"
         app:navigationContentDescription="@string/back_cd"
         app:navigationIcon="@drawable/ic_arrow_back_24" />
 

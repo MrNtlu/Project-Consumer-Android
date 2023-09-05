@@ -18,8 +18,8 @@
             android:layout_height="?attr/actionBarSize"
             app:layout_scrollFlags="scroll|enterAlways"
             app:title="@string/diary_title"
-            android:elevation="3dp"
             android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
             app:navigationContentDescription="@string/back_cd"
             app:navigationIcon="@drawable/ic_arrow_back_24" />
 

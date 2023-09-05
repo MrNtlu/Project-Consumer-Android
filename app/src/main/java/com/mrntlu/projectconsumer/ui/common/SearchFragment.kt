@@ -77,6 +77,12 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
             searchMenu = menu.findItem(R.id.searchMenu)
             searchView = searchMenu?.actionView as SearchView
+
+            try {
+                val backgroundView = searchView.findViewById(androidx.appcompat.R.id.search_plate) as? View
+                backgroundView?.background = null
+            } catch (_: Exception){}
+
             searchView.queryHint = getString(R.string.search)
             searchView.setQuery(viewModel.search, false)
             searchView.clearFocus()

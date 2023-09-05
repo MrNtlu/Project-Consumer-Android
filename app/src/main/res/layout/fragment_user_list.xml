@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
             app:navigationIcon="@drawable/ic_arrow_back_24"
             app:navigationContentDescription="@string/back_cd"
             app:layout_scrollFlags="scroll|enterAlways" />
@@ -25,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:tabIndicatorHeight="1dp"
+            app:tabIndicatorHeight="0dp"
             app:tabRippleColor="@null"
             app:tabMode="scrollable"
             app:tabGravity="start"

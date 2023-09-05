@@ -15,11 +15,12 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/profileToolbar"
-            android:theme="@style/Theme.ProjectConsumer.Toolbar"
-            app:menu="@menu/profile_menu"
             android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:layout_height="?attr/actionBarSize"/>
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
+            app:menu="@menu/profile_menu"
+            app:layout_scrollFlags="scroll|enterAlways" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -581,8 +582,7 @@
                 app:icon="@drawable/ic_arrow_right_24"
                 app:iconTint="?attr/mainTextColor"
                 app:layout_constraintEnd_toStartOf="@+id/guideline22"
-                app:layout_constraintTop_toBottomOf="@+id/movieLayout"
-                app:tint="?attr/mainTextColor" />
+                app:layout_constraintTop_toBottomOf="@+id/movieLayout"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/watchLaterRV"

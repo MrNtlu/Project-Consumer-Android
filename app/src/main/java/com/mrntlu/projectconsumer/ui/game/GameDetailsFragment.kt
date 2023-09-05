@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -53,6 +54,9 @@ import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.game.GameDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
@@ -304,85 +308,108 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.detailsGenreRV.setGone()
         }
 
-        val developersStr: String = if (gameDetails?.developers.isNullOrEmpty())
-            getString(R.string.unknown)
-        else
-            gameDetails!!.developers.joinToString(separator = getString(R.string.bullet_point))
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val developersStr: String = if (gameDetails?.developers.isNullOrEmpty())
+                getString(R.string.unknown)
+            else
+                gameDetails!!.developers.joinToString(separator = getString(R.string.bullet_point))
 
-        binding.detailsDevelopersTV.text = developersStr
+            val publishersStr: String = if (gameDetails?.publishers.isNullOrEmpty())
+                getString(R.string.unknown)
+            else
+                gameDetails!!.publishers.joinToString(separator = getString(R.string.bullet_point))
 
-        val publishersStr: String = if (gameDetails?.publishers.isNullOrEmpty())
-            getString(R.string.unknown)
-        else
-            gameDetails!!.publishers.joinToString(separator = getString(R.string.bullet_point))
+            withContext(Dispatchers.Main) {
+                binding.detailsDevelopersTV.text = developersStr
 
-        binding.detailsPublishersTV.text = publishersStr
-
-        val gameStoreList = gameDetails?.stores?.map { gameStore ->
-            AnimeNameURL(
-                GameStoreList.firstOrNull { it.second == gameStore.storeId }?.first ?: getString(R.string.unknown),
-                gameStore.url
-            )
+                binding.detailsPublishersTV.text = publishersStr
+            }
         }
 
-        if (!gameStoreList.isNullOrEmpty()) {
-            binding.detailsStoreRV.apply {
-                val flexboxLayout = FlexboxLayoutManager(context)
-                flexboxLayout.apply {
-                    flexDirection = FlexDirection.ROW
-                    justifyContent = JustifyContent.FLEX_START
-                    alignItems = AlignItems.FLEX_START
-                    flexWrap = FlexWrap.WRAP
-                }
-                layoutManager = flexboxLayout
-
-                storeAdapter = NameUrlAdapter(gameStoreList)
-                adapter = storeAdapter
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val gameStoreList = gameDetails?.stores?.map { gameStore ->
+                AnimeNameURL(
+                    GameStoreList.firstOrNull { it.second == gameStore.storeId }?.first ?: getString(R.string.unknown),
+                    gameStore.url
+                )
             }
-        } else {
-            binding.detailsStoreTV.setGone()
-            binding.detailsStoreRV.setGone()
+
+            if (!gameStoreList.isNullOrEmpty()) {
+                binding.detailsStoreRV.apply {
+                    val flexboxLayout = FlexboxLayoutManager(context)
+                    flexboxLayout.apply {
+                        flexDirection = FlexDirection.ROW
+                        justifyContent = JustifyContent.FLEX_START
+                        alignItems = AlignItems.FLEX_START
+                        flexWrap = FlexWrap.WRAP
+                    }
+                    layoutManager = flexboxLayout
+
+                    storeAdapter = NameUrlAdapter(gameStoreList)
+
+                    withContext(Dispatchers.Main) {
+                        adapter = storeAdapter
+                    }
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    binding.detailsStoreTV.setGone()
+                    binding.detailsStoreRV.setGone()
+                }
+            }
         }
 
         if (!gameDetails?.relatedGames.isNullOrEmpty()) {
-            binding.detailsRelationRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                binding.detailsRelationRV.apply {
+                    val linearLayout =
+                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    layoutManager = linearLayout
 
-                relationAdapter = GameRelationsAdapter(
-                    gameDetails!!.relatedGames,
-                    !sharedViewModel.isLightTheme()
-                ) { rawgId ->
-                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentSelf(rawgId.toString())
-                    navController.navigate(navWithAction)
+                    relationAdapter = GameRelationsAdapter(
+                        gameDetails!!.relatedGames,
+                    ) { rawgId ->
+                        val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentSelf(rawgId.toString())
+                        navController.navigate(navWithAction)
+                    }
+                    withContext(Dispatchers.Main) {
+                        adapter = relationAdapter
+                    }
                 }
-                adapter = relationAdapter
             }
         } else {
             binding.detailsRelationTV.setGone()
             binding.detailsRelationRV.setGone()
         }
 
-        val platformUIList = gameDetails?.platforms?.map { platform ->
-            GamePlatformUIList.firstOrNull {
-                it.requestMapper.name == platform
-            } ?: GamePlatformUI(
-                BackendRequestMapper(platform, platform),
-                R.drawable.ic_game_24,
-            )
-        }
-
-        if (!platformUIList.isNullOrEmpty()) {
-            binding.detailsPlatformRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-
-                platformAdapter = GamePlatformAdapter(platformUIList)
-                adapter = platformAdapter
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            val platformUIList = gameDetails?.platforms?.map { platform ->
+                GamePlatformUIList.firstOrNull {
+                    it.requestMapper.name == platform
+                } ?: GamePlatformUI(
+                    BackendRequestMapper(platform, platform),
+                    R.drawable.ic_game_24,
+                )
             }
-        } else {
-            binding.detailsPlatformTV.setGone()
-            binding.detailsPlatformRV.setGone()
+
+            if (!platformUIList.isNullOrEmpty()) {
+                binding.detailsPlatformRV.apply {
+                    val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                    layoutManager = linearLayout
+
+                    platformAdapter = GamePlatformAdapter(platformUIList)
+
+                    withContext(Dispatchers.Main) {
+                        setHasFixedSize(true)
+                        adapter = platformAdapter
+                    }
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    binding.detailsPlatformTV.setGone()
+                    binding.detailsPlatformRV.setGone()
+                }
+            }
         }
     }
 

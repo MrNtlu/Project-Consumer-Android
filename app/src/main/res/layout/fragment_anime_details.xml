@@ -17,6 +17,7 @@
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -48,6 +49,9 @@ import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.movie.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() {
@@ -325,9 +329,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         val radiusInPx = binding.root.context.dpToPxFloat(12f)
 
         if (!movieDetails?.actors.isNullOrEmpty()) {
-            createDetailsAdapter(
-                recyclerView = binding.detailsActorsRV,
-                detailsList = movieDetails!!.actors!!.filter {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val actorUIList = movieDetails!!.actors!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -335,12 +338,19 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         it.image,
                         it.character
                     )
-                },
-                cardCornerRadius = radiusInPx,
-                transformImage = { transform(CenterCrop()) }
-            ) {
-                actorAdapter = it
-                it
+                }
+
+                withContext(Dispatchers.Main) {
+                    createDetailsAdapter(
+                        recyclerView = binding.detailsActorsRV,
+                        detailsList = actorUIList,
+                        cardCornerRadius = radiusInPx,
+                        transformImage = { transform(CenterCrop()) }
+                    ) {
+                        actorAdapter = it
+                        it
+                    }
+                }
             }
         } else {
             binding.detailsActorsTV.setGone()
@@ -348,9 +358,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         }
 
         if (!movieDetails?.productionCompanies.isNullOrEmpty()) {
-            createDetailsAdapter(
-                recyclerView = binding.detailsProductionRV,
-                detailsList = movieDetails!!.productionCompanies!!.filter {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val productionAndCompanyUIList = movieDetails!!.productionCompanies!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -358,13 +367,20 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         it.logo ?: "",
                         it.originCountry
                     )
-                },
-                placeHolderImage = R.drawable.ic_company_75,
-                cardCornerRadius = radiusInPx,
-                transformImage = { transform(CenterInside()) }
-            ) {
-                companiesAdapter = it
-                it
+                }
+
+                withContext(Dispatchers.Main) {
+                    createDetailsAdapter(
+                        recyclerView = binding.detailsProductionRV,
+                        detailsList = productionAndCompanyUIList,
+                        placeHolderImage = R.drawable.ic_company_75,
+                        cardCornerRadius = radiusInPx,
+                        transformImage = { transform(CenterInside()) }
+                    ) {
+                        companiesAdapter = it
+                        it
+                    }
+                }
             }
         } else {
             binding.detailsProductionTV.setGone()
@@ -382,6 +398,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it))
                     navController.navigate(navWithAction)
                 }
+                setHasFixedSize(true)
                 adapter = genreAdapter
             }
         } else {
@@ -390,27 +407,38 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         }
 
         if (!movieDetails?.streaming.isNullOrEmpty()) {
-            val streaming = movieDetails!!.streaming!!
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val streaming = movieDetails!!.streaming!!
 
-            createStreamingAdapter(
-                binding.detailsStreamingRV, streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
-            ) {
-                streamingAdapter = it
-                it
-            }
+                val streamingList = streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
+                val buyList = streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions
+                val rentList = streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions
 
-            createStreamingAdapter(
-                binding.detailsBuyRV, streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions
-            ) {
-                buyAdapter = it
-                it
-            }
+                withContext(Dispatchers.Main) {
+                    createStreamingAdapter(
+                        binding.detailsStreamingRV,
+                        streamingList
+                    ) {
+                        streamingAdapter = it
+                        it
+                    }
 
-            createStreamingAdapter(
-                binding.detailsRentRV, streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions
-            ) {
-                rentAdapter = it
-                it
+                    createStreamingAdapter(
+                        binding.detailsBuyRV,
+                        buyList
+                    ) {
+                        buyAdapter = it
+                        it
+                    }
+
+                    createStreamingAdapter(
+                        binding.detailsRentRV,
+                        rentList
+                    ) {
+                        rentAdapter = it
+                        it
+                    }
+                }
             }
         }
     }

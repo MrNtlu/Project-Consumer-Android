@@ -1,7 +1,7 @@
 <resources>
-    <!-- Base application theme. -->
+<!-- Base application theme. -->
     <style name="Theme.ProjectConsumer" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
+<!-- Primary brand color. -->
         <item name="colorPrimary">@color/blue500</item>
         <item name="colorPrimaryVariant">@color/blue700</item>
         <item name="colorOnPrimary">@color/black</item>
@@ -9,13 +9,13 @@
         <item name="colorSecondary">@color/white</item>
         <item name="colorSecondaryVariant">@color/darkWhite</item>
         <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
+<!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/toolbarBackgroundColor</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">?attr/bottomNavBackgroundColor</item>
         <item name="android:windowLightNavigationBar">false</item>
 
-        <!-- Customize your theme here. -->
+<!-- Customize theme here. -->
         <item name="popupMenuStyle">@style/CustomPopupMenu</item>
 
         <item name="mainTextColor">@color/white</item>
@@ -80,7 +80,8 @@
 
 <!--   Toolbar Style   -->
     <style name="Theme.ProjectConsumer.Toolbar" parent="ThemeOverlay.Material3.Toolbar.Surface">
-        <item name="android:background">?attr/toolbarBackgroundColor</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="elevation">3dp</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="navigationIconTint">@color/white</item>
         <item name="iconTint">@color/white</item>

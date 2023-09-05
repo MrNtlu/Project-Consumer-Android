@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.mrntlu.projectconsumer.adapters.viewholders.EmptyViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.ErrorViewHolder
 import com.mrntlu.projectconsumer.adapters.viewholders.LoadingViewHolder
@@ -79,8 +81,14 @@ class ContentAdapter<T: ContentModel>(
                 (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
                 (previewShimmerLayout.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
 
-                if (isRatioDifferent)
-                    previewGameCV.radius = radiusInPx
+                if (isRatioDifferent) {
+                    val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
+                        setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
+                        setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
+                    }
+                    val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
+                    previewGameCV.shapeAppearanceModel = shapeAppearanceModel
+                }
 
                 previewIV.scaleType = if (isRatioDifferent)
                     ImageView.ScaleType.CENTER_CROP

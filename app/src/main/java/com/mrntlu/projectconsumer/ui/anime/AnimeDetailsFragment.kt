@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -47,6 +48,9 @@ import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.anime.AnimeDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() {
@@ -284,16 +288,22 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
     private fun setRecyclerView() {
         if (!animeDetails?.characters.isNullOrEmpty()) {
-            createDetailsAdapter(
-                recyclerView = binding.detailsCharRV,
-                detailsList = animeDetails!!.characters!!.filter {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val characterUIList = animeDetails!!.characters!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(it.name, it.image, it.role)
                 }
-            ) {
-                characterAdapter = it
-                it
+
+                withContext(Dispatchers.Main) {
+                    createDetailsAdapter(
+                        recyclerView = binding.detailsCharRV,
+                        detailsList = characterUIList
+                    ) {
+                        characterAdapter = it
+                        it
+                    }
+                }
             }
         } else {
             binding.detailsCharTV.setGone()
@@ -372,15 +382,19 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         }
 
         if (!animeDetails?.relations.isNullOrEmpty()) {
-            binding.detailsRelationRV.apply {
-                val linearLayout = LinearLayoutManager(context)
-                layoutManager = linearLayout
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                binding.detailsRelationRV.apply {
+                    val linearLayout = LinearLayoutManager(context)
+                    layoutManager = linearLayout
 
-                relationAdapter = AnimeRelationsAdapter(animeDetails!!.relations!!) { malID ->
-                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
-                    navController.navigate(navWithAction)
+                    relationAdapter = AnimeRelationsAdapter(animeDetails!!.relations!!) { malID ->
+                        val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
+                        navController.navigate(navWithAction)
+                    }
+                    withContext(Dispatchers.Main) {
+                        adapter = relationAdapter
+                    }
                 }
-                adapter = relationAdapter
             }
         } else {
             binding.detailsRelationTV.setGone()

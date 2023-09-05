@@ -14,6 +14,7 @@ import com.bumptech.glide.request.target.Target
 import com.mrntlu.projectconsumer.databinding.CellGridBinding
 import com.mrntlu.projectconsumer.models.common.GenreUI
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 
 class GridAdapter(
     private val context: Context,
@@ -57,7 +58,7 @@ class GridAdapter(
 
         }).into(binding.genreIV)
 
-        binding.root.setOnClickListener {
+        binding.root.setSafeOnClickListener {
             if (item.genre == "Discover") {
                 onDiscoveryClicked()
             } else {

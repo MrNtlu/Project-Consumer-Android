@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -48,6 +49,9 @@ import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.tv.TVDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() {
@@ -322,6 +326,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 layoutManager = linearLayout
 
                 seasonAdapter = SeasonAdapter(tvDetails!!.seasons)
+                setHasFixedSize(true)
                 adapter = seasonAdapter
             }
         } else {
@@ -339,6 +344,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                     val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToDiscoverListFragment(Constants.ContentType.TV, tvDetails?.genres?.get(it))
                     navController.navigate(navWithAction)
                 }
+                setHasFixedSize(true)
                 adapter = genreAdapter
             }
         } else {
@@ -347,9 +353,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
 
         if (!tvDetails?.actors.isNullOrEmpty()) {
-            createDetailsAdapter(
-                recyclerView = binding.tvDetailsActorsRV,
-                detailsList = tvDetails!!.actors!!.filter {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val actorsUIList = tvDetails!!.actors!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -357,12 +362,19 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                         it.image,
                         it.character
                     )
-                },
-                cardCornerRadius = radiusInPx,
-                transformImage = { transform(CenterCrop()) }
-            ) {
-                actorAdapter = it
-                it
+                }
+
+                withContext(Dispatchers.Main) {
+                    createDetailsAdapter(
+                        recyclerView = binding.tvDetailsActorsRV,
+                        detailsList = actorsUIList,
+                        cardCornerRadius = radiusInPx,
+                        transformImage = { transform(CenterCrop()) }
+                    ) {
+                        actorAdapter = it
+                        it
+                    }
+                }
             }
         } else {
             binding.tvDetailsActorsTV.setGone()
@@ -370,9 +382,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
 
         if (!tvDetails?.networks.isNullOrEmpty()) {
-            createDetailsAdapter(
-                recyclerView = binding.tvDetailsNetworkRV,
-                detailsList = tvDetails!!.networks!!.filter {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val networksUIList = tvDetails!!.networks!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -380,13 +391,20 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                         it.logo ?: "",
                         it.originCountry ?: ""
                     )
-                },
-                placeHolderImage = R.drawable.ic_company_75,
-                cardCornerRadius = radiusInPx,
-                transformImage = { transform(CenterInside()) }
-            ) {
-                networkAdapter = it
-                it
+                }
+
+                withContext(Dispatchers.Main) {
+                    createDetailsAdapter(
+                        recyclerView = binding.tvDetailsNetworkRV,
+                        detailsList = networksUIList,
+                        placeHolderImage = R.drawable.ic_company_75,
+                        cardCornerRadius = radiusInPx,
+                        transformImage = { transform(CenterInside()) }
+                    ) {
+                        networkAdapter = it
+                        it
+                    }
+                }
             }
         } else {
             binding.tvDetailsNetworkTV.setGone()
@@ -394,9 +412,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
 
         if (!tvDetails?.productionCompanies.isNullOrEmpty()) {
-            createDetailsAdapter(
-                recyclerView = binding.tvDetailsProductionRV,
-                detailsList = tvDetails!!.productionCompanies.filter {
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val productionAndCompanyUIList = tvDetails!!.productionCompanies.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
                     DetailsUI(
@@ -404,13 +421,20 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                         it.logo ?: "",
                         it.originCountry
                     )
-                },
-                placeHolderImage = R.drawable.ic_company_75,
-                cardCornerRadius = radiusInPx,
-                transformImage = { transform(CenterInside()) }
-            ) {
-                companiesAdapter = it
-                it
+                }
+
+                withContext(Dispatchers.Main) {
+                    createDetailsAdapter(
+                        recyclerView = binding.tvDetailsProductionRV,
+                        detailsList = productionAndCompanyUIList,
+                        placeHolderImage = R.drawable.ic_company_75,
+                        cardCornerRadius = radiusInPx,
+                        transformImage = { transform(CenterInside()) }
+                    ) {
+                        companiesAdapter = it
+                        it
+                    }
+                }
             }
         } else {
             binding.tvDetailsProductionTV.setGone()
@@ -418,27 +442,36 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
 
         if (!tvDetails?.streaming.isNullOrEmpty()) {
-            val streaming = tvDetails!!.streaming!!
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val streaming = tvDetails!!.streaming!!
 
-            createStreamingAdapter(
-                binding.tvDetailsStreamingRV, streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
-            ) {
-                streamingAdapter = it
-                it
-            }
+                val streamingList = streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
+                val buyList = streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions
+                val rentList = streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions
 
-            createStreamingAdapter(
-                binding.tvDetailsBuyRV, streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions
-            ) {
-                buyAdapter = it
-                it
-            }
+                createStreamingAdapter(
+                    binding.tvDetailsStreamingRV,
+                    streamingList
+                ) {
+                    streamingAdapter = it
+                    it
+                }
 
-            createStreamingAdapter(
-                binding.tvDetailsRentRV, streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions
-            ) {
-                rentAdapter = it
-                it
+                createStreamingAdapter(
+                    binding.tvDetailsBuyRV,
+                    buyList
+                ) {
+                    buyAdapter = it
+                    it
+                }
+
+                createStreamingAdapter(
+                    binding.tvDetailsRentRV,
+                    rentList
+                ) {
+                    rentAdapter = it
+                    it
+                }
             }
         }
     }

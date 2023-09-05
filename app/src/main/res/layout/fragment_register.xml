@@ -18,13 +18,13 @@
             android:id="@+id/registerToolbar"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="3dp"
             android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
+            app:navigationContentDescription="@string/back_cd"
+            app:navigationIcon="@drawable/ic_arrow_back_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:navigationContentDescription="@string/back_cd"
-            app:navigationIcon="@drawable/ic_arrow_back_24" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/registerBarrier"
