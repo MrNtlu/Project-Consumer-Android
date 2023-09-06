@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,13 +8,13 @@
     android:fitsSystemWindows="true"
     android:background="?attr/mainBackgroundColor">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/animeDetailsToolbar"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/Theme.ProjectConsumer.Toolbar"
             android:background="?attr/toolbarBackgroundColor"
@@ -22,420 +22,431 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_scrollFlags="scroll|enterAlways" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline28"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.04" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline29"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.96" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline30"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline28"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.04" />
 
-        <include
-            android:id="@+id/detailsInclude"
-            layout="@layout/layout_user_interaction"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/animeDetailsToolbar" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline29"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.96" />
 
-        <include
-            android:id="@+id/imageInclude"
-            layout="@layout/cell_preview_item"
-            android:layout_width="wrap_content"
-            android:layout_height="125dp"
-            android:elevation="3dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintTop_toTopOf="@+id/detailsTitleTV" />
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
-        <TextView
-            android:id="@+id/detailsTitleTV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="textStart"
-            android:textColor="?attr/mainTextColor"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/imageInclude"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsInclude"
-            tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
-
-        <TextView
-            android:id="@+id/detailsOriginalTV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textAlignment="textStart"
-            android:textColor="?attr/subTextColor"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@+id/detailsTitleTV"
-            app:layout_constraintStart_toStartOf="@+id/detailsTitleTV"
-            app:layout_constraintTop_toBottomOf="@+id/detailsTitleTV"
-            tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/detailsBarrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="detailsOriginalTV, imageInclude"/>
-
-        <TextView
-            android:id="@+id/detailsTypeTV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:textColor="?attr/mainTextColor"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsBarrier"
-            tools:text="TV" />
-
-        <TextView
-            android:id="@+id/detailsStatusTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Airing"
-            android:textColor="?attr/statusActiveColor"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/detailsTypeTV"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintTop_toTopOf="@+id/detailsTypeTV" />
-
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/materialDivider6"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detailsTypeTV" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detailsGenreRV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/materialDivider6" />
-
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/genreDivider"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detailsGenreRV" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/description"
-            android:textColor="?attr/descriptionTitleTextColor"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/genreDivider" />
-
-        <io.github.glailton.expandabletextview.ExpandableTextView
-            android:id="@+id/detailsDescriptionTV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="?attr/mainTextColor"
-            android:textSize="16sp"
-            app:animDuration="500"
-            app:collapsedLines="5"
-            app:ellipsizeTextColor="@color/blue900"
-            app:isExpanded="false"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/textView5"
-            app:readLessText="Hide"
-            app:readMoreText="Expand"
-            app:textMode="line"
-            tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
-
-        <TextView
-            android:id="@+id/detailsInformationTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/information"
-            android:textColor="?attr/descriptionTitleTextColor"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
-
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/source"
-            android:textColor="?attr/subTextColor"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/detailsInformationTV"
-            app:layout_constraintTop_toBottomOf="@+id/detailsInformationTV" />
-
-        <TextView
-            android:id="@+id/detailsSourceTV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="?attr/mainTextColor"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/textView15"
-            app:layout_constraintTop_toBottomOf="@+id/textView15"
-            tools:text="Manga" />
-
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/season"
-            android:textColor="?attr/subTextColor"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/guideline30"
-            app:layout_constraintTop_toBottomOf="@+id/detailsInformationTV" />
-
-        <TextView
-            android:id="@+id/detailsSeasonTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="?attr/mainTextColor"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/textView16"
-            app:layout_constraintTop_toBottomOf="@+id/textView16"
-            tools:text="Summer 2023" />
-
-        <TextView
-            android:id="@+id/textView17"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/episodes"
-            android:textColor="?attr/subTextColor"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsSourceTV" />
-
-        <TextView
-            android:id="@+id/detailsEpisodeTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="?attr/mainTextColor"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/textView17"
-            app:layout_constraintTop_toBottomOf="@+id/textView17"
-            tools:text="64 eps." />
-
-        <TextView
-            android:id="@+id/textView18"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/aired"
-            android:textColor="?attr/subTextColor"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline30"
-            app:layout_constraintTop_toBottomOf="@+id/detailsSourceTV" />
-
-        <TextView
-            android:id="@+id/detailsAiredTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="?attr/mainTextColor"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="@+id/guideline30"
-            app:layout_constraintTop_toBottomOf="@+id/textView17"
-            tools:text="6 Jul 23 to 12 Mar 24" />
-
-        <TextView
-            android:id="@+id/detailsStudiosTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/studios"
-            android:textColor="?attr/subTextColor"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsEpisodeTV" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detailsStudiosRV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline30"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsStudiosTV" />
-
-        <TextView
-            android:id="@+id/detailsProducerTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/producers"
-            android:textColor="?attr/subTextColor"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline30"
-            app:layout_constraintTop_toBottomOf="@+id/detailsEpisodeTV" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detailsProducerRV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintStart_toStartOf="@+id/guideline30"
-            app:layout_constraintTop_toBottomOf="@+id/detailsStudiosTV" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="detailsStudiosRV, detailsProducerRV" />
-
-        <TextView
-            android:id="@+id/detailsRelationTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/relations"
-            android:textColor="?attr/descriptionTitleTextColor"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/barrier2" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detailsRelationRV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:nestedScrollingEnabled="false"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsRelationTV" />
-
-        <TextView
-            android:id="@+id/detailsCharTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/characters"
-            android:textColor="?attr/descriptionTitleTextColor"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsRelationRV" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detailsCharRV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsCharTV" />
-
-        <TextView
-            android:id="@+id/detailsStreamingTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="@string/streaming"
-            android:textColor="?attr/descriptionTitleTextColor"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsCharRV" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detailsStreamingRV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/detailsStreamingTV" />
-
-        <FrameLayout
-            android:id="@+id/loadingLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:elevation="9dp"
-            android:background="?attr/mainBackgroundColor"
-            android:fitsSystemWindows="true"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
             <include
-                layout="@layout/layout_shimmer_anime_details"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </FrameLayout>
+                android:id="@+id/detailsInclude"
+                layout="@layout/layout_user_interaction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <FrameLayout
-            android:id="@+id/errorLayout"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="?attr/mainBackgroundColor"
-            android:elevation="9dp"
-            android:fitsSystemWindows="true"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
             <include
-                android:id="@+id/errorLayoutInc"
-                layout="@layout/cell_error"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </FrameLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+                android:id="@+id/imageInclude"
+                layout="@layout/cell_preview_item"
+                android:layout_width="wrap_content"
+                android:layout_height="125dp"
+                android:elevation="3dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintTop_toTopOf="@+id/detailsTitleTV" />
+
+            <TextView
+                android:id="@+id/detailsTitleTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="textStart"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/imageInclude"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsInclude"
+                tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
+
+            <TextView
+                android:id="@+id/detailsOriginalTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAlignment="textStart"
+                android:textColor="?attr/subTextColor"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/detailsTitleTV"
+                app:layout_constraintStart_toStartOf="@+id/detailsTitleTV"
+                app:layout_constraintTop_toBottomOf="@+id/detailsTitleTV"
+                tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/detailsBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="detailsOriginalTV, imageInclude"/>
+
+            <TextView
+                android:id="@+id/detailsTypeTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsBarrier"
+                tools:text="TV" />
+
+            <TextView
+                android:id="@+id/detailsStatusTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Airing"
+                android:textColor="?attr/statusActiveColor"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/detailsTypeTV"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintTop_toTopOf="@+id/detailsTypeTV" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/materialDivider6"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsTypeTV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsGenreRV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/materialDivider6" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/genreDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsGenreRV" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/description"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/genreDivider" />
+
+            <io.github.glailton.expandabletextview.ExpandableTextView
+                android:id="@+id/detailsDescriptionTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                app:animDuration="500"
+                app:collapsedLines="5"
+                app:ellipsizeTextColor="@color/blue900"
+                app:isExpanded="false"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                app:readLessText="Hide"
+                app:readMoreText="Expand"
+                app:textMode="line"
+                tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
+
+            <TextView
+                android:id="@+id/detailsInformationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/information"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/source"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/detailsInformationTV"
+                app:layout_constraintTop_toBottomOf="@+id/detailsInformationTV" />
+
+            <TextView
+                android:id="@+id/detailsSourceTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/textView15"
+                app:layout_constraintTop_toBottomOf="@+id/textView15"
+                tools:text="Manga" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/season"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/guideline30"
+                app:layout_constraintTop_toBottomOf="@+id/detailsInformationTV" />
+
+            <TextView
+                android:id="@+id/detailsSeasonTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/textView16"
+                app:layout_constraintTop_toBottomOf="@+id/textView16"
+                tools:text="Summer 2023" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/episodes"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsSourceTV" />
+
+            <TextView
+                android:id="@+id/detailsEpisodeTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/textView17"
+                app:layout_constraintTop_toBottomOf="@+id/textView17"
+                tools:text="64 eps." />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/aired"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline30"
+                app:layout_constraintTop_toBottomOf="@+id/detailsSourceTV" />
+
+            <TextView
+                android:id="@+id/detailsAiredTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/guideline30"
+                app:layout_constraintTop_toBottomOf="@+id/textView17"
+                tools:text="6 Jul 23 to 12 Mar 24" />
+
+            <TextView
+                android:id="@+id/detailsStudiosTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/studios"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsEpisodeTV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsStudiosRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline30"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsStudiosTV" />
+
+            <TextView
+                android:id="@+id/detailsProducerTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/producers"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline30"
+                app:layout_constraintTop_toBottomOf="@+id/detailsEpisodeTV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsProducerRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintStart_toStartOf="@+id/guideline30"
+                app:layout_constraintTop_toBottomOf="@+id/detailsStudiosTV" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="detailsStudiosRV, detailsProducerRV" />
+
+            <TextView
+                android:id="@+id/detailsRelationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/relations"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/barrier2" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsRelationRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRelationTV" />
+
+            <TextView
+                android:id="@+id/detailsCharTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/characters"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRelationRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsCharRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsCharTV" />
+
+            <TextView
+                android:id="@+id/detailsStreamingTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/streaming"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsCharRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsStreamingRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintStart_toStartOf="@+id/guideline28"
+                app:layout_constraintTop_toBottomOf="@+id/detailsStreamingTV" />
+
+            <FrameLayout
+                android:id="@+id/loadingLayout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:elevation="9dp"
+                android:background="?attr/mainBackgroundColor"
+                android:fitsSystemWindows="true"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+                <include
+                    layout="@layout/layout_shimmer_anime_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/errorLayout"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?attr/mainBackgroundColor"
+                android:elevation="9dp"
+                android:fitsSystemWindows="true"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+                <include
+                    android:id="@+id/errorLayoutInc"
+                    layout="@layout/cell_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

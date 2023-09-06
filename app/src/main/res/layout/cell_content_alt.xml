@@ -40,10 +40,9 @@
             android:id="@+id/titleOriginalTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="3dp"
             android:textColor="?attr/subTextColor"
             android:textSize="10sp"
-            android:textStyle="bold"
             tools:ignore="SmallSp"
             tools:text="@tools:sample/full_names" />
 
@@ -51,7 +50,7 @@
             android:id="@+id/descriptionTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:textColor="?attr/mainTextColor"
             android:maxLines="2"
             android:ellipsize="end"
@@ -62,7 +61,7 @@
             android:id="@+id/extraInfoLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="8dp"
             android:gravity="center">
 
             <ImageView
@@ -80,10 +79,9 @@
                 android:layout_marginStart="3dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textAlignment="textEnd"
+                android:textAlignment="center"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 tools:text="4.5" />
 
             <ImageView
@@ -99,13 +97,12 @@
                 android:id="@+id/extraInfoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
+                android:layout_marginStart="6dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textAlignment="textEnd"
+                android:textAlignment="center"
                 android:textColor="?attr/mainTextColor"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 tools:text="1h 43m" />
         </LinearLayout>
     </LinearLayout>

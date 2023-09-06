@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -45,9 +46,9 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
         SearchViewModel.provideSearchViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
     }
 
-    private lateinit var searchView: SearchView
 
     private var contentAdapter: ContentAdapter<ContentModel>? = null
+    private var searchView: SearchView? = null
     private var searchMenu: MenuItem? = null
     private var popupMenu: PopupMenu? = null
     private var gridCount = 3
@@ -79,18 +80,18 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
             searchView = searchMenu?.actionView as SearchView
 
             try {
-                val backgroundView = searchView.findViewById(androidx.appcompat.R.id.search_plate) as? View
+                val backgroundView = searchView?.findViewById(androidx.appcompat.R.id.search_plate) as? View
                 backgroundView?.background = null
             } catch (_: Exception){}
 
-            searchView.queryHint = getString(R.string.search)
-            searchView.setQuery(viewModel.search, false)
-            searchView.clearFocus()
+            searchView?.queryHint = getString(R.string.search)
+            searchView?.setQuery(viewModel.search, false)
+            searchView?.clearFocus()
 
-            searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            searchView?.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     if (query?.isNotEmptyOrBlank() == true) {
-                        searchView.clearFocus()
+                        searchView?.clearFocus()
                         hideKeyboard()
                         viewModel.startContentFetch(query)
                     }
@@ -186,16 +187,22 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
     }
 
     private fun setObservers() {
-        sharedViewModel.windowSize.observe(viewLifecycleOwner) {
-            val widthSize: WindowSizeClass = it
-
-            gridCount = when(widthSize) {
-                WindowSizeClass.COMPACT -> 2
-                WindowSizeClass.MEDIUM -> 3
-                WindowSizeClass.EXPANDED -> 5
-            }
+        if (sharedViewModel.isAltLayout()) {
+            gridCount = 1
 
             setRecyclerView()
+        } else {
+            sharedViewModel.windowSize.observe(viewLifecycleOwner) {
+                val widthSize: WindowSizeClass = it
+
+                gridCount = when(widthSize) {
+                    WindowSizeClass.COMPACT -> 2
+                    WindowSizeClass.MEDIUM -> 3
+                    WindowSizeClass.EXPANDED -> 5
+                }
+
+                setRecyclerView()
+            }
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
@@ -237,23 +244,31 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
     private fun setRecyclerView() {
         binding.movieSearchRV.apply {
-            val gridLayoutManager = GridLayoutManager(this.context, gridCount)
+            val rvLayoutManager = if (sharedViewModel.isAltLayout()) {
+                val linearLayoutManager = LinearLayoutManager(this.context)
+                gridCount = 1
+                linearLayoutManager
+            } else {
+                val gridLayoutManager = GridLayoutManager(this.context, gridCount)
 
-            gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    val itemViewType = contentAdapter?.getItemViewType(position)
-                    return if (
-                        itemViewType == RecyclerViewEnum.View.value ||
-                        itemViewType == RecyclerViewEnum.Loading.value
-                    ) 1 else gridCount
+                gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        val itemViewType = contentAdapter?.getItemViewType(position)
+                        return if (
+                            itemViewType == RecyclerViewEnum.View.value ||
+                            itemViewType == RecyclerViewEnum.Loading.value
+                        ) 1 else gridCount
+                    }
                 }
+                gridLayoutManager
             }
 
-            layoutManager = gridLayoutManager
+            layoutManager = rvLayoutManager
             contentAdapter = ContentAdapter(
                 gridCount = gridCount,
                 isRatioDifferent = viewModel.contentType == Constants.ContentType.GAME,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
+                isAltLayout = sharedViewModel.isAltLayout(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
                         if (navController.currentDestination?.id == R.id.searchFragment) {
@@ -304,11 +319,11 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    val itemCount = gridLayoutManager.itemCount / gridCount
-                    val lastVisibleItemPosition = gridLayoutManager.findLastVisibleItemPosition() / gridCount
+                    val itemCount = rvLayoutManager.itemCount / gridCount
+                    val lastVisibleItemPosition = rvLayoutManager.findLastVisibleItemPosition() / gridCount
 
                     if (isScrolling) {
-                        val centerScrollPosition = (gridLayoutManager.findLastCompletelyVisibleItemPosition() + gridLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
+                        val centerScrollPosition = (rvLayoutManager.findLastCompletelyVisibleItemPosition() + rvLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
                         viewModel.setScrollPosition(centerScrollPosition)
                     }
 
@@ -339,6 +354,8 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
             sharedViewModel.windowSize.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
+
+        searchView = null
         searchMenu = null
         popupMenu = null
         contentAdapter = null

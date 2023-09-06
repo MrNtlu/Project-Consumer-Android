@@ -2,11 +2,12 @@ package com.mrntlu.projectconsumer.models.main.game
 
 import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.ContentModel
+import com.mrntlu.projectconsumer.models.main.anime.AnimeAirDate
 
 data class Game(
     @SerializedName("_id")
     override val id: String,
-    val description: String,
+    override val description: String,
     val tba: Boolean,
     val popularity: Float,
     val subreddit: String?,
@@ -27,7 +28,7 @@ data class Game(
     val rawgID: Int,
 
     @SerializedName("rawg_rating")
-    val rawgRating: Float,
+    override val score: Float,
 
     @SerializedName("rawg_rating_count")
     val rawgRatingCount: Int,
@@ -39,7 +40,7 @@ data class Game(
     val metacriticScoreByPlatform: List<GameMetacriticScorePlatform>,
 
     @SerializedName("release_date")
-    val releaseDate: String,
+    override val releaseDate: String,
 
     @SerializedName("image_url")
     override val imageURL: String,
@@ -52,4 +53,9 @@ data class Game(
 
     @SerializedName("has_release_date")
     val hasReleaseDate: Boolean,
+
+    override val episodes: Int? = null,
+    override val totalSeasons: Int? = null,
+    override val length: Int? = null,
+    override val aired: AnimeAirDate? = null,
 ): ContentModel()

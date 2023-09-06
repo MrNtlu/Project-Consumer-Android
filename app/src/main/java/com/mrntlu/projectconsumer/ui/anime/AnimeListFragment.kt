@@ -32,28 +32,22 @@ class AnimeListFragment : BaseListFragment<Anime>() {
     }
 
     private fun setObservers() {
-        sharedViewModel.windowSize.observe(viewLifecycleOwner) {
-            val widthSize: WindowSizeClass = it
+        if (sharedViewModel.isAltLayout()) {
+            gridCount = 1
 
-            gridCount = when(widthSize) {
-                WindowSizeClass.COMPACT -> 2
-                WindowSizeClass.MEDIUM -> 3
-                WindowSizeClass.EXPANDED -> 5
+            setRV()
+        } else {
+            sharedViewModel.windowSize.observe(viewLifecycleOwner) {
+                val widthSize: WindowSizeClass = it
+
+                gridCount = when(widthSize) {
+                    WindowSizeClass.COMPACT -> 2
+                    WindowSizeClass.MEDIUM -> 3
+                    WindowSizeClass.EXPANDED -> 5
+                }
+
+                setRV()
             }
-
-            setRecyclerView(
-                startFetch = { viewModel.startAnimeFetch() },
-                onItemSelected = { itemId ->
-                    if (navController.currentDestination?.id == R.id.animeListFragment) {
-                        val navWithAction = AnimeListFragmentDirections.actionAnimeListFragmentToAnimeDetailsFragment(itemId)
-
-                        navController.navigate(navWithAction)
-                    }
-
-                },
-                scrollViewModel = { position -> viewModel.setScrollPosition(position) },
-                fetch = { viewModel.fetchAnime() }
-            )
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
@@ -76,6 +70,22 @@ class AnimeListFragment : BaseListFragment<Anime>() {
                 }
             }
         }
+    }
+
+    private fun setRV() {
+        setRecyclerView(
+            startFetch = { viewModel.startAnimeFetch() },
+            onItemSelected = { itemId ->
+                if (navController.currentDestination?.id == R.id.animeListFragment) {
+                    val navWithAction = AnimeListFragmentDirections.actionAnimeListFragmentToAnimeDetailsFragment(itemId)
+
+                    navController.navigate(navWithAction)
+                }
+
+            },
+            scrollViewModel = { position -> viewModel.setScrollPosition(position) },
+            fetch = { viewModel.fetchAnime() }
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

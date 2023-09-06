@@ -20,7 +20,7 @@ import com.mrntlu.projectconsumer.databinding.CellErrorBinding
 import com.mrntlu.projectconsumer.interfaces.ConsumeLaterInteraction
 import com.mrntlu.projectconsumer.interfaces.ErrorViewHolderBind
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
@@ -196,9 +196,8 @@ class ConsumeLaterAdapter(
                     }
 
                     previewCard.radius = radiusInPx
+                    previewIV.contentDescription = item.content.titleOriginal
                 }
-
-                imageInclude.previewIV.contentDescription = item.content.titleOriginal
 
                 if (item.content.titleEn.isNotEmptyOrBlank() && item.content.titleEn != item.content.titleOriginal) {
                     titleTV.text = item.content.titleEn
@@ -208,16 +207,16 @@ class ConsumeLaterAdapter(
                     titleOriginalTV.setGone()
                 }
 
-                contentTypeTV.text = Constants.ContentType.fromStringRequest(item.contentType).value
+                contentTypeTV.text = ContentType.fromStringRequest(item.contentType).value
                 scoreTV.text = item.content.score.toDouble().roundSingleDecimal().toString()
 
                 contentTypeIV.setImageDrawable(ContextCompat.getDrawable(
                     root.context,
-                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                        Constants.ContentType.ANIME -> R.drawable.ic_anime
-                        Constants.ContentType.MOVIE -> R.drawable.ic_content_type_24
-                        Constants.ContentType.TV -> R.drawable.ic_tv
-                        Constants.ContentType.GAME -> R.drawable.ic_game_24
+                    when(ContentType.fromStringRequest(item.contentType)) {
+                        ContentType.ANIME -> R.drawable.ic_anime
+                        ContentType.MOVIE -> R.drawable.ic_content_type_24
+                        ContentType.TV -> R.drawable.ic_tv
+                        ContentType.GAME -> R.drawable.ic_game_24
                     }
                 ))
 

@@ -12,7 +12,7 @@ object AnimeEntityMapper: EntityMapper<List<Anime>, List<AnimeEntity>> {
                     id, description, trailer, type, source, episodes, season, year,
                     status, aired, streaming, producers, studios, genres, themes, demographics,
                     relations, characters, title, titleOriginal, titleJP, imageURL,
-                    malID, malScore, malScoredBy, isAiring, ageRating, tag, page
+                    malID, score, malScoredBy, isAiring, ageRating, tag, page
                 )
             }
         }

@@ -32,27 +32,22 @@ class TVSeriesListFragment: BaseListFragment<TVSeries>() {
     }
 
     private fun setObservers() {
-        sharedViewModel.windowSize.observe(viewLifecycleOwner) {
-            val widthSize: WindowSizeClass = it
+        if (sharedViewModel.isAltLayout()) {
+            gridCount = 1
 
-            gridCount = when(widthSize) {
-                WindowSizeClass.COMPACT -> 2
-                WindowSizeClass.MEDIUM -> 3
-                WindowSizeClass.EXPANDED -> 5
+            setRV()
+        } else {
+            sharedViewModel.windowSize.observe(viewLifecycleOwner) {
+                val widthSize: WindowSizeClass = it
+
+                gridCount = when(widthSize) {
+                    WindowSizeClass.COMPACT -> 2
+                    WindowSizeClass.MEDIUM -> 3
+                    WindowSizeClass.EXPANDED -> 5
+                }
+
+                setRV()
             }
-
-            setRecyclerView(
-                startFetch = { viewModel.startTVSeriesFetch() },
-                onItemSelected = { itemId ->
-                    if (navController.currentDestination?.id == R.id.tvListFragment) {
-                        val navWithAction = TVSeriesListFragmentDirections.actionTvListFragmentToTvDetailsFragment(itemId)
-
-                        navController.navigate(navWithAction)
-                    }
-                },
-                scrollViewModel = { position -> viewModel.setScrollPosition(position) },
-                fetch = { viewModel.fetchTVSeries() }
-            )
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
@@ -75,6 +70,21 @@ class TVSeriesListFragment: BaseListFragment<TVSeries>() {
                 }
             }
         }
+    }
+
+    private fun setRV() {
+        setRecyclerView(
+            startFetch = { viewModel.startTVSeriesFetch() },
+            onItemSelected = { itemId ->
+                if (navController.currentDestination?.id == R.id.tvListFragment) {
+                    val navWithAction = TVSeriesListFragmentDirections.actionTvListFragmentToTvDetailsFragment(itemId)
+
+                    navController.navigate(navWithAction)
+                }
+            },
+            scrollViewModel = { position -> viewModel.setScrollPosition(position) },
+            fetch = { viewModel.fetchTVSeries() }
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

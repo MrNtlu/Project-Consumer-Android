@@ -9,8 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -21,10 +19,6 @@ import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
-import com.mrntlu.projectconsumer.utils.getColorFromAttr
-import com.mrntlu.projectconsumer.utils.loadWithGlide
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -155,43 +149,16 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 it.second == sharedViewModel.getLanguageCode()
             })
 
-            if (sharedViewModel.isAltLayout())
-                alternativeLayout.isChecked = true
-            else
-                defaultLayout.isChecked = true
+            applicationChangeLayoutClickTile.apply {
+                settingsClickTileTV.text = getString(R.string.change_layout)
+                settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grid, 0)
 
-            radioGroup.setOnCheckedChangeListener { _, checkedId ->
-                sharedViewModel.setLayoutSelection(checkedId == R.id.alternativeLayout)
-            }
-
-            val image = "https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg"
-            val title = "The Dark Knight"
-            val titleOriginal = "The Dark Knight"
-            val description = "Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker."
-            val score = "8.5"
-            val length = "2h 32m"
-            val cornerRadius = root.context.dpToPxFloat(8f)
-
-            defaultInc.apply {
-                previewIV.loadWithGlide(image, previewCard, previewShimmerLayout) {
-                    transform(CenterCrop(), RoundedCorners(cornerRadius.toInt()))
-                }
-            }
-
-            alternativeInc.apply {
-                imageInclude.apply {
-                    previewIV.loadWithGlide(image, previewCard, previewShimmerLayout) {
-                        transform(CenterCrop(), RoundedCorners(cornerRadius.toInt()))
+                root.setSafeOnClickListener {
+                    activity?.let {
+                        val bottomSheet = ChangeLayoutBottomSheet()
+                        bottomSheet.show(it.supportFragmentManager, ChangeLayoutBottomSheet.TAG)
                     }
                 }
-
-                titleTV.text = title
-                titleOriginalTV.text = titleOriginal
-                descriptionTV.text = description
-                scoreTV.text = score
-                extraInfoTV.text = length
-
-                root.setBackgroundColor(root.context.getColorFromAttr(R.attr.bottomNavBackgroundColor))
             }
         }
     }

@@ -30,30 +30,38 @@ class MovieListFragment: BaseListFragment<Movie>() {
         setListeners()
     }
 
+    private fun setRV() {
+        setRecyclerView(
+            startFetch = { viewModel.startMoviesFetch() },
+            onItemSelected = { itemId ->
+                if (navController.currentDestination?.id == R.id.movieListFragment) {
+                    val navWithAction = MovieListFragmentDirections.actionMovieListFragmentToMovieDetailsFragment(itemId)
+
+                    navController.navigate(navWithAction)
+                }
+            },
+            scrollViewModel = { position -> viewModel.setScrollPosition(position) },
+            fetch = { viewModel.fetchMovies() }
+        )
+    }
+
     private fun setObservers() {
-        sharedViewModel.windowSize.observe(viewLifecycleOwner) {
-            val widthSize: WindowSizeClass = it
+        if (sharedViewModel.isAltLayout()) {
+            gridCount = 1
 
-            gridCount = if (sharedViewModel.isAltLayout())
-                1
-            else when(widthSize) {
-                WindowSizeClass.COMPACT -> 2
-                WindowSizeClass.MEDIUM -> 3
-                WindowSizeClass.EXPANDED -> 5
+            setRV()
+        } else {
+            sharedViewModel.windowSize.observe(viewLifecycleOwner) {
+                val widthSize: WindowSizeClass = it
+
+                gridCount = when(widthSize) {
+                    WindowSizeClass.COMPACT -> 2
+                    WindowSizeClass.MEDIUM -> 3
+                    WindowSizeClass.EXPANDED -> 5
+                }
+
+                setRV()
             }
-
-            setRecyclerView(
-                startFetch = { viewModel.startMoviesFetch() },
-                onItemSelected = { itemId ->
-                    if (navController.currentDestination?.id == R.id.movieListFragment) {
-                        val navWithAction = MovieListFragmentDirections.actionMovieListFragmentToMovieDetailsFragment(itemId)
-
-                        navController.navigate(navWithAction)
-                    }
-                },
-                scrollViewModel = { position -> viewModel.setScrollPosition(position) },
-                fetch = { viewModel.fetchMovies() }
-            )
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {

@@ -51,12 +51,12 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private val viewModel: UserListViewModel by viewModels()
 
     private lateinit var dialog: LoadingDialog
-    private lateinit var searchView: SearchView
 
     private var orientationEventListener: OrientationEventListener? = null
 
     private var popupMenu: PopupMenu? = null
     private var searchMenu: MenuItem? = null
+    private var searchView: SearchView? = null
     private var userListAdapter: UserListAdapter? = null
     private var gestureDetector: GestureDetector? = null
 
@@ -216,7 +216,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     viewModel.setContentType(contentType)
                     userListAdapter?.changeContentType(contentType)
 
-                    if (searchView.hasFocus() || (viewModel.search != null && viewModel.search!!.isNotEmptyOrBlank())) {
+                    if (searchView?.hasFocus() == true || (viewModel.search != null && viewModel.search!!.isNotEmptyOrBlank())) {
                         resetSearchView()
                     }
                 }
@@ -422,17 +422,19 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
             searchView = searchMenu?.actionView as SearchView
 
             try {
-                val backgroundView = searchView.findViewById(androidx.appcompat.R.id.search_plate) as? View
+                val backgroundView = searchView?.findViewById(androidx.appcompat.R.id.search_plate) as? View
                 backgroundView?.background = null
             } catch (_: Exception){}
 
-            searchView.queryHint = getString(R.string.search)
-            searchView.setQuery(viewModel.search, false)
-            searchView.clearFocus()
+            searchView?.queryHint = getString(R.string.search)
+            searchView?.setQuery(viewModel.search, false)
+            searchView?.clearFocus()
 
-            searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            searchView?.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    context?.hideKeyboard(searchView)
+                    searchView?.let {
+                        context?.hideKeyboard(it)
+                    }
 
                     return true
                 }
@@ -444,13 +446,13 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 }
             })
 
-            val closeBtn = searchView.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_close_btn)
-            closeBtn.setOnClickListener {
+            val closeBtn = searchView?.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_close_btn)
+            closeBtn?.setOnClickListener {
                 if (viewModel.search == null)
                     resetSearchView()
                 else {
                     viewModel.setSearch(null)
-                    searchView.setQuery(null, false)
+                    searchView?.setQuery(null, false)
 
                     hideKeyboard()
                 }
@@ -538,11 +540,11 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private fun resetSearchView() {
         viewModel.setSearch(null)
-        searchView.setQuery(null, false)
-        searchView.isIconified = true
-        searchView.clearFocus()
+        searchView?.setQuery(null, false)
+        searchView?.isIconified = true
+        searchView?.clearFocus()
 
-        searchView.onActionViewCollapsed()
+        searchView?.onActionViewCollapsed()
         searchMenu?.collapseActionView()
 
         hideKeyboard()
@@ -575,6 +577,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         orientationEventListener?.disable()
         orientationEventListener = null
 
+        searchView = null
         popupMenu = null
         searchMenu = null
         gestureDetector = null

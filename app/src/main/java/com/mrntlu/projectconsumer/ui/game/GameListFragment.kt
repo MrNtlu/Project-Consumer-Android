@@ -32,28 +32,22 @@ class GameListFragment : BaseListFragment<Game>() {
     }
 
     private fun setObservers() {
-        sharedViewModel.windowSize.observe(viewLifecycleOwner) {
-            val widthSize: WindowSizeClass = it
+        if (sharedViewModel.isAltLayout()) {
+            gridCount = 1
 
-            gridCount = when(widthSize) {
-                WindowSizeClass.COMPACT -> 2
-                WindowSizeClass.MEDIUM -> 3
-                WindowSizeClass.EXPANDED -> 5
+            setRV()
+        } else {
+            sharedViewModel.windowSize.observe(viewLifecycleOwner) {
+                val widthSize: WindowSizeClass = it
+
+                gridCount = when(widthSize) {
+                    WindowSizeClass.COMPACT -> 2
+                    WindowSizeClass.MEDIUM -> 3
+                    WindowSizeClass.EXPANDED -> 5
+                }
+
+                setRV()
             }
-
-            setRecyclerView(
-                isRatioDifferent = true,
-                startFetch = { viewModel.startGamesFetch() },
-                onItemSelected = { itemId ->
-                    if (navController.currentDestination?.id == R.id.gameListFragment) {
-                        val navWithAction = GameListFragmentDirections.actionGameListFragmentToGameDetailsFragment(itemId)
-
-                        navController.navigate(navWithAction)
-                    }
-                },
-                scrollViewModel = { position -> viewModel.setScrollPosition(position) },
-                fetch = { viewModel.fetchGames() }
-            )
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
@@ -76,6 +70,22 @@ class GameListFragment : BaseListFragment<Game>() {
                 }
             }
         }
+    }
+
+    private fun setRV() {
+        setRecyclerView(
+            isRatioDifferent = true,
+            startFetch = { viewModel.startGamesFetch() },
+            onItemSelected = { itemId ->
+                if (navController.currentDestination?.id == R.id.gameListFragment) {
+                    val navWithAction = GameListFragmentDirections.actionGameListFragmentToGameDetailsFragment(itemId)
+
+                    navController.navigate(navWithAction)
+                }
+            },
+            scrollViewModel = { position -> viewModel.setScrollPosition(position) },
+            fetch = { viewModel.fetchGames() }
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

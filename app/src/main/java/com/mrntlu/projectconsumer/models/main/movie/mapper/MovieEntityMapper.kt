@@ -31,7 +31,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
                 movie.tmdbID,
                 movie.tmdbPopularity,
                 movie.topRated,
-                movie.tmdbVote,
+                movie.score.toDouble(),
                 movie.tmdbVoteCount,
                 movie.productionCompanies,
                 tag,
@@ -60,7 +60,7 @@ object MovieEntityMapper: EntityMapper<List<Movie>, List<MovieEntity>> {
                 movieEntity.tmdbID,
                 movieEntity.tmdbPopularity,
                 movieEntity.topRated,
-                movieEntity.tmdbVote,
+                movieEntity.tmdbVote.toFloat(),
                 movieEntity.tmdbVoteCount,
                 movieEntity.productionCompanies,
             )

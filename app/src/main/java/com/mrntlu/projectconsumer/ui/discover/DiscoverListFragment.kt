@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -121,16 +122,22 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
     }
 
     private fun setObservers() {
-        sharedViewModel.windowSize.observe(viewLifecycleOwner) {
-            val widthSize: WindowSizeClass = it
-
-            gridCount = when(widthSize) {
-                WindowSizeClass.COMPACT -> 2
-                WindowSizeClass.MEDIUM -> 3
-                WindowSizeClass.EXPANDED -> 5
-            }
+        if (sharedViewModel.isAltLayout()) {
+            gridCount = 1
 
             setRecyclerView()
+        } else {
+            sharedViewModel.windowSize.observe(viewLifecycleOwner) {
+                val widthSize: WindowSizeClass = it
+
+                gridCount = when(widthSize) {
+                    WindowSizeClass.COMPACT -> 2
+                    WindowSizeClass.MEDIUM -> 3
+                    WindowSizeClass.EXPANDED -> 5
+                }
+
+                setRecyclerView()
+            }
         }
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
@@ -168,23 +175,31 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
 
     private fun setRecyclerView() {
         binding.listRV.apply {
-            val gridLayoutManager = GridLayoutManager(this.context, gridCount)
+            val rvLayoutManager = if (sharedViewModel.isAltLayout()) {
+                val linearLayoutManager = LinearLayoutManager(this.context)
+                gridCount = 1
+                linearLayoutManager
+            } else {
+                val gridLayoutManager = GridLayoutManager(this.context, gridCount)
 
-            gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int {
-                    val itemViewType = contentAdapter?.getItemViewType(position)
-                    return if (
-                        itemViewType == RecyclerViewEnum.View.value ||
-                        itemViewType == RecyclerViewEnum.Loading.value
-                    ) 1 else gridCount
+                gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        val itemViewType = contentAdapter?.getItemViewType(position)
+                        return if (
+                            itemViewType == RecyclerViewEnum.View.value ||
+                            itemViewType == RecyclerViewEnum.Loading.value
+                        ) 1 else gridCount
+                    }
                 }
+                gridLayoutManager
             }
 
-            layoutManager = gridLayoutManager
+            layoutManager = rvLayoutManager
             contentAdapter = ContentAdapter(
                 gridCount = gridCount,
                 isRatioDifferent = contentType == Constants.ContentType.GAME,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
+                isAltLayout = sharedViewModel.isAltLayout(),
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
                         if (navController.currentDestination?.id == R.id.discoverListFragment) {
@@ -237,11 +252,11 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    val itemCount = gridLayoutManager.itemCount / gridCount
-                    val lastVisibleItemPosition = gridLayoutManager.findLastVisibleItemPosition() / gridCount
+                    val itemCount = rvLayoutManager.itemCount / gridCount
+                    val lastVisibleItemPosition = rvLayoutManager.findLastVisibleItemPosition() / gridCount
 
                     if (isScrolling) {
-                        val centerScrollPosition = (gridLayoutManager.findLastCompletelyVisibleItemPosition() + gridLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
+                        val centerScrollPosition = (rvLayoutManager.findLastCompletelyVisibleItemPosition() + rvLayoutManager.findFirstCompletelyVisibleItemPosition()) / 2
                         viewModel.setScrollPosition(centerScrollPosition)
                     }
 

@@ -120,6 +120,8 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
 
             discoverTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    hideKeyboard()
+
                     when(tab?.position) {
                         0 -> {
                             contentType = Constants.ContentType.MOVIE

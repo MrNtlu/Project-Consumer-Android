@@ -14,6 +14,7 @@ abstract class BaseGridPaginationAdapter<T>(
     private val gridCount: Int,
     private val isDarkTheme: Boolean,
     private val aspectRatio: Float = DEFAULT_RATIO,
+    private val isAltLayout: Boolean = false,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
     var isLoading = true
@@ -33,10 +34,12 @@ abstract class BaseGridPaginationAdapter<T>(
                 (holder as ErrorViewHolderBind<T>).bind(errorMessage, interaction)
             }
             RecyclerViewEnum.PaginationLoading.value -> {
+                if (!isAltLayout)
                 (holder as PaginationLoadingViewHolderBind).bind(gridCount, aspectRatio, isDarkTheme)
             }
             RecyclerViewEnum.Loading.value -> {
-                (holder as LoadingViewHolderBind).bind(aspectRatio, isDarkTheme, false)
+                if (!isAltLayout)
+                    (holder as LoadingViewHolderBind).bind(aspectRatio, isDarkTheme, false)
             }
             RecyclerViewEnum.PaginationExhaust.value -> {
                 (holder as PaginationExhaustViewHolderBind<T>).bind(interaction)

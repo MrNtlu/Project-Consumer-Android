@@ -417,6 +417,8 @@
     <string name="do_you_want_clear_image_cache">Do you want to delete image caches? This action will free up storage space on your device, potentially improving performance by reducing load times. However, it may temporarily slow down image loading as the cache rebuilds.</string>
     <string name="clear_image_cache">Clear Image Cache</string>
     <string name="caches_are_deleted">Caches are deleted.</string>
+    <string name="change_layout">Change Layout</string>
+    <string name="change_layout_info">This will change the layout of Movie, TV Series, Anime and Game content. You can see the preview below.</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

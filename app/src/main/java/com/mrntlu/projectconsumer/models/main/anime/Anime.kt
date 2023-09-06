@@ -6,15 +6,15 @@ import com.mrntlu.projectconsumer.interfaces.ContentModel
 data class Anime(
     @SerializedName("_id")
     override val id: String,
-    val description: String,
+    override val description: String,
     val trailer: String?,
     val type: String,
     val source: String,
-    val episodes: Int?,
+    override val episodes: Int?,
     val season: String?,
     val year: Int?,
     val status: String,
-    val aired: AnimeAirDate,
+    override val aired: AnimeAirDate,
     val streaming: List<AnimeNameURL>?,
     val producers: List<AnimeNameURL>?,
     val studios: List<AnimeNameURL>?,
@@ -40,7 +40,7 @@ data class Anime(
     val malID: Int,
 
     @SerializedName("mal_score")
-    val malScore: Float,
+    override val score: Float,
 
     @SerializedName("mal_scored_by")
     val malScoredBy: Int,
@@ -50,4 +50,8 @@ data class Anime(
 
     @SerializedName("age_rating")
     val ageRating: String?,
+
+    override val length: Int? = null,
+    override val releaseDate: String? = null,
+    override val totalSeasons: Int? = null,
 ): ContentModel()

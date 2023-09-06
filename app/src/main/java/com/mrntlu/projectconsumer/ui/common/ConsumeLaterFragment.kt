@@ -50,15 +50,15 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
     private val viewModel: ConsumeLaterViewModel by viewModels()
 
     private lateinit var dialog: LoadingDialog
-    private lateinit var searchView: SearchView
 
     private var orientationEventListener: OrientationEventListener? = null
 
     private var consumeLaterAdapter: ConsumeLaterAdapter? = null
-    private var searchMenu: MenuItem? = null
-    private var scoreDialog: AlertDialog? = null
     private var confirmDialog: AlertDialog? = null
+    private var scoreDialog: AlertDialog? = null
     private var sortPopupMenu: PopupMenu? = null
+    private var searchView: SearchView? = null
+    private var searchMenu: MenuItem? = null
     private var popupMenu: PopupMenu? = null
 
     override fun onCreateView(
@@ -150,17 +150,19 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
             searchView = searchMenu?.actionView as SearchView
 
             try {
-                val backgroundView = searchView.findViewById(androidx.appcompat.R.id.search_plate) as? View
+                val backgroundView = searchView?.findViewById(androidx.appcompat.R.id.search_plate) as? View
                 backgroundView?.background = null
             } catch (_: Exception){}
 
-            searchView.queryHint = getString(R.string.search)
-            searchView.setQuery(viewModel.search, false)
-            searchView.clearFocus()
+            searchView?.queryHint = getString(R.string.search)
+            searchView?.setQuery(viewModel.search, false)
+            searchView?.clearFocus()
 
-            searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            searchView?.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    context?.hideKeyboard(searchView)
+                    searchView?.let {
+                        context?.hideKeyboard(it)
+                    }
 
                     return true
                 }
@@ -172,13 +174,13 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                 }
             })
 
-            val closeBtn = searchView.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_close_btn)
-            closeBtn.setOnClickListener {
+            val closeBtn = searchView?.findViewById<AppCompatImageView>(androidx.appcompat.R.id.search_close_btn)
+            closeBtn?.setOnClickListener {
                 if (viewModel.search == null)
                     resetSearchView()
                 else {
                     viewModel.setSearch(null)
-                    searchView.setQuery(null, false)
+                    searchView?.setQuery(null, false)
 
                     hideKeyboard()
                 }
@@ -521,11 +523,11 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
 
     private fun resetSearchView() {
         viewModel.setSearch(null)
-        searchView.setQuery(null, false)
-        searchView.isIconified = true
-        searchView.clearFocus()
+        searchView?.setQuery(null, false)
+        searchView?.isIconified = true
+        searchView?.clearFocus()
 
-        searchView.onActionViewCollapsed()
+        searchView?.onActionViewCollapsed()
         searchMenu?.collapseActionView()
 
         hideKeyboard()
@@ -539,6 +541,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
 
         confirmDialog?.dismiss()
         confirmDialog = null
+        searchView = null
         searchMenu = null
         popupMenu = null
         sortPopupMenu = null

@@ -6,11 +6,12 @@ import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.common.Translation
+import com.mrntlu.projectconsumer.models.main.anime.AnimeAirDate
 
 data class TVSeries(
     @SerializedName("_id")
     override val id: String,
-    val description: String,
+    override val description: String,
     val actors: List<Actor>?,
     val genres: List<String>,
     val networks: List<Network>?,
@@ -24,7 +25,7 @@ data class TVSeries(
     override val imageURL: String,
 
     @SerializedName("first_air_date")
-    val firstAirDate: String,
+    override val releaseDate: String,
 
     @SerializedName("title_en")
     override val title: String,
@@ -42,17 +43,20 @@ data class TVSeries(
     val topRated: Double,
 
     @SerializedName("tmdb_vote")
-    val tmdbVote: Double,
+    override val score: Float,
 
     @SerializedName("tmdb_vote_count")
     val tmdbVoteCount: Int,
 
     @SerializedName("total_episodes")
-    val totalEpisodes: Int,
+    override val episodes: Int,
 
     @SerializedName("total_seasons")
-    val totalSeasons: Int,
+    override val totalSeasons: Int,
 
     @SerializedName("production_companies")
     val productionCompanies: List<ProductionAndCompany>?,
+
+    override val length: Int? = null,
+    override val aired: AnimeAirDate? = null,
 ): ContentModel()

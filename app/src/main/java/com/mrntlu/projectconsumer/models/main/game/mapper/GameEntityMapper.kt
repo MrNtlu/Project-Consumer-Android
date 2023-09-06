@@ -10,7 +10,7 @@ object GameEntityMapper: EntityMapper<List<Game>, List<GameEntity>> {
             game.run {
                 GameEntity(
                     id, description, tba, popularity, subreddit, genres, tags, platforms, developers, publishers, stores,
-                    title, titleOriginal, rawgID, rawgRating, rawgRatingCount, metacriticScore, metacriticScoreByPlatform,
+                    title, titleOriginal, rawgID, score, rawgRatingCount, metacriticScore, metacriticScoreByPlatform,
                     releaseDate, imageURL, ageRating, relatedGames, hasReleaseDate, tag, page,
                 )
             }
