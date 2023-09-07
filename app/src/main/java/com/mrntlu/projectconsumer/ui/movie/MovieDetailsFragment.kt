@@ -218,16 +218,28 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 }
             }).into(binding.detailsToolbarIV)
 
-            val titleStr = if (!translations.isNullOrEmpty()) {
-                translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.title ?: title
-            } else title
 
-            val descriptionStr = if (!translations.isNullOrEmpty()) {
-                translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.description ?: description
-            } else description
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val titleStr = if (!translations.isNullOrEmpty()) {
+                    val translation = translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.title
+                    if (translation?.isNotEmptyOrBlank() == true)
+                        translation
+                    else title
+                } else title
 
-            binding.detailsTitleTV.text = titleStr
-            binding.detailsDescriptionTV.text = descriptionStr
+                val descriptionStr = if (!translations.isNullOrEmpty()) {
+                    val translation = translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.description
+                    if (translation?.isNotEmptyOrBlank() == true)
+                        translation
+                    else description
+                } else description
+
+                withContext(Dispatchers.Main) {
+                    binding.detailsTitleTV.text = titleStr
+                    binding.detailsDescriptionTV.text = descriptionStr
+                }
+            }
+
             binding.detailsOriginalTV.text = titleOriginal
 
             binding.detailsInclude.apply {

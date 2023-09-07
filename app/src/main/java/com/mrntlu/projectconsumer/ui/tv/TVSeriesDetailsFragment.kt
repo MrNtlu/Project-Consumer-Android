@@ -41,6 +41,7 @@ import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.openInBrowser
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -221,16 +222,27 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 }
             }).into(binding.tvDetailsToolbarIV)
 
-            val titleStr = if (!translations.isNullOrEmpty()) {
-                translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.title ?: title
-            } else title
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                val titleStr = if (!translations.isNullOrEmpty()) {
+                    val translation = translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.title
+                    if (translation?.isNotEmptyOrBlank() == true)
+                        translation
+                    else title
+                } else title
 
-            val descriptionStr = if (!translations.isNullOrEmpty()) {
-                translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.description ?: description
-            } else description
+                val descriptionStr = if (!translations.isNullOrEmpty()) {
+                    val translation = translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.description
+                    if (translation?.isNotEmptyOrBlank() == true)
+                        translation
+                    else description
+                } else description
 
-            binding.tvDetailsTitleTV.text = titleStr
-            binding.tvDetailsDescriptionTV.text = descriptionStr
+                withContext(Dispatchers.Main) {
+                    binding.tvDetailsTitleTV.text = titleStr
+                    binding.tvDetailsDescriptionTV.text = descriptionStr
+                }
+            }
+
             binding.tvDetailsOriginalTV.text = titleOriginal
 
             binding.tvDetailsInclude.apply {
