@@ -239,7 +239,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayoutManager
 
-            legendContentAdapter = LegendContentAdapter(!sharedViewModel.isLightTheme(), userInfo?.legendContent ?: arrayListOf()) { item ->
+            legendContentAdapter = LegendContentAdapter(userInfo?.legendContent ?: arrayListOf()) { item ->
                 when(Constants.ContentType.fromStringRequest(item.contentType)) {
                     Constants.ContentType.ANIME -> {
                         val navWithAction = ProfileFragmentDirections.actionGlobalAnimeDetailsFragment(item.id)
@@ -268,7 +268,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = linearLayoutManager
 
-            consumeLaterAdapter = ConsumeLaterPreviewAdapter(!sharedViewModel.isLightTheme(), object: ConsumeLaterInteraction {
+            consumeLaterAdapter = ConsumeLaterPreviewAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
                     context?.showConfirmationDialog(getString(R.string.remove_from_later)) {
                         val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))

@@ -23,6 +23,9 @@ data class UserInfoCommon(
     @SerializedName("content_type")
     val contentType: String,
 
+    @SerializedName("hours_played")
+    val hoursPlayed: Long?,
+
     override val description: String = "",
     override val score: Float = 0f,
     override val releaseDate: String? = null,

@@ -13,7 +13,7 @@ import com.mrntlu.projectconsumer.adapters.viewholders.EmptyHorizontalViewHolder
 import com.mrntlu.projectconsumer.databinding.CellEmptyHorizontalBinding
 import com.mrntlu.projectconsumer.databinding.CellLegendContentBinding
 import com.mrntlu.projectconsumer.models.auth.UserInfoCommon
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
@@ -23,7 +23,6 @@ import com.mrntlu.projectconsumer.utils.setVisible
 
 @SuppressLint("NotifyDataSetChanged")
 class LegendContentAdapter(
-    private val isDarkTheme: Boolean,
     private val legendContent: List<UserInfoCommon>,
     private val onClick: (UserInfoCommon) -> Unit,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -65,7 +64,7 @@ class LegendContentAdapter(
         fun bind(item: UserInfoCommon, onClick: (UserInfoCommon) -> Unit) {
             binding.apply {
                 val radiusInPx = root.context.dpToPxFloat(6f)
-                val isRatioDifferent = item.contentType == Constants.ContentType.GAME.request
+                val isRatioDifferent = item.contentType == ContentType.GAME.request
 
                 imageInclude.apply {
                     previewCard.setGone()
@@ -94,20 +93,33 @@ class LegendContentAdapter(
                 }
                 legendContentCV.radius = radiusInPx
 
-                val timesFinishedStr = "${item.timesFinished} times"
-                timeFinishedTV.text = timesFinishedStr
-                contentTypeTV.text = if (item.contentType != Constants.ContentType.TV.request)
+                val contentType = ContentType.fromStringRequest(item.contentType)
+
+                if (contentType != ContentType.GAME) {
+                    val timesFinishedStr = "${item.timesFinished} times"
+                    timeFinishedTV.text = timesFinishedStr
+                } else {
+                    if (item.hoursPlayed != null && item.hoursPlayed > 300) {
+                        val hoursPlayed = "${item.hoursPlayed} hrs"
+                        timeFinishedTV.text = hoursPlayed
+                    } else {
+                        val timesFinishedStr = "${item.timesFinished} times"
+                        timeFinishedTV.text = timesFinishedStr
+                    }
+                }
+
+                contentTypeTV.text = if (item.contentType != ContentType.TV.request)
                     item.contentType.capitalizeFirstLetter()
                 else
                     item.contentType.uppercase()
 
                 contentTypeIV.setImageDrawable(ContextCompat.getDrawable(
                     root.context,
-                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                        Constants.ContentType.ANIME -> R.drawable.ic_anime
-                        Constants.ContentType.MOVIE -> R.drawable.ic_content_type_24
-                        Constants.ContentType.TV -> R.drawable.ic_tv
-                        Constants.ContentType.GAME -> R.drawable.ic_game_24
+                    when(contentType) {
+                        ContentType.ANIME -> R.drawable.ic_anime
+                        ContentType.MOVIE -> R.drawable.ic_content_type_24
+                        ContentType.TV -> R.drawable.ic_tv
+                        ContentType.GAME -> R.drawable.ic_game_24
                     }
                 ))
 

@@ -28,7 +28,6 @@ import com.mrntlu.projectconsumer.utils.setVisible
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
 class ConsumeLaterPreviewAdapter(
-    private val isDarkTheme: Boolean,
     val interaction: ConsumeLaterInteraction,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

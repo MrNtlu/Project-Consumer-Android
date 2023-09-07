@@ -7,6 +7,21 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 
 class ActivitySharedViewModel: ViewModel() {
+    // Boarding Displayed
+    val isDisplayed: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    fun shouldDisplayBoarding() = isDisplayed.value == false
+
+    fun boardingDisplayed() {
+        isDisplayed.value = true
+    }
+
+    fun setIsDisplayed(isBoardingDisplayed: Boolean) {
+        isDisplayed.value = isBoardingDisplayed
+    }
+
     // Layout Selection
     val layoutSelection: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)

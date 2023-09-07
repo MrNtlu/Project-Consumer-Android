@@ -366,6 +366,8 @@
     <string name="eps">eps</string>
     <string name="diary_title">📘&#032;Diary</string>
     <string name="send">Send</string>
+    <string name="welcome_">Welcome 👋</string>
+    <string name="enjoy_">Enjoy</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>
@@ -419,6 +421,12 @@
     <string name="caches_are_deleted">Caches are deleted.</string>
     <string name="change_layout">Change Layout</string>
     <string name="change_layout_info">This will change the layout of Movie, TV Series, Anime and Game content. You can see the preview below.</string>
+    <string name="boarding_sign_in">We recommend you to sign in for better experience</string>
+    <string name="boarding_text_1">Mark it and save it for later watching and playing.</string>
+    <string name="boarding_text_2">Manage your list, mark, rate, and track your progress in one place!</string>
+    <string name="boarding_text_3">Discover and search for content easily with powerful search and filters.</string>
+    <string name="boarding_text_4">Once you\'ve signed in, you can access your User List and Watch Later from Profile.</string>
+    <string name="boarding_continue">Continue</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

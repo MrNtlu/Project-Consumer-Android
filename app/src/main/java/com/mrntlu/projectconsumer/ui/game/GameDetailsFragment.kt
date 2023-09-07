@@ -336,18 +336,17 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
             if (!gameStoreList.isNullOrEmpty()) {
                 binding.detailsStoreRV.apply {
-                    val flexboxLayout = FlexboxLayoutManager(context)
-                    flexboxLayout.apply {
-                        flexDirection = FlexDirection.ROW
-                        justifyContent = JustifyContent.FLEX_START
-                        alignItems = AlignItems.FLEX_START
-                        flexWrap = FlexWrap.WRAP
-                    }
-                    layoutManager = flexboxLayout
-
-                    storeAdapter = NameUrlAdapter(gameStoreList)
-
                     withContext(Dispatchers.Main) {
+                        val flexboxLayout = FlexboxLayoutManager(context)
+                        flexboxLayout.apply {
+                            flexDirection = FlexDirection.ROW
+                            justifyContent = JustifyContent.FLEX_START
+                            alignItems = AlignItems.FLEX_START
+                            flexWrap = FlexWrap.WRAP
+                        }
+                        layoutManager = flexboxLayout
+
+                        storeAdapter = NameUrlAdapter(gameStoreList)
                         adapter = storeAdapter
                     }
                 }
@@ -360,22 +359,17 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
         }
 
         if (!gameDetails?.relatedGames.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                binding.detailsRelationRV.apply {
-                    val linearLayout =
-                        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    layoutManager = linearLayout
+            binding.detailsRelationRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
 
-                    relationAdapter = GameRelationsAdapter(
-                        gameDetails!!.relatedGames,
-                    ) { rawgId ->
-                        val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentSelf(rawgId.toString())
-                        navController.navigate(navWithAction)
-                    }
-                    withContext(Dispatchers.Main) {
-                        adapter = relationAdapter
-                    }
+                relationAdapter = GameRelationsAdapter(
+                    gameDetails!!.relatedGames,
+                ) { rawgId ->
+                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentSelf(rawgId.toString())
+                    navController.navigate(navWithAction)
                 }
+                adapter = relationAdapter
             }
         } else {
             binding.detailsRelationTV.setGone()
@@ -394,12 +388,12 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
             if (!platformUIList.isNullOrEmpty()) {
                 binding.detailsPlatformRV.apply {
-                    val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    layoutManager = linearLayout
-
-                    platformAdapter = GamePlatformAdapter(platformUIList)
-
                     withContext(Dispatchers.Main) {
+                        val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                        layoutManager = linearLayout
+
+                        platformAdapter = GamePlatformAdapter(platformUIList)
+
                         setHasFixedSize(true)
                         adapter = platformAdapter
                     }

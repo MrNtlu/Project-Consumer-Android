@@ -197,7 +197,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     }
 
                     if (selectedIndex >= 0)
-                        sharedViewModel.setCountryCode(languageList[selectedIndex].second)
+                        sharedViewModel.setLanguageCode(languageList[selectedIndex].second)
 
                     settingsSecondSelectionACTV.clearFocus()
                 }

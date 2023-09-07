@@ -39,9 +39,11 @@ import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.DEEPLINK_EXTRA
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.PATH_EXTRA
 import com.mrntlu.projectconsumer.ui.anime.AnimeDetailsFragmentDirections
+import com.mrntlu.projectconsumer.ui.common.BoardingBottomSheet
 import com.mrntlu.projectconsumer.ui.game.GameDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragmentDirections
+import com.mrntlu.projectconsumer.utils.Constants.BOARDING_PREF
 import com.mrntlu.projectconsumer.utils.Constants.COUNTRY_PREF
 import com.mrntlu.projectconsumer.utils.Constants.DARK_THEME
 import com.mrntlu.projectconsumer.utils.Constants.LAN_PREF
@@ -166,8 +168,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         sharedViewModel.setCountryCode(prefs.getString(COUNTRY_PREF, Locale.getDefault().country.uppercase()))
         sharedViewModel.setLanguageCode(prefs.getString(LAN_PREF, Locale.getDefault().language.uppercase()))
-        sharedViewModel.setThemeCode(prefs.getInt(THEME_PREF, DARK_THEME))
         sharedViewModel.setLayoutSelection(prefs.getBoolean(LAYOUT_PREF, false))
+        sharedViewModel.setIsDisplayed(prefs.getBoolean(BOARDING_PREF, false))
+        sharedViewModel.setThemeCode(prefs.getInt(THEME_PREF, DARK_THEME))
         AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
 
         super.onCreate(savedInstanceState)
@@ -199,6 +202,11 @@ class MainActivity : AppCompatActivity() {
                 computeWindowSizeClasses()
             }
         })
+
+        if (sharedViewModel.shouldDisplayBoarding()) {
+            val boardingSheet = BoardingBottomSheet()
+            boardingSheet.show(supportFragmentManager, BoardingBottomSheet.TAG)
+        }
 
         computeWindowSizeClasses()
 
@@ -336,6 +344,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        sharedViewModel.isDisplayed.observe(this) {
+            setBoardingPref()
+        }
+
         sharedViewModel.layoutSelection.observe(this) { isAltLayout ->
             setLayoutSelectionPref(isAltLayout)
         }
@@ -382,6 +394,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun setBoardingPref(){
+        val editor = prefs.edit()
+        editor.putBoolean(BOARDING_PREF, true)
+        editor.apply()
     }
 
     private fun setThemePref(value: Int){

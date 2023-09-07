@@ -73,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="watchedSeasonTextLayout, watchedSeasonTextLayout"/>
+        app:constraint_referenced_ids="watchedSeasonTextLayout, watchedEpisodeTextLayout"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/scoreSelection"

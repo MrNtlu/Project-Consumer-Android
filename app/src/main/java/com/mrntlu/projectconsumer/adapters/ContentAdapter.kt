@@ -160,7 +160,7 @@ class ContentAdapter<T: ContentModel>(
                             val hours = item.length / 60
                             val minutes = item.length % 60
                             String.format("%02dh %02dm • ", hours, minutes)
-                        } else null
+                        } else ""
 
                         val extraStr = "${lengthStr}${if (item.releaseDate.isNotEmptyOrBlank()) item.releaseDate.convertToHumanReadableDateString(true) else ""}"
 
@@ -172,7 +172,7 @@ class ContentAdapter<T: ContentModel>(
 
                         extraInfoIV.setImageDrawable(ContextCompat.getDrawable(root.context, R.drawable.ic_tv))
 
-                        descriptionTV.text = Html.fromHtml(item.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                        descriptionTV.text = item.description
                         scoreTV.text = if (item.score > 0)
                             item.score.toDouble().roundSingleDecimal().toString()
                         else
@@ -189,7 +189,7 @@ class ContentAdapter<T: ContentModel>(
 
                         extraInfoIV.setImageDrawable(ContextCompat.getDrawable(root.context, R.drawable.ic_game_24))
 
-                        descriptionTV.text = item.description
+                        descriptionTV.text = Html.fromHtml(item.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
                         scoreTV.text = if (item.score > 0)
                             item.score.toDouble().roundSingleDecimal().toString()
                         else
@@ -207,7 +207,7 @@ class ContentAdapter<T: ContentModel>(
                     else -> {
                         titleTV.text = item.title
                         titleOriginalTV.text = item.titleOriginal
-                        descriptionTV.text = item.description
+                        descriptionTV.text = Html.fromHtml(item.description, HtmlCompat.FROM_HTML_MODE_LEGACY)
                         scoreTV.text = if (item.score > 0)
                             item.score.toDouble().roundSingleDecimal().toString()
                         else
