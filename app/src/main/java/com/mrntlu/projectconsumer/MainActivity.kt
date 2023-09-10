@@ -234,8 +234,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            invalidateOptionsMenu()
-
             when(destination.id) {
                 R.id.navigation_home, R.id.navigation_discover, R.id.navigation_profile -> {
                     binding.navView.setVisible()

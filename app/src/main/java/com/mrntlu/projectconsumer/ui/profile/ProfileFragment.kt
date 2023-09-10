@@ -161,7 +161,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
                 movieWatchedTV.text = convertLength(it.movieWatchedTime)
                 tvWatchedTV.text = it.tvWatchedEpisodes.toString()
-                animeWatchedTV.text = it.tvWatchedEpisodes.toString()
+                animeWatchedTV.text = it.animeWatchedEpisodes.toString()
                 gamePlayedTV.text = convertLength(it.gameTotalHoursPlayed)
 
                 val levelStr = "${it.level} lv."
