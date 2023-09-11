@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,17 +9,25 @@
     tools:context=".ui.common.PolicyFragment"
     android:orientation="vertical"
     android:background="?attr/mainBackgroundColor">
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/policyToolbar"
+
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/Theme.ProjectConsumer.Toolbar"
-        android:background="?attr/toolbarBackgroundColor"
-        app:navigationContentDescription="@string/back_cd"
-        app:navigationIcon="@drawable/ic_arrow_back_24" />
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/policyToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
+            app:navigationContentDescription="@string/back_cd"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIcon="@drawable/ic_arrow_back_24" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
         android:id="@+id/htmlText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

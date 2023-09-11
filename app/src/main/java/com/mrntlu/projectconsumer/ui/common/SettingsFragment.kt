@@ -204,7 +204,9 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             }
 
             anonymousInc.root.setSafeOnClickListener(interval = 750) {
-                navController.navigate(R.id.action_global_authFragment)
+                if (navController.currentDestination?.id == R.id.navigation_settings) {
+                    navController.navigate(R.id.action_global_authFragment)
+                }
             }
 
             themeSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -214,11 +216,15 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             }
 
             privacyButton.setOnClickListener {
-                navController.navigate(SettingsFragmentDirections.actionNavigationSettingsToPolicyFragment())
+                if (navController.currentDestination?.id == R.id.navigation_settings) {
+                    navController.navigate(SettingsFragmentDirections.actionNavigationSettingsToPolicyFragment())
+                }
             }
 
             termsButton.setOnClickListener {
-                navController.navigate(SettingsFragmentDirections.actionNavigationSettingsToPolicyFragment(false))
+                if (navController.currentDestination?.id == R.id.navigation_settings) {
+                    navController.navigate(SettingsFragmentDirections.actionNavigationSettingsToPolicyFragment(false))
+                }
             }
 
             deleteAccountButton.setSafeOnClickListener {

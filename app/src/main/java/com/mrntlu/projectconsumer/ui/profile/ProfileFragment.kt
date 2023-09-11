@@ -184,11 +184,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private fun setListeners() {
         binding.apply {
             profileUserListButton.setSafeOnClickListener {
-                navController.navigate(R.id.action_navigation_profile_to_navigation_user_list)
+                if (navController.currentDestination?.id == R.id.navigation_profile) {
+                    navController.navigate(R.id.action_navigation_profile_to_navigation_user_list)
+                }
             }
 
             seeAllButtonFirst.setSafeOnClickListener {
-                navController.navigate(R.id.action_navigation_profile_to_navigation_later)
+                if (navController.currentDestination?.id == R.id.navigation_profile) {
+                    navController.navigate(R.id.action_navigation_profile_to_navigation_later)
+                }
             }
 
             errorLayoutInc.refreshButton.setSafeOnClickListener {
@@ -225,7 +229,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
 
             profileDiaryButton.setSafeOnClickListener {
-                navController.navigate(R.id.action_navigation_profile_to_diaryFragment)
+                if (navController.currentDestination?.id == R.id.navigation_profile) {
+                    navController.navigate(R.id.action_navigation_profile_to_diaryFragment)
+                }
             }
 
             legendInfoButton.setSafeOnClickListener {
@@ -240,22 +246,24 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             layoutManager = linearLayoutManager
 
             legendContentAdapter = LegendContentAdapter(userInfo?.legendContent ?: arrayListOf()) { item ->
-                when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                    Constants.ContentType.ANIME -> {
-                        val navWithAction = ProfileFragmentDirections.actionGlobalAnimeDetailsFragment(item.id)
-                        navController.navigate(navWithAction)
-                    }
-                    Constants.ContentType.MOVIE -> {
-                        val navWithAction = ProfileFragmentDirections.actionGlobalMovieDetailsFragment(item.id)
-                        navController.navigate(navWithAction)
-                    }
-                    Constants.ContentType.TV -> {
-                        val navWithAction = ProfileFragmentDirections.actionGlobalTvDetailsFragment(item.id)
-                        navController.navigate(navWithAction)
-                    }
-                    Constants.ContentType.GAME -> {
-                        val navWithAction = ProfileFragmentDirections.actionGlobalGameDetailsFragment(item.id)
-                        navController.navigate(navWithAction)
+                if (navController.currentDestination?.id == R.id.navigation_profile) {
+                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
+                        Constants.ContentType.ANIME -> {
+                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(item.id)
+                            navController.navigate(navWithAction)
+                        }
+                        Constants.ContentType.MOVIE -> {
+                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.id)
+                            navController.navigate(navWithAction)
+                        }
+                        Constants.ContentType.TV -> {
+                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.id)
+                            navController.navigate(navWithAction)
+                        }
+                        Constants.ContentType.GAME -> {
+                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToGameDetailsFragment(item.id)
+                            navController.navigate(navWithAction)
+                        }
                     }
                 }
             }
@@ -303,22 +311,24 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 }
 
                 override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {
-                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                        Constants.ContentType.ANIME -> {
-                            val navWithAction = ProfileFragmentDirections.actionGlobalAnimeDetailsFragment(item.contentID)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.MOVIE -> {
-                            val navWithAction = ProfileFragmentDirections.actionGlobalMovieDetailsFragment(item.contentID)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.TV -> {
-                            val navWithAction = ProfileFragmentDirections.actionGlobalTvDetailsFragment(item.contentID)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.GAME -> {
-                            val navWithAction = ProfileFragmentDirections.actionGlobalGameDetailsFragment(item.contentID)
-                            navController.navigate(navWithAction)
+                    if (navController.currentDestination?.id == R.id.navigation_profile) {
+                        when(Constants.ContentType.fromStringRequest(item.contentType)) {
+                            Constants.ContentType.ANIME -> {
+                                val navWithAction = ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(item.contentID)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.MOVIE -> {
+                                val navWithAction = ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.contentID)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.TV -> {
+                                val navWithAction = ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.contentID)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.GAME -> {
+                                val navWithAction = ProfileFragmentDirections.actionGlobalGameDetailsFragment(item.contentID)
+                                navController.navigate(navWithAction)
+                            }
                         }
                     }
                 }

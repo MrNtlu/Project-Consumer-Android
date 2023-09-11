@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.core.view.GestureDetectorCompat
 import com.google.android.material.tabs.TabLayout
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.GridAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentDiscoverBinding
 import com.mrntlu.projectconsumer.ui.BaseToolbarAuthFragment
@@ -168,11 +169,13 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
                             discoverSearchView.isIconified = true
                             discoverSearchView.isIconified = true
 
-                            val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToMovieSearchFragment(
-                                query, contentType,
-                            )
+                            if (navController.currentDestination?.id == R.id.navigation_discover) {
+                                val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToMovieSearchFragment(
+                                    query, contentType,
+                                )
 
-                            navController.navigate(navWithAction)
+                                navController.navigate(navWithAction)
+                            }
                         }
 
                         return true
@@ -211,20 +214,22 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
         gridAdapter = GridAdapter(
             requireContext(), list,
             onDiscoveryClicked = {
-                val navWithAction =
-                    DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
+                if (navController.currentDestination?.id == R.id.navigation_discover) {
+                    val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
                         contentType, null
                     )
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             },
             onGenreClicked = {
-                val navWithAction =
-                    DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
+                if (navController.currentDestination?.id == R.id.navigation_discover) {
+                    val navWithAction = DiscoverFragmentDirections.actionNavigationDiscoverToDiscoverListFragment(
                         contentType, it
                     )
 
-                navController.navigate(navWithAction)
+                    navController.navigate(navWithAction)
+                }
             }
         )
         binding.gridView.numColumns = if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2

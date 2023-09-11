@@ -451,22 +451,24 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                 override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {
                     confirmDialog?.dismiss()
 
-                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                        Constants.ContentType.ANIME -> {
-                            val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToAnimeDetailsFragment(item.contentID)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.MOVIE -> {
-                            val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToMovieDetailsFragment(item.contentID)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.TV -> {
-                            val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToTvDetailsFragment(item.contentID)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.GAME -> {
-                            val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToGameDetailsFragment(item.contentID)
-                            navController.navigate(navWithAction)
+                    if (navController.currentDestination?.id == R.id.navigation_later) {
+                        when(Constants.ContentType.fromStringRequest(item.contentType)) {
+                            Constants.ContentType.ANIME -> {
+                                val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToAnimeDetailsFragment(item.contentID)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.MOVIE -> {
+                                val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToMovieDetailsFragment(item.contentID)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.TV -> {
+                                val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToTvDetailsFragment(item.contentID)
+                                navController.navigate(navWithAction)
+                            }
+                            Constants.ContentType.GAME -> {
+                                val navWithAction = ConsumeLaterFragmentDirections.actionNavigationLaterToGameDetailsFragment(item.contentID)
+                                navController.navigate(navWithAction)
+                            }
                         }
                     }
                 }

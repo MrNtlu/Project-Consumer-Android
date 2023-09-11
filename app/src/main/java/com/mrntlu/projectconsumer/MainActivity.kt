@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -54,6 +55,7 @@ import com.mrntlu.projectconsumer.utils.Constants.PREF_NAME
 import com.mrntlu.projectconsumer.utils.Constants.THEME_PREF
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -111,8 +113,15 @@ class MainActivity : AppCompatActivity() {
         binding.navView.selectedItemId = R.id.navigation_profile
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        sharedViewModel.setShouldPreventBottomSelection(true)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (!navController.popBackStack())
+                finish()
+            else
+                sharedViewModel.setShouldPreventBottomSelection(true)
+            return
+        }
         super.onBackPressed()
     }
 
@@ -180,6 +189,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         firebaseAnalytics = Firebase.analytics
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (!navController.popBackStack())
+                        finish()
+                    else
+                        sharedViewModel.setShouldPreventBottomSelection(true)
+                }
+            })
+        }
+
         val navView: BottomNavigationView = binding.navView
 
         navView.setupWithNavController(navController)
@@ -237,12 +257,15 @@ class MainActivity : AppCompatActivity() {
             when(destination.id) {
                 R.id.navigation_home, R.id.navigation_discover, R.id.navigation_profile -> {
                     binding.navView.setVisible()
+                    window.navigationBarColor = getColorFromAttr(R.attr.bottomNavBackgroundColor)
                 }
                 R.id.navigation_settings -> {
                     binding.navView.setVisibilityByCondition(sharedViewModel.isLoggedIn())
+                    window.navigationBarColor = getColorFromAttr(if (sharedViewModel.isLoggedIn()) R.attr.mainBackgroundColor else R.attr.bottomNavBackgroundColor)
                 }
                 else -> {
                     binding.navView.setGone()
+                    window.navigationBarColor = getColorFromAttr(R.attr.mainBackgroundColor)
                 }
             }
         }
