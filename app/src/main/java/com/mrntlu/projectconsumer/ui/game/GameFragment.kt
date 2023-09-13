@@ -60,7 +60,13 @@ class GameFragment : BasePreviewFragment<Game>() {
 
     private fun setListeners() {
         binding.apply {
-            setScrollListener()
+            seeAllButtonPopular.setOnClickListener {
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToGameListFragment(FetchType.POPULAR.tag)
+
+                    navController.navigate(navWithAction)
+                }
+            }
 
             seeAllButtonFirst.setOnClickListener {
                 if (navController.currentDestination?.id == R.id.navigation_home) {

@@ -6,6 +6,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -29,6 +32,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
@@ -52,6 +59,7 @@ import com.mrntlu.projectconsumer.utils.Constants.LAYOUT_PREF
 import com.mrntlu.projectconsumer.utils.Constants.LIGHT_THEME
 import com.mrntlu.projectconsumer.utils.Constants.NOTIFICATION_PREF
 import com.mrntlu.projectconsumer.utils.Constants.PREF_NAME
+import com.mrntlu.projectconsumer.utils.Constants.TAB_LAYOUT_PREF
 import com.mrntlu.projectconsumer.utils.Constants.THEME_PREF
 import com.mrntlu.projectconsumer.utils.MessageBoxType
 import com.mrntlu.projectconsumer.utils.NetworkConnectivityObserver
@@ -111,6 +119,37 @@ class MainActivity : AppCompatActivity() {
 
     fun navigateToProfile() {
         binding.navView.selectedItemId = R.id.navigation_profile
+    }
+
+    fun setBottomNavProfile(image: String) {
+        binding.navView.apply {
+            val menuItem = menu.findItem(R.id.navigation_profile)
+
+            if (menuItem != null) {
+                itemIconTintList = null
+
+                menuItem.icon = ContextCompat.getDrawable(context, R.drawable.selector_person)
+
+                Glide.with(this)
+                    .asBitmap()
+                    .load(image)
+                    .apply(
+                        RequestOptions
+                            .circleCropTransform()
+                            .placeholder(R.drawable.ic_person_75)
+                    )
+                    .into(object: CustomTarget<Bitmap>() {
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            menuItem.icon = BitmapDrawable(resources, resource)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    })
+            }
+        }
     }
 
     @Deprecated("Deprecated in Java")
@@ -177,6 +216,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         sharedViewModel.setCountryCode(prefs.getString(COUNTRY_PREF, Locale.getDefault().country.uppercase()))
         sharedViewModel.setLanguageCode(prefs.getString(LAN_PREF, Locale.getDefault().language.uppercase()))
+        sharedViewModel.setTabLayoutSelection(prefs.getBoolean(TAB_LAYOUT_PREF, false))
         sharedViewModel.setLayoutSelection(prefs.getBoolean(LAYOUT_PREF, false))
         sharedViewModel.setIsDisplayed(prefs.getBoolean(BOARDING_PREF, false))
         sharedViewModel.setThemeCode(prefs.getInt(THEME_PREF, DARK_THEME))
@@ -358,6 +398,8 @@ class MainActivity : AppCompatActivity() {
             if (it) {
                 if (userSharedViewModel.userInfo == null)
                     userSharedViewModel.getBasicInfo()
+                else
+                    setBottomNavProfile(userSharedViewModel.userInfo?.image ?: "")
 
                 askNotificationPermission()
             } else {
@@ -367,6 +409,10 @@ class MainActivity : AppCompatActivity() {
 
         sharedViewModel.isDisplayed.observe(this) {
             setBoardingPref()
+        }
+
+        sharedViewModel.tabLayoutSelection.observe(this) {
+            setTabLayoutPref(it)
         }
 
         sharedViewModel.layoutSelection.observe(this) { isAltLayout ->
@@ -441,6 +487,12 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
     }
 
+    private fun setTabLayoutPref(value: Boolean) {
+        val editor = prefs.edit()
+        editor.putBoolean(TAB_LAYOUT_PREF, value)
+        editor.apply()
+    }
+
     private fun setLayoutSelectionPref(value: Boolean) {
         val editor = prefs.edit()
         editor.putBoolean(LAYOUT_PREF, value)
@@ -457,6 +509,7 @@ class MainActivity : AppCompatActivity() {
         notificationDialog = null
 
         sharedViewModel.layoutSelection.removeObservers(this)
+        sharedViewModel.tabLayoutSelection.removeObservers(this)
         sharedViewModel.shouldPreventBottomSelection.removeObservers(this)
         sharedViewModel.isAuthenticated.removeObservers(this)
         sharedViewModel.countryCode.removeObservers(this)

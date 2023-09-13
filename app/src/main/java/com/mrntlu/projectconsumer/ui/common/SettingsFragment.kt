@@ -84,7 +84,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
             }
 
-            anonymousInc.root.setVisibilityByCondition(sharedViewModel.isLoggedIn())
+            signInButton.setVisibilityByCondition(sharedViewModel.isLoggedIn())
         }
     }
 
@@ -117,6 +117,30 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             }
 
             //Application settings
+            applicationChangeTabClickTile.apply {
+                settingsClickTileTV.text = getString(R.string.change_tab_design)
+                settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_tab_24, 0)
+
+                root.setSafeOnClickListener {
+                    activity?.let {
+                        val bottomSheet = ChangeTabLayoutBottomSheet()
+                        bottomSheet.show(it.supportFragmentManager, ChangeTabLayoutBottomSheet.TAG)
+                    }
+                }
+            }
+
+            applicationChangeLayoutClickTile.apply {
+                settingsClickTileTV.text = getString(R.string.change_layout)
+                settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grid, 0)
+
+                root.setSafeOnClickListener {
+                    activity?.let {
+                        val bottomSheet = ChangeLayoutBottomSheet()
+                        bottomSheet.show(it.supportFragmentManager, ChangeLayoutBottomSheet.TAG)
+                    }
+                }
+            }
+
             applicationFirstClickTile.apply {
                 settingsClickTileTV.text = getString(R.string.clear_image_cache)
                 settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_delete, 0)
@@ -148,18 +172,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             setACTVSelection(binding.settingsSecondSelectionACTV, languageList.indexOfFirst {
                 it.second == sharedViewModel.getLanguageCode()
             })
-
-            applicationChangeLayoutClickTile.apply {
-                settingsClickTileTV.text = getString(R.string.change_layout)
-                settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grid, 0)
-
-                root.setSafeOnClickListener {
-                    activity?.let {
-                        val bottomSheet = ChangeLayoutBottomSheet()
-                        bottomSheet.show(it.supportFragmentManager, ChangeLayoutBottomSheet.TAG)
-                    }
-                }
-            }
         }
     }
 
@@ -203,7 +215,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
             }
 
-            anonymousInc.root.setSafeOnClickListener(interval = 750) {
+            signInButton.setSafeOnClickListener(interval = 750) {
                 if (navController.currentDestination?.id == R.id.navigation_settings) {
                     navController.navigate(R.id.action_global_authFragment)
                 }

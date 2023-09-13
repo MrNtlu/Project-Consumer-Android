@@ -53,7 +53,13 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
 
     private fun setListeners() {
         binding.apply {
-            setScrollListener()
+            seeAllButtonPopular.setOnClickListener {
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvListFragment(FetchType.POPULAR.tag)
+
+                    navController.navigate(navWithAction)
+                }
+            }
 
             seeAllButtonFirst.setOnClickListener {
                 if (navController.currentDestination?.id == R.id.navigation_home) {

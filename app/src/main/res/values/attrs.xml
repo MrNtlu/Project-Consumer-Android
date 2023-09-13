@@ -14,8 +14,9 @@
         <attr name="progressColor" format="color"/>
         <attr name="accessoryTextColor" format="color"/>
 
-        <attr name="highlightColor" format="color"/>
         <attr name="shimmerColor" format="color"/>
+        <attr name="highlightColor" format="color"/>
+        <attr name="profileTintColor" format="color"/>
 
         <attr name="toolbarBackgroundColor" format="color"/>
         <attr name="toolbarBackButtonColor" format="color"/>

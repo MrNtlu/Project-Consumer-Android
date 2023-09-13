@@ -27,7 +27,7 @@
         android:layout_marginTop="16dp"
         android:paddingHorizontal="8dp"
         android:paddingVertical="3dp"
-        android:text="@string/change_layout"
+        android:text="@string/change_tab_design"
         android:textColor="?attr/mainTextColor"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:paddingHorizontal="8dp"
-        android:text="@string/change_layout_info"
+        android:text="@string/change_tab_info"
         android:textColor="?attr/mainTextColor"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +71,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:minWidth="0dp"
-                android:textColor="?attr/mainTextColor" />
+                android:textColor="?attr/mainTextColor"
+                android:layout_marginBottom="16dp"/>
 
             <RadioButton
                 android:id="@+id/alternativeLayout"
@@ -89,14 +90,14 @@
 
             <include
                 android:id="@+id/defaultInc"
-                layout="@layout/cell_preview_item"
-                android:layout_width="120dp"
+                layout="@layout/layout_tab"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp" />
 
             <include
                 android:id="@+id/alternativeInc"
-                layout="@layout/cell_content_alt"
+                layout="@layout/layout_tab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

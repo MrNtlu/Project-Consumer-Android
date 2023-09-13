@@ -22,6 +22,17 @@ class ActivitySharedViewModel: ViewModel() {
         isDisplayed.value = isBoardingDisplayed
     }
 
+    // Tab Layout Selection
+    val tabLayoutSelection: MutableLiveData<Boolean> by lazy {
+        MutableLiveData<Boolean>(false)
+    }
+
+    fun isTabIconsEnabled() = tabLayoutSelection.value == true
+
+    fun setTabLayoutSelection(isTabIconsEnabled: Boolean) {
+        tabLayoutSelection.value = isTabIconsEnabled
+    }
+
     // Layout Selection
     val layoutSelection: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>(false)

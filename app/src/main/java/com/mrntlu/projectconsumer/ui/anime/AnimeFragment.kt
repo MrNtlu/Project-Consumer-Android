@@ -55,7 +55,13 @@ class AnimeFragment : BasePreviewFragment<Anime>() {
 
     private fun setListeners() {
         binding.apply {
-            setScrollListener()
+            seeAllButtonPopular.setOnClickListener {
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToAnimeListFragment(FetchType.POPULAR.tag)
+
+                    navController.navigate(navWithAction)
+                }
+            }
 
             seeAllButtonFirst.setOnClickListener {
                 if (navController.currentDestination?.id == R.id.navigation_home) {

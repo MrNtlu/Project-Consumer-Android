@@ -427,6 +427,8 @@
     <string name="boarding_text_3">Discover and search for content easily with powerful search and filters.</string>
     <string name="boarding_text_4">Once you\'ve signed in, you can access your User List and Watch Later from Profile.</string>
     <string name="boarding_continue">Continue</string>
+    <string name="change_tab_design">Change Tab Design</string>
+    <string name="change_tab_info"><![CDATA[This will change the tab design of Home & Discover screens.]]></string>
 
     <string-array name="score_list">
         <item>@string/select</item>

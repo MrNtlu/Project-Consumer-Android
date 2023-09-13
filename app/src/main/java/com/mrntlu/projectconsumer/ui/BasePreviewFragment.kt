@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.carousel.CarouselLayoutManager
@@ -18,11 +17,8 @@ import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.dpToPx
-import com.mrntlu.projectconsumer.viewmodels.shared.ViewPagerSharedViewModel
 
 abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPreviewBinding>() {
-
-    private val viewPagerSharedViewModel: ViewPagerSharedViewModel by activityViewModels()
 
     protected var upcomingAdapter: PreviewAdapter<T>? = null
     protected var topRatedAdapter: PreviewAdapter<T>? = null
@@ -36,12 +32,6 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     ): View {
         _binding = FragmentPreviewBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    protected fun setScrollListener() {
-        binding.previewScrollView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            viewPagerSharedViewModel.setScrollYPosition(scrollY)
-        }
     }
 
     protected fun setShowcaseRecyclerView(
@@ -64,7 +54,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
             else
                 (rvHeight * 2) / 3
 
-            showCaseAdapter = CarouselAdapter<T>(
+            showCaseAdapter = CarouselAdapter(
                 object: Interaction<T> {
                     override fun onItemSelected(item: T, position: Int) {
                         onItemClicked(item.id)
@@ -165,9 +155,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     }
 
     override fun onDestroyView() {
-        viewPagerSharedViewModel.scrollYPosition.removeObservers(this)
         sharedViewModel.networkStatus.removeObservers(this)
-        binding.previewScrollView.setOnScrollChangeListener(null)
         snapHelper = null
         showCaseAdapter = null
         upcomingAdapter = null

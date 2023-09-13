@@ -8,8 +8,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.view.GestureDetectorCompat
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.GridAdapter
@@ -19,8 +22,9 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.viewmodels.shared.HomeDiscoverSharedViewModel
 
 class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
 
@@ -30,17 +34,14 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
         const val SWIPE_THRESHOLD = 100
     }
 
+    private val viewModel: HomeDiscoverSharedViewModel by activityViewModels()
+
     private var gestureDetector: GestureDetectorCompat? = null
     private var gridAdapter: GridAdapter? = null
     private var contentType: Constants.ContentType = Constants.ContentType.MOVIE
 
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-        override fun onFling(
-            e1: MotionEvent?,
-            e2: MotionEvent,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
+        override fun onFling(e1: MotionEvent?, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
             val e1X = e1?.x ?: 0f
             if (e2.x - e1X > SWIPE_THRESHOLD) {
                 selectTab(true)
@@ -70,18 +71,21 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
 
         setUI()
         setListeners()
-        setSharedObservers(binding.userLoadingProgressBar, binding.userInc, binding.anonymousInc)
+//        setSharedObservers(binding.userLoadingProgressBar, binding.userInc, binding.anonymousInc)
+        setObservers()
         setXMLGridLayout()
     }
 
     private fun selectTab(isRight: Boolean) {
-        binding.discoverTabLayout.apply {
+        binding.discoverTabLayout.root.apply {
             val newSelectedIndex: Int = if (selectedTabPosition == 0 && isRight)
                 tabCount.minus(1)
             else if (selectedTabPosition == tabCount.minus(1) && !isRight)
                 0
             else
                 selectedTabPosition.plus(if (isRight) -1 else 1)
+
+            viewModel.setSelectedTabIndex(newSelectedIndex)
 
             val tabToSelect = getTabAt(newSelectedIndex)
             tabToSelect?.select()
@@ -92,12 +96,32 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
         binding.apply {
             gestureDetector = GestureDetectorCompat(this.root.context, GestureListener())
 
-            discoverTabLayout.apply {
+            discoverTabLayout.tabLayout.apply {
                 for (tab in Constants.TabList) {
                     addTab(
-                        discoverTabLayout.newTab().setText(tab),
+                        newTab().setText(tab),
                         tab == contentType.value
                     )
+                }
+
+                for (position in 0..tabCount.minus(1)) {
+                    val layout = LayoutInflater.from(context).inflate(R.layout.layout_tab_title, null) as? LinearLayout
+
+                    val tabIV = layout?.findViewById<ImageView>(R.id.tabIV)
+                    val tabLayoutParams = layoutParams
+                    if (sharedViewModel.isTabIconsEnabled()) {
+                        tabLayoutParams.height = context.dpToPx(65f)
+                        layoutParams = tabLayoutParams
+
+                        tabIV?.setImageResource(Constants.TabIconList[position])
+                    } else {
+                        tabLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        layoutParams = tabLayoutParams
+
+                        tabIV?.setGone()
+                    }
+
+                    getTabAt(position)?.customView = layout
                 }
             }
         }
@@ -106,22 +130,18 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         binding.apply {
-            anonymousInc.root.setSafeOnClickListener(interval = 750) {
-                onAnonymousIncClicked()
-            }
-
-            userInc.root.setSafeOnClickListener(interval = 750) {
-                onUserIncClicked()
-            }
-
             discoverConstraintLayout.setOnTouchListener { _, event ->
                 gestureDetector?.onTouchEvent(event)
                 true
             }
 
-            discoverTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            discoverTabLayout.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     hideKeyboard()
+
+                    if (tab != null && tab.position >= 0) {
+                        viewModel.setSelectedTabIndex(tab.position)
+                    }
 
                     when(tab?.position) {
                         0 -> {
@@ -184,6 +204,12 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
                     override fun onQueryTextChange(newText: String?) = true
                 })
             }
+        }
+    }
+
+    private fun setObservers() {
+        viewModel.selectedTabIndex.observe(viewLifecycleOwner) { index ->
+            binding.discoverTabLayout.tabLayout.getTabAt(index)?.select()
         }
     }
 

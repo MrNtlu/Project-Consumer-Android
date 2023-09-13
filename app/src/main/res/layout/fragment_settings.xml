@@ -22,21 +22,31 @@
             android:background="?attr/toolbarBackgroundColor"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <include
-                android:id="@+id/anonymousInc"
-                layout="@layout/layout_user_anonymous"
+            <Button
+                android:id="@+id/signInButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="@string/sign_in"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_gravity="end"
                 android:layout_marginEnd="8dp"
-                android:visibility="visible" />
+                app:icon="@drawable/ic_login_24"
+                app:iconGravity="end"
+                app:iconPadding="6dp"
+                app:iconSize="22dp"
+                app:iconTint="?attr/mainTextColor"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layout_behavior="">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -192,6 +202,14 @@
 
                     <com.google.android.material.divider.MaterialDivider
                         android:id="@+id/applicationSpinnerDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <include
+                        android:id="@+id/applicationChangeTabClickTile"
+                        layout="@layout/settings_click_tile" />
+
+                    <com.google.android.material.divider.MaterialDivider
                         android:layout_width="match_parent"
                         android:layout_height="1dp" />
 

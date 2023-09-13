@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.tabs.TabLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tabLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/mainBackgroundColor"
+    app:tabMinWidth="0dp"
+    app:tabGravity="center"
+    app:tabMode="fixed"
+    app:tabRippleColor="@null"
+    app:tabIndicatorHeight="0dp"
+    app:tabIndicatorFullWidth="false"
+    app:tabBackground="?attr/mainBackgroundColor"
+    app:tabTextColor="?attr/mainTextColor"
+    app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
+    android:paddingTop="8dp"
+    android:contentDescription="@string/content_type_cd" />

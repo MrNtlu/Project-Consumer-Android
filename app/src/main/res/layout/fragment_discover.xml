@@ -14,66 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/discoverToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/discover"
-            android:theme="@style/Theme.ProjectConsumer.Toolbar"
-            android:background="?attr/toolbarBackgroundColor"
-            app:layout_scrollFlags="scroll|enterAlways">
-
-            <include
-                android:id="@+id/anonymousInc"
-                layout="@layout/layout_user_anonymous"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="8dp"
-                android:visibility="visible" />
-
-            <include
-                android:id="@+id/userInc"
-                layout="@layout/layout_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginEnd="8dp"
-                android:visibility="gone" />
-
-            <ProgressBar
-                android:id="@+id/userLoadingProgressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminateTint="?attr/mainTextColor"
-                android:visibility="gone"
-                android:layout_marginEnd="8dp"
-                android:layout_gravity="end"
-                tools:visibility="visible" />
-        </com.google.android.material.appbar.MaterialToolbar>
-
-        <com.google.android.material.tabs.TabLayout
+        <include
             android:id="@+id/discoverTabLayout"
+            layout="@layout/layout_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:tabIndicatorHeight="0dp"
-            app:tabRippleColor="@null"
-            app:tabMode="scrollable"
-            app:tabGravity="start"
-            android:contentDescription="@string/discover_content_type_cd"
-            app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
-            app:tabTextColor="?attr/mainTextColor"
-            app:tabBackground="?attr/mainBackgroundColor"
-            app:tabMinWidth="0dp"
-            android:background="?attr/mainBackgroundColor"/>
+            android:layout_gravity="bottom"
+            app:layout_scrollFlags="scroll|enterAlways"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:layout_behavior="">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/discoverConstraintLayout"

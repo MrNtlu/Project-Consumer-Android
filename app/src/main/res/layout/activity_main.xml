@@ -14,7 +14,6 @@
         app:itemRippleColor="@null"
         app:itemPaddingBottom="13dp"
         app:itemIconSize="24dp"
-        app:itemIconTint="@drawable/bottom_nav_selector"
         app:itemTextColor="@drawable/bottom_nav_text_selector"
         android:background="?attr/bottomNavBackgroundColor"
         app:itemActiveIndicatorStyle="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
