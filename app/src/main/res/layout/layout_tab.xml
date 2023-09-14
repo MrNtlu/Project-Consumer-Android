@@ -8,7 +8,7 @@
     android:background="?attr/mainBackgroundColor"
     app:tabMinWidth="0dp"
     app:tabGravity="center"
-    app:tabMode="fixed"
+    app:tabMode="auto"
     app:tabRippleColor="@null"
     app:tabIndicatorHeight="0dp"
     app:tabIndicatorFullWidth="false"

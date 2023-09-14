@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.ui.common
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mrntlu.projectconsumer.R
@@ -18,12 +18,8 @@ import com.mrntlu.projectconsumer.ui.BaseToolbarAuthFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.setGone
-import com.mrntlu.projectconsumer.viewmodels.shared.HomeDiscoverSharedViewModel
 
 class HomeFragment : BaseToolbarAuthFragment<FragmentHomeBinding>() {
-
-    private val viewModel: HomeDiscoverSharedViewModel by activityViewModels()
-
     private var viewPagerAdapter: HomePagerAdapter? = null
     private var mediator: TabLayoutMediator? = null
 
@@ -39,10 +35,12 @@ class HomeFragment : BaseToolbarAuthFragment<FragmentHomeBinding>() {
         super.onViewCreated(view, savedInstanceState)
 
         setUI()
+        setListeners()
         setSharedObservers()
         setObservers()
     }
 
+    @SuppressLint("InflateParams")
     private fun setUI() {
         binding.homeViewPager.apply {
             val fragmentFactory = HomeFragmentFactory()
@@ -61,7 +59,7 @@ class HomeFragment : BaseToolbarAuthFragment<FragmentHomeBinding>() {
             mediator?.attach()
         }
 
-        binding.homeTabLayout.root.apply {
+        binding.homeTabLayout.tabLayout.apply {
             for (position in 0..tabCount.minus(1)) {
                 val layout = LayoutInflater.from(context).inflate(R.layout.layout_tab_title, null) as? LinearLayout
 
@@ -81,30 +79,40 @@ class HomeFragment : BaseToolbarAuthFragment<FragmentHomeBinding>() {
 
                 getTabAt(position)?.customView = layout
             }
-
-            addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    if (tab != null && tab.position >= 0) {
-                        viewModel.setSelectedTabIndex(tab.position)
-                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
         }
+    }
+
+    private fun setListeners() {
+        binding.homeTabLayout.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab != null && tab.position > -1) {
+                    viewModel.setSelectedTabIndex(tab.position)
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+
+        })
     }
 
     private fun setObservers() {
         viewModel.selectedTabIndex.observe(viewLifecycleOwner) { index ->
-            binding.homeTabLayout.root.getTabAt(index)?.select()
+            binding.homeTabLayout.tabLayout.getTabAt(index)?.select()
+            binding.homeViewPager.currentItem = index
+
+            binding.homeTabLayout.tabLayout.apply {
+                post {
+                    val tabView = (getChildAt(0) as ViewGroup).getChildAt(index)
+                    val scrollToX = tabView.left - (width - tabView.width) / 2
+                    scrollTo(scrollToX, 0)
+                }
+            }
         }
     }
 
     override fun onDestroyView() {
-        viewModel.selectedTabIndex.removeObservers(viewLifecycleOwner)
-
         mediator?.detach()
         mediator = null
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,6 +51,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private var isResponseFailed = false
     private var userInfo: UserInfo? = null
 
+    private var confirmDialog: AlertDialog? = null
     private var legendContentAdapter: LegendContentAdapter? = null
     private var consumeLaterAdapter: ConsumeLaterPreviewAdapter? = null
     private lateinit var dialog: LoadingDialog
@@ -218,6 +220,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                                     if (::dialog.isInitialized)
                                         dialog.dismissDialog()
 
+                                    (activity as? MainActivity)?.setBottomNavProfile(image)
                                     userSharedViewModel.getBasicInfo()
                                     viewModel.getUserInfo()
                                 }
@@ -278,7 +281,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
             consumeLaterAdapter = ConsumeLaterPreviewAdapter(object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
-                    context?.showConfirmationDialog(getString(R.string.remove_from_later)) {
+                    confirmDialog = context?.showConfirmationDialog(getString(R.string.remove_from_later)) {
                         val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
 
                         deleteConsumerLiveData.observe(viewLifecycleOwner) { response ->
@@ -311,6 +314,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 }
 
                 override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {
+                    confirmDialog?.dismiss()
+
                     if (navController.currentDestination?.id == R.id.navigation_profile) {
                         when(Constants.ContentType.fromStringRequest(item.contentType)) {
                             Constants.ContentType.ANIME -> {
@@ -354,6 +359,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             viewModel.userInfoResponse.removeObservers(this)
         }
 
+        confirmDialog?.dismiss()
+        confirmDialog = null
         super.onDestroyView()
     }
 }

@@ -4,10 +4,12 @@ import androidx.fragment.app.activityViewModels
 import com.mrntlu.projectconsumer.MainActivity
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.viewmodels.shared.HomeDiscoverSharedViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 
 abstract class BaseToolbarAuthFragment<T>: BaseFragment<T>() {
     private val userSharedViewModel: UserSharedViewModel by activityViewModels()
+    protected val viewModel: HomeDiscoverSharedViewModel by activityViewModels()
 
     protected fun onUserIncClicked() {
         (activity as? MainActivity)?.navigateToProfile()
@@ -28,7 +30,10 @@ abstract class BaseToolbarAuthFragment<T>: BaseFragment<T>() {
     }
 
     override fun onDestroyView() {
-        userSharedViewModel.userInfoResponse.removeObservers(viewLifecycleOwner)
+        viewLifecycleOwner.apply {
+            userSharedViewModel.userInfoResponse.removeObservers(this)
+            viewModel.selectedTabIndex.removeObservers(this)
+        }
 
         super.onDestroyView()
     }

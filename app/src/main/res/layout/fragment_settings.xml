@@ -20,33 +20,13 @@
             app:title="@string/settings"
             android:theme="@style/Theme.ProjectConsumer.Toolbar"
             android:background="?attr/toolbarBackgroundColor"
-            app:layout_scrollFlags="scroll|enterAlways">
-
-            <Button
-                android:id="@+id/signInButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:text="@string/sign_in"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_gravity="end"
-                android:layout_marginEnd="8dp"
-                app:icon="@drawable/ic_login_24"
-                app:iconGravity="end"
-                app:iconPadding="6dp"
-                app:iconSize="22dp"
-                app:iconTint="?attr/mainTextColor"
-                android:textColor="?attr/mainTextColor"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </com.google.android.material.appbar.MaterialToolbar>
+            app:layout_scrollFlags="scroll|enterAlways"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:layout_behavior="">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -70,9 +50,9 @@
                 android:id="@+id/accountTitleTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/account"
-                android:textColor="?attr/mainTextColor"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -107,9 +87,10 @@
                     <LinearLayout
                         android:id="@+id/accountSwitchTile"
                         android:layout_width="match_parent"
-                        android:layout_height="70dp"
+                        android:layout_height="60dp"
                         android:orientation="horizontal"
-                        android:padding="12dp">
+                        android:padding="12dp"
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/notificationSwitchTV"
@@ -134,7 +115,8 @@
                     <com.google.android.material.divider.MaterialDivider
                         android:id="@+id/accountSwitchTileDivider"
                         android:layout_width="match_parent"
-                        android:layout_height="1dp" />
+                        android:layout_height="1dp"
+                        android:visibility="gone" />
 
                     <include
                         android:id="@+id/accountSecondClickTile"
@@ -146,9 +128,9 @@
                 android:id="@+id/applicationTitleTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="24dp"
                 android:text="@string/application"
-                android:textColor="?attr/mainTextColor"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline3"
@@ -173,9 +155,19 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="70dp"
+                        android:layout_height="60dp"
                         android:orientation="horizontal"
+                        android:gravity="center"
                         android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/settingsTileIV"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_night_24"
+                            android:layout_gravity="center"
+                            app:tint="?attr/subTextColor"
+                            android:contentDescription="@string/themes"/>
 
                         <TextView
                             android:id="@+id/themeSwitchTV"
@@ -183,9 +175,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
+                            android:layout_marginStart="12dp"
                             android:textColor="?attr/mainTextColor"
                             android:textSize="16sp"
-                            tools:text="Dark Theme" />
+                            tools:text="Dark Theme"/>
 
                         <com.google.android.material.materialswitch.MaterialSwitch
                             android:id="@+id/themeSwitch"
@@ -242,8 +235,8 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:startIconDrawable="@drawable/ic_country"
-                        app:startIconTint="?attr/colorPrimary"
-                        app:endIconTint="?attr/colorPrimary">
+                        app:startIconTint="?attr/subTextColor"
+                        app:endIconTint="?attr/subTextColor">
 
                         <AutoCompleteTextView
                             android:id="@+id/settingsSelectionACTV"
@@ -266,8 +259,8 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:startIconDrawable="@drawable/ic_language"
-                        app:startIconTint="?attr/colorPrimary"
-                        app:endIconTint="?attr/colorPrimary">
+                        app:startIconTint="?attr/subTextColor"
+                        app:endIconTint="?attr/subTextColor">
 
                         <AutoCompleteTextView
                             android:id="@+id/settingsSecondSelectionACTV"
@@ -276,6 +269,111 @@
                             android:inputType="none"
                             android:hint="@string/change_language" />
                     </com.google.android.material.textfield.TextInputLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/accountInfoTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/account_info"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
+                app:layout_constraintTop_toBottomOf="@id/applicationSettingsCard" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/accountInfoSettingsCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="?attr/bottomNavBackgroundColor"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
+                app:layout_constraintTop_toBottomOf="@+id/accountInfoTitleTV">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/accountInfoFirstTile"
+                        layout="@layout/settings_info_tile" />
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/accountInfoFirstTileDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <include
+                        android:id="@+id/accountInfoSecondTile"
+                        layout="@layout/settings_info_tile" />
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/accountInfoSecondTileDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <include
+                        android:id="@+id/accountInfoThirdTile"
+                        layout="@layout/settings_info_tile" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/otherTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Others"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
+                app:layout_constraintTop_toBottomOf="@id/accountInfoSettingsCard" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/othersSettingsCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="?attr/bottomNavBackgroundColor"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
+                app:layout_constraintTop_toBottomOf="@+id/otherTitleTV">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <include
+                        android:id="@+id/othersFirstClickTile"
+                        layout="@layout/settings_click_tile" />
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/othersFirstDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <include
+                        android:id="@+id/othersSecondClickTile"
+                        layout="@layout/settings_click_tile" />
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <include
+                        android:id="@+id/othersThirdClickTile"
+                        layout="@layout/settings_click_tile" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -290,7 +388,7 @@
                 android:textColor="?attr/mainTextColor"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/guideline3"
-                app:layout_constraintTop_toBottomOf="@+id/applicationSettingsCard" />
+                app:layout_constraintTop_toBottomOf="@+id/othersSettingsCard" />
 
             <Button
                 android:id="@+id/termsButton"
@@ -303,19 +401,21 @@
                 android:textColor="?attr/mainTextColor"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintTop_toBottomOf="@+id/applicationSettingsCard" />
+                app:layout_constraintTop_toBottomOf="@+id/othersSettingsCard" />
 
             <Button
                 android:id="@+id/deleteAccountButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:background="@android:color/transparent"
-                android:text="@string/delete_account"
                 android:padding="0dp"
+                android:text="@string/delete_account"
                 android:textAllCaps="false"
                 android:textColor="?attr/messageBoxBackgroundColor"
                 android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 app:layout_constraintStart_toStartOf="@+id/guideline3"
                 app:layout_constraintTop_toBottomOf="@+id/privacyButton"

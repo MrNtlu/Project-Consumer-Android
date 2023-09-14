@@ -21,20 +21,12 @@
             app:navigationContentDescription="@string/back_cd"
             app:layout_scrollFlags="scroll|enterAlways" />
 
-        <com.google.android.material.tabs.TabLayout
+        <include
             android:id="@+id/userListTabLayout"
+            layout="@layout/layout_tab"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:tabIndicatorHeight="0dp"
-            app:tabRippleColor="@null"
-            app:tabMode="scrollable"
-            app:tabGravity="start"
-            app:tabSelectedTextColor="?attr/bottomNavSelectedColor"
-            app:tabTextColor="?attr/mainTextColor"
-            app:tabBackground="?attr/mainBackgroundColor"
-            app:tabMinWidth="0dp"
-            android:background="?attr/mainBackgroundColor"/>
+            android:layout_height="wrap_content"/>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView

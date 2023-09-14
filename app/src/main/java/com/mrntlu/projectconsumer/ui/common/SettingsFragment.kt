@@ -1,10 +1,15 @@
 package com.mrntlu.projectconsumer.ui.common
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.lifecycleScope
@@ -12,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
@@ -26,6 +32,7 @@ import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.common.SettingsViewModel
+import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,6 +44,7 @@ import javax.inject.Inject
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     private val settingsViewModel: SettingsViewModel by viewModels()
+    private val userSharedViewModel: UserSharedViewModel by activityViewModels()
 
     @Inject lateinit var tokenManager: TokenManager
 
@@ -83,15 +91,13 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     setNavigationOnClickListener { navController.popBackStack() }
                 }
             }
-
-            signInButton.setVisibilityByCondition(sharedViewModel.isLoggedIn())
         }
     }
 
     private fun setUI() {
         binding.apply {
-            accountTitleTV.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
-            accountSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
+            accountInfoTitleTV.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
+            accountInfoSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
             deleteAccountButton.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
 
             accountFirstClickTile.root.setGone()
@@ -100,18 +106,50 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             accountSwitchTile.setGone()
 
             if (sharedViewModel.isLoggedIn()) {
-                accountSecondClickTile.settingsClickTileTV.text = getString(R.string.log_out)
-                accountSecondClickTile.settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_logout_24, 0)
+                userSharedViewModel.userInfo?.apply {
+                    accountInfoFirstTile.settingsInfoTitleTV.text = getString(R.string.email)
+                    accountInfoFirstTile.settingsInfoTV.text = email
 
-                accountSecondClickTile.root.setSafeOnClickListener {
-                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_log_out_)) {
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            tokenManager.deleteToken()
+                    accountInfoSecondTile.settingsInfoTitleTV.text = getString(R.string.username)
+                    accountInfoSecondTile.settingsInfoTV.text = username
+
+                    accountInfoThirdTile.settingsInfoTitleTV.text = getString(R.string.membership)
+                    accountInfoThirdTile.settingsInfoTV.text = when(membershipType) {
+                        1 -> "Premium"
+                        2 -> "Premium Supporter"
+                        else -> "Basic"
+                    }
+                }
+
+                accountSecondClickTile.apply {
+                    settingsClickTileTV.text = getString(R.string.log_out)
+                    settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_logout_24, 0)
+                    settingsTileIV.setGone()
+                    arrowIV.setGone()
+
+                    root.setSafeOnClickListener {
+                        context?.showConfirmationDialog(getString(R.string.do_you_want_to_log_out_)) {
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                tokenManager.deleteToken()
+                            }
+                            GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                .signOut()
+                            sharedViewModel.setAuthentication(false)
+                            navController.popBackStack(R.id.navigation_home, false)
                         }
-                        GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .signOut()
-                        sharedViewModel.setAuthentication(false)
-                        navController.popBackStack(R.id.navigation_home, false)
+                    }
+                }
+            } else {
+                accountSecondClickTile.apply {
+                    settingsClickTileTV.text = getString(R.string.sign_in)
+                    settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_login_24, 0)
+                    arrowIV.setGone()
+                    settingsTileIV.setGone()
+
+                    root.setSafeOnClickListener(interval = 750) {
+                        if (navController.currentDestination?.id == R.id.navigation_settings) {
+                            navController.navigate(R.id.action_global_authFragment)
+                        }
                     }
                 }
             }
@@ -119,7 +157,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             //Application settings
             applicationChangeTabClickTile.apply {
                 settingsClickTileTV.text = getString(R.string.change_tab_design)
-                settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_tab_24, 0)
+                settingsTileIV.setImageResource(R.drawable.ic_tab_24)
 
                 root.setSafeOnClickListener {
                     activity?.let {
@@ -131,7 +169,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
             applicationChangeLayoutClickTile.apply {
                 settingsClickTileTV.text = getString(R.string.change_layout)
-                settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_grid, 0)
+                settingsTileIV.setImageResource(R.drawable.ic_grid)
 
                 root.setSafeOnClickListener {
                     activity?.let {
@@ -143,7 +181,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
             applicationFirstClickTile.apply {
                 settingsClickTileTV.text = getString(R.string.clear_image_cache)
-                settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_delete, 0)
+                settingsTileIV.setImageResource(R.drawable.ic_delete)
 
                 root.setSafeOnClickListener {
                     context?.showConfirmationDialog(getString(R.string.do_you_want_clear_image_cache)) {
@@ -155,6 +193,57 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                             }
                         }
                     }
+                }
+            }
+
+            val manager = ReviewManagerFactory.create(root.context)
+            manager.requestReviewFlow().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    othersFirstClickTile.apply {
+
+                        settingsClickTileTV.text = getString(R.string.rate_review)
+                        settingsTileIV.setImageResource(R.drawable.ic_rate)
+
+                        root.setSafeOnClickListener {
+                            activity?.let { activity ->
+                                manager.launchReviewFlow(activity, task.result)
+                            }
+                        }
+                    }
+                } else {
+                    othersFirstClickTile.root.setGone()
+                    othersFirstDivider.setGone()
+                }
+            }
+
+            othersSecondClickTile.apply {
+                settingsClickTileTV.text = getString(R.string.feedback_suggestions)
+                settingsTileIV.setImageResource(R.drawable.ic_feedback)
+
+                root.setSafeOnClickListener {
+                    try {
+                        val intent = Intent(Intent.ACTION_SEND)
+                        intent.type = "message/rfc822"
+                        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("mrntlu@gmail.com"))
+                        startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(root.context, "No mail app found", Toast.LENGTH_SHORT).show()
+                    } catch (t: Throwable) {
+                        Toast.makeText(root.context, "$t", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            othersThirdClickTile.apply {
+                settingsClickTileTV.text = "Follow Us"
+                settingsTileIV.setImageResource(R.drawable.ic_x)
+
+                root.setSafeOnClickListener {
+                    val urlIntent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://twitter.com/watchlistfy")
+                    )
+                    startActivity(urlIntent)
                 }
             }
 
@@ -212,12 +301,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                         sharedViewModel.setLanguageCode(languageList[selectedIndex].second)
 
                     settingsSecondSelectionACTV.clearFocus()
-                }
-            }
-
-            signInButton.setSafeOnClickListener(interval = 750) {
-                if (navController.currentDestination?.id == R.id.navigation_settings) {
-                    navController.navigate(R.id.action_global_authFragment)
                 }
             }
 

@@ -52,7 +52,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0-alpha02'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -106,6 +106,9 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     ksp "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+
+    implementation 'com.google.android.play:review:2.0.1'
+    implementation 'com.google.android.play:review-ktx:2.0.1'
 
     implementation 'com.google.android.gms:play-services-auth:20.7.0'
     implementation platform('com.google.firebase:firebase-bom:31.5.0')

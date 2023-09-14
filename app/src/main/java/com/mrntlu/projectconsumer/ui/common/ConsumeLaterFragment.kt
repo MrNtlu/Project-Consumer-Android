@@ -450,6 +450,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
 
                 override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {
                     confirmDialog?.dismiss()
+                    scoreDialog?.dismiss()
 
                     if (navController.currentDestination?.id == R.id.navigation_later) {
                         when(Constants.ContentType.fromStringRequest(item.contentType)) {
@@ -541,8 +542,10 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
         orientationEventListener?.disable()
         orientationEventListener = null
 
+        scoreDialog?.dismiss()
         confirmDialog?.dismiss()
         confirmDialog = null
+        scoreDialog = null
         searchView = null
         searchMenu = null
         popupMenu = null

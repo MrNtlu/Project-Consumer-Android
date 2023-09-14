@@ -9,6 +9,9 @@ import android.view.OrientationEventListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
+import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
@@ -40,6 +43,7 @@ import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
@@ -57,6 +61,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private var popupMenu: PopupMenu? = null
     private var searchMenu: MenuItem? = null
     private var searchView: SearchView? = null
+    private var confirmDialog: AlertDialog? = null
     private var userListAdapter: UserListAdapter? = null
     private var gestureDetector: GestureDetector? = null
 
@@ -187,45 +192,55 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     }
 
     private fun setUI() {
-        binding.apply {
-            userListTabLayout.apply {
-                if (userListTabLayout.tabCount < Constants.TabList.size) {
-                    for (tab in Constants.TabList) {
-                        addTab(
-                            userListTabLayout.newTab().setText(tab),
-                            tab == viewModel.contentType.value
-                        )
-                    }
+        binding.userListTabLayout.tabLayout.apply {
+            if (tabCount < Constants.TabList.size) {
+                for (tab in Constants.TabList) {
+                    addTab(
+                        newTab().setText(tab),
+                        tab == viewModel.contentType.value
+                    )
+                }
+
+                for (position in 0..tabCount.minus(1)) {
+                    val layout = LayoutInflater.from(context).inflate(R.layout.layout_tab_title, null) as? LinearLayout
+
+                    val tabIV = layout?.findViewById<ImageView>(R.id.tabIV)
+                    val tabLayoutParams = layoutParams
+
+                    tabLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams = tabLayoutParams
+
+                    tabIV?.setGone()
+
+                    getTabAt(position)?.customView = layout
                 }
             }
         }
     }
 
     private fun setListeners() {
-        binding.apply {
-            userListTabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    val contentType: Constants.ContentType = when(tab?.position) {
-                        0 -> Constants.ContentType.MOVIE
-                        1 -> Constants.ContentType.TV
-                        2 -> Constants.ContentType.ANIME
-                        3 -> Constants.ContentType.GAME
-                        else -> Constants.ContentType.MOVIE
-                    }
-
-                    viewModel.setContentType(contentType)
-                    userListAdapter?.changeContentType(contentType)
-
-                    if (searchView?.hasFocus() == true || (viewModel.search != null && viewModel.search!!.isNotEmptyOrBlank())) {
-                        resetSearchView()
-                    }
+        binding.userListTabLayout.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val contentType: Constants.ContentType = when(tab?.position) {
+                    0 -> Constants.ContentType.MOVIE
+                    1 -> Constants.ContentType.TV
+                    2 -> Constants.ContentType.ANIME
+                    3 -> Constants.ContentType.GAME
+                    else -> Constants.ContentType.MOVIE
                 }
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                viewModel.setContentType(contentType)
+                userListAdapter?.changeContentType(contentType)
 
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
-        }
+                if (searchView?.hasFocus() == true || (viewModel.search != null && viewModel.search!!.isNotEmptyOrBlank())) {
+                    resetSearchView()
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
     }
 
     private fun setRecyclerView() {
@@ -239,7 +254,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
-                    context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                    confirmDialog = context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
                         if (userListDeleteLiveData != null && userListDeleteLiveData?.hasActiveObservers() == true)
                             userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
@@ -282,6 +297,8 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
+                    confirmDialog?.dismiss()
+
                     val userListModel = when (contentType) {
                         Constants.ContentType.ANIME -> item.animeList[position]
                         Constants.ContentType.MOVIE -> item.movieList[position]
@@ -309,6 +326,8 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     contentType: Constants.ContentType,
                     position: Int
                 ) {
+                    confirmDialog?.dismiss()
+
                     val userListModel = when (contentType) {
                         Constants.ContentType.ANIME -> item.animeList[position]
                         Constants.ContentType.MOVIE -> item.movieList[position]
@@ -332,6 +351,8 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 }
 
                 override fun onItemSelected(item: UserList, position: Int) {
+                    confirmDialog?.dismiss()
+
                     if (navController.currentDestination?.id == R.id.navigation_user_list) {
                         val navWithAction = when(viewModel.contentType) {
                             Constants.ContentType.ANIME -> UserListFragmentDirections.actionNavigationUserListToAnimeDetailsFragment(
@@ -553,7 +574,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     }
 
     private fun selectTab(isRight: Boolean) {
-        binding.userListTabLayout.apply {
+        binding.userListTabLayout.tabLayout.apply {
             val newSelectedIndex: Int = if (selectedTabPosition == 0 && isRight)
                 tabCount.minus(1)
             else if (selectedTabPosition == tabCount.minus(1) && !isRight)
@@ -579,6 +600,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         orientationEventListener?.disable()
         orientationEventListener = null
 
+        confirmDialog = null
         searchView = null
         popupMenu = null
         searchMenu = null

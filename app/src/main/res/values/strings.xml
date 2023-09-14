@@ -268,6 +268,7 @@
     <string name="remove_bookmark_cd">Remove Bookmark</string>
     <string name="placeholder_cd">Placeholder</string>
     <string name="drag_bottom_sheet_cd">Drag Bottom Sheet</string>
+    <string name="settings_tile_icon_cd">Settings Tile Icon</string>
 
     <string name="login_register_toolbar">Login/Register</string>
     <string name="refresh_cd">Refresh</string>
@@ -368,6 +369,8 @@
     <string name="send">Send</string>
     <string name="welcome_">Welcome 👋</string>
     <string name="enjoy_">Enjoy</string>
+    <string name="account_info">Account Info</string>
+    <string name="membership">Membership</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>
@@ -429,6 +432,8 @@
     <string name="boarding_continue">Continue</string>
     <string name="change_tab_design">Change Tab Design</string>
     <string name="change_tab_info"><![CDATA[This will change the tab design of Home & Discover screens.]]></string>
+    <string name="rate_review"><![CDATA[Rate & Review]]></string>
+    <string name="feedback_suggestions"><![CDATA[Feedback & Suggestions]]></string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -12,7 +12,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.view.GestureDetectorCompat
-import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.GridAdapter
@@ -24,17 +23,13 @@ import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
-import com.mrntlu.projectconsumer.viewmodels.shared.HomeDiscoverSharedViewModel
 
 class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
-
     private companion object {
         private const val KEY_VALUE = "content_type"
 
         const val SWIPE_THRESHOLD = 100
     }
-
-    private val viewModel: HomeDiscoverSharedViewModel by activityViewModels()
 
     private var gestureDetector: GestureDetectorCompat? = null
     private var gridAdapter: GridAdapter? = null
@@ -71,13 +66,12 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
 
         setUI()
         setListeners()
-//        setSharedObservers(binding.userLoadingProgressBar, binding.userInc, binding.anonymousInc)
         setObservers()
         setXMLGridLayout()
     }
 
     private fun selectTab(isRight: Boolean) {
-        binding.discoverTabLayout.root.apply {
+        binding.discoverTabLayout.tabLayout.apply {
             val newSelectedIndex: Int = if (selectedTabPosition == 0 && isRight)
                 tabCount.minus(1)
             else if (selectedTabPosition == tabCount.minus(1) && !isRight)
@@ -92,6 +86,7 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun setUI() {
         binding.apply {
             gestureDetector = GestureDetectorCompat(this.root.context, GestureListener())
@@ -139,7 +134,7 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     hideKeyboard()
 
-                    if (tab != null && tab.position >= 0) {
+                    if (tab != null && tab.position > -1) {
                         viewModel.setSelectedTabIndex(tab.position)
                     }
 
@@ -210,6 +205,14 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
     private fun setObservers() {
         viewModel.selectedTabIndex.observe(viewLifecycleOwner) { index ->
             binding.discoverTabLayout.tabLayout.getTabAt(index)?.select()
+
+            binding.discoverTabLayout.tabLayout.apply {
+                post {
+                    val tabView = (getChildAt(0) as ViewGroup).getChildAt(index)
+                    val scrollToX = tabView.left - (width - tabView.width) / 2
+                    scrollTo(scrollToX, 0)
+                }
+            }
         }
     }
 
