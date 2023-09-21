@@ -100,7 +100,7 @@ class HomeFragment : BaseToolbarAuthFragment<FragmentHomeBinding>() {
     private fun setObservers() {
         viewModel.selectedTabIndex.observe(viewLifecycleOwner) { index ->
             binding.homeTabLayout.tabLayout.getTabAt(index)?.select()
-            binding.homeViewPager.currentItem = index
+            binding.homeViewPager.setCurrentItem(index, false)
 
             binding.homeTabLayout.tabLayout.apply {
                 post {

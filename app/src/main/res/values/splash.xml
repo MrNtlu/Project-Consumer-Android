@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.ProjectConsumer.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/darkWhite</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_logo_black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_light</item>
         <item name="postSplashScreenTheme">@style/Theme.ProjectConsumer</item>
     </style>
 </resources>
