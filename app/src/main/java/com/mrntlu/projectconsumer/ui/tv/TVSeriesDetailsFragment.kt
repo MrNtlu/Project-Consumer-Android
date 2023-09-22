@@ -21,6 +21,7 @@ import com.bumptech.glide.request.target.Target
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
+import com.mrntlu.projectconsumer.adapters.RecommendationsAdapter
 import com.mrntlu.projectconsumer.adapters.SeasonAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
@@ -65,6 +66,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     private var seasonAdapter: SeasonAdapter? = null
     private var genreAdapter: GenreAdapter? = null
+    private var recommendationsAdapter: RecommendationsAdapter? = null
     private var actorAdapter: DetailsAdapter? = null
     private var networkAdapter: DetailsAdapter? = null
     private var companiesAdapter: DetailsAdapter? = null
@@ -485,6 +487,22 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 }
             }
         }
+
+        if (!tvDetails?.recommendations.isNullOrEmpty()) {
+            binding.tvDetailsRecommendationRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                recommendationsAdapter = RecommendationsAdapter(tvDetails!!.recommendations) { position, recommendation ->
+                    val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentSelf(recommendation.tmdbID)
+                    navController.navigate(navWithAction)
+                }
+                adapter = recommendationsAdapter
+            }
+        } else {
+            binding.tvDetailsRecommendationTV.setGone()
+            binding.tvDetailsRecommendationRV.setGone()
+        }
     }
 
     override fun onDestroyView() {
@@ -494,6 +512,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
         seasonAdapter = null
         genreAdapter = null
+        recommendationsAdapter = null
         actorAdapter = null
         networkAdapter = null
         companiesAdapter = null

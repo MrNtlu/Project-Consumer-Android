@@ -371,6 +371,7 @@
     <string name="enjoy_">Enjoy</string>
     <string name="account_info">Account Info</string>
     <string name="membership">Membership</string>
+    <string name="recommendations">Recommendations</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>

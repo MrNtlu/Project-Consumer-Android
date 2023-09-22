@@ -16,6 +16,7 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.adapters.AnimeRecommendationsAdapter
 import com.mrntlu.projectconsumer.adapters.AnimeRelationsAdapter
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
@@ -65,6 +66,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
     private var characterAdapter: DetailsAdapter? = null
     private var genreAdapter: GenreAdapter? = null
     private var studioAdapter: NameUrlAdapter? = null
+    private var recommendationsAdapter: AnimeRecommendationsAdapter? = null
     private var producerAdapter: NameUrlAdapter? = null
     private var streamingAdapter: NameUrlAdapter? = null
     private var relationAdapter: AnimeRelationsAdapter? = null
@@ -400,6 +402,22 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             binding.detailsRelationTV.setGone()
             binding.detailsRelationRV.setGone()
         }
+
+        if (!animeDetails?.recommendations.isNullOrEmpty()) {
+            binding.detailsRecommendationRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                recommendationsAdapter = AnimeRecommendationsAdapter(animeDetails!!.recommendations) {
+                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(it.malID.toString())
+                    navController.navigate(navWithAction)
+                }
+                adapter = recommendationsAdapter
+            }
+        } else {
+            binding.detailsRecommendationTV.setGone()
+            binding.detailsRecommendationRV.setGone()
+        }
     }
 
     override fun onDestroyView() {
@@ -410,6 +428,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
         characterAdapter = null
         genreAdapter = null
+        recommendationsAdapter = null
         producerAdapter = null
         studioAdapter = null
         streamingAdapter = null

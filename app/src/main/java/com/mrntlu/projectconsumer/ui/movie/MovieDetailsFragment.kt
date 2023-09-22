@@ -21,6 +21,7 @@ import com.bumptech.glide.request.target.Target
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
+import com.mrntlu.projectconsumer.adapters.RecommendationsAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
@@ -57,6 +58,9 @@ import kotlinx.coroutines.withContext
 class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() {
 
     companion object {
+        private const val CT_STATE = "collapsing_toolbar_state"
+        private const val RECOMMENDATION_POSITION = "recommendation_position"
+
         private const val TYPE = "movie"
     }
 
@@ -66,10 +70,13 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
     private var actorAdapter: DetailsAdapter? = null
     private var companiesAdapter: DetailsAdapter? = null
     private var genreAdapter: GenreAdapter? = null
+    private var recommendationsAdapter: RecommendationsAdapter? = null
     private var streamingAdapter: StreamingAdapter? = null
     private var buyAdapter: StreamingAdapter? = null
     private var rentAdapter: StreamingAdapter? = null
 
+    private var recommendationPosition: Int? = null
+    private var isAppBarLifted: Boolean? = null
     private var movieDetails: MovieDetails? = null
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
@@ -97,6 +104,11 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedInstanceState?.let {
+            recommendationPosition = it.getInt(RECOMMENDATION_POSITION)
+            isAppBarLifted = it.getBoolean(CT_STATE)
+        }
 
         setObservers()
     }
@@ -196,6 +208,9 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
     private fun setUI() {
         setSpinner(binding.detailsStreamingCountrySpinner)
 
+        if (isAppBarLifted != null)
+            binding.detailsAppBarLayout.setExpanded(!isAppBarLifted!!)
+
         movieDetails!!.apply {
             binding.detailsToolbarProgress.setVisible()
             Glide.with(requireContext()).load(backdrop ?: imageURL).addListener(object:
@@ -217,7 +232,6 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     return false
                 }
             }).into(binding.detailsToolbarIV)
-
 
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
                 val titleStr = if (!translations.isNullOrEmpty()) {
@@ -453,6 +467,38 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 }
             }
         }
+
+        if (!movieDetails?.recommendations.isNullOrEmpty()) {
+            binding.detailsRecommendationRV.apply {
+                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = linearLayout
+
+                recommendationsAdapter = RecommendationsAdapter(movieDetails!!.recommendations) { position, recommendation ->
+                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                    recommendationPosition = position
+
+                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentSelf(recommendation.tmdbID)
+                    navController.navigate(navWithAction)
+                }
+                adapter = recommendationsAdapter
+
+                if (recommendationPosition != null)
+                    scrollToPosition(recommendationPosition!!)
+            }
+        } else {
+            binding.detailsRecommendationTV.setGone()
+            binding.detailsRecommendationRV.setGone()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (recommendationPosition != null)
+            outState.putInt(RECOMMENDATION_POSITION, recommendationPosition!!)
+
+        if (isAppBarLifted != null)
+            outState.putBoolean(CT_STATE, isAppBarLifted!!)
     }
 
     override fun onDestroyView() {
@@ -460,8 +506,10 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             viewModel.movieDetails.removeObservers(this)
             detailsConsumeLaterViewModel.consumeLater.removeObservers(this)
         }
+
         actorAdapter = null
         companiesAdapter = null
+        recommendationsAdapter = null
         genreAdapter = null
         streamingAdapter = null
         buyAdapter = null

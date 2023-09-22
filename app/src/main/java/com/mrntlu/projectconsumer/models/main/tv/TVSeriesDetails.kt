@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
+import com.mrntlu.projectconsumer.models.common.Recommendation
 import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.common.Translation
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
@@ -13,6 +14,7 @@ data class TVSeriesDetails(
     @SerializedName("_id")
     val id: String,
     val description: String,
+    val recommendations: List<Recommendation>,
     val actors: List<Actor>?,
     val genres: List<String>,
     val networks: List<Network>?,

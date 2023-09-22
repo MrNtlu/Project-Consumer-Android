@@ -146,13 +146,13 @@
         app:layout_constraintTop_toBottomOf="@+id/forgotPasswordButton" />
 
     <Button
-        style="@style/Widget.Material3.Button.ElevatedButton"
         android:id="@+id/googleSignInButton"
+        style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/white"
-        android:drawableLeft="@drawable/google"
+        android:drawableLeft="@drawable/ic_google"
         android:text="@string/sign_in_with_google"
         android:textColor="@color/black"
         app:layout_constraintEnd_toStartOf="@+id/guideline12"

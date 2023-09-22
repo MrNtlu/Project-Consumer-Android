@@ -179,7 +179,7 @@ fun Context.setNotification(
     pendingIntent: PendingIntent,
 ): NotificationCompat.Builder {
     val notification = NotificationCompat.Builder(this, channelId)
-        .setSmallIcon(R.drawable.ic_logo_small)
+        .setSmallIcon(R.drawable.ic_launcher_logo)
         .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_logo))
         .setColor(ContextCompat.getColor(applicationContext, R.color.materialBlack))
         .setContentTitle(title)
@@ -204,7 +204,7 @@ fun Context.setGroupNotification(
     bigContentTitle: String,
     summaryText: String,
 ): Notification = NotificationCompat.Builder(this, channelId)
-    .setSmallIcon(R.drawable.ic_logo_small)
+    .setSmallIcon(R.drawable.ic_launcher_logo)
     .setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.ic_launcher_logo))
     .setColor(ContextCompat.getColor(applicationContext, R.color.materialBlack))
     .setStyle(

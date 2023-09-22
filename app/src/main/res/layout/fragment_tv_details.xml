@@ -305,6 +305,30 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailsActorsTV" />
 
             <TextView
+                android:id="@+id/tvDetailsRecommendationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/recommendations"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsActorsRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tvDetailsRecommendationRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsRecommendationTV" />
+
+            <TextView
                 android:id="@+id/tvDetailsNetworkTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -314,7 +338,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/tvDetailsActorsRV" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsRecommendationRV" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tvDetailsNetworkRV"

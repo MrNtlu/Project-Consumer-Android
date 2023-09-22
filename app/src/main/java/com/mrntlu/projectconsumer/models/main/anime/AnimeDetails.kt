@@ -17,6 +17,7 @@ data class AnimeDetails(
     val year: Int?,
     val status: String,
     val aired: AnimeAirDate,
+    val recommendations: List<AnimeRecommendation>,
     val streaming: List<AnimeNameURL>?,
     val producers: List<AnimeNameURL>?,
     val studios: List<AnimeNameURL>?,
