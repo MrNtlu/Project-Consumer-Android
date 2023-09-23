@@ -149,7 +149,7 @@ fun Context.showInfoDialog(message: String) {
 fun Context.showLoginRegisterDialog(isConsumeLater: Boolean, onPositive: () -> Unit) {
     MaterialAlertDialogBuilder(this)
         .setTitle(getString(R.string.error))
-        .setMessage("Unauthorized access. You need to login to add this to your ${if (isConsumeLater) "watch later queue" else "list"}.")
+        .setMessage("Unauthorized access. You need to sign in to add this to your ${if (isConsumeLater) "watch later queue" else "list"}.")
         .setPositiveButton(getString(R.string.sign_in)) { dialog, _ ->
             onPositive()
             dialog.dismiss()

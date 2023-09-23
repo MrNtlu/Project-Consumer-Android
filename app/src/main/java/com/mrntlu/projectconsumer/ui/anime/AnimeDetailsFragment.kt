@@ -384,19 +384,15 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         }
 
         if (!animeDetails?.relations.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                binding.detailsRelationRV.apply {
-                    val linearLayout = LinearLayoutManager(context)
-                    layoutManager = linearLayout
+            binding.detailsRelationRV.apply {
+                val linearLayout = LinearLayoutManager(context)
+                layoutManager = linearLayout
 
-                    relationAdapter = AnimeRelationsAdapter(animeDetails!!.relations!!) { malID ->
-                        val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
-                        navController.navigate(navWithAction)
-                    }
-                    withContext(Dispatchers.Main) {
-                        adapter = relationAdapter
-                    }
+                relationAdapter = AnimeRelationsAdapter(animeDetails!!.relations!!) { malID ->
+                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
+                    navController.navigate(navWithAction)
                 }
+                adapter = relationAdapter
             }
         } else {
             binding.detailsRelationTV.setGone()

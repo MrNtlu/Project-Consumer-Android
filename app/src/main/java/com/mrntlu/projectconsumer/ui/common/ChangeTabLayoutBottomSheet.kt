@@ -62,7 +62,7 @@ class ChangeTabLayoutBottomSheet: BottomSheetDialogFragment() {
                 sharedViewModel.setTabLayoutSelection(checkedId == R.id.alternativeLayout)
             }
 
-            val placeHolderList = listOf("First", "Second", "Third")
+            val placeHolderList = listOf("Movie", "TV Series", "Anime")
 
             defaultInc.tabLayout.apply {
                 for (tab in placeHolderList) {
@@ -80,6 +80,7 @@ class ChangeTabLayoutBottomSheet: BottomSheetDialogFragment() {
                     tabIV?.setGone()
 
                     getTabAt(position)?.customView = layout
+                    getTabAt(position)?.view?.isEnabled = false
                 }
             }
 
@@ -99,6 +100,7 @@ class ChangeTabLayoutBottomSheet: BottomSheetDialogFragment() {
                     tabIV?.setImageResource(Constants.TabIconList[position])
 
                     getTabAt(position)?.customView = layout
+                    getTabAt(position)?.view?.isEnabled = false
                 }
             }
         }

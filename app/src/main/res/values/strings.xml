@@ -237,7 +237,6 @@
 
     <!-- Content Descriptions -->
     <string name="see_all_cd">See All</string>
-    <string name="login_register_cd">Login/Register Image</string>
     <string name="see_all_popular_cd">See All Popular</string>
     <string name="genre_image_cd">Genre Image</string>
     <string name="message_icon_cd">Message Icon</string>
@@ -269,8 +268,8 @@
     <string name="placeholder_cd">Placeholder</string>
     <string name="drag_bottom_sheet_cd">Drag Bottom Sheet</string>
     <string name="settings_tile_icon_cd">Settings Tile Icon</string>
+    <string name="application_logo_cd">Application Logo</string>
 
-    <string name="login_register_toolbar">Login/Register</string>
     <string name="refresh_cd">Refresh</string>
     <string name="no_poster">No Poster</string>
     <string name="genres">Genres</string>
@@ -435,6 +434,7 @@
     <string name="change_tab_info"><![CDATA[This will change the tab design of Home & Discover screens.]]></string>
     <string name="rate_review"><![CDATA[Rate & Review]]></string>
     <string name="feedback_suggestions"><![CDATA[Feedback & Suggestions]]></string>
+    <string name="follow_us">Follow Us</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

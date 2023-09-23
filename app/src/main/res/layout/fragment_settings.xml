@@ -408,18 +408,59 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
                 android:background="@android:color/transparent"
                 android:padding="0dp"
                 android:text="@string/delete_account"
                 android:textAllCaps="false"
                 android:textColor="?attr/messageBoxBackgroundColor"
                 android:textSize="10sp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 app:layout_constraintStart_toStartOf="@+id/guideline3"
                 app:layout_constraintTop_toBottomOf="@+id/privacyButton"
                 tools:ignore="SmallSp" />
+
+            <LinearLayout
+                android:id="@+id/applicationInfoLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
+                app:layout_constraintTop_toBottomOf="@+id/deleteAccountButton">
+
+
+                <ImageView
+                    android:id="@+id/applicationLogo"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:contentDescription="@string/application_logo_cd"
+                    android:scaleX="2"
+                    android:scaleY="2"
+                    android:src="@mipmap/ic_launcher_foreground" />
+
+                <TextView
+                    android:id="@+id/applicationBuildNameTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:text="@string/app_name"
+                    android:textAlignment="center"
+                    android:textColor="?attr/mainTextColor"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/applicationBuildVersionTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:maxLines="1"
+                    android:textAlignment="center"
+                    android:textColor="?attr/mainTextColor"
+                    tools:text="v0.0.17" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -235,7 +235,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             }
 
             othersThirdClickTile.apply {
-                settingsClickTileTV.text = "Follow Us"
+                settingsClickTileTV.text = getString(R.string.follow_us)
                 settingsTileIV.setImageResource(R.drawable.ic_x)
 
                 root.setSafeOnClickListener {
@@ -261,6 +261,17 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             setACTVSelection(binding.settingsSecondSelectionACTV, languageList.indexOfFirst {
                 it.second == sharedViewModel.getLanguageCode()
             })
+
+            context?.let {
+                val packageVersion = try {
+                    val packageName = it.packageName
+                    "v${it.packageManager.getPackageInfo(packageName, 0).versionName}"
+                } catch (_: Exception) {
+                    getString(R.string.unknown)
+                }
+
+                binding.applicationBuildVersionTV.text = packageVersion
+            }
         }
     }
 
