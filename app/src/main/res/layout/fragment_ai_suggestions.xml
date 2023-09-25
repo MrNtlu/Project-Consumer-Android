@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.discover.AISuggestionsFragment"
+    android:fitsSystemWindows="true"
+    android:background="?attr/mainBackgroundColor">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/suggestionsToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
+            app:navigationContentDescription="@string/back_cd"
+            app:navigationIcon="@drawable/ic_arrow_back_24"/>
+
+        <TextView
+            android:id="@+id/countDownTV"
+            android:background="?attr/mainBackgroundColor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="10d 12h 10m 3s"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="3dp"
+            android:textAlignment="textEnd"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:textSize="13sp"
+            android:textColor="?attr/mainTextColor"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/suggestionsRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

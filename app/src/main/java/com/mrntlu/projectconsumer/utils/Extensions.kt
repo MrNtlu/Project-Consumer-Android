@@ -46,6 +46,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
@@ -245,6 +246,18 @@ fun String.convertToFormattedTime(): String? {
         dateFormat.parse(this)
     }
     return if(date != null) SimpleDateFormat("HH:mm z", Locale.getDefault()).format(date) else this
+}
+
+fun String.convertToFormattedDate(): Date? {
+    return try {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US)
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        dateFormat.parse(this)
+    } catch (_: Exception) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+        dateFormat.parse(this)
+    }
 }
 
 fun String.isEmailValid(): Boolean {

@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.di
 
+import com.mrntlu.projectconsumer.repository.AISuggestionsRepository
 import com.mrntlu.projectconsumer.repository.AnimePreviewRepository
 import com.mrntlu.projectconsumer.repository.AnimeRepository
 import com.mrntlu.projectconsumer.repository.AuthRepository
@@ -11,6 +12,7 @@ import com.mrntlu.projectconsumer.repository.TVPreviewRepository
 import com.mrntlu.projectconsumer.repository.TVRepository
 import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.repository.UserRepository
+import com.mrntlu.projectconsumer.service.retrofit.AISuggestionApiService
 import com.mrntlu.projectconsumer.service.retrofit.AnimeApiService
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.GameApiService
@@ -73,4 +75,7 @@ class HiltModule {
 
     @Provides
     fun provideUserRepository(userApiService: UserApiService) = UserRepository(userApiService)
+
+    @Provides
+    fun provideAISuggestionsRepository(aiSuggestionApiService: AISuggestionApiService) = AISuggestionsRepository(aiSuggestionApiService)
 }

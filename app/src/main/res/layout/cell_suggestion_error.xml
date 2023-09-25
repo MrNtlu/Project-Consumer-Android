@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
     android:background="?attr/mainBackgroundColor"
     android:elevation="9dp">
 
@@ -20,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/error" />
+        app:lottie_rawRes="@raw/ai_error" />
 
     <TextView
         android:id="@+id/errorText"

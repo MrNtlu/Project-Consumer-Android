@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.ui.discover
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.LayoutInflater
@@ -12,6 +13,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.view.GestureDetectorCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.GridAdapter
@@ -19,9 +25,11 @@ import com.mrntlu.projectconsumer.databinding.FragmentDiscoverBinding
 import com.mrntlu.projectconsumer.ui.BaseToolbarAuthFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
 class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
@@ -125,6 +133,10 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setListeners() {
         binding.apply {
+            aiRecommendationLayout.root.setSafeOnClickListener {
+                navController.navigate(R.id.action_navigation_discover_to_AISuggestionsFragment)
+            }
+
             discoverConstraintLayout.setOnTouchListener { _, event ->
                 gestureDetector?.onTouchEvent(event)
                 true
@@ -240,6 +252,19 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
 
         binding.gridView.layoutParams = layoutParams
 
+        binding.aiRecommendationLayout.apply {
+            Glide.with(root.context).load("https://www.techrepublic.com/wp-content/uploads/2023/07/tr71123-ai-art.jpeg").addListener(object: RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+                    genreIV.setGone()
+                    return false
+                }
+
+                override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean { return false }
+
+            }).into(genreIV)
+            genreTV.text = getString(R.string.suggestions)
+        }
+
         gridAdapter = GridAdapter(
             requireContext(), list,
             onDiscoveryClicked = {
@@ -261,7 +286,7 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
                 }
             }
         )
-        binding.gridView.numColumns = if(resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 3 else 2
+        binding.gridView.numColumns = columnCount
         binding.gridView.adapter = gridAdapter
     }
 

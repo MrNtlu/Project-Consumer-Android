@@ -7,6 +7,7 @@ import com.mrntlu.projectconsumer.BuildConfig
 import com.mrntlu.projectconsumer.service.AuthAuthenticator
 import com.mrntlu.projectconsumer.service.AuthInterceptor
 import com.mrntlu.projectconsumer.service.TokenManager
+import com.mrntlu.projectconsumer.service.retrofit.AISuggestionApiService
 import com.mrntlu.projectconsumer.service.retrofit.AnimeApiService
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.GameApiService
@@ -109,6 +110,14 @@ class SingletonModule {
                     Constants.API_URL
             )
             .addConverterFactory(GsonConverterFactory.create())
+
+    @Singleton
+    @Provides
+    fun provideAISuggestionAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): AISuggestionApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(AISuggestionApiService::class.java)
 
     @Singleton
     @Provides
