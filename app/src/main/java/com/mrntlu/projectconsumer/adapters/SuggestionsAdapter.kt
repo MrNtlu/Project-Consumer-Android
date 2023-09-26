@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.button.MaterialButton
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.CellSuggestionBinding
 import com.mrntlu.projectconsumer.databinding.CellSuggestionErrorBinding
@@ -35,6 +36,7 @@ class SuggestionsAdapter(
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var errorMessage: String? = null
+    private var isAuthenticated = true
     var isLoading = true
 
     private var arrayList: ArrayList<AISuggestion> = arrayListOf()
@@ -88,9 +90,10 @@ class SuggestionsAdapter(
             arrayList.size
     }
 
-    fun setErrorView(errorMessage: String) {
+    fun setErrorView(errorMessage: String, isAuthenticated: Boolean = true) {
         setState(RecyclerViewEnum.Error)
         this.errorMessage = errorMessage
+        this.isAuthenticated = isAuthenticated
         notifyDataSetChanged()
     }
 
@@ -215,6 +218,11 @@ class SuggestionsAdapter(
         fun bind() {
             binding.apply {
                 errorText.text = errorMessage
+
+                if (!isAuthenticated) {
+                    refreshButton.text = root.context.getString(R.string.sign_in)
+                    (refreshButton as? MaterialButton)?.icon = ContextCompat.getDrawable(root.context, R.drawable.ic_login_24)
+                }
 
                 refreshButton.setSafeOnClickListener {
                     interaction.onErrorRefreshPressed()

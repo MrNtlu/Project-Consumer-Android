@@ -109,7 +109,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
                     if (!sharedViewModel.isNetworkAvailable())
                         context?.showErrorDialog(getString(R.string.no_internet_connection))
                     else {
-                        context?.showLoginRegisterDialog(true) {
+                        context?.showLoginRegisterDialog(isConsumeLater = true) {
                             navController.navigate(R.id.action_global_authFragment)
                         }
                     }
@@ -129,7 +129,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
                     if (!sharedViewModel.isNetworkAvailable())
                         context?.showErrorDialog(getString(R.string.no_internet_connection))
 
-                    context?.showLoginRegisterDialog(false) {
+                    context?.showLoginRegisterDialog(isConsumeLater = false) {
                         navController.navigate(R.id.action_global_authFragment)
                     }
                 }

@@ -429,8 +429,9 @@
     <string name="change_layout_info">This will change the layout of Movie, TV Series, Anime and Game content. You can see the preview below.</string>
     <string name="boarding_sign_in">We recommend you to sign in for better experience</string>
     <string name="boarding_text_1">Mark it and save it for later watching and playing.</string>
+    <string name="boarding_text_1_alt">AI will suggest new content by analyzing your list.</string>
     <string name="boarding_text_2">Manage your list, mark, rate, and track your progress in one place!</string>
-    <string name="boarding_text_3">Discover and search for content easily with powerful search and filters.</string>
+    <string name="boarding_text_3">Discover and search for content easily with search and filters.</string>
     <string name="boarding_text_4">Once you\'ve signed in, you can access your User List and Watch Later from Profile.</string>
     <string name="boarding_continue">Continue</string>
     <string name="change_tab_design">Change Tab Design</string>
@@ -438,6 +439,14 @@
     <string name="rate_review"><![CDATA[Rate & Review]]></string>
     <string name="feedback_suggestions"><![CDATA[Feedback & Suggestions]]></string>
     <string name="follow_us">Follow Us</string>
+    <string name="ai_suggestion_info">"AI will analyze the content on your list, taking into account the scores you've given, and suggest you new content accurately!\n                                \n🧑 Basic, every month 3 from each content.\n                \n👑 Premium, every week 3 from each content.\n                \n🤴 Premium Supporter, every week 5 from each content."</string>
+    <string name="more_soon_">More soon…</string>
+    <string name="ai_suggestions_once_every_week">AI Suggestions once every week</string>
+    <string name="not_now">Not Now</string>
+    <string name="get_premium">Get Premium</string>
+    <string name="upgrade_to_premium">Upgrade to Premium</string>
+    <string name="restore_purchases">Restore Purchases</string>
+    <string name="nothing_to_restore">There is nothing to restore.</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

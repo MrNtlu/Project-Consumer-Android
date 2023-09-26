@@ -13,5 +13,6 @@
         android:layout_height="match_parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
+        android:paddingHorizontal="8dp"
         app:lottie_rawRes="@raw/ai_loading" />
 </LinearLayout>

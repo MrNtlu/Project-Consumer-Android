@@ -16,10 +16,6 @@ class AISuggestionsViewModel @Inject constructor(
     private val repository: AISuggestionsRepository,
 ): ViewModel() {
 
-    init {
-        getAISuggestions()
-    }
-
     private val _aiSuggestionsResponse = MutableLiveData<NetworkResponse<DataResponse<AISuggestionResponse>>>()
     val aiSuggestionsResponse: LiveData<NetworkResponse<DataResponse<AISuggestionResponse>>> = _aiSuggestionsResponse
 

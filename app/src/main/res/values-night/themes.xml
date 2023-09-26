@@ -90,6 +90,10 @@
         <item name="colorControlNormal">@color/white</item>
     </style>
 
+    <style name="Theme.ProjectConsumer.Toolbar.Subtitle" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">12sp</item>
+    </style>
+
 <!--   Material Dialog Style   -->
     <style name="Theme.ProjectConsumer.ErrorMaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="colorPrimary">?attr/messageBoxBackgroundColor</item>

@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.databinding.adapters.ViewBindingAdapter.setPadding
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mrntlu.projectconsumer.MainActivity
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.SuggestionsAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentAiSuggestionsBinding
@@ -18,7 +18,8 @@ import com.mrntlu.projectconsumer.models.common.AISuggestion
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.ui.BaseFragment
-import com.mrntlu.projectconsumer.ui.common.ConsumeLaterFragmentDirections
+import com.mrntlu.projectconsumer.ui.common.OnPremiumDismissCallback
+import com.mrntlu.projectconsumer.ui.common.PremiumBottomSheet
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
@@ -26,8 +27,12 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.convertToFormattedDate
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
+import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.common.AISuggestionsConsumeLaterViewModel
 import com.mrntlu.projectconsumer.viewmodels.main.common.AISuggestionsViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
@@ -62,16 +67,45 @@ class AISuggestionsFragment : BaseFragment<FragmentAiSuggestionsBinding>() {
             dialog = LoadingDialog(it)
         }
 
-
         setToolbar()
         setRecyclerView()
-        setObservers()
+        if (sharedViewModel.isLoggedIn()) {
+            viewModel.getAISuggestions()
+            setObservers()
+        } else {
+            suggestionsAdapter?.setErrorView("You need to be signed in!", false)
+            binding.premiumButton.setGone()
+        }
     }
 
     private fun setToolbar() {
         binding.suggestionsToolbar.apply {
+            title = getString(R.string._suggestions)
+
             setNavigationOnClickListener { navController.popBackStack() }
-            binding.suggestionsToolbar.title = getString(R.string._suggestions)
+
+            setOnMenuItemClickListener {
+                when(it.itemId) {
+                    R.id.infoMenu -> {
+                        context?.showInfoDialog(getString(R.string.ai_suggestion_info))
+                    }
+                }
+
+                true
+            }
+        }
+
+        binding.premiumButton.setVisibilityByCondition(userSharedViewModel.userInfo?.isPremium == true)
+        binding.premiumButton.setSafeOnClickListener {
+            activity?.let {
+                val boardingSheet = PremiumBottomSheet(object: OnPremiumDismissCallback {
+                    override fun onDismissed(isPurchased: Boolean) {
+                        if (isPurchased)
+                            navController.popBackStack()
+                    }
+                })
+                boardingSheet.show(it.supportFragmentManager, PremiumBottomSheet.TAG)
+            }
         }
     }
 
@@ -95,12 +129,16 @@ class AISuggestionsFragment : BaseFragment<FragmentAiSuggestionsBinding>() {
                     val minutes = ((millisUntilFinished % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) / (60 * 1000)
                     val seconds = (((millisUntilFinished % (24 * 60 * 60 * 1000)) % (60 * 60 * 1000)) % (60 * 1000)) / 1000
 
-                    val countDownText = "⌛ $days d $hours h $minutes m $seconds s"
-                    binding.countDownTV.text = countDownText
+                    try {
+                        val countDownText = "$days d $hours h $minutes m $seconds s"
+                        binding.suggestionsToolbar.subtitle = countDownText
+                    } catch (_: Exception) {}
                 }
 
                 override fun onFinish() {
-                    binding.countDownTV.text = getString(R.string.ready_to_suggest)
+                    try {
+                        binding.suggestionsToolbar.subtitle = getString(R.string.ready_to_suggest)
+                    } catch (_: Exception) {}
                 }
             }
             countDownTimer?.start()
@@ -196,7 +234,10 @@ class AISuggestionsFragment : BaseFragment<FragmentAiSuggestionsBinding>() {
                 }
 
                 override fun onErrorRefreshPressed() {
-                    viewModel.getAISuggestions()
+                    if (sharedViewModel.isLoggedIn())
+                        viewModel.getAISuggestions()
+                    else
+                        (activity as? MainActivity)?.navigateToSettings()
                 }
 
                 override fun onCancelPressed() {
@@ -220,8 +261,6 @@ class AISuggestionsFragment : BaseFragment<FragmentAiSuggestionsBinding>() {
                 }
             }
         }
-
-
     }
 
     override fun onDestroyView() {

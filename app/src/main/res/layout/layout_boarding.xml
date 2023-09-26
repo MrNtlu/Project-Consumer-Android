@@ -75,8 +75,10 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:contentDescription="@string/watch_later"
-                    app:srcCompat="@drawable/ic_bookmark_filled"
+                    android:scaleY="1.15"
+                    android:scaleX="1.15"
+                    android:contentDescription="@string/suggestions"
+                    app:srcCompat="@drawable/ic_ai"
                     app:tint="?attr/colorPrimary" />
 
                 <TextView
@@ -85,7 +87,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="6dp"
                     android:layout_marginEnd="16dp"
-                    android:text="@string/watch_later"
+                    android:text="@string/suggestions"
                     android:textAlignment="center"
                     android:textColor="?attr/mainTextColor"
                     android:textSize="16sp"
@@ -95,7 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="@string/boarding_text_1"
+                    android:text="@string/boarding_text_1_alt"
                     android:textAlignment="center"
                     android:textColor="?attr/mainTextColor" />
             </LinearLayout>

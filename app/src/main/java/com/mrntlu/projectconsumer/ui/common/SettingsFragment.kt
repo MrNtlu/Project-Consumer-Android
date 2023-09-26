@@ -20,6 +20,7 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentSettingsBinding
+import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateMembershipBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
@@ -33,6 +34,8 @@ import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.common.SettingsViewModel
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.restorePurchasesWith
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -100,12 +103,77 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             accountInfoSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
             deleteAccountButton.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
 
-            accountFirstClickTile.root.setGone()
-            accountFirstTileDivider.setGone()
+            val isNotLoggedInOrIsPremium = !sharedViewModel.isLoggedIn() ||
+                (sharedViewModel.isLoggedIn() && userSharedViewModel.userInfo?.isPremium == true)
+
+            premiumTile.setVisibilityByCondition(isNotLoggedInOrIsPremium)
+            premiumDivider.setVisibilityByCondition(isNotLoggedInOrIsPremium)
+
+            accountFirstClickTile.root.setVisibilityByCondition(isNotLoggedInOrIsPremium)
+            accountFirstTileDivider.setVisibilityByCondition(isNotLoggedInOrIsPremium)
+
             accountSwitchTileDivider.setGone()
             accountSwitchTile.setGone()
 
             if (sharedViewModel.isLoggedIn()) {
+                accountFirstClickTile.apply {
+                    settingsClickTileTV.text = getString(R.string.restore_purchases)
+                    settingsTileIV.setImageResource(R.drawable.ic_restore)
+
+                    root.setSafeOnClickListener {
+                        if (::dialog.isInitialized)
+                            dialog.showLoadingDialog()
+
+                        Purchases.sharedInstance.restorePurchasesWith { customerInfo ->
+                            val isMembershipActive = customerInfo.entitlements["premium_membership"]?.isActive
+
+                            if (isMembershipActive == true && userSharedViewModel.userInfo?.isPremium == false) {
+                                userSharedViewModel.updateMembership(UpdateMembershipBody(
+                                    true,
+                                    if (customerInfo.entitlements["premium_membership"]?.productIdentifier?.equals("watchlistfy_premium_1mo") == true)
+                                        1
+                                    else
+                                        2
+                                )).observe(viewLifecycleOwner) { response ->
+                                    when(response) {
+                                        is NetworkResponse.Failure -> {
+                                            if (::dialog.isInitialized)
+                                                dialog.dismissDialog()
+                                        }
+                                        NetworkResponse.Loading -> {}
+                                        is NetworkResponse.Success -> {
+                                            if (::dialog.isInitialized)
+                                                dialog.dismissDialog()
+
+                                            userSharedViewModel.getBasicInfo()
+                                            navController.popBackStack()
+
+                                            context?.showInfoDialog(response.data.message)
+                                        }
+                                    }
+                                }
+                            } else {
+                                context?.showInfoDialog(getString(R.string.nothing_to_restore))
+
+                                if (::dialog.isInitialized)
+                                    dialog.dismissDialog()
+                            }
+                        }
+                    }
+                }
+
+                premiumTile.setSafeOnClickListener {
+                    activity?.let {
+                        val boardingSheet = PremiumBottomSheet(object: OnPremiumDismissCallback {
+                            override fun onDismissed(isPurchased: Boolean) {
+                                if (isPurchased)
+                                    navController.popBackStack()
+                            }
+                        })
+                        boardingSheet.show(it.supportFragmentManager, PremiumBottomSheet.TAG)
+                    }
+                }
+
                 userSharedViewModel.userInfo?.apply {
                     accountInfoFirstTile.settingsInfoTitleTV.text = getString(R.string.email)
                     accountInfoFirstTile.settingsInfoTV.text = email
@@ -115,8 +183,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
                     accountInfoThirdTile.settingsInfoTitleTV.text = getString(R.string.membership)
                     accountInfoThirdTile.settingsInfoTV.text = when(membershipType) {
-                        1 -> "Premium"
-                        2 -> "Premium Supporter"
+                        1 -> "👑 Premium"
+                        2 -> "🤴 Premium Supporter"
                         else -> "Basic"
                     }
                 }
@@ -134,6 +202,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                             }
                             GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
                                 .signOut()
+                            Purchases.sharedInstance.logOut()
+
                             sharedViewModel.setAuthentication(false)
                             navController.popBackStack(R.id.navigation_home, false)
                         }
@@ -358,6 +428,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                                         tokenManager.deleteToken()
                                         GoogleSignIn.getClient(it.context, GoogleSignInOptions.DEFAULT_SIGN_IN)
                                             .signOut()
+                                        Purchases.sharedInstance.logOut()
+
                                         withContext(Dispatchers.Main) {
                                             sharedViewModel.setAuthentication(false)
                                             navController.popBackStack(R.id.navigation_home, false)

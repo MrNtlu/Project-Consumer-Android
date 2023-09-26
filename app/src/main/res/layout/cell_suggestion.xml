@@ -14,7 +14,7 @@
         android:id="@+id/imageInclude"
         layout="@layout/cell_preview_item"
         android:layout_width="wrap_content"
-        android:layout_height="125dp"
+        android:layout_height="150dp"
         android:layout_marginStart="3dp" />
 
     <LinearLayout
@@ -103,9 +103,9 @@
         android:id="@+id/watchLaterLottie"
         android:layout_width="42dp"
         android:layout_height="42dp"
-        android:layout_marginTop="8dp"
         android:scaleX="1.2"
         android:scaleY="1.1"
+        android:layout_gravity="center"
         android:contentDescription="@string/add_to_watch_later_cd"
         android:layout_marginEnd="6dp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -16,24 +16,25 @@
             android:id="@+id/suggestionsToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/ai_suggestions_menu"
             app:layout_scrollFlags="scroll|enterAlways"
+            app:subtitleTextAppearance="@style/Theme.ProjectConsumer.Toolbar.Subtitle"
             android:theme="@style/Theme.ProjectConsumer.Toolbar"
             android:background="?attr/toolbarBackgroundColor"
             app:navigationContentDescription="@string/back_cd"
-            app:navigationIcon="@drawable/ic_arrow_back_24"/>
+            app:navigationIcon="@drawable/ic_arrow_back_24">
 
-        <TextView
-            android:id="@+id/countDownTV"
-            android:background="?attr/mainBackgroundColor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="10d 12h 10m 3s"
-            android:paddingHorizontal="6dp"
-            android:paddingVertical="3dp"
-            android:textAlignment="textEnd"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:textSize="13sp"
-            android:textColor="?attr/mainTextColor"/>
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/premiumButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:scaleX="1.1"
+                android:scaleY="1.1"
+                android:layout_gravity="end"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/premium"/>
+        </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView

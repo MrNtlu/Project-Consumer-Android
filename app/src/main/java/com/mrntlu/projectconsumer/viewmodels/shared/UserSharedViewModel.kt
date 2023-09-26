@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mrntlu.projectconsumer.models.auth.BasicUserInfo
+import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateMembershipBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
@@ -29,6 +30,9 @@ class UserSharedViewModel @Inject constructor(
     fun getBasicInfo() = networkResponseFlowCollector(
         repository.getBasicUserInfo()
     ) { response ->
+        if (response is NetworkResponse.Success)
+            userInfo = response.data.data
+
         _userInfoResponse.value = response
     }
 
@@ -37,6 +41,20 @@ class UserSharedViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateUserImage(image).collect { response ->
+                withContext(Dispatchers.Main) {
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
+    }
+
+    fun updateMembership(body: UpdateMembershipBody): LiveData<NetworkResponse<MessageResponse>> {
+        val liveData = MutableLiveData<NetworkResponse<MessageResponse>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateMembership(body).collect { response ->
                 withContext(Dispatchers.Main) {
                     liveData.value = response
                 }

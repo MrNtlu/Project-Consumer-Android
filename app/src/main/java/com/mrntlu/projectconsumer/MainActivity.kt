@@ -121,6 +121,10 @@ class MainActivity : AppCompatActivity() {
         binding.navView.selectedItemId = R.id.navigation_profile
     }
 
+    fun navigateToSettings() {
+        binding.navView.selectedItemId = R.id.navigation_settings
+    }
+
     fun setBottomNavProfile(image: String) {
         binding.navView.apply {
             val menuItem = menu.findItem(R.id.navigation_profile)

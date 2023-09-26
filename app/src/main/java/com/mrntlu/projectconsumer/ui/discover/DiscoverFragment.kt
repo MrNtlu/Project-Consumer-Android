@@ -25,7 +25,6 @@ import com.mrntlu.projectconsumer.databinding.FragmentDiscoverBinding
 import com.mrntlu.projectconsumer.ui.BaseToolbarAuthFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.dpToPx
-import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone

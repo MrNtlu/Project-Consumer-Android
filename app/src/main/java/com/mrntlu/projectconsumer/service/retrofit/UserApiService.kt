@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.service.retrofit
 import com.mrntlu.projectconsumer.models.auth.BasicUserInfo
 import com.mrntlu.projectconsumer.models.auth.UserInfo
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateFCMTokenBody
+import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateMembershipBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
@@ -25,6 +26,9 @@ interface UserApiService {
 
     @PATCH("user/token")
     suspend fun updateFCMToken(@Body body: UpdateFCMTokenBody): Response<MessageResponse>
+
+    @PATCH("user/membership")
+    suspend fun updateMembership(@Body body: UpdateMembershipBody): Response<MessageResponse>
 
     @DELETE("user/delete")
     suspend fun deleteUser(): Response<MessageResponse>

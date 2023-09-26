@@ -12,6 +12,10 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.CHANNEL_NAME
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.GROUP_ID
 import com.mrntlu.projectconsumer.service.notification.FirebaseMessagingService.Companion.GROUP_NAME
+import com.mrntlu.projectconsumer.utils.Constants.REVENUECAT_API_KEY
+import com.revenuecat.purchases.LogLevel
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.PurchasesConfiguration
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -20,6 +24,9 @@ class HiltApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
+
+        Purchases.logLevel = LogLevel.DEBUG
+        Purchases.configure(PurchasesConfiguration.Builder(this, REVENUECAT_API_KEY).build())
 
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
