@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -224,10 +225,17 @@ class MainActivity : AppCompatActivity() {
         sharedViewModel.setLayoutSelection(prefs.getBoolean(LAYOUT_PREF, false))
         sharedViewModel.setIsDisplayed(prefs.getBoolean(BOARDING_PREF, false))
         sharedViewModel.setThemeCode(prefs.getInt(THEME_PREF, DARK_THEME))
-        AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
 
         super.onCreate(savedInstanceState)
+
         installSplashScreen()
+
+        if (!sharedViewModel.isLightTheme()) {
+            try {
+                WebView(this)
+            } catch (_: Exception) {}
+        }
+        AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -316,18 +324,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun computeWindowSizeClasses() {
-        val metrics = WindowMetricsCalculator.getOrCreate()
-            .computeCurrentWindowMetrics(this)
+        val metrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(this)
 
-        val widthDp = metrics.bounds.width() /
-                resources.displayMetrics.density
+        val widthDp = metrics.bounds.width() / resources.displayMetrics.density
         val widthWindowSizeClass = when {
             widthDp < 600f -> WindowSizeClass.COMPACT
             widthDp < 840f -> WindowSizeClass.MEDIUM
             else -> WindowSizeClass.EXPANDED
         }
 
+        val heightDp = metrics.bounds.height() / resources.displayMetrics.density
+        val heightWindowSizeClass = when {
+            heightDp < 480f -> WindowSizeClass.COMPACT
+            heightDp < 900f -> WindowSizeClass.MEDIUM
+            else -> WindowSizeClass.EXPANDED
+        }
+
         sharedViewModel.setWindowSize(widthWindowSizeClass)
+        sharedViewModel.setWindowHeight(heightWindowSizeClass)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

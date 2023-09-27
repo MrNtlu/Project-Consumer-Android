@@ -274,6 +274,19 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 }
             }
 
+            val trailerSplitStr = animeDetails?.trailer?.split("v=")
+            val isTrailerAvailable = trailerSplitStr != null && trailerSplitStr.size > 1 && trailerSplitStr[1].isNotEmptyOrBlank()
+            binding.trailerButton.setVisibilityByCondition(!isTrailerAvailable)
+
+            trailerButton.setSafeOnClickListener {
+                if (isTrailerAvailable) {
+                    val navWithActions = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToTrailerFragment(
+                        trailerSplitStr!![1]
+                    )
+                    navController.navigate(navWithActions)
+                }
+            }
+
             detailsDescriptionTV.setOnClickListener {
                 detailsDescriptionTV.toggle()
             }

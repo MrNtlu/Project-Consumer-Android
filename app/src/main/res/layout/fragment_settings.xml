@@ -398,6 +398,15 @@
                     android:orientation="vertical">
 
                     <include
+                        android:id="@+id/othersFeatureRequestClickTile"
+                        layout="@layout/settings_click_tile" />
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/othersFeatureRequestDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <include
                         android:id="@+id/othersFirstClickTile"
                         layout="@layout/settings_click_tile" />
 
@@ -416,6 +425,15 @@
 
                     <include
                         android:id="@+id/othersThirdClickTile"
+                        layout="@layout/settings_click_tile" />
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/othersThirdDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                    <include
+                        android:id="@+id/othersFourthClickTile"
                         layout="@layout/settings_click_tile" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -467,7 +485,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="72dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"

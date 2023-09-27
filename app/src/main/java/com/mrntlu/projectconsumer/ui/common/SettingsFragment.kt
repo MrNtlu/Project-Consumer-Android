@@ -26,6 +26,8 @@ import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
+import com.mrntlu.projectconsumer.utils.openInBrowser
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -174,19 +176,24 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     }
                 }
 
-                userSharedViewModel.userInfo?.apply {
-                    accountInfoFirstTile.settingsInfoTitleTV.text = getString(R.string.email)
-                    accountInfoFirstTile.settingsInfoTV.text = email
+                if (userSharedViewModel.userInfo != null && userSharedViewModel.userInfo!!.username.isNotEmptyOrBlank()) {
+                    userSharedViewModel.userInfo!!.apply {
+                        accountInfoFirstTile.settingsInfoTitleTV.text = getString(R.string.email)
+                        accountInfoFirstTile.settingsInfoTV.text = email
 
-                    accountInfoSecondTile.settingsInfoTitleTV.text = getString(R.string.username)
-                    accountInfoSecondTile.settingsInfoTV.text = username
+                        accountInfoSecondTile.settingsInfoTitleTV.text = getString(R.string.username)
+                        accountInfoSecondTile.settingsInfoTV.text = username
 
-                    accountInfoThirdTile.settingsInfoTitleTV.text = getString(R.string.membership)
-                    accountInfoThirdTile.settingsInfoTV.text = when(membershipType) {
-                        1 -> "👑 Premium"
-                        2 -> "🤴 Premium Supporter"
-                        else -> "Basic"
+                        accountInfoThirdTile.settingsInfoTitleTV.text = getString(R.string.membership)
+                        accountInfoThirdTile.settingsInfoTV.text = when (membershipType) {
+                            1 -> "👑 Premium"
+                            2 -> "🤴 Premium Supporter"
+                            else -> "Basic"
+                        }
                     }
+                } else {
+                    accountInfoTitleTV.setGone()
+                    accountInfoSettingsCard.setGone()
                 }
 
                 accountSecondClickTile.apply {
@@ -266,11 +273,21 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
             }
 
+            othersFeatureRequestClickTile.apply {
+                settingsClickTileTV.text = getString(R.string.make_request)
+                settingsTileIV.setImageResource(R.drawable.ic_feedback)
+                settingsTileIV.scaleX = 1.3f
+                settingsTileIV.scaleY = 1.3f
+
+                root.setSafeOnClickListener {
+                    context?.openInBrowser("https://watchlistfy.canny.io/feature-requests")
+                }
+            }
+
             val manager = ReviewManagerFactory.create(root.context)
             manager.requestReviewFlow().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     othersFirstClickTile.apply {
-
                         settingsClickTileTV.text = getString(R.string.rate_review)
                         settingsTileIV.setImageResource(R.drawable.ic_rate)
 
@@ -287,8 +304,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             }
 
             othersSecondClickTile.apply {
-                settingsClickTileTV.text = getString(R.string.feedback_suggestions)
-                settingsTileIV.setImageResource(R.drawable.ic_feedback)
+                settingsClickTileTV.text = getString(R.string.send_email)
+                settingsTileIV.setImageResource(R.drawable.ic_mail)
 
                 root.setSafeOnClickListener {
                     try {
@@ -304,7 +321,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
             }
 
-            othersThirdClickTile.apply {
+            othersFourthClickTile.apply {
                 settingsClickTileTV.text = getString(R.string.follow_us)
                 settingsTileIV.setImageResource(R.drawable.ic_x)
 
@@ -314,6 +331,15 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                         Uri.parse("https://twitter.com/watchlistfy")
                     )
                     startActivity(urlIntent)
+                }
+            }
+
+            othersThirdClickTile.apply {
+                settingsClickTileTV.text = getString(R.string.change_logs)
+                settingsTileIV.setImageResource(R.drawable.ic_log)
+
+                root.setSafeOnClickListener {
+                    context?.openInBrowser("https://watchlistfy.canny.io/changelog")
                 }
             }
 

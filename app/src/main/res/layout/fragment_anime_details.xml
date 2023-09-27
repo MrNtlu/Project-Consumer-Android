@@ -119,6 +119,26 @@
                 app:layout_constraintTop_toBottomOf="@+id/detailsBarrier"
                 tools:text="TV" />
 
+            <Button
+                android:id="@+id/trailerButton"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:paddingVertical="3dp"
+                android:paddingHorizontal="6dp"
+                android:textSize="16sp"
+                android:text="@string/trailer"
+                android:textColor="@color/blue900"
+                app:icon="@drawable/ic_play"
+                app:iconGravity="end"
+                app:iconPadding="8dp"
+                app:iconTint="@color/blue900"
+                app:iconSize="22dp"
+                app:layout_constraintBottom_toBottomOf="@+id/detailsInformationTV"
+                app:layout_constraintEnd_toStartOf="@+id/guideline29"
+                app:layout_constraintTop_toTopOf="@+id/detailsInformationTV" />
+
             <TextView
                 android:id="@+id/detailsStatusTV"
                 android:layout_width="wrap_content"

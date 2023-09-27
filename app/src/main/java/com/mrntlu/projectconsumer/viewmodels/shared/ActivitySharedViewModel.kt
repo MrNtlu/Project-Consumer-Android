@@ -114,8 +114,16 @@ class ActivitySharedViewModel: ViewModel() {
         MutableLiveData(WindowSizeClass.MEDIUM)
     }
 
+    val windowHeight: MutableLiveData<WindowSizeClass> by lazy {
+        MutableLiveData(WindowSizeClass.MEDIUM)
+    }
+
     fun setWindowSize(widthSize: WindowSizeClass) {
         windowSize.value = widthSize
+    }
+
+    fun setWindowHeight(heightSize: WindowSizeClass) {
+        windowHeight.value = heightSize
     }
 
     // Network Status

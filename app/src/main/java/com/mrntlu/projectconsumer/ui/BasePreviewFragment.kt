@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.HeroCarouselStrategy
+import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.adapters.CarouselAdapter
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentPreviewBinding
@@ -32,6 +33,21 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     ): View {
         _binding = FragmentPreviewBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        sharedViewModel.windowHeight.observe(viewLifecycleOwner) {
+            val height: WindowSizeClass = it
+
+            binding.guideline14.setGuidelinePercent(
+                when(height) {
+                    WindowSizeClass.EXPANDED -> 0.4f
+                    else -> 0.34f
+                }
+            )
+        }
     }
 
     protected fun setShowcaseRecyclerView(
@@ -155,7 +171,8 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     }
 
     override fun onDestroyView() {
-        sharedViewModel.networkStatus.removeObservers(this)
+        sharedViewModel.windowHeight.removeObservers(viewLifecycleOwner)
+        sharedViewModel.networkStatus.removeObservers(viewLifecycleOwner)
         snapHelper = null
         showCaseAdapter = null
         upcomingAdapter = null

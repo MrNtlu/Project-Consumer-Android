@@ -447,6 +447,9 @@
     <string name="upgrade_to_premium">Upgrade to Premium</string>
     <string name="restore_purchases">Restore Purchases</string>
     <string name="nothing_to_restore">There is nothing to restore.</string>
+    <string name="make_request">Make a Feature Request</string>
+    <string name="send_email">Send Email</string>
+    <string name="change_logs">Change Logs</string>
 
     <string-array name="score_list">
         <item>@string/select</item>
@@ -462,4 +465,7 @@
         <item>9</item>
         <item>10</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="trailer">Trailer</string>
 </resources>

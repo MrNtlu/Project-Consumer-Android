@@ -172,7 +172,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
 
                         withContext(Dispatchers.Main) {
                             sharedViewModel.setAuthentication(true)
-                            navController.popBackStack()
+                            navController.popBackStack(R.id.navigation_home, false)
                         }
                     }
                 }
