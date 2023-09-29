@@ -133,7 +133,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
     override fun onStart() {
         super.onStart()
 
-        if (!viewModel.isRestoringData && !viewModel.didOrientationChange) {
+        if (!viewModel.isRestoringData && !viewModel.didOrientationChange && viewModel.consumeLaterList.value != null) {
             consumeLaterAdapter?.setLoadingView()
             viewModel.getConsumeLater()
         }
@@ -363,6 +363,16 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
             clipToPadding = false
 
             val linearLayout = LinearLayoutManager(context)
+
+//            val divider = MaterialDividerItemDecoration(this.context, LinearLayoutManager.VERTICAL)
+//            divider.apply {
+//                dividerInsetStart = context.dpToPx(100f)
+//                dividerInsetEnd = context.dpToPx(8f)
+//                dividerThickness = context.dpToPx(1f)
+//                isLastItemDecorated = false
+//            }
+//            addItemDecoration(divider)
+
             layoutManager = linearLayout
 
             consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {

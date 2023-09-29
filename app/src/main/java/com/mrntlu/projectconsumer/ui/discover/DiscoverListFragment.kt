@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
@@ -22,6 +23,7 @@ import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
@@ -177,6 +179,16 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
         binding.listRV.apply {
             val rvLayoutManager = if (sharedViewModel.isAltLayout()) {
                 val linearLayoutManager = LinearLayoutManager(this.context)
+
+                val divider = MaterialDividerItemDecoration(this.context, LinearLayoutManager.VERTICAL)
+                divider.apply {
+                    dividerInsetStart = context.dpToPx(119f)
+                    dividerInsetEnd = context.dpToPx(8f)
+                    dividerThickness = context.dpToPx(1f)
+                    isLastItemDecorated = false
+                }
+                addItemDecoration(divider)
+
                 gridCount = 1
                 linearLayoutManager
             } else {

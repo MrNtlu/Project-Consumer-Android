@@ -95,8 +95,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     override fun onStart() {
         super.onStart()
 
-        binding.loadingLayout.setVisible()
-        viewModel.getUserInfo()
+        if (viewModel.userInfoResponse.value != null) {
+            binding.loadingLayout.setVisible()
+            viewModel.getUserInfo()
+        }
     }
 
     private fun setObservers() {
