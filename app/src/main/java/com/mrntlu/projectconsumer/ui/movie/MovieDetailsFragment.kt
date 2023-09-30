@@ -6,31 +6,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.mrntlu.projectconsumer.R
-import com.mrntlu.projectconsumer.adapters.DetailsAdapter
-import com.mrntlu.projectconsumer.adapters.GenreAdapter
-import com.mrntlu.projectconsumer.adapters.RecommendationsAdapter
+import com.google.android.material.tabs.TabLayoutMediator
+import com.mrntlu.projectconsumer.adapters.MovieDetailsFragmentFactory
+import com.mrntlu.projectconsumer.adapters.MovieDetailsPagerAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
-import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentMovieDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.interfaces.UserListModel
 import com.mrntlu.projectconsumer.interfaces.toMovieWatchList
-import com.mrntlu.projectconsumer.models.common.DetailsUI
 import com.mrntlu.projectconsumer.models.main.movie.MovieDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
@@ -39,9 +32,7 @@ import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
-import com.mrntlu.projectconsumer.utils.openInBrowser
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -59,23 +50,19 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
     companion object {
         private const val CT_STATE = "collapsing_toolbar_state"
-        private const val RECOMMENDATION_POSITION = "recommendation_position"
 
         private const val TYPE = "movie"
     }
 
+    private val detailsTabList = arrayListOf("About", "Cast", "Streaming")
+    //TODO Screenshots Trailers(?)
+
     private val viewModel: MovieDetailsViewModel by viewModels()
     private val args: MovieDetailsFragmentArgs by navArgs()
 
-    private var actorAdapter: DetailsAdapter? = null
-    private var companiesAdapter: DetailsAdapter? = null
-    private var genreAdapter: GenreAdapter? = null
-    private var recommendationsAdapter: RecommendationsAdapter? = null
-    private var streamingAdapter: StreamingAdapter? = null
-    private var buyAdapter: StreamingAdapter? = null
-    private var rentAdapter: StreamingAdapter? = null
+    private var viewPagerAdapter: MovieDetailsPagerAdapter? = null
+    private var mediator: TabLayoutMediator? = null
 
-    private var recommendationPosition: Int? = null
     private var isAppBarLifted: Boolean? = null
     private var movieDetails: MovieDetails? = null
 
@@ -106,7 +93,6 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         super.onViewCreated(view, savedInstanceState)
 
         savedInstanceState?.let {
-            recommendationPosition = it.getInt(RECOMMENDATION_POSITION)
             isAppBarLifted = it.getBoolean(CT_STATE)
         }
 
@@ -164,8 +150,6 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                             }
                         )
                         setListeners()
-                        setRecyclerView()
-
                         if (movieDetails?.watchList != null)
                             handleWatchListLottie(
                                 binding.detailsInclude,
@@ -206,12 +190,27 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
     }
 
     private fun setUI() {
-        setSpinner(binding.detailsStreamingCountrySpinner)
-
         if (isAppBarLifted != null)
             binding.detailsAppBarLayout.setExpanded(!isAppBarLifted!!)
 
         movieDetails!!.apply {
+            binding.detailsPager.apply {
+                val fragmentFactory = MovieDetailsFragmentFactory(movieDetails!!)
+
+                viewPagerAdapter = MovieDetailsPagerAdapter(
+                    childFragmentManager,
+                    viewLifecycleOwner.lifecycle,
+                    fragmentFactory,
+                )
+                adapter = viewPagerAdapter
+                isUserInputEnabled = false
+
+                mediator = TabLayoutMediator(binding.movieDetailsTab, this) { tab, position ->
+                    tab.text = detailsTabList[position]
+                }
+                mediator?.attach()
+            }
+
             binding.detailsToolbarProgress.setVisible()
             Glide.with(requireContext()).load(backdrop ?: imageURL).addListener(object:
                 RequestListener<Drawable> {
@@ -241,16 +240,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     else title
                 } else title
 
-                val descriptionStr = if (!translations.isNullOrEmpty()) {
-                    val translation = translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.description
-                    if (translation?.isNotEmptyOrBlank() == true)
-                        translation
-                    else description
-                } else description
-
                 withContext(Dispatchers.Main) {
                     binding.detailsTitleTV.text = titleStr
-                    binding.detailsDescriptionTV.text = descriptionStr
                 }
             }
 
@@ -271,13 +262,6 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             val releaseStr = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.convertToHumanReadableDateString(true) else ""}"
             binding.detailsReleaseTV.text = releaseStr
             binding.detailsStatusTV.text = status
-
-            binding.imdbButton.setVisibilityByCondition(imdbID == null)
-            binding.detailsAvailableTV.setVisibilityByCondition(streaming.isNullOrEmpty())
-            binding.detailsStreamingCountrySpinner.setVisibilityByCondition(streaming.isNullOrEmpty())
-            binding.detailsStreamingTV.setVisibilityByCondition(streaming.isNullOrEmpty())
-            binding.detailsBuyTV.setVisibilityByCondition(streaming.isNullOrEmpty())
-            binding.detailsRentTV.setVisibilityByCondition(streaming.isNullOrEmpty())
         }
     }
 
@@ -310,36 +294,36 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 startActivity(shareIntent)
             }
 
-            detailsDescriptionTV.setOnClickListener {
-                detailsDescriptionTV.toggle()
-            }
-
-            imdbButton.setOnClickListener {
-                movieDetails?.imdbID?.let {
-                    val url = "${Constants.BASE_IMDB_URL}$it"
-
-                    context?.openInBrowser(url)
-                }
-            }
-
-            tmdbButton.setOnClickListener {
-                movieDetails?.tmdbID?.let {
-                    val url = "${Constants.BASE_TMDB_URL}movie/$it"
-
-                    context?.openInBrowser(url)
-                }
-            }
-
-            detailsStreamingCountrySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    onCountrySpinnerSelected(
-                        position, movieDetails?.streaming,
-                        streamingAdapter, buyAdapter, rentAdapter
-                    )
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
+//            detailsDescriptionTV.setOnClickListener {
+//                detailsDescriptionTV.toggle()
+//            }
+//
+//            imdbButton.setOnClickListener {
+//                movieDetails?.imdbID?.let {
+//                    val url = "${Constants.BASE_IMDB_URL}$it"
+//
+//                    context?.openInBrowser(url)
+//                }
+//            }
+//
+//            tmdbButton.setOnClickListener {
+//                movieDetails?.tmdbID?.let {
+//                    val url = "${Constants.BASE_TMDB_URL}movie/$it"
+//
+//                    context?.openInBrowser(url)
+//                }
+//            }
+//
+//            detailsStreamingCountrySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
+//                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//                    onCountrySpinnerSelected(
+//                        position, movieDetails?.streaming,
+//                        streamingAdapter, buyAdapter, rentAdapter
+//                    )
+//                }
+//
+//                override fun onNothingSelected(parent: AdapterView<*>?) {}
+//            }
 
             errorLayoutInc.refreshButton.setOnClickListener {
                 viewModel.getMovieDetails(args.movieId)
@@ -351,151 +335,148 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         }
     }
 
-    private fun setRecyclerView() {
-        val radiusInPx = binding.root.context.dpToPxFloat(12f)
-
-        if (!movieDetails?.actors.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                val actorUIList = movieDetails!!.actors!!.filter {
-                    it.name.isNotEmptyOrBlank()
-                }.map {
-                    DetailsUI(
-                        it.name,
-                        it.image,
-                        it.character
-                    )
-                }
-
-                withContext(Dispatchers.Main) {
-                    createDetailsAdapter(
-                        recyclerView = binding.detailsActorsRV,
-                        detailsList = actorUIList,
-                        cardCornerRadius = radiusInPx,
-                        transformImage = { transform(CenterCrop()) }
-                    ) {
-                        actorAdapter = it
-                        it
-                    }
-                }
-            }
-        } else {
-            binding.detailsActorsTV.setGone()
-            binding.detailsActorsRV.setGone()
-        }
-
-        if (!movieDetails?.productionCompanies.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                val productionAndCompanyUIList = movieDetails!!.productionCompanies!!.filter {
-                    it.name.isNotEmptyOrBlank()
-                }.map {
-                    DetailsUI(
-                        it.name,
-                        it.logo ?: "",
-                        it.originCountry
-                    )
-                }
-
-                withContext(Dispatchers.Main) {
-                    createDetailsAdapter(
-                        recyclerView = binding.detailsProductionRV,
-                        detailsList = productionAndCompanyUIList,
-                        placeHolderImage = R.drawable.ic_company_75,
-                        cardCornerRadius = radiusInPx,
-                        transformImage = { transform(CenterInside()) }
-                    ) {
-                        companiesAdapter = it
-                        it
-                    }
-                }
-            }
-        } else {
-            binding.detailsProductionTV.setGone()
-            binding.detailsProductionRV.setGone()
-        }
-
-        if (!movieDetails?.genres.isNullOrEmpty()) {
-            binding.detailsGenreRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-                val bulletDecoration = BulletItemDecoration(context)
-                addItemDecoration(bulletDecoration)
-
-                genreAdapter = GenreAdapter(movieDetails!!.genres) {
-                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it))
-                    navController.navigate(navWithAction)
-                }
-                setHasFixedSize(true)
-                adapter = genreAdapter
-            }
-        } else {
-            binding.genreDivider.setGone()
-            binding.detailsGenreRV.setGone()
-        }
-
-        if (!movieDetails?.streaming.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                val streaming = movieDetails!!.streaming!!
-
-                val streamingList = streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
-                val buyList = streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions
-                val rentList = streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions
-
-                withContext(Dispatchers.Main) {
-                    createStreamingAdapter(
-                        binding.detailsStreamingRV,
-                        streamingList
-                    ) {
-                        streamingAdapter = it
-                        it
-                    }
-
-                    createStreamingAdapter(
-                        binding.detailsBuyRV,
-                        buyList
-                    ) {
-                        buyAdapter = it
-                        it
-                    }
-
-                    createStreamingAdapter(
-                        binding.detailsRentRV,
-                        rentList
-                    ) {
-                        rentAdapter = it
-                        it
-                    }
-                }
-            }
-        }
-
-        if (!movieDetails?.recommendations.isNullOrEmpty()) {
-            binding.detailsRecommendationRV.apply {
-                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                layoutManager = linearLayout
-
-                recommendationsAdapter = RecommendationsAdapter(movieDetails!!.recommendations) { position, recommendation ->
-                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
-                    recommendationPosition = position
-
-                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentSelf(recommendation.tmdbID)
-                    navController.navigate(navWithAction)
-                }
-                adapter = recommendationsAdapter
-
-                if (recommendationPosition != null)
-                    scrollToPosition(recommendationPosition!!)
-            }
-        } else {
-            binding.detailsRecommendationTV.setGone()
-            binding.detailsRecommendationRV.setGone()
-        }
-    }
+//    private fun setRecyclerView() {
+//        val radiusInPx = binding.root.context.dpToPxFloat(12f)
+//
+//        if (!movieDetails?.actors.isNullOrEmpty()) {
+//            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+//                val actorUIList = movieDetails!!.actors!!.filter {
+//                    it.name.isNotEmptyOrBlank()
+//                }.map {
+//                    DetailsUI(
+//                        it.name,
+//                        it.image,
+//                        it.character
+//                    )
+//                }
+//
+//                withContext(Dispatchers.Main) {
+//                    createDetailsAdapter(
+//                        recyclerView = binding.detailsActorsRV,
+//                        detailsList = actorUIList,
+//                        cardCornerRadius = radiusInPx,
+//                        transformImage = { transform(CenterCrop()) }
+//                    ) {
+//                        actorAdapter = it
+//                        it
+//                    }
+//                }
+//            }
+//        } else {
+//            binding.detailsActorsTV.setGone()
+//            binding.detailsActorsRV.setGone()
+//        }
+//
+//        if (!movieDetails?.productionCompanies.isNullOrEmpty()) {
+//            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+//                val productionAndCompanyUIList = movieDetails!!.productionCompanies!!.filter {
+//                    it.name.isNotEmptyOrBlank()
+//                }.map {
+//                    DetailsUI(
+//                        it.name,
+//                        it.logo ?: "",
+//                        it.originCountry
+//                    )
+//                }
+//
+//                withContext(Dispatchers.Main) {
+//                    createDetailsAdapter(
+//                        recyclerView = binding.detailsProductionRV,
+//                        detailsList = productionAndCompanyUIList,
+//                        placeHolderImage = R.drawable.ic_company_75,
+//                        cardCornerRadius = radiusInPx,
+//                        transformImage = { transform(CenterInside()) }
+//                    ) {
+//                        companiesAdapter = it
+//                        it
+//                    }
+//                }
+//            }
+//        } else {
+//            binding.detailsProductionTV.setGone()
+//            binding.detailsProductionRV.setGone()
+//        }
+//
+//        if (!movieDetails?.genres.isNullOrEmpty()) {
+//            binding.detailsGenreRV.apply {
+//                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+//                layoutManager = linearLayout
+//                val bulletDecoration = BulletItemDecoration(context)
+//                addItemDecoration(bulletDecoration)
+//
+//                genreAdapter = GenreAdapter(movieDetails!!.genres) {
+//                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it))
+//                    navController.navigate(navWithAction)
+//                }
+//                setHasFixedSize(true)
+//                adapter = genreAdapter
+//            }
+//        } else {
+//            binding.genreDivider.setGone()
+//            binding.detailsGenreRV.setGone()
+//        }
+//
+//        if (!movieDetails?.streaming.isNullOrEmpty()) {
+//            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+//                val streaming = movieDetails!!.streaming!!
+//
+//                val streamingList = streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
+//                val buyList = streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions
+//                val rentList = streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions
+//
+//                withContext(Dispatchers.Main) {
+//                    createStreamingAdapter(
+//                        binding.detailsStreamingRV,
+//                        streamingList
+//                    ) {
+//                        streamingAdapter = it
+//                        it
+//                    }
+//
+//                    createStreamingAdapter(
+//                        binding.detailsBuyRV,
+//                        buyList
+//                    ) {
+//                        buyAdapter = it
+//                        it
+//                    }
+//
+//                    createStreamingAdapter(
+//                        binding.detailsRentRV,
+//                        rentList
+//                    ) {
+//                        rentAdapter = it
+//                        it
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (!movieDetails?.recommendations.isNullOrEmpty()) {
+//            binding.detailsRecommendationRV.apply {
+//                val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+//                layoutManager = linearLayout
+//
+//                recommendationsAdapter = RecommendationsAdapter(movieDetails!!.recommendations) { position, recommendation ->
+//                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
+//                    recommendationPosition = position
+//
+//                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentSelf(recommendation.tmdbID)
+//                    navController.navigate(navWithAction)
+//                }
+//                adapter = recommendationsAdapter
+//
+//                if (recommendationPosition != null)
+//                    scrollToPosition(recommendationPosition!!)
+//            }
+//        } else {
+//            binding.detailsRecommendationTV.setGone()
+//            binding.detailsRecommendationRV.setGone()
+//        }
+//    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        if (recommendationPosition != null)
-            outState.putInt(RECOMMENDATION_POSITION, recommendationPosition!!)
 
         if (isAppBarLifted != null)
             outState.putBoolean(CT_STATE, isAppBarLifted!!)
@@ -507,13 +488,10 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             detailsConsumeLaterViewModel.consumeLater.removeObservers(this)
         }
 
-        actorAdapter = null
-        companiesAdapter = null
-        recommendationsAdapter = null
-        genreAdapter = null
-        streamingAdapter = null
-        buyAdapter = null
-        rentAdapter = null
+        mediator?.detach()
+        mediator = null
+
+        viewPagerAdapter = null
         super.onDestroyView()
     }
 }
