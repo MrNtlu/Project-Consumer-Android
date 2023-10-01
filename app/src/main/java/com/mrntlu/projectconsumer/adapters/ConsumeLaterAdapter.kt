@@ -24,15 +24,12 @@ import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.convertLongDateToAgoString
-import com.mrntlu.projectconsumer.utils.convertToFormattedDate
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
-import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
 @Suppress("UNCHECKED_CAST")
@@ -212,10 +209,6 @@ class ConsumeLaterAdapter(
 
                 contentTypeTV.text = ContentType.fromStringRequest(item.contentType).value
                 scoreTV.text = item.content.score.toDouble().roundSingleDecimal().toString()
-
-                createdAtIV.setVisibilityByCondition(item.createdAt.convertToFormattedDate() == null)
-                createdAtTV.setVisibilityByCondition(item.createdAt.convertToFormattedDate() == null)
-                createdAtTV.text = item.createdAt.convertToFormattedDate()?.convertLongDateToAgoString()
 
                 contentTypeIV.setImageDrawable(ContextCompat.getDrawable(
                     root.context,

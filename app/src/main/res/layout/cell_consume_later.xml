@@ -97,33 +97,6 @@
                 android:textStyle="bold"
                 tools:text="TV Series" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/createdAtIV"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_time_24"
-                app:tint="?attr/colorPrimary"
-                android:contentDescription="@string/content_type_cd"/>
-
-            <TextView
-                android:id="@+id/createdAtTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="3dp"
-                android:textAlignment="textEnd"
-                android:textColor="?attr/mainTextColor"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                tools:text="@tools:sample/date/hhmmss"/>
-        </LinearLayout>
     </LinearLayout>
 
     <Button

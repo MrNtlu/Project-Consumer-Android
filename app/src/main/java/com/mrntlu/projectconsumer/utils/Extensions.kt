@@ -47,8 +47,6 @@ import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import kotlin.math.roundToInt
-
 
 const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
@@ -76,53 +74,6 @@ fun LocalDate.getFirstDateOfTheWeek(): LocalDate? {
     }
 
     return null
-}
-
-fun Date.convertLongDateToAgoString(): String {
-    val timeElapsed = Date().time - time
-    val oneMin = 60000L
-    val oneHour = 3600000L
-    val oneDay = 86400000L
-    val oneWeek = 604800000L
-    val oneMonth = 30 * oneDay
-
-    var finalString: String? = "0 sec"
-    val unit: String
-    if (timeElapsed < oneMin) {
-        var seconds = (timeElapsed / 1000).toDouble()
-        seconds = seconds.roundToInt().toDouble()
-        if (seconds < 30) {
-            finalString = "Now"
-        } else {
-            unit = " secs ago"
-            finalString = seconds.toInt().toString() + unit
-        }
-    } else if (timeElapsed < oneHour) {
-        val minutes = (timeElapsed / oneMin).toDouble()
-        finalString = handleAgoString(minutes, " min")
-    } else if (timeElapsed < oneDay) {
-        val hours = (timeElapsed / oneHour).toDouble()
-        finalString = handleAgoString(hours, " hr")
-    } else if (timeElapsed < oneWeek) {
-        val days = (timeElapsed / oneDay).toDouble()
-        finalString = handleAgoString(days, " day")
-    } else if (timeElapsed < oneMonth) {
-        val weeks = (timeElapsed / oneWeek).toDouble()
-        finalString = handleAgoString(weeks, " week")
-    } else {
-        val months = (timeElapsed / oneMonth).toDouble()
-        finalString = handleAgoString(months, " month")
-    }
-    return finalString
-}
-
-private fun handleAgoString(ago: Double, agoString: String): String {
-    var agoStr = agoString
-    val agoInt = ago.roundToInt()
-    if (agoInt != 1) {
-        agoStr = agoString + "s"
-    }
-    return "$agoInt$agoStr ago"
 }
 
 fun LocalDate.convertToHumanReadableDateString(): String {
