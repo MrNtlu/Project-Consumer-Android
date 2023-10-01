@@ -165,37 +165,277 @@
                 app:layout_constraintEnd_toStartOf="@+id/guideline6"
                 app:layout_constraintTop_toTopOf="@+id/detailsReleaseTV" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/movieDetailsTab"
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/materialDivider"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="1dp"
                 android:layout_marginTop="16dp"
-                android:background="?attr/mainBackgroundColor"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailsReleaseTV"
-                app:tabBackground="?attr/mainBackgroundColor"
-                app:tabMode="scrollable"
-                app:tabIndicatorFullWidth="true"
-                app:tabSelectedTextColor="?attr/colorPrimary"
-                app:tabTextColor="?attr/bottomNavUnselectedColor" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsReleaseTV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsGenreRV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
 
             <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/movieDetailsTab"
-                tools:layout_editor_absoluteX="-16dp" />
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/detailsPager"
+                android:id="@+id/genreDivider"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:nestedScrollingEnabled="false"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movieDetailsTab" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsGenreRV" />
 
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/plot"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/genreDivider" />
+
+            <io.github.glailton.expandabletextview.ExpandableTextView
+                android:id="@+id/detailsDescriptionTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                app:animDuration="500"
+                app:collapsedLines="5"
+                app:ellipsizeTextColor="@color/blue900"
+                app:isExpanded="false"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                app:readLessText="Hide"
+                app:readMoreText="Expand"
+                app:textMode="line"
+                tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
+
+            <TextView
+                android:id="@+id/detailsActorsTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/actors"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/detailsDescriptionTV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsActorsRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsActorsTV" />
+
+            <TextView
+                android:id="@+id/detailsRecommendationTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/recommendations"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/detailsActorsRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsRecommendationRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRecommendationTV" />
+
+            <TextView
+                android:id="@+id/detailsProductionTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/production"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRecommendationRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsProductionRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsProductionTV" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/streamingDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsProductionRV" />
+
+            <TextView
+                android:id="@+id/detailsAvailableTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/streaming"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/streamingDivider" />
+
+            <Spinner
+                android:id="@+id/detailsStreamingCountrySpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/detailsAvailableTV"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintTop_toTopOf="@+id/detailsAvailableTV" />
+
+            <TextView
+                android:id="@+id/detailsBuyTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/buy"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/detailsAvailableTV"
+                app:layout_constraintTop_toBottomOf="@+id/detailsAvailableTV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsBuyRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsBuyTV" />
+
+            <TextView
+                android:id="@+id/detailsRentTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/rent"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/detailsAvailableTV"
+                app:layout_constraintTop_toBottomOf="@+id/detailsBuyRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsRentRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                android:clipToPadding="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRentTV" />
+
+            <TextView
+                android:id="@+id/detailsStreamingTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/streaming"
+                android:textColor="?attr/subTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/detailsAvailableTV"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRentRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsStreamingRV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsStreamingTV" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline18"
+                app:layout_constraintStart_toStartOf="@+id/guideline18"
+                app:layout_constraintTop_toBottomOf="@+id/detailsStreamingRV">
+
+                <Button
+                    android:id="@+id/tmdbButton"
+                    android:layout_width="55dp"
+                    android:layout_height="45dp"
+                    android:backgroundTint="#04243f"
+                    android:padding="0dp"
+                    android:text="@string/tmdb"
+                    android:textColor="#58bab0"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imdbButton"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline18"
+                    app:layout_constraintTop_toTopOf="@+id/imdbButton" />
+
+                <Button
+                    android:id="@+id/imdbButton"
+                    android:layout_width="55dp"
+                    android:layout_height="45dp"
+                    android:backgroundTint="#f6c800"
+                    android:padding="0dp"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/imdb"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline18"
+                    app:layout_constraintTop_toBottomOf="@+id/detailsStreamingRV" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
