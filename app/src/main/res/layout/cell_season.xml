@@ -22,6 +22,28 @@
         tools:srcCompat="@tools:sample/backgrounds/scenic"
         android:contentDescription="@string/season"/>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/seasonDateCV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="?attr/toolbarBackButtonColor"
+        app:cardElevation="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/seasonIV"
+        app:layout_constraintTop_toTopOf="@+id/seasonIV">
+
+        <TextView
+            android:id="@+id/dateTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="3dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:ignore="SmallSp"
+            tools:text="@tools:sample/date/ddmmyy" />
+    </androidx.cardview.widget.CardView>
+
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/previewShimmerLayout"
         android:layout_width="0dp"

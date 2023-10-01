@@ -22,7 +22,7 @@ import com.mrntlu.projectconsumer.utils.setVisible
 
 class GameRelationsAdapter(
     private val relationList: List<GameDetailsRelation>,
-    private val onClick: (Int) -> Unit,
+    private val onClick: (Int, Int) -> Unit,
 ): RecyclerView.Adapter<GameRelationsAdapter.ItemHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameRelationsAdapter.ItemHolder {
@@ -70,7 +70,7 @@ class GameRelationsAdapter(
             previewGameTitleTV.text = titleStr
 
             root.setSafeOnClickListener {
-                onClick(relation.rawgID)
+                onClick(relation.rawgID, position)
             }
         }
     }

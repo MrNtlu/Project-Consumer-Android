@@ -27,7 +27,6 @@ import com.mrntlu.projectconsumer.adapters.GamePlatformAdapter
 import com.mrntlu.projectconsumer.adapters.GameRelationsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.NameUrlAdapter
-import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentGameDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
@@ -62,6 +61,9 @@ import kotlinx.coroutines.withContext
 class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
     companion object {
+        private const val CT_STATE = "collapsing_toolbar_state"
+        private const val RECOMMENDATION_POSITION = "recommendation_position"
+
         private const val TYPE = "game"
     }
 
@@ -73,6 +75,8 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
     private var relationAdapter: GameRelationsAdapter? = null
     private var platformAdapter: GamePlatformAdapter? = null
 
+    private var recommendationPosition: Int? = null
+    private var isAppBarLifted: Boolean? = null
     private var gameDetails: GameDetails? = null
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
@@ -100,6 +104,11 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedInstanceState?.let {
+            recommendationPosition = it.getInt(RECOMMENDATION_POSITION)
+            isAppBarLifted = it.getBoolean(CT_STATE)
+        }
 
         setObservers()
     }
@@ -197,6 +206,9 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
     }
 
     private fun setUI() {
+        if (isAppBarLifted != null)
+            binding.detailsAppBarLayout.setExpanded(!isAppBarLifted!!)
+
         gameDetails!!.apply {
             binding.detailsToolbarProgress.setVisible()
             Glide.with(requireContext()).load(imageURL).addListener(object:
@@ -294,8 +306,6 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.detailsGenreRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
-                val bulletDecoration = BulletItemDecoration(context)
-                addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(gameDetails!!.genres) {
                     val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToDiscoverListFragment(Constants.ContentType.GAME, gameDetails?.genres?.get(it))
@@ -304,7 +314,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 adapter = genreAdapter
             }
         } else {
-            binding.genreDivider.setGone()
+            binding.detailsGenreTV.setGone()
             binding.detailsGenreRV.setGone()
         }
 
@@ -365,11 +375,17 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
                 relationAdapter = GameRelationsAdapter(
                     gameDetails!!.relatedGames,
-                ) { rawgId ->
+                ) { rawgId, position ->
+                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                    recommendationPosition = position
+
                     val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentSelf(rawgId.toString())
                     navController.navigate(navWithAction)
                 }
                 adapter = relationAdapter
+
+                if (recommendationPosition != null)
+                    scrollToPosition(recommendationPosition!!)
             }
         } else {
             binding.detailsRelationTV.setGone()
@@ -405,6 +421,16 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (recommendationPosition != null)
+            outState.putInt(RECOMMENDATION_POSITION, recommendationPosition!!)
+
+        if (isAppBarLifted != null)
+            outState.putBoolean(CT_STATE, isAppBarLifted!!)
     }
 
     override fun onDestroyView() {

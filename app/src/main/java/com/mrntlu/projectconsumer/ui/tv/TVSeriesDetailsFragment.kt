@@ -24,7 +24,6 @@ import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.RecommendationsAdapter
 import com.mrntlu.projectconsumer.adapters.SeasonAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
-import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentTvDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
@@ -58,6 +57,9 @@ import kotlinx.coroutines.withContext
 class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() {
 
     companion object {
+        private const val CT_STATE = "collapsing_toolbar_state"
+        private const val RECOMMENDATION_POSITION = "recommendation_position"
+
         private const val TYPE = "tv"
     }
 
@@ -74,6 +76,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
     private var buyAdapter: StreamingAdapter? = null
     private var rentAdapter: StreamingAdapter? = null
 
+    private var recommendationPosition: Int? = null
+    private var isAppBarLifted: Boolean? = null
     private var tvDetails: TVSeriesDetails? = null
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
@@ -101,6 +105,11 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedInstanceState?.let {
+            recommendationPosition = it.getInt(RECOMMENDATION_POSITION)
+            isAppBarLifted = it.getBoolean(CT_STATE)
+        }
 
         setObservers()
     }
@@ -200,6 +209,9 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
     private fun setUI() {
         setSpinner(binding.tvDetailsStreamingCountrySpinner)
+
+        if (isAppBarLifted != null)
+            binding.tvDetailsAppBarLayout.setExpanded(!isAppBarLifted!!)
 
         tvDetails!!.apply {
             binding.tvDetailsToolbarProgress.setVisible()
@@ -350,8 +362,6 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             binding.tvDetailsGenreRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
-                val bulletDecoration = BulletItemDecoration(context)
-                addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(tvDetails!!.genres) {
                     val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToDiscoverListFragment(Constants.ContentType.TV, tvDetails?.genres?.get(it))
@@ -361,7 +371,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 adapter = genreAdapter
             }
         } else {
-            binding.genreDivider.setGone()
+            binding.tvDetailsGenreTV.setGone()
             binding.tvDetailsGenreRV.setGone()
         }
 
@@ -494,10 +504,16 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 layoutManager = linearLayout
 
                 recommendationsAdapter = RecommendationsAdapter(tvDetails!!.recommendations) { position, recommendation ->
+                    isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
+                    recommendationPosition = position
+
                     val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentSelf(recommendation.tmdbID)
                     navController.navigate(navWithAction)
                 }
                 adapter = recommendationsAdapter
+
+                if (recommendationPosition != null)
+                    scrollToPosition(recommendationPosition!!)
             }
         } else {
             binding.tvDetailsRecommendationTV.setGone()
@@ -505,11 +521,22 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (recommendationPosition != null)
+            outState.putInt(RECOMMENDATION_POSITION, recommendationPosition!!)
+
+        if (isAppBarLifted != null)
+            outState.putBoolean(CT_STATE, isAppBarLifted!!)
+    }
+
     override fun onDestroyView() {
         viewLifecycleOwner.apply {
             detailsConsumeLaterViewModel.consumeLater.removeObservers(this)
             sharedViewModel.networkStatus.removeObservers(this)
         }
+
         seasonAdapter = null
         genreAdapter = null
         recommendationsAdapter = null
@@ -519,6 +546,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         streamingAdapter = null
         buyAdapter = null
         rentAdapter = null
+
         super.onDestroyView()
     }
 }

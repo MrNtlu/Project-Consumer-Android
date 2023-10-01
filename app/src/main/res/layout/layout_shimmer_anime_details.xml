@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.facebook.shimmer.ShimmerFrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -126,7 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="shimmerDetailsOriginalTV, shimmerImageInc"/>
+            app:constraint_referenced_ids="shimmerDetailsOriginalTV, shimmerImageInc" />
 
         <TextView
             android:id="@+id/shimmerDetailsTypeTV"
@@ -157,25 +156,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsTypeTV" />
 
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="?attr/shimmerColor"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/guideline28"
+            app:layout_constraintTop_toBottomOf="@+id/materialDivider7" />
+
         <View
             android:id="@+id/shimmerDetailsGenreRV"
             android:layout_width="0dp"
             android:layout_height="30dp"
+            android:layout_marginTop="8dp"
             android:background="?attr/shimmerColor"
-            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline29"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/materialDivider7" />
-
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/shimmerDivider8"
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            app:dividerColor="?attr/shimmerColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsGenreRV" />
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
         <TextView
             android:id="@+id/textView5"
@@ -185,7 +185,7 @@
             android:background="?attr/shimmerColor"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerDivider8" />
+            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsGenreRV" />
 
         <TextView
             android:id="@+id/shimmerDetailsDescriptionTV"

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.databinding.CellSeasonBinding
 import com.mrntlu.projectconsumer.models.main.tv.Season
+import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -31,6 +32,12 @@ class SeasonAdapter(
             placeHolderCV.setGone()
             previewShimmerLayout.setVisible()
             previewShimmerCV.radius = radiusInPx
+
+            try {
+                dateTV.text = season.airDate.convertToHumanReadableDateString(isAlt = true)
+            } catch (_: Exception) {
+                seasonDateCV.setGone()
+            }
 
             if (season.episodeCount > 0) {
                 val episodeStr = "${season.episodeCount} eps."

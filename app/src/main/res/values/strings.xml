@@ -450,6 +450,8 @@
     <string name="make_request">Make a Feature Request</string>
     <string name="send_email">Send Email</string>
     <string name="change_logs">Change Logs</string>
+    <string name="trailer">Trailer</string>
+    <string name="cast">Cast</string>
 
     <string-array name="score_list">
         <item>@string/select</item>
@@ -465,7 +467,4 @@
         <item>9</item>
         <item>10</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="trailer">Trailer</string>
 </resources>

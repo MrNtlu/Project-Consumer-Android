@@ -173,25 +173,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detailsReleaseTV" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detailsGenreRV"
+            <TextView
+                android:id="@+id/detailsGenreTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:nestedScrollingEnabled="false"
-                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                android:layout_marginTop="16dp"
+                android:text="@string/genres"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline31"
                 app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/genreDivider"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detailsGenreRV"
                 android:layout_width="0dp"
-                android:layout_height="1dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp"
+                android:nestedScrollingEnabled="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detailsGenreRV" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsGenreTV" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -203,7 +207,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline31"
-                app:layout_constraintTop_toBottomOf="@+id/genreDivider" />
+                app:layout_constraintTop_toBottomOf="@+id/detailsGenreRV" />
 
             <io.github.glailton.expandabletextview.ExpandableTextView
                 android:id="@+id/detailsDescriptionTV"

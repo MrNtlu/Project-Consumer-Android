@@ -21,7 +21,6 @@ import com.mrntlu.projectconsumer.adapters.AnimeRelationsAdapter
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
 import com.mrntlu.projectconsumer.adapters.NameUrlAdapter
-import com.mrntlu.projectconsumer.adapters.decorations.BulletItemDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentAnimeDetailsBinding
 import com.mrntlu.projectconsumer.interfaces.BottomSheetOperation
 import com.mrntlu.projectconsumer.interfaces.BottomSheetState
@@ -329,8 +328,6 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             binding.detailsGenreRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
-                val bulletDecoration = BulletItemDecoration(context)
-                addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(animeDetails!!.genres!!.map { it.name }) {
                     val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToDiscoverListFragment(Constants.ContentType.ANIME, animeDetails?.genres?.get(it)?.name)
@@ -339,7 +336,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 adapter = genreAdapter
             }
         } else {
-            binding.genreDivider.setGone()
+            binding.detailsGenreTV.setGone()
             binding.detailsGenreRV.setGone()
         }
 

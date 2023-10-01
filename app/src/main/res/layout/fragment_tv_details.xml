@@ -166,22 +166,6 @@
                 app:layout_constraintTop_toTopOf="@+id/tvDetailsInfoTV"
                 tools:text="Airing" />
 
-            <Button
-                android:id="@+id/tmdbButton"
-                android:layout_width="55dp"
-                android:layout_height="45dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="#04243f"
-                android:padding="0dp"
-                android:text="@string/tmdb"
-                android:textColor="#58bab0"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline19"
-                app:layout_constraintStart_toStartOf="@+id/guideline19"
-                app:layout_constraintTop_toBottomOf="@+id/tvDetailsStreamingRV" />
-
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/materialDivider"
                 android:layout_width="0dp"
@@ -191,14 +175,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailsInfoTV" />
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/genreDivider"
+            <TextView
+                android:id="@+id/tvDetailsGenreTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/genres"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tvDetailsGenreRV"
                 android:layout_width="0dp"
-                android:layout_height="1dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDetailsGenreRV" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsGenreTV"/>
 
             <TextView
                 android:id="@+id/textView5"
@@ -210,7 +209,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/genreDivider" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsGenreRV" />
 
             <io.github.glailton.expandabletextview.ExpandableTextView
                 android:id="@+id/tvDetailsDescriptionTV"
@@ -269,16 +268,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailsSeasonTV" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tvDetailsGenreRV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:nestedScrollingEnabled="false"
-                app:layout_constraintEnd_toStartOf="@+id/guideline6"
-                app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
 
             <TextView
                 android:id="@+id/tvDetailsActorsTV"
@@ -390,7 +379,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/streaming"
+                android:text="@string/platforms"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -406,11 +395,11 @@
                 app:layout_constraintTop_toTopOf="@+id/tvDetailsAvailableTV" />
 
             <TextView
-                android:id="@+id/tvDetailsBuyTV"
+                android:id="@+id/tvDetailsStreamingTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/buy"
+                android:text="@string/streaming"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -418,7 +407,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailsAvailableTV" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tvDetailsBuyRV"
+                android:id="@+id/tvDetailsStreamingRV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -428,7 +417,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDetailsBuyTV" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsStreamingTV" />
 
             <TextView
                 android:id="@+id/tvDetailsRentTV"
@@ -440,7 +429,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/tvDetailsAvailableTV"
-                app:layout_constraintTop_toBottomOf="@+id/tvDetailsBuyRV" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsStreamingRV" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tvDetailsRentRV"
@@ -455,11 +444,11 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailsRentTV" />
 
             <TextView
-                android:id="@+id/tvDetailsStreamingTV"
+                android:id="@+id/tvDetailsBuyTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/streaming"
+                android:text="@string/buy"
                 android:textColor="?attr/subTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -467,7 +456,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailsRentRV" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/tvDetailsStreamingRV"
+                android:id="@+id/tvDetailsBuyRV"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -476,8 +465,23 @@
                 android:paddingHorizontal="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDetailsStreamingTV" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsBuyTV" />
 
+            <Button
+                android:id="@+id/tmdbButton"
+                android:layout_width="55dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#04243f"
+                android:padding="0dp"
+                android:text="@string/tmdb"
+                android:textColor="#58bab0"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline19"
+                app:layout_constraintStart_toStartOf="@+id/guideline19"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsBuyRV" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

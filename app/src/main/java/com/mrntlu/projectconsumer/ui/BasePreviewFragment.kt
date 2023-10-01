@@ -26,6 +26,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     private var showCaseAdapter: CarouselAdapter<T>? = null
 
     private var snapHelper: PagerSnapHelper? = null
+    private var guideLinePercent = 0.34
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +48,11 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                     else -> 0.34f
                 }
             )
+
+            guideLinePercent = when(height) {
+                WindowSizeClass.EXPANDED -> 0.4
+                else -> 0.34
+            }
         }
     }
 
@@ -62,7 +68,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                 CarouselLayoutManager()
             layoutManager = carouselLayoutManager
 
-            val rvHeight = binding.root.context.resources.displayMetrics.heightPixels.times(0.32).minus(
+            val rvHeight = binding.root.context.resources.displayMetrics.heightPixels.times(guideLinePercent).minus(
                 binding.root.context.dpToPx(8f)
             )
             val rvItemWidth = if(isGame)
