@@ -36,6 +36,9 @@ data class AnimeList(
     @SerializedName("total_episodes")
     override val totalEpisodes: Int?,
 
+    @SerializedName("created_at")
+    override val createdAt: String,
+
     override val totalSeasons: Int? = null,
     override val subAttribute: Int? = null,
 ): UserListContentModel()
@@ -45,7 +48,7 @@ fun UserListContentModel.convertToAnimeList(): AnimeList {
         AnimeList(
             id, contentStatus, score, timesFinished,
             mainAttribute!!, contentId, contentExternalId, title,
-            titleOriginal, imageUrl, totalEpisodes,
+            titleOriginal, imageUrl, totalEpisodes, createdAt,
         )
     }
 }

@@ -200,6 +200,26 @@
             app:layout_constraintTop_toBottomOf="@+id/textView5"/>
 
         <TextView
+            android:id="@+id/shimmerDetailsRelationTV"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:textSize="18sp"
+            android:background="?attr/shimmerColor"
+            app:layout_constraintStart_toStartOf="@+id/guideline28"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsDescriptionTV" />
+
+        <View
+            android:id="@+id/shimmerDetailsRelationRV"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="8dp"
+            android:background="?attr/shimmerColor"
+            app:layout_constraintEnd_toStartOf="@+id/guideline29"
+            app:layout_constraintStart_toStartOf="@+id/guideline28"
+            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsRelationTV" />
+
+        <TextView
             android:id="@+id/shimmerDetailsInformationTV"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
@@ -207,7 +227,7 @@
             android:background="?attr/shimmerColor"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsDescriptionTV" />
+            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsRelationRV" />
 
         <TextView
             android:id="@+id/textView15"
@@ -336,26 +356,6 @@
             app:constraint_referenced_ids="shimmerDetailsStudiosRV, shimmerDetailsProducerRV" />
 
         <TextView
-            android:id="@+id/shimmerDetailsRelationTV"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:textSize="18sp"
-            android:background="?attr/shimmerColor"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/barrier3" />
-
-        <View
-            android:id="@+id/shimmerDetailsRelationRV"
-            android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="8dp"
-            android:background="?attr/shimmerColor"
-            app:layout_constraintEnd_toStartOf="@+id/guideline29"
-            app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsRelationTV" />
-
-        <TextView
             android:id="@+id/detailsCharTV"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
@@ -363,7 +363,7 @@
             android:textSize="18sp"
             android:background="?attr/shimmerColor"
             app:layout_constraintStart_toStartOf="@+id/guideline28"
-            app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsRelationRV" />
+            app:layout_constraintTop_toBottomOf="@+id/barrier3" />
 
         <View
             android:layout_width="0dp"

@@ -22,6 +22,9 @@ data class AnimeWatchList(
     @SerializedName("status")
     override val contentStatus: String,
 
+    @SerializedName("created_at")
+    override val createdAt: String,
+
     override val score: Int?,
 
     override val subAttribute: Int? = null,

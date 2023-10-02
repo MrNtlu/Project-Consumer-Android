@@ -360,7 +360,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 }.map {
                     DetailsUI(
                         it.name,
-                        it.image,
+                        it.image ?: "",
                         it.character
                     )
                 }

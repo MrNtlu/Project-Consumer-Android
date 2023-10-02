@@ -47,6 +47,7 @@ import java.time.ZoneId
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import kotlin.math.roundToInt
 
 const val DEFAULT_JUMP_THRESHOLD = 20
 const val DEFAULT_SPEED_FACTOR = 1f
@@ -74,6 +75,93 @@ fun LocalDate.getFirstDateOfTheWeek(): LocalDate? {
     }
 
     return null
+}
+
+fun Date.convertLongDateToAgoString(): String {
+    val timeElapsed = Date().time - time
+    val oneMin = 60000L
+    val oneHour = 3600000L
+    val oneDay = 86400000L
+    val oneWeek = 604800000L
+    val oneMonth = 30 * oneDay
+
+    val unit: String
+    val finalString = if (timeElapsed < oneMin) {
+        var seconds = (timeElapsed / 1000).toDouble()
+        seconds = seconds.roundToInt().toDouble()
+        if (seconds < 30) {
+            "Now"
+        } else {
+            unit = " secs ago"
+            seconds.toInt().toString() + unit
+        }
+    } else if (timeElapsed < oneHour) {
+        val minutes = (timeElapsed / oneMin).toDouble()
+        handleAgoString(minutes, " min")
+    } else if (timeElapsed < oneDay) {
+        val hours = (timeElapsed / oneHour).toDouble()
+        handleAgoString(hours, " hr")
+    } else if (timeElapsed < oneWeek) {
+        val days = (timeElapsed / oneDay).toDouble()
+        handleAgoString(days, " day")
+    } else if (timeElapsed < oneMonth) {
+        val weeks = (timeElapsed / oneWeek).toDouble()
+        handleAgoString(weeks, " week")
+    } else {
+        val months = (timeElapsed / oneMonth).toDouble()
+        handleAgoString(months, " month")
+    }
+    return finalString
+}
+
+fun String.convertShortDateToAgoString(): String {
+    val date = convertToFormattedDate()
+    if (date != null) {
+        val timeElapsed = Date().time - date.time
+        val oneMin = 60000L
+        val oneHour = 3600000L
+        val oneDay = 86400000L
+        val oneWeek = 604800000L
+        val oneMonth = 30 * oneDay
+
+        val unit: String
+        val finalString = if (timeElapsed < oneMin) {
+            var seconds = (timeElapsed / 1000).toDouble()
+            seconds = seconds.roundToInt().toDouble()
+            if (seconds < 30) {
+                "Now"
+            } else {
+                unit = " secs ago"
+                seconds.toInt().toString() + unit
+            }
+        } else if (timeElapsed < oneHour) {
+            val minutes = (timeElapsed / oneMin).toDouble()
+            handleAgoString(minutes, " min")
+        } else if (timeElapsed < oneDay) {
+            val hours = (timeElapsed / oneHour).toDouble()
+            handleAgoString(hours, " hr")
+        } else if (timeElapsed < oneWeek) {
+            val days = (timeElapsed / oneDay).toDouble()
+            handleAgoString(days, " day")
+        } else if (timeElapsed < oneMonth) {
+            val weeks = (timeElapsed / oneWeek).toDouble()
+            handleAgoString(weeks, " week")
+        } else {
+            convertToHumanReadableDateString(isAlt = true)
+        }
+
+        return finalString ?: this
+    } else
+        return this
+}
+
+private fun handleAgoString(ago: Double, agoString: String): String {
+    var agoStr = agoString
+    val agoInt = ago.roundToInt()
+    if (agoInt != 1) {
+        agoStr = agoString + "s"
+    }
+    return "$agoInt$agoStr ago"
 }
 
 fun LocalDate.convertToHumanReadableDateString(): String {

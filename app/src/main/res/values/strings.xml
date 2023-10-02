@@ -372,6 +372,12 @@
     <string name="membership">Membership</string>
     <string name="recommendations">Recommendations</string>
     <string name="suggestions">AI Suggestions</string>
+    <string name="send_email">Send Email</string>
+    <string name="change_logs">Change Logs</string>
+    <string name="trailer">Trailer</string>
+    <string name="cast">Cast</string>
+    <string name="read_less">Read Less</string>
+    <string name="read_more">Read More</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>
@@ -448,10 +454,6 @@
     <string name="restore_purchases">Restore Purchases</string>
     <string name="nothing_to_restore">There is nothing to restore.</string>
     <string name="make_request">Make a Feature Request</string>
-    <string name="send_email">Send Email</string>
-    <string name="change_logs">Change Logs</string>
-    <string name="trailer">Trailer</string>
-    <string name="cast">Cast</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -398,7 +398,11 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 val linearLayout = LinearLayoutManager(context)
                 layoutManager = linearLayout
 
-                relationAdapter = AnimeRelationsAdapter(animeDetails!!.relations!!) { malID ->
+                val relationList = animeDetails!!.relations!!.groupBy {
+                    it.relation
+                }.toSortedMap().toList()
+
+                relationAdapter = AnimeRelationsAdapter(relationList) { malID ->
                     val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
                     navController.navigate(navWithAction)
                 }

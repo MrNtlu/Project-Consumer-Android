@@ -203,7 +203,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/plot"
                 android:textColor="?attr/descriptionTitleTextColor"
                 android:textSize="18sp"
@@ -226,8 +226,8 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
-                app:readLessText="Hide"
-                app:readMoreText="Expand"
+                app:readLessText="@string/read_less"
+                app:readMoreText="@string/read_more"
                 app:textMode="line"
                 tools:text="Yuku is a young jaksdjasjdajsdja sdjajdajsdajsdj asjdasjdajsdjasd jasjdajsdajsdjasdj" />
 

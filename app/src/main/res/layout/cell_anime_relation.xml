@@ -13,8 +13,9 @@
         android:layout_weight="1"
         android:layout_marginVertical="8dp"
         tools:text="Adaptation"
-        android:textSize="16sp"
-        android:textColor="?attr/mainTextColor"/>
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="?attr/subTextColor"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/relationRV"

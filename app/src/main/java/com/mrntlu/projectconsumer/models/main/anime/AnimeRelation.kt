@@ -6,18 +6,24 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AnimeRelation(
-    val relation: String,
-    val source: List<AnimeRelationDetails>?,
-) : Parcelable
-
-@Parcelize
-data class AnimeRelationDetails(
-    val name: String,
-    val type: String,
+    @SerializedName("_id")
+    val id: String,
 
     @SerializedName("mal_id")
     val malID: Int,
 
-    @SerializedName("redirect_url")
-    val redirectURL: String,
+    @SerializedName("anime_id")
+    val animeID: String,
+
+    @SerializedName("image_url")
+    val imageURL: String,
+
+    @SerializedName("title_en")
+    val titleEn: String,
+
+    @SerializedName("title_original")
+    val titleOriginal: String,
+
+    val relation: String,
+    val type: String,
 ) : Parcelable

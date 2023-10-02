@@ -36,6 +36,7 @@ import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatch
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateTVWatchListBody
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.convertShortDateToAgoString
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
@@ -166,6 +167,7 @@ class UserListBottomSheet(
 
                 val userListStatus = Constants.UserListStatus.firstOrNull { item -> item.request == it.contentStatus }
 
+                createdAtTV.text = it.createdAt.convertShortDateToAgoString()
                 scoreTV.text = it.score?.toString() ?: "*"
                 statusTV.text = userListStatus?.name
                 timesFinishedCountTV.text = it.timesFinished.toString()

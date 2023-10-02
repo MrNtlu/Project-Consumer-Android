@@ -29,7 +29,6 @@ import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
-import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
 class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
     private companion object {
@@ -228,8 +227,6 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
     }
 
     private fun setXMLGridLayout() {
-        binding.discoverSearchView.setVisibilityByCondition(contentType == Constants.ContentType.GAME)
-
         val cellHeight = 100f
         val padding = 3
 

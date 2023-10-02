@@ -17,6 +17,7 @@ data class GameDetails(
     val developers: List<String>,
     val publishers: List<String>,
     val stores: List<GameStore>,
+    val screenshots: List<String>,
 
     @SerializedName("title")
     val title: String,

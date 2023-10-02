@@ -30,6 +30,9 @@ data class MovieList(
     @SerializedName("image_url")
     override val imageUrl: String?,
 
+    @SerializedName("created_at")
+    override val createdAt: String,
+
     override val mainAttribute: Int? = null,
     override val totalSeasons: Int = 1,
     override val totalEpisodes: Int? = null,
@@ -41,7 +44,7 @@ fun UserListContentModel.convertToMovieList(): MovieList {
         MovieList(
             id, contentStatus, score, timesFinished,
             contentId, contentExternalId,
-            title, titleOriginal, imageUrl,
+            title, titleOriginal, imageUrl, createdAt,
         )
     }
 }

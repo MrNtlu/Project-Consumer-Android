@@ -250,20 +250,20 @@ class UserListAdapter(
                         newList[index] = when(contentType) {
                             Constants.ContentType.ANIME -> AnimeList(
                                 id, contentStatus, score, timesFinished, mainAttribute!!, contentId, contentExternalId,
-                                item.title, item.titleOriginal, item.imageUrl, item.totalSeasons,
+                                item.title, item.titleOriginal, item.imageUrl, item.totalSeasons, item.createdAt,
                             )
                             Constants.ContentType.MOVIE -> MovieList(
                                 id, contentStatus, score, timesFinished, contentId, contentExternalId,
-                                item.title, item.titleOriginal, item.imageUrl,
+                                item.title, item.titleOriginal, item.imageUrl, item.createdAt,
                             )
                             Constants.ContentType.TV -> TVSeriesList(
                                 id, contentStatus, score, timesFinished, mainAttribute, subAttribute,
                                 contentId, contentExternalId, item.title, item.titleOriginal,
-                                item.imageUrl, item.totalEpisodes, item.totalSeasons,
+                                item.imageUrl, item.totalEpisodes, item.totalSeasons, item.createdAt,
                             )
                             Constants.ContentType.GAME -> GameList(
                                 id, contentStatus, score, timesFinished, mainAttribute, contentId,
-                                contentExternalId, item.title, item.titleOriginal, item.imageUrl,
+                                contentExternalId, item.title, item.titleOriginal, item.imageUrl, item.createdAt,
                             )
                         }
                     }

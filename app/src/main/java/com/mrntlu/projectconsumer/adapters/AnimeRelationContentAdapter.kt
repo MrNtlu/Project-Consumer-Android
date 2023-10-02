@@ -2,21 +2,22 @@ package com.mrntlu.projectconsumer.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.webkit.URLUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.mrntlu.projectconsumer.databinding.CellAnimeRelationContentBinding
-import com.mrntlu.projectconsumer.models.main.anime.AnimeRelationDetails
-import com.mrntlu.projectconsumer.utils.openInBrowser
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
+import com.mrntlu.projectconsumer.models.main.anime.AnimeRelation
+import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
+import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
-import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 
 class AnimeRelationContentAdapter(
-    private val contentList: List<AnimeRelationDetails>,
+    private val contentList: List<AnimeRelation>,
     private val onClick: (Int) -> Unit
 ): RecyclerView.Adapter<AnimeRelationContentAdapter.ItemHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnimeRelationContentAdapter.ItemHolder {
-        return ItemHolder(CellAnimeRelationContentBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return ItemHolder(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
     }
 
     override fun getItemCount() = contentList.size
@@ -25,20 +26,24 @@ class AnimeRelationContentAdapter(
         val animeDetails = contentList[position]
 
         holder.binding.apply {
-            animeNameTV.text = animeDetails.name
+            val radiusInPx = root.context.dpToPxFloat(8f)
 
-            bulletTV.setVisibilityByCondition(itemCount <= 1 || position == itemCount.minus(1))
+            val layoutParams = root.layoutParams
+            layoutParams.height = root.context.dpToPx(150f)
+            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+
+            previewIV.loadWithGlide(animeDetails.imageURL, previewCard, previewShimmerLayout) {
+                transform(RoundedCorners(radiusInPx.toInt()))
+            }
 
             root.setSafeOnClickListener {
                 if (animeDetails.malID != -1 && animeDetails.type == "anime")
                     onClick(animeDetails.malID)
-                else if (URLUtil.isValidUrl(animeDetails.redirectURL))
-                    it.context.openInBrowser(animeDetails.redirectURL)
             }
         }
     }
 
     inner class ItemHolder(
-        val binding: CellAnimeRelationContentBinding
+        val binding: CellPreviewItemBinding
     ): RecyclerView.ViewHolder(binding.root)
 }

@@ -33,6 +33,9 @@ data class GameList(
     @SerializedName("image_url")
     override val imageUrl: String?,
 
+    @SerializedName("created_at")
+    override val createdAt: String,
+
     override val totalSeasons: Int? = null,
     override val subAttribute: Int? = null,
     override val totalEpisodes: Int? = null,
@@ -42,7 +45,8 @@ fun UserListContentModel.convertToGameList(): GameList {
     return this.run {
         GameList(
             id, contentStatus, score, timesFinished, mainAttribute,
-            contentId, contentExternalId, title, titleOriginal, imageUrl,
+            contentId, contentExternalId, title, titleOriginal,
+            imageUrl, createdAt,
         )
     }
 }

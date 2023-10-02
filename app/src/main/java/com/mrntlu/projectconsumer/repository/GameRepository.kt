@@ -23,8 +23,6 @@ class GameRepository @Inject constructor(
         private const val DiscoverTag = "discover:game"
     }
 
-    // TODO Search
-
     fun fetchGames(page: Int, sort: String, tag: String, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
         isPaginating = page != 1,
         cacheQuery = {
@@ -64,6 +62,47 @@ class GameRepository @Inject constructor(
         },
         isCachePaginationExhausted = {
             !gameDao.isGamePageExist(tag, page.plus(1))
+        },
+        shouldFetch = {
+            !(
+                (isRestoringData && !it.isNullOrEmpty()) ||
+                (!isNetworkAvailable && !it.isNullOrEmpty())
+            )
+        }
+    )
+
+    fun searchGamesByTitle(search: String, page: Int, isNetworkAvailable: Boolean, isRestoringData: Boolean = false) = networkBoundResource(
+        isPaginating = page != 1,
+        cacheQuery = {
+            if (isRestoringData)
+                gameDao.getAllSearchGames(SearchTag, page)
+            else
+                gameDao.getSearchGames(SearchTag, page)
+        },
+        fetchNetwork = {
+            gameApiService.searchGamesByTitle(search, page)
+        },
+        mapper = {
+            it!!.asModel()
+        },
+        emptyObjectCreator = {
+            listOf<Game>()
+        },
+        saveAndQueryResult = { gameResponse ->
+            cacheDatabase.withTransaction {
+                if (page == 1)
+                    gameDao.deleteGamesByTag(SearchTag)
+
+                if (gameResponse.data != null)
+                    gameDao.insertGameList(gameResponse.data.asEntity(SearchTag, page))
+                Pair(
+                    gameDao.getSearchGames(SearchTag, page),
+                    page >= gameResponse.pagination.totalPage
+                )
+            }
+        },
+        isCachePaginationExhausted = {
+            !gameDao.isGamePageExist(SearchTag, page.plus(1))
         },
         shouldFetch = {
             !(

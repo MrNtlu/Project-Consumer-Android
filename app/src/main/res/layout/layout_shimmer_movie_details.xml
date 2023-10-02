@@ -177,7 +177,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:background="?attr/shimmerColor"
                 android:textSize="18sp"
                 android:textStyle="bold"

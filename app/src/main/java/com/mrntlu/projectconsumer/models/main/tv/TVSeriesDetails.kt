@@ -6,6 +6,7 @@ import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.Recommendation
 import com.mrntlu.projectconsumer.models.common.Streaming
+import com.mrntlu.projectconsumer.models.common.Trailer
 import com.mrntlu.projectconsumer.models.common.Translation
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
@@ -23,6 +24,8 @@ data class TVSeriesDetails(
     val status: String,
     val streaming: List<Streaming>?,
     val backdrop: String?,
+    val images: List<String>,
+    val trailers: List<Trailer>,
 
     @SerializedName("image_url")
     val imageURL: String,

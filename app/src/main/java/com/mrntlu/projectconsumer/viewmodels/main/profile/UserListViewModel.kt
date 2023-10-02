@@ -103,7 +103,7 @@ class UserListViewModel @Inject constructor(
 
                                     currentSearchList[index] = AnimeList(
                                         id, ulm.contentStatus, ulm.score, ulm.timesFinished, ulm.mainAttribute!!, ulm.contentId, ulm.contentExternalId,
-                                        item.title, item.titleOriginal, item.imageUrl, item.totalSeasons,
+                                        item.title, item.titleOriginal, item.imageUrl, item.totalSeasons, item.createdAt,
                                     )
                                     searchHolder?.animeList = currentSearchList.toList().map { it.convertToAnimeList() }
                                 }
@@ -112,7 +112,7 @@ class UserListViewModel @Inject constructor(
 
                                     currentSearchList[index] = MovieList(
                                         id, ulm.contentStatus, ulm.score, ulm.timesFinished, ulm.contentId, ulm.contentExternalId,
-                                        item.title, item.titleOriginal, item.imageUrl,
+                                        item.title, item.titleOriginal, item.imageUrl, item.createdAt,
                                     )
                                     searchHolder?.movieList = currentSearchList.toList().map { it.convertToMovieList() }
                                 }
@@ -122,7 +122,7 @@ class UserListViewModel @Inject constructor(
                                     currentSearchList[index] = TVSeriesList(
                                         id, ulm.contentStatus, ulm.score, ulm.timesFinished, ulm.mainAttribute, ulm.subAttribute,
                                         ulm.contentId, ulm.contentExternalId, item.title, item.titleOriginal,
-                                        item.imageUrl, item.totalEpisodes, item.totalSeasons,
+                                        item.imageUrl, item.totalEpisodes, item.totalSeasons, item.createdAt,
                                     )
 
                                     searchHolder?.tvList = currentSearchList.toList().map { it.convertToTVSeriesList() }
@@ -132,7 +132,7 @@ class UserListViewModel @Inject constructor(
 
                                     currentSearchList[index] = GameList(
                                         id, ulm.contentStatus, ulm.score, ulm.timesFinished, ulm.mainAttribute, ulm.contentId,
-                                        ulm.contentExternalId, item.title, item.titleOriginal, item.imageUrl,
+                                        ulm.contentExternalId, item.title, item.titleOriginal, item.imageUrl, item.createdAt,
                                     )
 
                                     searchHolder?.gameList = currentSearchList.toList().map { it.convertToGameList() }

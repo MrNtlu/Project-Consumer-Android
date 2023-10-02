@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.service.retrofit
 
 import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.DataSearchPaginationResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.models.main.game.Game
 import com.mrntlu.projectconsumer.models.main.game.GameDetails
@@ -28,7 +29,11 @@ interface GameApiService {
         @Query("page") page: Int,
     ): Response<DataPaginationResponse<Game>>
 
-    // TODO Search
+    @GET("game/search")
+    suspend fun searchGamesByTitle(
+        @Query("search") search: String,
+        @Query("page") page: Int,
+    ): Response<DataSearchPaginationResponse<Game>>
 
     @GET("game/details")
     suspend fun getGameDetails(

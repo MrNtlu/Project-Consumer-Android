@@ -382,7 +382,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 }.map {
                     DetailsUI(
                         it.name,
-                        it.image,
+                        it.image ?: "",
                         it.character
                     )
                 }

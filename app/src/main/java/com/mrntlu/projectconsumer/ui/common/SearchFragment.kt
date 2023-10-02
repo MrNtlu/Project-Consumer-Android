@@ -17,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
@@ -26,6 +27,7 @@ import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
@@ -45,7 +47,6 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
     private val viewModel: SearchViewModel by viewModels {
         SearchViewModel.provideSearchViewModelFactory(viewModelFactory, this, arguments, args.searchQuery, args.searchType, sharedViewModel.isNetworkAvailable())
     }
-
 
     private var contentAdapter: ContentAdapter<ContentModel>? = null
     private var searchView: SearchView? = null
@@ -111,9 +112,7 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                             if (popupMenu == null) {
                                 val menuItemView = requireActivity().findViewById<View>(R.id.filterMenu)
                                 popupMenu = PopupMenu(requireContext(), menuItemView)
-                                popupMenu!!.menuInflater.inflate(R.menu.sort_menu, popupMenu!!.menu)
-//                                popupMenu!!.menuInflater.inflate(R.menu.filter_consume_later_menu, popupMenu!!.menu)
-                                // TODO After game search implementation, change R.id.firstSortMenu to firstFilterMenu
+                                popupMenu!!.menuInflater.inflate(R.menu.filter_consume_later_menu, popupMenu!!.menu)
                                 popupMenu!!.setForceShowIcon(true)
                             }
 
@@ -134,26 +133,26 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
 
                                 it.setOnMenuItemClickListener { item ->
                                     val newFilterType = when (item.itemId) {
-                                        R.id.firstSortMenu -> {
+                                        R.id.firstFilterMenu -> {
                                             setPopupMenuItemVisibility(it, 0)
 
                                             Constants.ContentType.values()[0]
                                         }
-                                        R.id.secondSortMenu -> {
+                                        R.id.secondFilterMenu -> {
                                             setPopupMenuItemVisibility(it, 1)
 
                                             Constants.ContentType.values()[1]
                                         }
-                                        R.id.thirdSortMenu -> {
+                                        R.id.thirdFilterMenu -> {
                                             setPopupMenuItemVisibility(it, 2)
 
                                             Constants.ContentType.values()[2]
                                         }
-//                                        R.id.forthFilterMenu -> {
-//                                            setPopupMenuItemVisibility(it, 3)
-//
-//                                            Constants.ContentType.values()[3]
-//                                        }
+                                        R.id.forthFilterMenu -> {
+                                            setPopupMenuItemVisibility(it, 3)
+
+                                            Constants.ContentType.values()[3]
+                                        }
                                         else -> { Constants.ContentType.values()[0] }
                                     }
 
@@ -246,6 +245,16 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
         binding.movieSearchRV.apply {
             val rvLayoutManager = if (sharedViewModel.isAltLayout()) {
                 val linearLayoutManager = LinearLayoutManager(this.context)
+
+                val divider = MaterialDividerItemDecoration(this.context, LinearLayoutManager.VERTICAL)
+                divider.apply {
+                    dividerInsetStart = context.dpToPx(119f)
+                    dividerInsetEnd = context.dpToPx(8f)
+                    dividerThickness = context.dpToPx(1f)
+                    isLastItemDecorated = false
+                }
+                addItemDecoration(divider)
+
                 gridCount = 1
                 linearLayoutManager
             } else {
