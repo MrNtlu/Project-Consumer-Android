@@ -215,22 +215,25 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
         tvDetails!!.apply {
             binding.tvDetailsToolbarProgress.setVisible()
-            Glide.with(requireContext()).load(backdrop ?: imageURL).addListener(object:
+
+            Glide.with(binding.root.context).load(backdrop ?: imageURL).addListener(object:
                 RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                    binding.tvDetailsToolbarProgress.setGone()
-                    binding.tvDetailsAppBarLayout.setExpanded(false)
+                    _binding?.tvDetailsToolbarProgress?.setGone()
+                    _binding?.tvDetailsAppBarLayout?.setExpanded(false)
 
-                    onImageFailedHandler(
-                        binding.tvDetailsCollapsingToolbar,
-                        binding.tvDetailsNestedSV
-                    )
+                    if (_binding != null) {
+                        onImageFailedHandler(
+                            binding.tvDetailsCollapsingToolbar,
+                            binding.tvDetailsNestedSV
+                        )
+                    }
 
                     return false
                 }
 
                 override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                    binding.tvDetailsToolbarProgress.setGone()
+                    _binding?.tvDetailsToolbarProgress?.setGone()
                     return false
                 }
             }).into(binding.tvDetailsToolbarIV)

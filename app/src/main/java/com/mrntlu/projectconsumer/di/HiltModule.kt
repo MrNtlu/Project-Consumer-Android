@@ -17,6 +17,7 @@ import com.mrntlu.projectconsumer.service.retrofit.AnimeApiService
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.GameApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.ReferralApiService
 import com.mrntlu.projectconsumer.service.retrofit.TVSeriesApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserListApiService
@@ -73,8 +74,9 @@ class HiltModule {
     @Provides
     fun provideAuthRepository(authApiService: AuthApiService) = AuthRepository(authApiService)
 
+    //TODO Remove Referral API
     @Provides
-    fun provideUserRepository(userApiService: UserApiService) = UserRepository(userApiService)
+    fun provideUserRepository(userApiService: UserApiService, referralApiService: ReferralApiService) = UserRepository(userApiService, referralApiService)
 
     @Provides
     fun provideAISuggestionsRepository(aiSuggestionApiService: AISuggestionApiService) = AISuggestionsRepository(aiSuggestionApiService)

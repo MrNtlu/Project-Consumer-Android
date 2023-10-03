@@ -5,15 +5,20 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.Notification
 import android.app.PendingIntent
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.webkit.URLUtil
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.NotificationCompat
@@ -170,8 +175,22 @@ fun LocalDate.convertToHumanReadableDateString(): String {
 }
 
 fun Context.openInBrowser(url: String) {
-    val intent = CustomTabsIntent.Builder().build()
-    intent.launchUrl(this, Uri.parse(url))
+    try {
+        val intent = CustomTabsIntent.Builder().build()
+        intent.launchUrl(this, Uri.parse(url))
+    } catch (_: Exception) {
+        if (URLUtil.isValidUrl(url)) {
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+            val clip = ClipData.newUri(contentResolver, "URI", Uri.parse(url))
+            clipboard.setPrimaryClip(clip)
+
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+                Toast.makeText(this, getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, getString(R.string.browser_not_available), Toast.LENGTH_SHORT).show()
+        }
+    }
 }
 
 fun Context.dpToPx(dp: Float): Int {

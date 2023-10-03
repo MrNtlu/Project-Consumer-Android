@@ -14,6 +14,7 @@ import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.networkResponseFlowCollector
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -26,6 +27,13 @@ class UserSharedViewModel @Inject constructor(
 
     private val _userInfoResponse = MutableLiveData<NetworkResponse<DataResponse<BasicUserInfo>>>()
     val userInfoResponse: LiveData<NetworkResponse<DataResponse<BasicUserInfo>>> = _userInfoResponse
+
+    //TODO Remove Later
+    fun makeReferralRequest(refUrl: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.makeReferralRequest(refUrl).collect()
+        }
+    }
 
     fun getBasicInfo() = networkResponseFlowCollector(
         repository.getBasicUserInfo()

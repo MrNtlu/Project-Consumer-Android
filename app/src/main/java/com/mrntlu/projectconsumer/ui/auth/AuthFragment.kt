@@ -23,6 +23,7 @@ import com.mrntlu.projectconsumer.service.TokenManager
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ProfileImageList
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isEmailValid
@@ -52,15 +53,18 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
     private lateinit var dialog: LoadingDialog
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        if (::dialog.isInitialized)
+            dialog.dismissDialog()
+
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
 
             try {
                 val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
 
-                if (account.idToken != null) {
+                if (account.idToken != null && ::fcmToken.isInitialized) {
                     viewModel.googleLogin(
-                        GoogleLoginBody(account.idToken!!, Constants.ProfileImageList[(0..Constants.ProfileImageList.size.minus(1)).random()], fcmToken)
+                        GoogleLoginBody(account.idToken!!, ProfileImageList[(0..ProfileImageList.size.minus(1)).random()], fcmToken)
                     )
                 }
             } catch (exception: ApiException) {
@@ -117,6 +121,9 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>() {
             authToolbar.setNavigationOnClickListener { navController.popBackStack() }
 
             googleSignInButton.setSafeOnClickListener(interval = 800) {
+                if (::dialog.isInitialized)
+                    dialog.showLoadingDialog()
+
                 hideKeyboard()
 
                 val signInIntent: Intent = googleSignInClient.signInIntent

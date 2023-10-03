@@ -211,16 +211,19 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
         gameDetails!!.apply {
             binding.detailsToolbarProgress.setVisible()
-            Glide.with(requireContext()).load(imageURL).addListener(object:
+
+            Glide.with(binding.root.context).load(imageURL).addListener(object:
                 RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                    binding.detailsToolbarProgress.setGone()
-                    binding.detailsAppBarLayout.setExpanded(false)
+                    _binding?.detailsToolbarProgress?.setGone()
+                    _binding?.detailsAppBarLayout?.setExpanded(false)
 
-                    onImageFailedHandler(
-                        binding.detailsCollapsingToolbar,
-                        binding.detailsNestedSV
-                    )
+                    if (_binding != null) {
+                        onImageFailedHandler(
+                            binding.detailsCollapsingToolbar,
+                            binding.detailsNestedSV
+                        )
+                    }
 
                     return false
                 }

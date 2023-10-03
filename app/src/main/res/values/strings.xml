@@ -454,6 +454,8 @@
     <string name="restore_purchases">Restore Purchases</string>
     <string name="nothing_to_restore">There is nothing to restore.</string>
     <string name="make_request">Make a Feature Request</string>
+    <string name="copied_to_clipboard">Copied to clipboard.</string>
+    <string name="browser_not_available">Browser not available!</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

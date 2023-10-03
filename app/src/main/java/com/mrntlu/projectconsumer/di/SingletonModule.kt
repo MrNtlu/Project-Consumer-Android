@@ -12,6 +12,7 @@ import com.mrntlu.projectconsumer.service.retrofit.AnimeApiService
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.GameApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.ReferralApiService
 import com.mrntlu.projectconsumer.service.retrofit.TVSeriesApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserInteractionApiService
@@ -110,6 +111,23 @@ class SingletonModule {
                     Constants.API_URL
             )
             .addConverterFactory(GsonConverterFactory.create())
+
+    //TODO Remove LATER
+    @Singleton
+    @Provides
+    @Named("referral_retrofit")
+    fun provideReferralRetrofitBuilder(): Retrofit.Builder =
+        Retrofit.Builder()
+            .baseUrl("https://ertet.com/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+
+    @Singleton
+    @Provides
+    fun provideReferralAPIService(okHttpClient: OkHttpClient,@Named("referral_retrofit") retrofit: Retrofit.Builder): ReferralApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(ReferralApiService::class.java)
 
     @Singleton
     @Provides
