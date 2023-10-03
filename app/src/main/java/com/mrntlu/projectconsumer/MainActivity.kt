@@ -101,7 +101,9 @@ class MainActivity : AppCompatActivity() {
 
     private var notificationDialog: AlertDialog? = null
 
+    //TODO Remove later
     private lateinit var referrerClient: InstallReferrerClient
+
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val navController: NavController by lazy {
@@ -307,7 +309,7 @@ class MainActivity : AppCompatActivity() {
                         val response: ReferrerDetails = referrerClient.installReferrer
                         val referrerUrl: String = response.installReferrer
 
-                        if (referrerUrl.length > 3) {
+                        if (referrerUrl.length > 3 && referrerUrl.contains("afgc")) {
                             userSharedViewModel.makeReferralRequest(referrerUrl)
                         }
                     }
@@ -572,7 +574,10 @@ class MainActivity : AppCompatActivity() {
         notificationDialog?.dismiss()
         notificationDialog = null
 
-        referrerClient.endConnection()
+        //TODO Remove Later
+        if (::referrerClient.isInitialized)
+            referrerClient.endConnection()
+
         sharedViewModel.layoutSelection.removeObservers(this)
         sharedViewModel.tabLayoutSelection.removeObservers(this)
         sharedViewModel.shouldPreventBottomSelection.removeObservers(this)
