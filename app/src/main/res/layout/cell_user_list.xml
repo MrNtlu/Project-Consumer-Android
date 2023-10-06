@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:background="?attr/mainBackgroundColor">
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/statusColor"
         android:layout_width="5dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="match_parent"
         tools:dividerColor="?attr/statusActiveColor" />
 
     <include
@@ -23,136 +21,180 @@
         android:layout_height="115dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/statusColor"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginBottom="8dp" />
 
-    <TextView
-        android:id="@+id/titleTV"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="textStart"
-        android:textColor="?attr/mainTextColor"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/userListButton"
-        app:layout_constraintStart_toEndOf="@+id/imageInclude"
-        app:layout_constraintTop_toTopOf="@+id/imageInclude"
-        tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/userListButton"
-        style="?attr/materialIconButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/more_cd"
-        android:padding="6dp"
-        app:icon="@drawable/ic_more"
-        app:iconTint="?attr/mainTextColor"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageInclude" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginEnd="3dp">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/contentProgress"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="6dp"
-        android:layout_weight="1"
-        android:indeterminate="false"
-        app:indicatorColor="?attr/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/scoreStarIV"
-        app:layout_constraintEnd_toEndOf="@+id/userListButton"
-        app:layout_constraintStart_toStartOf="@+id/titleTV"
-        app:trackColor="?attr/levelTrackTint"
-        app:trackCornerRadius="5dp"
-        app:trackThickness="10dp"
-        tools:max="12"
-        tools:progress="3" />
+            <TextView
+                android:id="@+id/titleTV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:textAlignment="textStart"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/userListButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Ranma ½: The Movie 3 — The Super Non-Discriminatory Showdown: Team Ranma vs. the Legendary Phoenix" />
 
-    <ImageView
-        android:id="@+id/scoreStarIV"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/ic_star_36"
-        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
-        app:layout_constraintStart_toStartOf="@+id/titleTV"
-        app:tint="#F5C518"
-        android:contentDescription="@string/rate_star_cd"/>
+            <Button
+                android:id="@+id/userListButton"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/more_cd"
+                android:padding="6dp"
+                app:icon="@drawable/ic_more"
+                app:iconTint="?attr/mainTextColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/scoreTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:textColor="?attr/mainTextColor"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/scoreStarIV"
-        app:layout_constraintStart_toEndOf="@+id/scoreStarIV"
-        app:layout_constraintTop_toTopOf="@+id/scoreStarIV"
-        tools:text="4" />
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/contentProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingEnd="8dp"
+            android:layout_marginBottom="6dp"
+            android:indeterminate="false"
+            app:indicatorColor="?attr/colorPrimaryDark"
+            app:trackColor="?attr/levelTrackTint"
+            app:trackCornerRadius="5dp"
+            app:trackThickness="10dp"
+            tools:max="12"
+            tools:progress="3"
+            tools:ignore="RtlSymmetry" />
 
-    <TextView
-        android:id="@+id/totalEpisodeTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:textColor="?attr/mainTextColor"
-        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
-        app:layout_constraintEnd_toStartOf="@+id/contentStatusTV"
-        tools:text="/? eps" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="6dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/watchedEpisodeTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?attr/mainTextColor"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
-        app:layout_constraintEnd_toStartOf="@+id/totalEpisodeTV"
-        tools:text="13" />
+            <ImageView
+                android:id="@+id/scoreStarIV"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/rate_star_cd"
+                android:src="@drawable/ic_star_36"
+                app:tint="#F5C518" />
 
-    <TextView
-        android:id="@+id/totalSeasonTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:textColor="?attr/mainTextColor"
-        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
-        app:layout_constraintEnd_toStartOf="@+id/watchedEpisodeTV"
-        tools:text="/10 seasons" />
+            <TextView
+                android:id="@+id/scoreTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:text="4" />
 
-    <TextView
-        android:id="@+id/watchedSeasonTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?attr/mainTextColor"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
-        app:layout_constraintEnd_toStartOf="@+id/totalSeasonTV"
-        tools:text="7" />
+            <TextView
+                android:id="@+id/contentStatusTV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="end"
+                android:layout_marginStart="16dp"
+                tools:text="Finished" />
+        </LinearLayout>
 
-    <TextView
-        android:id="@+id/contentStatusTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?attr/mainTextColor"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageInclude"
-        app:layout_constraintEnd_toEndOf="@+id/contentProgress"
-        tools:text="Finished" />
+        <LinearLayout
+            android:id="@+id/episodeSeasonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:baselineAligned="false">
 
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start|center_vertical">
+
+                <ImageButton
+                    android:id="@+id/incrementEpisodeButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="3dp"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    android:src="@drawable/ic_add"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/increment_episode_cd"
+                    app:tint="?attr/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/watchedEpisodeTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/mainTextColor"
+                    android:textStyle="bold"
+                    tools:text="13" />
+
+                <TextView
+                    android:id="@+id/totalEpisodeTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textColor="?attr/mainTextColor"
+                    tools:text="/? eps" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end|center_vertical">
+
+                <ImageButton
+                    android:id="@+id/incrementSeasonButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="3dp"
+                    android:scaleX="0.75"
+                    android:scaleY="0.75"
+                    android:src="@drawable/ic_add"
+                    android:backgroundTint="@android:color/transparent"
+                    android:contentDescription="@string/season_increment_cd"
+                    app:tint="?attr/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/watchedSeasonTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/mainTextColor"
+                    android:textStyle="bold"
+                    tools:text="7" />
+
+                <TextView
+                    android:id="@+id/totalSeasonTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/mainTextColor"
+                    tools:text="/10 seasons" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

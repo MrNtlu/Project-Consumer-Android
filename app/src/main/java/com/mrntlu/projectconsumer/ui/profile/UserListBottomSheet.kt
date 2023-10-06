@@ -34,7 +34,8 @@ import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateAnimeWatch
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateGamePlayListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateMovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateTVWatchListBody
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
+import com.mrntlu.projectconsumer.utils.Constants.UserListStatus
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertShortDateToAgoString
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
@@ -51,7 +52,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class UserListBottomSheet(
     private var userListModel: UserListModel?,
-    private val contentType: Constants.ContentType,
+    private val contentType: ContentType,
     private var bottomSheetState: BottomSheetState,
     private val contentId: String,
     private val contentExternalId: String,
@@ -121,8 +122,8 @@ class UserListBottomSheet(
 
                         toggleTabLayout.getTabAt(
                             when (it.contentStatus) {
-                                Constants.UserListStatus[0].request -> 0
-                                Constants.UserListStatus[1].request -> 1
+                                UserListStatus[0].request -> 0
+                                UserListStatus[1].request -> 1
                                 else -> 2
                             }
                         )?.select()
@@ -145,7 +146,7 @@ class UserListBottomSheet(
 
     private fun setTabLayout(tabLayout: TabLayout) {
         tabLayout.apply {
-            for (tab in Constants.UserListStatus) {
+            for (tab in UserListStatus) {
                 val customTab = newTab().setCustomView(R.layout.cell_status_tab_layout)
                 addTab(customTab)
                 customTab.customView?.findViewById<TextView>(R.id.tabTV)?.text = tab.name
@@ -156,16 +157,16 @@ class UserListBottomSheet(
     private fun setViewLayout() {
         binding.layoutViewInc.apply {
             userListModel?.let {
-                timesFinishedCV.setVisibilityByCondition(it.contentStatus != Constants.UserListStatus[1].request)
-                seasonCV.setVisibilityByCondition(contentType != Constants.ContentType.TV)
-                episodeCV.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
+                timesFinishedCV.setVisibilityByCondition(it.contentStatus != UserListStatus[1].request)
+                seasonCV.setVisibilityByCondition(contentType != ContentType.TV)
+                episodeCV.setVisibilityByCondition(contentType == ContentType.MOVIE)
 
                 episodeTitleTV.text = getString(
-                    if (contentType == Constants.ContentType.GAME) R.string.hours
+                    if (contentType == ContentType.GAME) R.string.hours
                     else R.string.episodes
                 )
 
-                val userListStatus = Constants.UserListStatus.firstOrNull { item -> item.request == it.contentStatus }
+                val userListStatus = UserListStatus.firstOrNull { item -> item.request == it.contentStatus }
 
                 createdAtTV.text = it.createdAt.convertShortDateToAgoString()
                 scoreTV.text = it.score?.toString() ?: "*"
@@ -175,8 +176,8 @@ class UserListBottomSheet(
                 seasonTV.text = it.subAttribute?.toString() ?: "*"
 
                 val attrColor = when(userListStatus?.request) {
-                    Constants.UserListStatus[0].request -> R.attr.statusActiveColor
-                    Constants.UserListStatus[1].request -> R.attr.statusFinishedColor
+                    UserListStatus[0].request -> R.attr.statusActiveColor
+                    UserListStatus[1].request -> R.attr.statusFinishedColor
                     else -> R.attr.statusDroppedColor
                 }
                 statusColorDivider.dividerColor = root.context.getColorFromAttr(attrColor)
@@ -187,11 +188,11 @@ class UserListBottomSheet(
 
     private fun setEditLayout() {
         binding.layoutEditInc.apply {
-            timesFinishedTextLayout.setVisibilityByCondition(userListModel?.contentStatus != Constants.UserListStatus[1].request)
-            watchedSeasonTextLayout.setVisibilityByCondition(contentType != Constants.ContentType.TV)
-            watchedEpisodeTextLayout.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
+            timesFinishedTextLayout.setVisibilityByCondition(userListModel?.contentStatus != UserListStatus[1].request)
+            watchedSeasonTextLayout.setVisibilityByCondition(contentType != ContentType.TV)
+            watchedEpisodeTextLayout.setVisibilityByCondition(contentType == ContentType.MOVIE)
             watchedEpisodeTextLayout.hint = getString(
-                if (contentType == Constants.ContentType.GAME) R.string.hours_played
+                if (contentType == ContentType.GAME) R.string.hours_played
                 else R.string.episodes
             )
 
@@ -215,8 +216,8 @@ class UserListBottomSheet(
         val tv = tab?.customView?.findViewById<TextView>(R.id.tabTV)
 
         val attrColor = when(tv?.text) {
-            Constants.UserListStatus[0].name -> R.attr.statusActiveColor
-            Constants.UserListStatus[1].name -> R.attr.statusFinishedColor
+            UserListStatus[0].name -> R.attr.statusActiveColor
+            UserListStatus[1].name -> R.attr.statusFinishedColor
             else -> R.attr.statusDroppedColor
         }
 
@@ -289,17 +290,15 @@ class UserListBottomSheet(
                     if (bottomSheetState == BottomSheetState.EDIT) {
                         if (validateFields()) {
                             val score: Int? = scoreSelectionACTV.text.toString().toIntOrNull()
-                            val status = Constants.UserListStatus[toggleTabLayout.selectedTabPosition].request
-                            val timesFinished = if (status != Constants.UserListStatus[1].request) null
+                            val status = UserListStatus[toggleTabLayout.selectedTabPosition].request
+                            val timesFinished = if (status != UserListStatus[1].request) null
                                 else timesFinishedTextInputET.text?.toString()?.toIntOrNull()
-                            val watchedSeasons =
-                                watchedSeasonTextInputET.text?.toString()?.toIntOrNull()
-                            val watchedEpisodes =
-                                watchedEpisodeTextInputET.text?.toString()?.toIntOrNull()
+                            val watchedSeasons = watchedSeasonTextInputET.text?.toString()?.toIntOrNull()
+                            val watchedEpisodes = watchedEpisodeTextInputET.text?.toString()?.toIntOrNull()
 
                             if (userListModel == null) {
                                 when (contentType) {
-                                    Constants.ContentType.ANIME -> {
+                                    ContentType.ANIME -> {
                                         val animeListBody = AnimeWatchListBody(
                                             contentId,
                                             contentExternalId.toInt(),
@@ -310,7 +309,7 @@ class UserListBottomSheet(
                                         )
                                         viewModel.createAnimeWatchList(animeListBody)
                                     }
-                                    Constants.ContentType.MOVIE -> {
+                                    ContentType.MOVIE -> {
                                         val watchListBody = MovieWatchListBody(
                                             contentId,
                                             contentExternalId,
@@ -321,7 +320,7 @@ class UserListBottomSheet(
                                         viewModel.createMovieWatchList(watchListBody)
                                     }
 
-                                    Constants.ContentType.TV -> {
+                                    ContentType.TV -> {
                                         val tvListBody = TVWatchListBody(
                                             contentId,
                                             contentExternalId,
@@ -334,7 +333,7 @@ class UserListBottomSheet(
                                         viewModel.createTVWatchList(tvListBody)
                                     }
 
-                                    Constants.ContentType.GAME -> {
+                                    ContentType.GAME -> {
                                         val gameListBody = GamePlayListBody(
                                             contentId,
                                             contentExternalId.toInt(),
@@ -348,7 +347,7 @@ class UserListBottomSheet(
                                 }
                             } else {
                                 when (contentType) {
-                                    Constants.ContentType.ANIME -> {
+                                    ContentType.ANIME -> {
                                         val updateAnimeWatchListBody = UpdateAnimeWatchListBody(
                                             userListModel!!.id, userListModel!!.score != score,
                                             if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
@@ -358,7 +357,7 @@ class UserListBottomSheet(
                                         )
                                         viewModel.updateAnimeWatchList(updateAnimeWatchListBody)
                                     }
-                                    Constants.ContentType.MOVIE -> {
+                                    ContentType.MOVIE -> {
                                         val updateWatchListBody = UpdateMovieWatchListBody(
                                             userListModel!!.id, userListModel!!.score != score,
                                             if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
@@ -368,7 +367,7 @@ class UserListBottomSheet(
                                         viewModel.updateMovieWatchList(updateWatchListBody)
                                     }
 
-                                    Constants.ContentType.TV -> {
+                                    ContentType.TV -> {
                                         val updateWatchListBody = UpdateTVWatchListBody(
                                             userListModel!!.id, userListModel!!.score != score,
                                             if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
@@ -380,7 +379,7 @@ class UserListBottomSheet(
                                         viewModel.updateTVWatchList(updateWatchListBody)
                                     }
 
-                                    Constants.ContentType.GAME -> {
+                                    ContentType.GAME -> {
                                         val updateGamePlayListBody = UpdateGamePlayListBody(
                                             userListModel!!.id, userListModel!!.score != score,
                                             if (userListModel!!.timesFinished != timesFinished) timesFinished else null,
@@ -410,15 +409,15 @@ class UserListBottomSheet(
                             layoutEditInc.toggleTabLayout,
                         )
 
-                        if (tv?.text == Constants.UserListStatus[1].name)
+                        if (tv?.text == UserListStatus[1].name)
                             layoutEditInc.timesFinishedTextInputET.setText(
                                 if (userListModel != null && userListModel!!.timesFinished > 0) userListModel!!.timesFinished.toString() else "1"
                             )
                         else
                             layoutEditInc.timesFinishedTextInputET.text = null
 
-                        layoutEditInc.timesFinishedTextLayout.isErrorEnabled = tv?.text == Constants.UserListStatus[1].name
-                        layoutEditInc.timesFinishedTextLayout.setVisibilityByConditionWithAnimation(tv?.text != Constants.UserListStatus[1].name)
+                        layoutEditInc.timesFinishedTextLayout.isErrorEnabled = tv?.text == UserListStatus[1].name
+                        layoutEditInc.timesFinishedTextLayout.setVisibilityByConditionWithAnimation(tv?.text != UserListStatus[1].name)
                     }
 
                     override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -453,8 +452,16 @@ class UserListBottomSheet(
         }
 
         return when(contentType) {
-            Constants.ContentType.ANIME -> binding.layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.isNotEmptyOrBlank() == true
-            Constants.ContentType.TV -> {
+            ContentType.ANIME -> {
+                if (binding.layoutEditInc.watchedEpisodeTextInputET.text?.toString()?.isNotEmptyOrBlank() == false) {
+                    binding.layoutEditInc.watchedEpisodeTextLayout.error = getString(R.string.input_number)
+
+                    return false
+                }
+
+                true
+            }
+            ContentType.TV -> {
                 var isValid = true
 
                 if (binding.layoutEditInc.watchedSeasonTextInputET.text?.toString()?.isNotEmptyOrBlank() == false) {

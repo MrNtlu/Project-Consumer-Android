@@ -7,17 +7,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mrntlu.projectconsumer.interfaces.UserListModel
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userList.AnimeList
+import com.mrntlu.projectconsumer.models.main.userList.AnimeWatchList
 import com.mrntlu.projectconsumer.models.main.userList.GameList
+import com.mrntlu.projectconsumer.models.main.userList.GamePlayList
 import com.mrntlu.projectconsumer.models.main.userList.MovieList
 import com.mrntlu.projectconsumer.models.main.userList.TVSeriesList
+import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.models.main.userList.convertToAnimeList
 import com.mrntlu.projectconsumer.models.main.userList.convertToGameList
 import com.mrntlu.projectconsumer.models.main.userList.convertToMovieList
 import com.mrntlu.projectconsumer.models.main.userList.convertToTVSeriesList
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.IncrementTVSeriesListBody
 import com.mrntlu.projectconsumer.repository.UserListRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
@@ -153,6 +158,54 @@ class UserListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun incrementTVWatchList(body: IncrementTVSeriesListBody): LiveData<NetworkResponse<DataResponse<TVSeriesWatchList>>> {
+        val liveData = MutableLiveData<NetworkResponse<DataResponse<TVSeriesWatchList>>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.incrementTVWatchList(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    handleSearchHolderOperation(body.id, null, response, OperationEnum.Update)
+
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
+    }
+
+    fun incrementAnimeWatchList(body: IDBody): LiveData<NetworkResponse<DataResponse<AnimeWatchList>>> {
+        val liveData = MutableLiveData<NetworkResponse<DataResponse<AnimeWatchList>>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.incrementAnimeWatchList(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    handleSearchHolderOperation(body.id, null, response, OperationEnum.Update)
+
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
+    }
+
+    fun incrementGamePlayList(body: IDBody): LiveData<NetworkResponse<DataResponse<GamePlayList>>> {
+        val liveData = MutableLiveData<NetworkResponse<DataResponse<GamePlayList>>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.incrementGamePlayList(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    handleSearchHolderOperation(body.id, null, response, OperationEnum.Update)
+
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
     }
 
     fun deleteUserList(body: DeleteUserListBody): LiveData<NetworkResponse<MessageResponse>> {

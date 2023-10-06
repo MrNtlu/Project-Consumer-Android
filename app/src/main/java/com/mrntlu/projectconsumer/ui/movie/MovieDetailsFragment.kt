@@ -285,7 +285,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
     private fun setListeners() {
         binding.apply {
             detailsToolbarIV.setSafeOnClickListener(interval = 750) {
-                if (movieDetails?.imageURL?.isNotEmptyOrBlank() == true) {
+                if (movieDetails?.imageURL?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.movieDetailsFragment) {
                     val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToImageFragment(
                         movieDetails!!.imageURL
                     )
@@ -422,8 +422,10 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 //                addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(movieDetails!!.genres) {
-                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it))
-                    navController.navigate(navWithAction)
+                    if (navController.currentDestination?.id == R.id.movieDetailsFragment) {
+                        val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it))
+                        navController.navigate(navWithAction)
+                    }
                 }
                 setHasFixedSize(true)
                 adapter = genreAdapter
@@ -475,11 +477,13 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 layoutManager = linearLayout
 
                 recommendationsAdapter = RecommendationsAdapter(movieDetails!!.recommendations) { position, recommendation ->
-                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
-                    recommendationPosition = position
+                    if (navController.currentDestination?.id == R.id.movieDetailsFragment) {
+                        isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                        recommendationPosition = position
 
-                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentSelf(recommendation.tmdbID)
-                    navController.navigate(navWithAction)
+                        val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentSelf(recommendation.tmdbID)
+                        navController.navigate(navWithAction)
+                    }
                 }
                 adapter = recommendationsAdapter
 

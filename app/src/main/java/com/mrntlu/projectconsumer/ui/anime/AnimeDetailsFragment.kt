@@ -264,7 +264,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
     private fun setListeners() {
         binding.apply {
             imageInclude.root.setSafeOnClickListener(interval = 750) {
-                if (animeDetails?.imageURL?.isNotEmptyOrBlank() == true) {
+                if (animeDetails?.imageURL?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.animeDetailsFragment) {
                     val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToImageFragment(
                         animeDetails!!.imageURL
                     )
@@ -278,7 +278,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             binding.trailerButton.setVisibilityByCondition(!isTrailerAvailable)
 
             trailerButton.setSafeOnClickListener {
-                if (isTrailerAvailable) {
+                if (isTrailerAvailable && navController.currentDestination?.id == R.id.animeDetailsFragment) {
                     val navWithActions = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToTrailerFragment(
                         trailerSplitStr!![1]
                     )
@@ -330,8 +330,10 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 layoutManager = linearLayout
 
                 genreAdapter = GenreAdapter(animeDetails!!.genres!!.map { it.name }) {
-                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToDiscoverListFragment(Constants.ContentType.ANIME, animeDetails?.genres?.get(it)?.name)
-                    navController.navigate(navWithAction)
+                    if (navController.currentDestination?.id == R.id.animeDetailsFragment) {
+                        val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToDiscoverListFragment(Constants.ContentType.ANIME, animeDetails?.genres?.get(it)?.name)
+                        navController.navigate(navWithAction)
+                    }
                 }
                 adapter = genreAdapter
             }
@@ -403,8 +405,10 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 }.toSortedMap().toList()
 
                 relationAdapter = AnimeRelationsAdapter(relationList) { malID ->
-                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
-                    navController.navigate(navWithAction)
+                    if (navController.currentDestination?.id == R.id.animeDetailsFragment) {
+                        val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
+                        navController.navigate(navWithAction)
+                    }
                 }
                 adapter = relationAdapter
             }
@@ -419,8 +423,10 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 layoutManager = linearLayout
 
                 recommendationsAdapter = AnimeRecommendationsAdapter(animeDetails!!.recommendations) {
-                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(it.malID.toString())
-                    navController.navigate(navWithAction)
+                    if (navController.currentDestination?.id == R.id.animeDetailsFragment) {
+                        val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(it.malID.toString())
+                        navController.navigate(navWithAction)
+                    }
                 }
                 adapter = recommendationsAdapter
             }

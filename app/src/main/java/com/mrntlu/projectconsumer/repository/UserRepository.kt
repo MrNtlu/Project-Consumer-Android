@@ -6,7 +6,6 @@ import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
 import com.mrntlu.projectconsumer.service.retrofit.ReferralApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(

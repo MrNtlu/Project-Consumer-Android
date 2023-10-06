@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.SearchView
 import androidx.core.view.GestureDetectorCompat
+import androidx.databinding.adapters.SearchViewBindingAdapter.setOnQueryTextListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException

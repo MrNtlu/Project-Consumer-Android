@@ -306,12 +306,14 @@ class MainActivity : AppCompatActivity() {
             override fun onInstallReferrerSetupFinished(responseCode: Int) {
                 when (responseCode) {
                     InstallReferrerResponse.OK -> {
-                        val response: ReferrerDetails = referrerClient.installReferrer
-                        val referrerUrl: String = response.installReferrer
+                        try {
+                            val response: ReferrerDetails = referrerClient.installReferrer
+                            val referrerUrl: String = response.installReferrer
 
-                        if (referrerUrl.length > 3 && referrerUrl.contains("afgc")) {
-                            userSharedViewModel.makeReferralRequest(referrerUrl)
-                        }
+                            if (referrerUrl.length > 3 && referrerUrl.contains("afgc")) {
+                                userSharedViewModel.makeReferralRequest(referrerUrl)
+                            }
+                        } catch (_: Exception) {}
                     }
                     else -> {
                         referrerClient.endConnection()

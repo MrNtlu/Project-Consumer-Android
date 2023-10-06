@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.mrntlu.projectconsumer.databinding.CellStreamingBinding
 import com.mrntlu.projectconsumer.databinding.CellStreamingEmptyBinding
 import com.mrntlu.projectconsumer.models.common.StreamingPlatform

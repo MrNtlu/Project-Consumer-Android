@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.service.retrofit
 
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.userList.AnimeWatchList
 import com.mrntlu.projectconsumer.models.main.userList.GamePlayList
@@ -11,6 +12,7 @@ import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.AnimeWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.GamePlayListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.IncrementTVSeriesListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.MovieWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.TVWatchListBody
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.UpdateAnimeWatchListBody
@@ -47,17 +49,26 @@ interface UserListApiService {
     @PATCH("list/tv")
     suspend fun updateTVWatchList(@Body body: UpdateTVWatchListBody): Response<DataResponse<TVSeriesWatchList>>
 
+    @PATCH("list/tv/inc")
+    suspend fun incrementTVWatchList(@Body body: IncrementTVSeriesListBody): Response<DataResponse<TVSeriesWatchList>>
+
     @POST("list/anime")
     suspend fun createAnimeWatchList(@Body body: AnimeWatchListBody): Response<DataResponse<AnimeWatchList>>
 
     @PATCH("list/anime")
     suspend fun updateAnimeWatchList(@Body body: UpdateAnimeWatchListBody): Response<DataResponse<AnimeWatchList>>
 
+    @PATCH("list/anime/inc")
+    suspend fun incrementAnimeWatchList(@Body body: IDBody): Response<DataResponse<AnimeWatchList>>
+
     @POST("list/game")
     suspend fun createGamePlayList(@Body body: GamePlayListBody): Response<DataResponse<GamePlayList>>
 
     @PATCH("list/game")
     suspend fun updateGamePlayList(@Body body: UpdateGamePlayListBody): Response<DataResponse<GamePlayList>>
+
+    @PATCH("list/game/inc")
+    suspend fun incrementGamePlayList(@Body body: IDBody): Response<DataResponse<GamePlayList>>
 
     @HTTP(method = "DELETE", path = "list", hasBody = true)
     suspend fun deleteUserList(@Body body: DeleteUserListBody): Response<MessageResponse>

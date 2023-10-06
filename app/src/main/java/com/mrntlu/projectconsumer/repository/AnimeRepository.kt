@@ -36,11 +36,11 @@ class AnimeRepository @Inject constructor(
             when(tag) {
                FetchType.UPCOMING.tag -> animeApiService.getUpcomingAnimes(page)
                FetchType.POPULAR.tag -> animeApiService.getAnimesBySortFilter(
-                   page, SortRequests[1].request, null,
+                   page, SortRequests[0].request, null,
                    null, null, null, null,
                )
                 else -> animeApiService.getAnimesBySortFilter(
-                    page, SortRequests[0].request, AnimeStatusRequests[2].request,
+                    page, SortRequests[1].request, AnimeStatusRequests[2].request,
                     null, null, null, null,
                 )
             }

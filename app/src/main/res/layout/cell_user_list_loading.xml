@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.facebook.shimmer.ShimmerFrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     app:shimmer_auto_start="true"
     android:background="?attr/mainBackgroundColor">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?attr/mainBackgroundColor">
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/shimmerStatusColor"
             android:layout_width="5dp"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,86 +30,86 @@
             app:cardBackgroundColor="?attr/shimmerColor"
             android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/shimmerStatusColor"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginBottom="8dp"/>
 
-        <TextView
-            android:id="@+id/shimmerTitleTV"
-            android:layout_width="0dp"
-            android:layout_height="22dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="?attr/shimmerColor"
-            app:layout_constraintEnd_toStartOf="@+id/shimmerUserListButton"
-            app:layout_constraintStart_toEndOf="@+id/shimmerIV"
-            app:layout_constraintTop_toTopOf="@+id/shimmerIV" />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/shimmerUserListButton"
-            style="?attr/materialIconButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/more_cd"
-            android:padding="6dp"
-            app:icon="@drawable/ic_more"
-            app:iconTint="?attr/shimmerColor"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/shimmerIV" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginEnd="3dp">
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/shimmerContentProgress"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="6dp"
-            android:layout_weight="1"
-            android:indeterminate="false"
-            app:layout_constraintBottom_toTopOf="@+id/shimmerScoreStarIV"
-            app:layout_constraintEnd_toEndOf="@+id/shimmerUserListButton"
-            app:layout_constraintStart_toStartOf="@+id/shimmerTitleTV"
-            android:progress="35"
-            app:trackCornerRadius="5dp"
-            app:trackThickness="10dp"
-            app:indicatorColor="?attr/shimmerColor"/>
+                <TextView
+                    android:id="@+id/titleTV"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:background="?attr/shimmerColor"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/shimmerUserListButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/shimmerScoreStarIV"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_star_36"
-            app:layout_constraintBottom_toBottomOf="@+id/shimmerIV"
-            app:layout_constraintStart_toStartOf="@+id/shimmerTitleTV"
-            app:tint="?attr/shimmerColor"
-            android:importantForAccessibility="no" />
+                <Button
+                    android:id="@+id/shimmerUserListButton"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/more_cd"
+                    android:padding="6dp"
+                    app:icon="@drawable/ic_more"
+                    app:iconTint="?attr/shimmerColor"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/shimmerScoreTV"
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:background="?attr/shimmerColor"
-            app:layout_constraintBottom_toBottomOf="@+id/shimmerScoreStarIV"
-            app:layout_constraintStart_toEndOf="@+id/shimmerScoreStarIV"
-            app:layout_constraintTop_toTopOf="@+id/shimmerScoreStarIV" />
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingEnd="8dp"
+                android:layout_marginBottom="6dp"
+                android:indeterminate="false"
+                app:indicatorColor="?attr/shimmerColor"
+                app:trackColor="?attr/levelTrackTint"
+                app:trackCornerRadius="5dp"
+                app:trackThickness="10dp"
+                android:progress="35"
+                tools:ignore="RtlSymmetry" />
 
-        <TextView
-            android:id="@+id/shimmerTotalEpisodeTV"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:background="?attr/shimmerColor"
-            app:layout_constraintBottom_toBottomOf="@+id/shimmerIV"
-            app:layout_constraintEnd_toEndOf="@+id/shimmerContentProgress" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical"
+                tools:ignore="UseCompoundDrawables">
 
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:dividerColor="?attr/shimmerColor" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/rate_star_cd"
+                    android:src="@drawable/ic_star_36"
+                    app:tint="?attr/shimmerColor" />
+
+                <TextView
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="?attr/shimmerColor" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </com.facebook.shimmer.ShimmerFrameLayout>

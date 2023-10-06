@@ -22,6 +22,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.UserListAdapter
@@ -31,16 +32,25 @@ import com.mrntlu.projectconsumer.interfaces.BottomSheetState
 import com.mrntlu.projectconsumer.interfaces.OnBottomSheetClosed
 import com.mrntlu.projectconsumer.interfaces.UserListInteraction
 import com.mrntlu.projectconsumer.interfaces.UserListModel
+import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
+import com.mrntlu.projectconsumer.models.main.userList.AnimeWatchList
+import com.mrntlu.projectconsumer.models.main.userList.GamePlayList
+import com.mrntlu.projectconsumer.models.main.userList.TVSeriesWatchList
 import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.models.main.userList.retrofit.DeleteUserListBody
+import com.mrntlu.projectconsumer.models.main.userList.retrofit.IncrementTVSeriesListBody
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
+import com.mrntlu.projectconsumer.utils.Constants.SortUserListRequests
+import com.mrntlu.projectconsumer.utils.Constants.TabList
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.Orientation
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
@@ -66,6 +76,9 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private var gestureDetector: GestureDetector? = null
 
     private var userListDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null
+    private var animeListIncrementLiveData: LiveData<NetworkResponse<DataResponse<AnimeWatchList>>>? = null
+    private var gameListIncrementLiveData: LiveData<NetworkResponse<DataResponse<GamePlayList>>>? = null
+    private var tvSeriesListIncrementLiveData: LiveData<NetworkResponse<DataResponse<TVSeriesWatchList>>>? = null
 
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
         private val swipeThreshold = 100
@@ -193,8 +206,8 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private fun setUI() {
         binding.userListTabLayout.tabLayout.apply {
-            if (tabCount < Constants.TabList.size) {
-                for (tab in Constants.TabList) {
+            if (tabCount < TabList.size) {
+                for (tab in TabList) {
                     addTab(
                         newTab().setText(tab),
                         tab == viewModel.contentType.value
@@ -221,12 +234,12 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private fun setListeners() {
         binding.userListTabLayout.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val contentType: Constants.ContentType = when(tab?.position) {
-                    0 -> Constants.ContentType.MOVIE
-                    1 -> Constants.ContentType.TV
-                    2 -> Constants.ContentType.ANIME
-                    3 -> Constants.ContentType.GAME
-                    else -> Constants.ContentType.MOVIE
+                val contentType: ContentType = when(tab?.position) {
+                    0 -> ContentType.MOVIE
+                    1 -> ContentType.TV
+                    2 -> ContentType.ANIME
+                    3 -> ContentType.GAME
+                    else -> ContentType.MOVIE
                 }
 
                 viewModel.setContentType(contentType)
@@ -246,12 +259,20 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
     private fun setRecyclerView() {
         binding.userListRV.apply {
             val linearLayout = LinearLayoutManager(context)
+
+            val divider = MaterialDividerItemDecoration(this.context, LinearLayoutManager.VERTICAL)
+            divider.apply {
+                dividerThickness = context.dpToPx(1f)
+                isLastItemDecorated = false
+            }
+            addItemDecoration(divider)
+
             layoutManager = linearLayout
 
             userListAdapter = UserListAdapter(viewModel.contentType, object: UserListInteraction {
                 override fun onDeletePressed(
                     item: UserList,
-                    contentType: Constants.ContentType,
+                    contentType: ContentType,
                     position: Int
                 ) {
                     confirmDialog = context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
@@ -259,10 +280,10 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                             userListDeleteLiveData?.removeObservers(viewLifecycleOwner)
 
                         val userListModel = when (contentType) {
-                            Constants.ContentType.ANIME -> item.animeList[position]
-                            Constants.ContentType.MOVIE -> item.movieList[position]
-                            Constants.ContentType.TV -> item.tvList[position]
-                            Constants.ContentType.GAME -> item.gameList[position]
+                            ContentType.ANIME -> item.animeList[position]
+                            ContentType.MOVIE -> item.movieList[position]
+                            ContentType.TV -> item.tvList[position]
+                            ContentType.GAME -> item.gameList[position]
                         }
 
                         userListDeleteLiveData = viewModel.deleteUserList(DeleteUserListBody(userListModel.id, contentType.request))
@@ -294,16 +315,16 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                 override fun onUpdatePressed(
                     item: UserList,
-                    contentType: Constants.ContentType,
+                    contentType: ContentType,
                     position: Int
                 ) {
                     confirmDialog?.dismiss()
 
                     val userListModel = when (contentType) {
-                        Constants.ContentType.ANIME -> item.animeList[position]
-                        Constants.ContentType.MOVIE -> item.movieList[position]
-                        Constants.ContentType.TV -> item.tvList[position]
-                        Constants.ContentType.GAME -> item.gameList[position]
+                        ContentType.ANIME -> item.animeList[position]
+                        ContentType.MOVIE -> item.movieList[position]
+                        ContentType.TV -> item.tvList[position]
+                        ContentType.GAME -> item.gameList[position]
                     }
 
                     activity?.let {
@@ -323,16 +344,16 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                 override fun onDetailsPressed(
                     item: UserList,
-                    contentType: Constants.ContentType,
+                    contentType: ContentType,
                     position: Int
                 ) {
                     confirmDialog?.dismiss()
 
                     val userListModel = when (contentType) {
-                        Constants.ContentType.ANIME -> item.animeList[position]
-                        Constants.ContentType.MOVIE -> item.movieList[position]
-                        Constants.ContentType.TV -> item.tvList[position]
-                        Constants.ContentType.GAME -> item.gameList[position]
+                        ContentType.ANIME -> item.animeList[position]
+                        ContentType.MOVIE -> item.movieList[position]
+                        ContentType.TV -> item.tvList[position]
+                        ContentType.GAME -> item.gameList[position]
                     }
 
                     activity?.let {
@@ -350,21 +371,86 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     }
                 }
 
+                override fun onEpisodeIncrementPressed(item: UserList, contentType: ContentType, position: Int) {
+                    val userListModel = when(contentType) {
+                        ContentType.ANIME -> {
+                            if (animeListIncrementLiveData != null && animeListIncrementLiveData?.hasActiveObservers() == true)
+                                animeListIncrementLiveData?.removeObservers(viewLifecycleOwner)
+
+                            item.animeList[position]
+                        }
+                        ContentType.TV -> {
+                            if (tvSeriesListIncrementLiveData != null && tvSeriesListIncrementLiveData?.hasActiveObservers() == true)
+                                tvSeriesListIncrementLiveData?.removeObservers(viewLifecycleOwner)
+
+                            item.tvList[position]
+                        }
+                        ContentType.GAME -> {
+                            if (gameListIncrementLiveData != null && gameListIncrementLiveData?.hasActiveObservers() == true)
+                                gameListIncrementLiveData?.removeObservers(viewLifecycleOwner)
+
+                            item.gameList[position]
+                        }
+                        else -> item.movieList[position]
+                    }
+
+                    when(contentType) {
+                        ContentType.ANIME -> {
+                            animeListIncrementLiveData = viewModel.incrementAnimeWatchList(IDBody(userListModel.id))
+
+                            handleIncrementPressed(animeListIncrementLiveData, position)
+                        }
+                        ContentType.TV -> {
+                            tvSeriesListIncrementLiveData = viewModel.incrementTVWatchList(IncrementTVSeriesListBody(
+                                userListModel.id, true
+                            ))
+
+                            handleIncrementPressed(tvSeriesListIncrementLiveData, position)
+                        }
+                        ContentType.GAME -> {
+                            gameListIncrementLiveData = viewModel.incrementGamePlayList(IDBody(userListModel.id))
+
+                            handleIncrementPressed(gameListIncrementLiveData, position)
+                        }
+                        else -> {}
+                    }
+                }
+
+                override fun onSeasonIncrementPressed(item: UserList, contentType: ContentType, position: Int) {
+                    val userListModel = when(contentType) {
+                        ContentType.TV -> {
+                            if (tvSeriesListIncrementLiveData != null && tvSeriesListIncrementLiveData?.hasActiveObservers() == true)
+                                tvSeriesListIncrementLiveData?.removeObservers(viewLifecycleOwner)
+
+                            item.tvList[position]
+                        }
+                        else -> item.movieList[position]
+                    }
+
+                    if (contentType == ContentType.TV) {
+                        tvSeriesListIncrementLiveData = viewModel.incrementTVWatchList(IncrementTVSeriesListBody(
+                            userListModel.id, false
+                        ))
+
+                        handleIncrementPressed(tvSeriesListIncrementLiveData, position)
+                    }
+                }
+
                 override fun onItemSelected(item: UserList, position: Int) {
                     confirmDialog?.dismiss()
 
                     if (navController.currentDestination?.id == R.id.navigation_user_list) {
                         val navWithAction = when(viewModel.contentType) {
-                            Constants.ContentType.ANIME -> UserListFragmentDirections.actionNavigationUserListToAnimeDetailsFragment(
+                            ContentType.ANIME -> UserListFragmentDirections.actionNavigationUserListToAnimeDetailsFragment(
                                 item.animeList[position].contentId
                             )
-                            Constants.ContentType.MOVIE -> UserListFragmentDirections.actionUserListFragmentToMovieDetailsFragment(
+                            ContentType.MOVIE -> UserListFragmentDirections.actionUserListFragmentToMovieDetailsFragment(
                                 item.movieList[position].contentId
                             )
-                            Constants.ContentType.TV -> UserListFragmentDirections.actionUserListFragmentToTvDetailsFragment(
+                            ContentType.TV -> UserListFragmentDirections.actionUserListFragmentToTvDetailsFragment(
                                 item.tvList[position].contentId
                             )
-                            Constants.ContentType.GAME -> UserListFragmentDirections.actionNavigationUserListToGameDetailsFragment(
+                            ContentType.GAME -> UserListFragmentDirections.actionNavigationUserListToGameDetailsFragment(
                                 item.gameList[position].contentId
                             )
                         }
@@ -413,6 +499,31 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                 override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
             })
+        }
+    }
+
+    private fun <T: UserListModel> handleIncrementPressed(liveData:  LiveData<NetworkResponse<DataResponse<T>>>?, position: Int) {
+        liveData?.observe(viewLifecycleOwner) { response ->
+            when(response) {
+                is NetworkResponse.Failure -> {
+                    if (::dialog.isInitialized)
+                        dialog.dismissDialog()
+
+                    context?.showErrorDialog(response.errorMessage)
+                }
+                NetworkResponse.Loading -> {
+                    if (::dialog.isInitialized)
+                        dialog.showLoadingDialog()
+                }
+                is NetworkResponse.Success -> {
+                    if (::dialog.isInitialized)
+                        dialog.dismissDialog()
+
+                    userListAdapter?.handleOperation(
+                        Operation(response.data.data, position, OperationEnum.Update)
+                    )
+                }
+            }
         }
     }
 
@@ -504,7 +615,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
                             for (i in 0..it.menu.size.minus(1)) {
                                 val popupMenuItem = it.menu[i]
-                                val sortType = Constants.SortUserListRequests[i]
+                                val sortType = SortUserListRequests[i]
 
                                 popupMenuItem.iconTintList = ContextCompat.getColorStateList(
                                     requireContext(),
@@ -518,17 +629,17 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                                     R.id.firstSortMenu -> {
                                         setPopupMenuItemVisibility(it, 0)
 
-                                        Constants.SortUserListRequests[0].request
+                                        SortUserListRequests[0].request
                                     }
 
                                     R.id.secondSortMenu -> {
                                         setPopupMenuItemVisibility(it, 1)
 
-                                        Constants.SortUserListRequests[1].request
+                                        SortUserListRequests[1].request
                                     }
 
                                     else -> {
-                                        Constants.SortUserListRequests[0].request
+                                        SortUserListRequests[0].request
                                     }
                                 }
 

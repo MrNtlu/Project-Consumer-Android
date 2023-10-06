@@ -286,7 +286,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
     private fun setListeners() {
         binding.apply {
             tvDetailsToolbarIV.setSafeOnClickListener(interval = 750) {
-                if (tvDetails?.imageURL?.isNotEmptyOrBlank() == true) {
+                if (tvDetails?.imageURL?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.tvDetailsFragment) {
                     val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToImageFragment(
                         tvDetails!!.imageURL
                     )
@@ -367,8 +367,10 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 layoutManager = linearLayout
 
                 genreAdapter = GenreAdapter(tvDetails!!.genres) {
-                    val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToDiscoverListFragment(Constants.ContentType.TV, tvDetails?.genres?.get(it))
-                    navController.navigate(navWithAction)
+                    if (navController.currentDestination?.id == R.id.tvDetailsFragment) {
+                        val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToDiscoverListFragment(Constants.ContentType.TV, tvDetails?.genres?.get(it))
+                        navController.navigate(navWithAction)
+                    }
                 }
                 setHasFixedSize(true)
                 adapter = genreAdapter
@@ -507,11 +509,13 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 layoutManager = linearLayout
 
                 recommendationsAdapter = RecommendationsAdapter(tvDetails!!.recommendations) { position, recommendation ->
-                    isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
-                    recommendationPosition = position
+                    if (navController.currentDestination?.id == R.id.tvDetailsFragment) {
+                        isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
+                        recommendationPosition = position
 
-                    val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentSelf(recommendation.tmdbID)
-                    navController.navigate(navWithAction)
+                        val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentSelf(recommendation.tmdbID)
+                        navController.navigate(navWithAction)
+                    }
                 }
                 adapter = recommendationsAdapter
 

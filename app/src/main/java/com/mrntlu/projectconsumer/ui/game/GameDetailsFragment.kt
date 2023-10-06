@@ -263,7 +263,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
     private fun setListeners() {
         binding.apply {
             detailsToolbarIV.setSafeOnClickListener(interval = 750) {
-                if (gameDetails?.imageURL?.isNotEmptyOrBlank() == true) {
+                if (gameDetails?.imageURL?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.gameDetailsFragment) {
                     val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToImageFragment(
                         gameDetails!!.imageURL,
                         isRatioDifferent = true
@@ -311,8 +311,10 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 layoutManager = linearLayout
 
                 genreAdapter = GenreAdapter(gameDetails!!.genres) {
-                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToDiscoverListFragment(Constants.ContentType.GAME, gameDetails?.genres?.get(it))
-                    navController.navigate(navWithAction)
+                    if (navController.currentDestination?.id == R.id.gameDetailsFragment) {
+                        val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToDiscoverListFragment(Constants.ContentType.GAME, gameDetails?.genres?.get(it))
+                        navController.navigate(navWithAction)
+                    }
                 }
                 adapter = genreAdapter
             }
@@ -379,11 +381,13 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 relationAdapter = GameRelationsAdapter(
                     gameDetails!!.relatedGames,
                 ) { rawgId, position ->
-                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
-                    recommendationPosition = position
+                    if (navController.currentDestination?.id == R.id.gameDetailsFragment) {
+                        isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                        recommendationPosition = position
 
-                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentSelf(rawgId.toString())
-                    navController.navigate(navWithAction)
+                        val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentSelf(rawgId.toString())
+                        navController.navigate(navWithAction)
+                    }
                 }
                 adapter = relationAdapter
 

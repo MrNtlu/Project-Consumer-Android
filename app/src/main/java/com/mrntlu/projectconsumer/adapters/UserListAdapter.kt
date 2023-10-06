@@ -30,7 +30,8 @@ import com.mrntlu.projectconsumer.models.main.userList.convertToAnimeList
 import com.mrntlu.projectconsumer.models.main.userList.convertToGameList
 import com.mrntlu.projectconsumer.models.main.userList.convertToMovieList
 import com.mrntlu.projectconsumer.models.main.userList.convertToTVSeriesList
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
+import com.mrntlu.projectconsumer.utils.Constants.UserListStatus
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
@@ -38,13 +39,14 @@ import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
 class UserListAdapter(
-    private var contentType: Constants.ContentType = Constants.ContentType.MOVIE,
+    private var contentType: ContentType = ContentType.MOVIE,
     val interaction: UserListInteraction,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
@@ -60,10 +62,10 @@ class UserListAdapter(
         val diffResults = DiffUtil.calculateDiff(diffUtil, true)
 
         when(contentType){
-            Constants.ContentType.ANIME -> userList.animeList = newList.toList().map { it.convertToAnimeList() }
-            Constants.ContentType.MOVIE -> userList.movieList = newList.toList().map { it.convertToMovieList() }
-            Constants.ContentType.TV -> userList.tvList = newList.toList().map { it.convertToTVSeriesList() }
-            Constants.ContentType.GAME -> userList.gameList = newList.toList().map { it.convertToGameList() }
+            ContentType.ANIME -> userList.animeList = newList.toList().map { it.convertToAnimeList() }
+            ContentType.MOVIE -> userList.movieList = newList.toList().map { it.convertToMovieList() }
+            ContentType.TV -> userList.tvList = newList.toList().map { it.convertToTVSeriesList() }
+            ContentType.GAME -> userList.gameList = newList.toList().map { it.convertToGameList() }
         }
 
         diffResults.dispatchUpdatesTo(this)
@@ -84,12 +86,22 @@ class UserListAdapter(
                 (holder as ItemViewHolder).apply {
                     bind(contentType, userList, holder.adapterPosition)
 
-                    binding.root.setOnClickListener {
+                    binding.root.setSafeOnClickListener {
                         interaction.onItemSelected(userList, holder.adapterPosition)
                     }
 
                     binding.userListButton.setOnClickListener {
                         handlePopupMenu(binding, holder.adapterPosition)
+                    }
+
+                    binding.incrementEpisodeButton.setSafeOnClickListener {
+                        interaction.onEpisodeIncrementPressed(userList, contentType, holder.adapterPosition)
+                    }
+
+                    if (contentType.request == ContentType.TV.request) {
+                        binding.incrementSeasonButton.setSafeOnClickListener {
+                            interaction.onSeasonIncrementPressed(userList, contentType, holder.adapterPosition)
+                        }
                     }
                 }
             }
@@ -120,10 +132,10 @@ class UserListAdapter(
     }
 
     private fun getContentList() = when(contentType){
-        Constants.ContentType.ANIME -> userList.animeList
-        Constants.ContentType.MOVIE -> userList.movieList
-        Constants.ContentType.TV -> userList.tvList
-        Constants.ContentType.GAME -> userList.gameList
+        ContentType.ANIME -> userList.animeList
+        ContentType.MOVIE -> userList.movieList
+        ContentType.TV -> userList.tvList
+        ContentType.GAME -> userList.gameList
     }
 
     private fun handlePopupMenu(binding: CellUserListBinding, position: Int) {
@@ -165,7 +177,7 @@ class UserListAdapter(
         notifyDataSetChanged()
     }
 
-    fun changeContentType(newContentType: Constants.ContentType) {
+    fun changeContentType(newContentType: ContentType) {
         if (contentType != newContentType) {
             contentType = newContentType
             notifyDataSetChanged()
@@ -184,10 +196,10 @@ class UserListAdapter(
             notifyDataSetChanged()
         } else {
             val newList = when(contentType) {
-                Constants.ContentType.ANIME -> newUserList.animeList
-                Constants.ContentType.MOVIE -> newUserList.movieList
-                Constants.ContentType.TV -> newUserList.tvList
-                Constants.ContentType.GAME -> newUserList.gameList
+                ContentType.ANIME -> newUserList.animeList
+                ContentType.MOVIE -> newUserList.movieList
+                ContentType.TV -> newUserList.tvList
+                ContentType.GAME -> newUserList.gameList
             }.toMutableList().toCollection(ArrayList())
 
             val currentList = getContentList().toMutableList().toCollection(ArrayList())
@@ -248,20 +260,20 @@ class UserListAdapter(
 
                     operation.data.apply {
                         newList[index] = when(contentType) {
-                            Constants.ContentType.ANIME -> AnimeList(
+                            ContentType.ANIME -> AnimeList(
                                 id, contentStatus, score, timesFinished, mainAttribute!!, contentId, contentExternalId,
-                                item.title, item.titleOriginal, item.imageUrl, item.totalSeasons, item.createdAt,
+                                item.title, item.titleOriginal, item.imageUrl, item.totalEpisodes, item.createdAt,
                             )
-                            Constants.ContentType.MOVIE -> MovieList(
+                            ContentType.MOVIE -> MovieList(
                                 id, contentStatus, score, timesFinished, contentId, contentExternalId,
                                 item.title, item.titleOriginal, item.imageUrl, item.createdAt,
                             )
-                            Constants.ContentType.TV -> TVSeriesList(
+                            ContentType.TV -> TVSeriesList(
                                 id, contentStatus, score, timesFinished, mainAttribute, subAttribute,
                                 contentId, contentExternalId, item.title, item.titleOriginal,
                                 item.imageUrl, item.totalEpisodes, item.totalSeasons, item.createdAt,
                             )
-                            Constants.ContentType.GAME -> GameList(
+                            ContentType.GAME -> GameList(
                                 id, contentStatus, score, timesFinished, mainAttribute, contentId,
                                 contentExternalId, item.title, item.titleOriginal, item.imageUrl, item.createdAt,
                             )
@@ -279,53 +291,53 @@ class UserListAdapter(
     inner class ItemViewHolder(
         val binding: CellUserListBinding,
     ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(contentType: Constants.ContentType, userList: UserList, position: Int) {
+        fun bind(contentType: ContentType, userList: UserList, position: Int) {
             val contentStatus = when (contentType) {
-                Constants.ContentType.ANIME -> userList.animeList[position].contentStatus
-                Constants.ContentType.MOVIE -> userList.movieList[position].contentStatus
-                Constants.ContentType.TV -> userList.tvList[position].contentStatus
-                Constants.ContentType.GAME -> userList.gameList[position].contentStatus
+                ContentType.ANIME -> userList.animeList[position].contentStatus
+                ContentType.MOVIE -> userList.movieList[position].contentStatus
+                ContentType.TV -> userList.tvList[position].contentStatus
+                ContentType.GAME -> userList.gameList[position].contentStatus
             }
 
             val imageUrl = when (contentType) {
-                Constants.ContentType.ANIME -> userList.animeList[position].imageUrl
-                Constants.ContentType.MOVIE -> userList.movieList[position].imageUrl
-                Constants.ContentType.TV -> userList.tvList[position].imageUrl
-                Constants.ContentType.GAME -> userList.gameList[position].imageUrl
+                ContentType.ANIME -> userList.animeList[position].imageUrl
+                ContentType.MOVIE -> userList.movieList[position].imageUrl
+                ContentType.TV -> userList.tvList[position].imageUrl
+                ContentType.GAME -> userList.gameList[position].imageUrl
             }
 
             val title = when (contentType) {
-                Constants.ContentType.ANIME -> userList.animeList[position].title
-                Constants.ContentType.MOVIE -> userList.movieList[position].title
-                Constants.ContentType.TV -> userList.tvList[position].title
-                Constants.ContentType.GAME -> userList.gameList[position].title
+                ContentType.ANIME -> userList.animeList[position].title
+                ContentType.MOVIE -> userList.movieList[position].title
+                ContentType.TV -> userList.tvList[position].title
+                ContentType.GAME -> userList.gameList[position].title
             }
 
             val score = when (contentType) {
-                Constants.ContentType.ANIME -> userList.animeList[position].score
-                Constants.ContentType.MOVIE -> userList.movieList[position].score
-                Constants.ContentType.TV -> userList.tvList[position].score
-                Constants.ContentType.GAME -> userList.gameList[position].score
+                ContentType.ANIME -> userList.animeList[position].score
+                ContentType.MOVIE -> userList.movieList[position].score
+                ContentType.TV -> userList.tvList[position].score
+                ContentType.GAME -> userList.gameList[position].score
             }
 
             val totalEps = when (contentType) {
-                Constants.ContentType.ANIME -> userList.animeList[position].totalEpisodes
-                Constants.ContentType.TV -> userList.tvList[position].totalEpisodes
+                ContentType.ANIME -> userList.animeList[position].totalEpisodes
+                ContentType.TV -> userList.tvList[position].totalEpisodes
                 else -> null
             }
 
             val watchedEps = when (contentType) {
-                Constants.ContentType.ANIME -> userList.animeList[position].mainAttribute
-                Constants.ContentType.TV -> userList.tvList[position].mainAttribute
+                ContentType.ANIME -> userList.animeList[position].mainAttribute
+                ContentType.TV -> userList.tvList[position].mainAttribute
                 else -> null
             }
 
-            val watchedSeasons = if (contentType == Constants.ContentType.TV)
+            val watchedSeasons = if (contentType == ContentType.TV)
                 userList.tvList[position].subAttribute
             else null
 
             val totalSeasons = "/${
-                if (contentType == Constants.ContentType.TV)
+                if (contentType == ContentType.TV)
                     userList.tvList[position].totalSeasons
                 else "?"
             } season${if ((watchedSeasons ?: 0) > 1) "s" else ""}"
@@ -339,13 +351,13 @@ class UserListAdapter(
                     previewShimmerLayout.setVisible()
                     previewShimmerCV.radius = radiusInPx
 
-                    previewIV.scaleType = if (contentType == Constants.ContentType.GAME)
+                    previewIV.scaleType = if (contentType == ContentType.GAME)
                         ImageView.ScaleType.CENTER_CROP
                     else
                         ImageView.ScaleType.FIT_XY
 
                     previewIV.loadWithGlide(imageUrl ?: "", previewCard, previewShimmerLayout) {
-                        if (contentType == Constants.ContentType.GAME)
+                        if (contentType == ContentType.GAME)
                             transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
                         else
                             transform(RoundedCorners(radiusInPx.toInt()))
@@ -355,8 +367,8 @@ class UserListAdapter(
                 }
 
                 val attrColor = when (contentStatus) {
-                    Constants.UserListStatus[0].request -> R.attr.statusActiveColor
-                    Constants.UserListStatus[1].request -> R.attr.statusFinishedColor
+                    UserListStatus[0].request -> R.attr.statusActiveColor
+                    UserListStatus[1].request -> R.attr.statusFinishedColor
                     else -> R.attr.statusDroppedColor
                 }
 
@@ -367,21 +379,20 @@ class UserListAdapter(
                 totalSeasonTV.text = totalSeasons
                 watchedSeasonTV.text = watchedSeasons?.toString() ?: "?"
 
-                val contentStatusType =
-                    Constants.UserListStatus.find { it.request == contentStatus }?.name
-                        ?: Constants.UserListStatus[0].name
+                val contentStatusType = UserListStatus.find { it.request == contentStatus }?.name
+                    ?: UserListStatus[0].name
                 contentStatusTV.text = contentStatusType
 
                 contentProgress.apply {
                     max = when (contentType) {
-                        Constants.ContentType.ANIME -> userList.animeList[position].totalEpisodes
+                        ContentType.ANIME -> userList.animeList[position].totalEpisodes
                             ?: if (contentStatus == "finished" && watchedEps != null) watchedEps else 100
 
-                        Constants.ContentType.MOVIE -> 1
-                        Constants.ContentType.TV -> userList.tvList[position].totalEpisodes
+                        ContentType.MOVIE -> 1
+                        ContentType.TV -> userList.tvList[position].totalEpisodes
                             ?: if (contentStatus == "finished" && watchedEps != null) watchedEps else 100
 
-                        Constants.ContentType.GAME -> if (userList.gameList[position].mainAttribute?.compareTo(
+                        ContentType.GAME -> if (userList.gameList[position].mainAttribute?.compareTo(
                                 1000
                             ) == -1
                         ) 1000
@@ -390,22 +401,25 @@ class UserListAdapter(
                                 ?: 1
                     }
                     progress = when (contentType) {
-                        Constants.ContentType.ANIME -> userList.animeList[position].mainAttribute
-                        Constants.ContentType.MOVIE -> if (contentStatus == "finished") 1 else 0
-                        Constants.ContentType.TV -> userList.tvList[position].mainAttribute ?: 1
-                        Constants.ContentType.GAME -> userList.gameList[position].mainAttribute
+                        ContentType.ANIME -> userList.animeList[position].mainAttribute
+                        ContentType.MOVIE -> if (contentStatus == "finished") 1 else 0
+                        ContentType.TV -> userList.tvList[position].mainAttribute ?: 1
+                        ContentType.GAME -> userList.gameList[position].mainAttribute
                             ?: if (contentStatus == "finished") 1 else 0
                     }
                 }
 
-                totalSeasonTV.setVisibilityByCondition(contentType != Constants.ContentType.TV)
-                watchedSeasonTV.setVisibilityByCondition(contentType != Constants.ContentType.TV)
-                totalEpisodeTV.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
-                watchedEpisodeTV.setVisibilityByCondition(contentType == Constants.ContentType.MOVIE)
+                incrementEpisodeButton.setVisibilityByCondition(contentStatus != "active")
+                incrementSeasonButton.setVisibilityByCondition(contentStatus != "active" || contentType != ContentType.TV)
+//                incrementEpisodeButton.setGone()
+//                incrementSeasonButton.setGone()
+                totalSeasonTV.setVisibilityByCondition(contentType != ContentType.TV)
+                watchedSeasonTV.setVisibilityByCondition(contentType != ContentType.TV)
+                episodeSeasonLayout.setVisibilityByCondition(contentType == ContentType.MOVIE)
 
                 when (contentType) {
-                    Constants.ContentType.MOVIE -> {}
-                    Constants.ContentType.GAME -> {
+                    ContentType.MOVIE -> {}
+                    ContentType.GAME -> {
                         val hoursPlayedStr = " hours"
                         totalEpisodeTV.text = hoursPlayedStr
 
