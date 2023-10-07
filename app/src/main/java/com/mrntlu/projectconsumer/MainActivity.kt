@@ -33,10 +33,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import androidx.window.layout.WindowMetricsCalculator
-import com.android.installreferrer.api.InstallReferrerClient
-import com.android.installreferrer.api.InstallReferrerClient.InstallReferrerResponse
-import com.android.installreferrer.api.InstallReferrerStateListener
-import com.android.installreferrer.api.ReferrerDetails
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
@@ -64,7 +60,6 @@ import com.mrntlu.projectconsumer.utils.Constants.LAYOUT_PREF
 import com.mrntlu.projectconsumer.utils.Constants.LIGHT_THEME
 import com.mrntlu.projectconsumer.utils.Constants.NOTIFICATION_PREF
 import com.mrntlu.projectconsumer.utils.Constants.PREF_NAME
-import com.mrntlu.projectconsumer.utils.Constants.REFERRAL_PREF
 import com.mrntlu.projectconsumer.utils.Constants.TAB_LAYOUT_PREF
 import com.mrntlu.projectconsumer.utils.Constants.THEME_PREF
 import com.mrntlu.projectconsumer.utils.MessageBoxType
@@ -100,9 +95,6 @@ class MainActivity : AppCompatActivity() {
     private val userSharedViewModel: UserSharedViewModel by viewModels()
 
     private var notificationDialog: AlertDialog? = null
-
-    //TODO Remove later
-    private lateinit var referrerClient: InstallReferrerClient
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
@@ -291,42 +283,7 @@ class MainActivity : AppCompatActivity() {
 
         computeWindowSizeClasses()
 
-
-        val shouldSendReferral = prefs.getBoolean(REFERRAL_PREF, true)
-        if (shouldSendReferral)
-            handleReferrer()
         handleIntentData(intent)
-    }
-
-    //TODO Remove Later
-    private fun handleReferrer() {
-        referrerClient = InstallReferrerClient.newBuilder(this).build()
-
-        referrerClient.startConnection(object : InstallReferrerStateListener {
-            override fun onInstallReferrerSetupFinished(responseCode: Int) {
-                when (responseCode) {
-                    InstallReferrerResponse.OK -> {
-                        try {
-                            val response: ReferrerDetails = referrerClient.installReferrer
-                            val referrerUrl: String = response.installReferrer
-
-                            if (referrerUrl.length > 3 && referrerUrl.contains("afgc")) {
-                                userSharedViewModel.makeReferralRequest(referrerUrl)
-                            }
-                        } catch (_: Exception) {}
-                    }
-                    else -> {
-                        referrerClient.endConnection()
-                    }
-                }
-            }
-
-            override fun onInstallReferrerServiceDisconnected() {
-                referrerClient.endConnection()
-            }
-        })
-
-        setReferralPref()
     }
 
     private fun setListeners() {
@@ -531,12 +488,6 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
     }
 
-    private fun setReferralPref(){
-        val editor = prefs.edit()
-        editor.putBoolean(REFERRAL_PREF, false)
-        editor.apply()
-    }
-
     private fun setThemePref(value: Int){
         val editor = prefs.edit()
         editor.putInt(THEME_PREF, value)
@@ -575,10 +526,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         notificationDialog?.dismiss()
         notificationDialog = null
-
-        //TODO Remove Later
-        if (::referrerClient.isInitialized)
-            referrerClient.endConnection()
 
         sharedViewModel.layoutSelection.removeObservers(this)
         sharedViewModel.tabLayoutSelection.removeObservers(this)

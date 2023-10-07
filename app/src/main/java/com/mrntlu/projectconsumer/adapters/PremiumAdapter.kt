@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.CellEmptyBinding
 import com.mrntlu.projectconsumer.databinding.CellPremiumBinding
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
@@ -43,9 +44,12 @@ class PremiumAdapter(
                 frequencyTV.text = if (product.period?.unit?.name == "YEAR") "/year" else "/mo"
 
                 premiumInfoTV.text = if (product.title.split(" Membership")[0] == "Premium")
-                    "AI Suggestions, 3 from each content type"
+                    root.context.getString(R.string.premium_first)
                 else
-                    "AI Suggestions, 5 from each content type"
+                    root.context.getString(R.string.premium_first_alt)
+
+                premiumSecondInfoTV.text = root.context.getString(R.string.premium_second)
+                premiumThirdInfoTV.text = root.context.getString(R.string.premium_third)
 
                 root.setSafeOnClickListener {
                     onClick(item)

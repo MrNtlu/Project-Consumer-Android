@@ -3,21 +3,13 @@ package com.mrntlu.projectconsumer.repository
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateFCMTokenBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateMembershipBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
-import com.mrntlu.projectconsumer.service.retrofit.ReferralApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userApiService: UserApiService,
-    private val referralApiService: ReferralApiService,
 ) {
-
-    //TODO Remove Later
-    fun makeReferralRequest(refUrl: String) = networkResponseFlow {
-        referralApiService.makeReferralRequest(refUrl)
-    }
-
     fun getBasicUserInfo() = networkResponseFlow {
         userApiService.getBasicUserInfo()
     }
