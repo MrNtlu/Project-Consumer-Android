@@ -365,6 +365,37 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailsProductionTV" />
 
+            <TextView
+                android:id="@+id/tvDetailsMediaTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/media"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsProductionRV" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/tvDetailsMediaImageSliderCV"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="?attr/mainBackgroundColor"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsMediaTV">
+                <com.denzcoskun.imageslider.ImageSlider
+                    android:id="@+id/tvDetailsMediaImageSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:iss_auto_cycle="false" />
+            </androidx.cardview.widget.CardView>
+
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/streamingMaterialDivider"
                 android:layout_width="0dp"
@@ -372,7 +403,7 @@
                 android:layout_marginTop="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDetailsProductionRV" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDetailsMediaImageSliderCV" />
 
             <TextView
                 android:id="@+id/tvDetailsAvailableTV"

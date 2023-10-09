@@ -60,6 +60,10 @@ class UserListBottomSheet(
     private val episodeSuffix: Int?,
     private val onBottomSheetClosed: OnBottomSheetClosed,
 ): BottomSheetDialogFragment() {
+    constructor() : this(null, ContentType.MOVIE, BottomSheetState.VIEW, "", "", null, null,
+        object : OnBottomSheetClosed { override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {} }
+    )
+
     companion object {
         const val TAG = "UserListBottomSheet"
     }

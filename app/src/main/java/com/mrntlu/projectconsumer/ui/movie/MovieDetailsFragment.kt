@@ -18,6 +18,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
+import com.denzcoskun.imageslider.models.SlideModel
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
@@ -273,6 +275,33 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             binding.detailsReleaseTV.text = releaseStr
             binding.detailsStatusTV.text = status
 
+            binding.detailsMediaImageSlider.apply {
+                val imageSliderList = images.map {
+                    SlideModel(imageUrl = it)
+                }
+
+                setImageList(imageSliderList)
+
+                setItemClickListener(object: ItemClickListener {
+                    override fun doubleClick(position: Int) {}
+
+                    override fun onItemSelected(position: Int) {
+                        if (imageSliderList[position].imageUrl?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.movieDetailsFragment) {
+                            isAppBarLifted = binding.detailsAppBarLayout.isLifted
+
+                            val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToImageFragment(
+                                imageSliderList[position].imageUrl!!,
+                                isRatioDifferent = true
+                            )
+
+                            navController.navigate(navWithAction)
+                        }
+                    }
+                })
+            }
+
+            binding.detailsMediaTV.setVisibilityByCondition(images.isEmpty())
+            binding.detailsMediaImageSliderCV.setVisibilityByCondition(images.isEmpty())
             binding.imdbButton.setVisibilityByCondition(imdbID == null)
             binding.detailsAvailableTV.setVisibilityByCondition(streaming.isNullOrEmpty())
             binding.detailsStreamingCountrySpinner.setVisibilityByCondition(streaming.isNullOrEmpty())

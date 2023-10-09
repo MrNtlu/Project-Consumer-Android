@@ -18,6 +18,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
+import com.denzcoskun.imageslider.models.SlideModel
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.GenreAdapter
@@ -275,6 +277,33 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             val seasonEpsStr = "$totalSeasonsStr • $totalEpisodesStr"
             binding.tvDetailsSeasonEpsTV.text = seasonEpsStr
 
+            binding.tvDetailsMediaImageSlider.apply {
+                val imageSliderList = images.map {
+                    SlideModel(imageUrl = it)
+                }
+
+                setImageList(imageSliderList)
+
+                setItemClickListener(object: ItemClickListener {
+                    override fun doubleClick(position: Int) {}
+
+                    override fun onItemSelected(position: Int) {
+                        if (tvDetails?.imageURL?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.tvDetailsFragment) {
+                            isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
+
+                            val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToImageFragment(
+                                tvDetails!!.imageURL,
+                                isRatioDifferent = true
+                            )
+
+                            navController.navigate(navWithAction)
+                        }
+                    }
+                })
+            }
+
+            binding.tvDetailsMediaTV.setVisibilityByCondition(images.isEmpty())
+            binding.tvDetailsMediaImageSliderCV.setVisibilityByCondition(images.isEmpty())
             binding.tvDetailsAvailableTV.setVisibilityByCondition(streaming.isNullOrEmpty())
             binding.tvDetailsStreamingCountrySpinner.setVisibilityByCondition(streaming.isNullOrEmpty())
             binding.tvDetailsStreamingTV.setVisibilityByCondition(streaming.isNullOrEmpty())
