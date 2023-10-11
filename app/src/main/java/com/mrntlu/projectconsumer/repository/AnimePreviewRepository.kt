@@ -10,4 +10,8 @@ class AnimePreviewRepository @Inject constructor(
     fun fetchPreviewAnimes() = networkResponseFlow {
         animeApiService.getPreviewAnimes()
     }
+
+    fun getCurrentlyAiringTVSeriesByDayOfWeek() = networkResponseFlow {
+        animeApiService.getCurrentlyAiringAnimesByDayOfWeek()
+    }
 }

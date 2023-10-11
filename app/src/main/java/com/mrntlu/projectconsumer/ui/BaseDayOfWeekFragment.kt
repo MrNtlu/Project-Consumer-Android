@@ -1,0 +1,88 @@
+package com.mrntlu.projectconsumer.ui
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.divider.MaterialDividerItemDecoration
+import com.google.android.material.tabs.TabLayout
+import com.mrntlu.projectconsumer.adapters.ContentAdapter
+import com.mrntlu.projectconsumer.databinding.FragmentUserListBinding
+import com.mrntlu.projectconsumer.interfaces.ContentModel
+import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
+import com.mrntlu.projectconsumer.utils.dpToPx
+
+abstract class BaseDayOfWeekFragment<T: ContentModel>: BaseFragment<FragmentUserListBinding>() {
+
+    protected var contentAdapter: ContentAdapter<T>? = null
+    protected var gridCount = 3
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentUserListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    private fun setUI() {
+        //1 Sunday 7 Saturday
+        //LocalDate.now().dayOfWeek.value
+        //DayOfWeek.valueOf(dayOfWeek.name).value
+        binding.userListTabLayout.tabLayout.apply {
+
+        }
+    }
+
+    private fun setListeners() {
+        binding.userListTabLayout.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val tabPosition = tab?.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+    private fun setRecyclerView() {
+        binding.userListRV.apply {
+            val rvLayoutManager = if(sharedViewModel.isAltLayout()) {
+                val linearLayoutManager = LinearLayoutManager(this.context)
+
+                val divider = MaterialDividerItemDecoration(this.context, LinearLayoutManager.VERTICAL)
+                divider.apply {
+                    dividerInsetStart = context.dpToPx(119f)
+                    dividerInsetEnd = context.dpToPx(8f)
+                    dividerThickness = context.dpToPx(1f)
+                    isLastItemDecorated = false
+                }
+                addItemDecoration(divider)
+
+                gridCount = 1
+                linearLayoutManager
+            } else {
+                val gridLayoutManager = GridLayoutManager(this.context, gridCount)
+
+                gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        val itemViewType = contentAdapter?.getItemViewType(position)
+                        return if (
+                            itemViewType == RecyclerViewEnum.View.value ||
+                            itemViewType == RecyclerViewEnum.Loading.value
+                        ) 1 else gridCount
+                    }
+                }
+                gridLayoutManager
+            }
+            layoutManager = rvLayoutManager
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+}

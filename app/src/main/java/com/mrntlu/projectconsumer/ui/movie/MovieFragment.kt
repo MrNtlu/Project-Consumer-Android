@@ -19,6 +19,9 @@ class MovieFragment: BasePreviewFragment<Movie>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setGuidelineHeight()
+        binding.extraRVTV.text = getString(R.string.in_theaters)
+
         setListeners()
         setShowcaseRecyclerView(
             onItemClicked = { id ->
@@ -46,7 +49,15 @@ class MovieFragment: BasePreviewFragment<Movie>() {
                     navController.navigate(navWithAction)
                 }
             },
-            secondOnRefreshPressed = { viewModel.fetchPreviewMovies() }
+            secondOnRefreshPressed = { viewModel.fetchPreviewMovies() },
+            extraOnItemSelected = { id ->
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieDetailsFragment(id)
+
+                    navController.navigate(navWithAction)
+                }
+            },
+            extraOnRefreshPressed = { viewModel.fetchPreviewMovies() }
         )
         setObservers()
     }
@@ -76,6 +87,14 @@ class MovieFragment: BasePreviewFragment<Movie>() {
                     navController.navigate(navWithAction)
                 }
             }
+
+            seeAllButtonExtra.setOnClickListener {
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToMovieListFragment(FetchType.EXTRA.tag)
+
+                    navController.navigate(navWithAction)
+                }
+            }
         }
     }
 
@@ -84,7 +103,7 @@ class MovieFragment: BasePreviewFragment<Movie>() {
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
             if (
-                (upcomingAdapter?.errorMessage != null && topRatedAdapter?.errorMessage != null) && it
+                (upcomingAdapter?.errorMessage != null && topRatedAdapter?.errorMessage != null && extraAdapter?.errorMessage != null) && it
             ) {
                 viewModel.fetchPreviewMovies()
             }

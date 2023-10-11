@@ -4,4 +4,5 @@ data class PreviewResponse<T>(
     val upcoming: List<T>,
     val popular: List<T>,
     val top: List<T>,
+    val extra: List<T>?,
 )

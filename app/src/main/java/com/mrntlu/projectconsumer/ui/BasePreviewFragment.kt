@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.HeroCarouselStrategy
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -16,17 +14,19 @@ import com.mrntlu.projectconsumer.databinding.FragmentPreviewBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
+import com.mrntlu.projectconsumer.models.main.game.Game
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 
 abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPreviewBinding>() {
 
     protected var upcomingAdapter: PreviewAdapter<T>? = null
     protected var topRatedAdapter: PreviewAdapter<T>? = null
+    protected var extraAdapter: PreviewAdapter<T>? = null
     private var showCaseAdapter: CarouselAdapter<T>? = null
 
-    private var snapHelper: PagerSnapHelper? = null
-    private var guideLinePercent = 0.34
+    private var guideLinePercent = 0.28
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,22 +36,20 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    protected fun setGuidelineHeight(isGame: Boolean = false) {
         sharedViewModel.windowHeight.observe(viewLifecycleOwner) {
             val height: WindowSizeClass = it
 
             binding.guideline14.setGuidelinePercent(
                 when(height) {
-                    WindowSizeClass.EXPANDED -> 0.4f
-                    else -> 0.34f
+                    WindowSizeClass.EXPANDED -> if (isGame) 0.4f else 0.34f
+                    else -> if (isGame) 0.34f else 0.28f
                 }
             )
 
             guideLinePercent = when(height) {
-                WindowSizeClass.EXPANDED -> 0.4
-                else -> 0.34
+                WindowSizeClass.EXPANDED -> if (isGame) 0.4 else 0.34
+                else -> if (isGame) 0.34 else 0.28
             }
         }
     }
@@ -97,23 +95,14 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
         }
     }
 
-    private fun initRecyclerViewPosition(layoutManager: LinearLayoutManager) {
-        layoutManager.scrollToPosition(1)
-
-        binding.previewShowcaseRV.doOnPreDraw {
-            val targetView = layoutManager.findViewByPosition(1) ?: return@doOnPreDraw
-            val distanceToFinalSnap = snapHelper?.calculateDistanceToFinalSnap(layoutManager, targetView) ?: return@doOnPreDraw
-
-            layoutManager.scrollToPositionWithOffset(1, -distanceToFinalSnap[0])
-        }
-    }
-
     protected fun setRecyclerView(
         isRatioDifferent: Boolean = false,
         firstOnItemSelected: (String) -> Unit,
         firstOnRefreshPressed: () -> Unit,
         secondOnItemSelected: (String) -> Unit,
         secondOnRefreshPressed: () -> Unit,
+        extraOnItemSelected: (String) -> Unit,
+        extraOnRefreshPressed: () -> Unit,
     ) {
         binding.upcomingPreviewRV.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
@@ -154,6 +143,26 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
             }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
             adapter = topRatedAdapter
         }
+
+        binding.extraPreviewRV.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
+            extraAdapter = PreviewAdapter(object: Interaction<T> {
+                override fun onItemSelected(item: T, position: Int) {
+                    extraOnItemSelected(item.id)
+                }
+
+                override fun onCancelPressed() {
+                    navController.popBackStack()
+                }
+
+                override fun onErrorRefreshPressed() {
+                    extraOnRefreshPressed()
+                }
+
+                override fun onExhaustButtonPressed() {}
+            }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
+            adapter = extraAdapter
+        }
     }
 
     protected fun handleObserver(response: NetworkResponse<PreviewResponse<T>>) {
@@ -162,16 +171,23 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                 upcomingAdapter?.setErrorView(response.errorMessage)
                 showCaseAdapter?.setErrorView(response.errorMessage)
                 topRatedAdapter?.setErrorView(response.errorMessage)
+                extraAdapter?.setErrorView(response.errorMessage)
             }
             NetworkResponse.Loading -> {
                 upcomingAdapter?.setLoadingView()
                 showCaseAdapter?.setLoadingView()
                 topRatedAdapter?.setLoadingView()
+                extraAdapter?.setLoadingView()
             }
             is NetworkResponse.Success -> {
                 upcomingAdapter?.setData(response.data.upcoming)
                 showCaseAdapter?.setData(response.data.popular)
                 topRatedAdapter?.setData(response.data.top)
+
+                if (!response.data.extra.isNullOrEmpty()) {
+                    extraAdapter?.setData(response.data.extra)
+                }
+                binding.extraPreviewRV.setVisibilityByConditionWithAnimation(response.data.extra.isNullOrEmpty())
             }
         }
     }
@@ -179,10 +195,10 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     override fun onDestroyView() {
         sharedViewModel.windowHeight.removeObservers(viewLifecycleOwner)
         sharedViewModel.networkStatus.removeObservers(viewLifecycleOwner)
-        snapHelper = null
         showCaseAdapter = null
         upcomingAdapter = null
         topRatedAdapter = null
+        extraAdapter = null
         super.onDestroyView()
     }
 }

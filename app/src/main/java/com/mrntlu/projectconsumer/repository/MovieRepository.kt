@@ -39,6 +39,7 @@ class MovieRepository @Inject constructor(
                     page, SortRequests[1].request, MovieStatusRequests[1].request,
                     null, null, null, null
                 )
+                FetchType.EXTRA.tag -> movieApiService.getMoviesInTheater(page)
                 else -> movieApiService.getMovieBySortFilter(
                     page, SortRequests[0].request,
                     null, null, null, null, null

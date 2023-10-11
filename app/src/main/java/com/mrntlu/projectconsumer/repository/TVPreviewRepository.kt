@@ -11,4 +11,8 @@ class TVPreviewRepository @Inject constructor(
     fun fetchPreviewTVSeries() = networkResponseFlow {
         tvSeriesApiService.getPreviewTVSeries()
     }
+
+    fun getCurrentlyAiringTVSeriesByDayOfWeek() = networkResponseFlow {
+        tvSeriesApiService.getCurrentlyAiringTVSeriesByDayOfWeek()
+    }
 }

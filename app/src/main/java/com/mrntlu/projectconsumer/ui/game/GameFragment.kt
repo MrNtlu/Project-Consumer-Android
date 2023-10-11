@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.ui.game
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.models.main.game.Game
@@ -9,6 +10,7 @@ import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.viewmodels.main.game.GamePreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,9 +23,9 @@ class GameFragment : BasePreviewFragment<Game>() {
         super.onViewCreated(view, savedInstanceState)
 
 //        binding.guideline14.setGuidelinePercent(0.25f)
-        binding.upcomingPreviewRV.layoutParams.height = view.context.dpToPx(150f)
-        binding.topRatedPreviewRV.layoutParams.height = view.context.dpToPx(150f)
+        setGuidelineHeight(true)
 
+        setUI()
         setListeners()
         setShowcaseRecyclerView(
             isGame = true,
@@ -53,9 +55,26 @@ class GameFragment : BasePreviewFragment<Game>() {
                     navController.navigate(navWithAction)
                 }
             },
-            secondOnRefreshPressed = { viewModel.fetchPreviewGames() }
+            secondOnRefreshPressed = { viewModel.fetchPreviewGames() },
+            extraOnItemSelected = {},
+            extraOnRefreshPressed = {},
         )
         setObservers()
+    }
+
+    private fun setUI() {
+        binding.apply {
+            upcomingPreviewRV.layoutParams.height = root.context.dpToPx(150f)
+            topRatedPreviewRV.layoutParams.height = root.context.dpToPx(150f)
+
+            extraRVTV.setGone()
+            seeAllButtonExtra.setGone()
+            extraPreviewRV.setGone()
+
+            val marginParams = topRatedPreviewRV.layoutParams as ViewGroup.MarginLayoutParams
+            marginParams.bottomMargin = root.context.dpToPx(72f)
+            topRatedPreviewRV.layoutParams = marginParams
+        }
     }
 
     private fun setListeners() {

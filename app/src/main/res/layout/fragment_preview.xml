@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.345" />
+            app:layout_constraintGuide_percent="0.28" />
 
         <TextView
             android:id="@+id/popularRVTV"
@@ -132,14 +132,52 @@
             android:layout_width="0dp"
             android:layout_height="200dp"
             android:layout_marginTop="6dp"
-            android:layout_marginBottom="76dp"
-            android:paddingHorizontal="16dp"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/seeAllButtonSecond" />
+
+        <TextView
+            android:id="@+id/extraRVTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/airing_today"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/topRatedPreviewRV" />
+
+        <ImageButton
+            android:id="@+id/seeAllButtonExtra"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="4dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/see_all_popular_cd"
+            android:padding="4dp"
+            android:src="@drawable/ic_arrow_right_24"
+            app:layout_constraintBottom_toBottomOf="@+id/extraRVTV"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/extraRVTV"
+            app:tint="?attr/mainTextColor" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/extraPreviewRV"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="76dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingHorizontal="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seeAllButtonSecond"
+            app:layout_constraintTop_toBottomOf="@+id/seeAllButtonExtra"
             app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

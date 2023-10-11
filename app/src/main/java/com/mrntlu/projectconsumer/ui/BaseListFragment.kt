@@ -46,6 +46,7 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
                 FetchType.UPCOMING.tag -> getString(R.string.upcoming)
                 FetchType.TOP.tag -> getString(R.string.top_rated)
                 FetchType.POPULAR.tag -> getString(R.string.popular)
+                FetchType.EXTRA.tag -> getString(R.string.in_theaters)
                 else -> ""
             }
 

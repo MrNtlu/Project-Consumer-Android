@@ -30,6 +30,11 @@ interface MovieApiService {
         @Query("page") page: Int,
     ): Response<DataPaginationResponse<Movie>>
 
+    @GET("movie/theaters")
+    suspend fun getMoviesInTheater(
+        @Query("page") page: Int,
+    ): Response<DataPaginationResponse<Movie>>
+
     @GET("movie/search")
     suspend fun searchMoviesByTitle(
         @Query("search") search: String,

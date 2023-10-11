@@ -326,6 +326,8 @@
     <string name="upcoming">📅&#032;Upcoming</string>
     <string name="top_rated">🍿&#032;Top Rated</string>
     <string name="popular">🔥&#032;Popular</string>
+    <string name="airing_today">📺&#032;Airing Today</string>
+    <string name="in_theaters">🎭&#032;In Theaters</string>
     <string name="episodes">Episodes</string>
     <string name="watched_seasons">Watched Seasons</string>
     <string name="watched_episodes">Watched Episodes</string>

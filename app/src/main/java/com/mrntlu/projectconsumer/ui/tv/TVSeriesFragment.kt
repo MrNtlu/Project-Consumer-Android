@@ -19,6 +19,7 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setGuidelineHeight()
         setListeners()
         setShowcaseRecyclerView(
             onItemClicked = { id ->
@@ -46,7 +47,15 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
                     navController.navigate(navWithAction)
                 }
             },
-            secondOnRefreshPressed = { viewModel.fetchPreviewTVSeries() }
+            secondOnRefreshPressed = { viewModel.fetchPreviewTVSeries() },
+            extraOnItemSelected = { id ->
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    val navWithAction = HomeFragmentDirections.actionNavigationHomeToTvDetailsFragment(id)
+
+                    navController.navigate(navWithAction)
+                }
+            },
+            extraOnRefreshPressed = { viewModel.fetchPreviewTVSeries() }
         )
         setObservers()
     }
@@ -76,6 +85,12 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
                     navController.navigate(navWithAction)
                 }
             }
+
+            seeAllButtonExtra.setOnClickListener {
+//                if (navController.currentDestination?.id == R.id.navigation_home) {
+//                    TODO Navigate to DayOfWeekList fragment
+//                }
+            }
         }
     }
 
@@ -84,7 +99,7 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
 
         sharedViewModel.networkStatus.observe(viewLifecycleOwner) {
             if (
-                (upcomingAdapter?.errorMessage != null || topRatedAdapter?.errorMessage != null) && it
+                (upcomingAdapter?.errorMessage != null || topRatedAdapter?.errorMessage != null && extraAdapter?.errorMessage != null) && it
             ) {
                 viewModel.fetchPreviewTVSeries()
             }
