@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.service.retrofit
 import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataSearchPaginationResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.DayOfWeekResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.models.main.tv.TVSeries
 import com.mrntlu.projectconsumer.models.main.tv.TVSeriesDetails
@@ -33,7 +34,7 @@ interface TVSeriesApiService {
 
     //TODO Implement response
     @GET("tv/airing")
-    suspend fun getCurrentlyAiringTVSeriesByDayOfWeek(): Response<DataResponse<TVSeries>>
+    suspend fun getCurrentlyAiringTVSeriesByDayOfWeek(): Response<DataResponse<List<DayOfWeekResponse<TVSeries>>>>
 
     @GET("tv/search")
     suspend fun searchTVSeriesByTitle(

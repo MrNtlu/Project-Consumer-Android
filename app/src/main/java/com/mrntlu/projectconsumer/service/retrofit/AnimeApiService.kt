@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.service.retrofit
 import com.mrntlu.projectconsumer.models.common.retrofit.DataPaginationResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DataSearchPaginationResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.DayOfWeekResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.models.main.anime.Anime
 import com.mrntlu.projectconsumer.models.main.anime.AnimeDetails
@@ -33,7 +34,7 @@ interface AnimeApiService {
 
     //TODO Implement
     @GET("anime/airing")
-    suspend fun getCurrentlyAiringAnimesByDayOfWeek(): Response<DataResponse<Anime>>
+    suspend fun getCurrentlyAiringAnimesByDayOfWeek(): Response<DataResponse<List<DayOfWeekResponse<Anime>>>>
 
     @GET("anime/search")
     suspend fun searchAnimesByTitle(

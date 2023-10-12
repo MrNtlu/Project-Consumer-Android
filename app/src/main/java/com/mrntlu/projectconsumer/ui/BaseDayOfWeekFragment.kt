@@ -4,15 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.divider.MaterialDividerItemDecoration
 import com.google.android.material.tabs.TabLayout
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentUserListBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
+import com.mrntlu.projectconsumer.interfaces.Interaction
+import com.mrntlu.projectconsumer.utils.FetchType
+import com.mrntlu.projectconsumer.utils.NetworkListResponse
+import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.isFailed
+import com.mrntlu.projectconsumer.utils.isSuccessful
+import com.mrntlu.projectconsumer.utils.quickScrollToTop
+import kotlinx.coroutines.launch
 
 abstract class BaseDayOfWeekFragment<T: ContentModel>: BaseFragment<FragmentUserListBinding>() {
 
@@ -27,7 +37,15 @@ abstract class BaseDayOfWeekFragment<T: ContentModel>: BaseFragment<FragmentUser
         return binding.root
     }
 
-    private fun setUI() {
+    protected fun setToolbar() {
+        binding.userListToolbar.apply {
+            title = getString(R.string.airing_today)
+
+            setNavigationOnClickListener { navController.popBackStack() }
+        }
+    }
+
+    protected fun setUI() {
         //1 Sunday 7 Saturday
         //LocalDate.now().dayOfWeek.value
         //DayOfWeek.valueOf(dayOfWeek.name).value
@@ -36,19 +54,11 @@ abstract class BaseDayOfWeekFragment<T: ContentModel>: BaseFragment<FragmentUser
         }
     }
 
-    private fun setListeners() {
-        binding.userListTabLayout.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                val tabPosition = tab?.position
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-    }
-
-    private fun setRecyclerView() {
+    protected fun setRecyclerView(
+        startFetch: () -> Unit,
+        onItemSelected: (String) -> Unit,
+        scrollViewModel: (Int) -> Unit,
+    ) {
         binding.userListRV.apply {
             val rvLayoutManager = if(sharedViewModel.isAltLayout()) {
                 val linearLayoutManager = LinearLayoutManager(this.context)
@@ -79,10 +89,40 @@ abstract class BaseDayOfWeekFragment<T: ContentModel>: BaseFragment<FragmentUser
                 gridLayoutManager
             }
             layoutManager = rvLayoutManager
+
+            contentAdapter = ContentAdapter(
+                gridCount = gridCount,
+                isDarkTheme = !sharedViewModel.isLightTheme(),
+                isAltLayout = sharedViewModel.isAltLayout(),
+                interaction = object: Interaction<T> {
+                    override fun onItemSelected(item: T, position: Int) {
+                        onItemSelected(item.id)
+                    }
+
+                    override fun onErrorRefreshPressed() {
+                        startFetch()
+                    }
+
+                    override fun onCancelPressed() {
+                        navController.popBackStack()
+                    }
+
+                    override fun onExhaustButtonPressed() {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            quickScrollToTop()
+                        }
+                    }
+                }
+            )
+            adapter = contentAdapter
         }
     }
 
     override fun onDestroyView() {
+        viewLifecycleOwner.apply {
+            sharedViewModel.windowSize.removeObservers(this)
+        }
+        contentAdapter = null
         super.onDestroyView()
     }
 }

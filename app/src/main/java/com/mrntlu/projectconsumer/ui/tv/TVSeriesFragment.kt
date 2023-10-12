@@ -8,6 +8,7 @@ import com.mrntlu.projectconsumer.models.main.tv.TVSeries
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.viewmodels.main.tv.TVPreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,6 +19,9 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Change constraints, bind to see all button with 6 margin
+        binding.seeAllButtonExtra.setGone()
 
         setGuidelineHeight()
         setListeners()

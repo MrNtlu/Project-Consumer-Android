@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.DayOfWeekResponse
 import com.mrntlu.projectconsumer.models.main.anime.Anime
 import com.mrntlu.projectconsumer.models.main.tv.TVSeries
 import com.mrntlu.projectconsumer.models.main.userList.UserList
@@ -29,16 +30,16 @@ class DayOfWeekViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
-    var selectedDayOfWeek: Int = savedStateHandle[CURRENT_WEEK_DAY] ?: LocalDate.now().dayOfWeek.value
+    var selectedDayOfWeek: Int = savedStateHandle[CURRENT_WEEK_DAY] ?: LocalDate.now().dayOfWeek.value.plus(1)
         private set
     var scrollPosition: Int = savedStateHandle[USER_LIST_SCROLL_POSITION_KEY] ?: 0
         private set
 
-    private val _tvList = MutableLiveData<NetworkResponse<DataResponse<TVSeries>>>()
-    val tvList: LiveData<NetworkResponse<DataResponse<TVSeries>>> = _tvList
+    private val _tvList = MutableLiveData<NetworkResponse<DataResponse<List<DayOfWeekResponse<TVSeries>>>>>()
+    val tvList: LiveData<NetworkResponse<DataResponse<List<DayOfWeekResponse<TVSeries>>>>> = _tvList
 
-    private val _animeList = MutableLiveData<NetworkResponse<DataResponse<Anime>>>()
-    val animeList: LiveData<NetworkResponse<DataResponse<Anime>>> = _animeList
+    private val _animeList = MutableLiveData<NetworkResponse<DataResponse<List<DayOfWeekResponse<Anime>>>>>()
+    val animeList: LiveData<NetworkResponse<DataResponse<List<DayOfWeekResponse<Anime>>>>> = _animeList
 
     fun getAnimeDayOfWeek() = networkResponseFlowCollector(
         animeRepository.getCurrentlyAiringTVSeriesByDayOfWeek()

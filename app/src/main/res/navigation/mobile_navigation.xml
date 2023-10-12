@@ -253,6 +253,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_navigation_home_to_animeDayOfWeekFragment"
+            app:destination="@id/animeDayOfWeekFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -732,5 +739,10 @@
             android:name="youtubeID"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/animeDayOfWeekFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.AnimeDayOfWeekFragment"
+        android:label="AnimeDayOfWeekFragment"
+        tools:layout="@layout/fragment_user_list"/>
 
 </navigation>

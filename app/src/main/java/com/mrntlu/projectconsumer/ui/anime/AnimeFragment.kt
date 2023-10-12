@@ -8,6 +8,7 @@ import com.mrntlu.projectconsumer.models.main.anime.Anime
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.viewmodels.main.anime.AnimePreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,6 +19,9 @@ class AnimeFragment : BasePreviewFragment<Anime>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Change constraints, bind to see all button with 6 margin
+        binding.seeAllButtonExtra.setGone()
 
         setGuidelineHeight()
         setListeners()
@@ -88,9 +92,9 @@ class AnimeFragment : BasePreviewFragment<Anime>() {
             }
 
             seeAllButtonExtra.setOnClickListener {
-//                if (navController.currentDestination?.id == R.id.navigation_home) {
-//                    TODO Navigate to DayOfWeekList fragment
-//                }
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    navController.navigate(R.id.action_navigation_home_to_animeDayOfWeekFragment)
+                }
             }
         }
     }
