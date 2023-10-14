@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,8 +23,14 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
+import com.mrntlu.projectconsumer.utils.setGone
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
 abstract class BaseDayOfWeekFragment<T: ContentModel>: BaseFragment<FragmentUserListBinding>() {
 
@@ -50,14 +58,40 @@ abstract class BaseDayOfWeekFragment<T: ContentModel>: BaseFragment<FragmentUser
         //LocalDate.now().dayOfWeek.value
         //DayOfWeek.valueOf(dayOfWeek.name).value
         binding.userListTabLayout.tabLayout.apply {
+            if (tabCount < DayOfWeek.values().size) {
+                for (dayOfWeek in DayOfWeek.values()) {
+                    addTab(
+                        newTab().setText(dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())),
+                        dayOfWeek.value == if (LocalDate.now().dayOfWeek.value == 7) 1 else LocalDate.now().dayOfWeek.value
+                    )
+                }
 
+                for (position in 0..tabCount.minus(1)) {
+                    val layout = LayoutInflater.from(context).inflate(R.layout.layout_tab_title, null) as? LinearLayout
+
+                    val tabIV = layout?.findViewById<ImageView>(R.id.tabIV)
+                    val tabLayoutParams = layoutParams
+
+                    tabLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams = tabLayoutParams
+
+                    tabIV?.setGone()
+
+                    getTabAt(position)?.customView = layout
+                }
+
+                post {
+                    val tabView = (getChildAt(0) as ViewGroup).getChildAt(selectedTabPosition)
+                    val scrollToX = tabView.left - (width - tabView.width) / 2
+                    scrollTo(scrollToX, 0)
+                }
+            }
         }
     }
 
     protected fun setRecyclerView(
         startFetch: () -> Unit,
         onItemSelected: (String) -> Unit,
-        scrollViewModel: (Int) -> Unit,
     ) {
         binding.userListRV.apply {
             val rvLayoutManager = if(sharedViewModel.isAltLayout()) {

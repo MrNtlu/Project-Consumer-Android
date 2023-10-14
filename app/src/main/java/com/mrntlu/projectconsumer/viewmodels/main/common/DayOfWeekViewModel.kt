@@ -8,20 +8,16 @@ import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.DayOfWeekResponse
 import com.mrntlu.projectconsumer.models.main.anime.Anime
 import com.mrntlu.projectconsumer.models.main.tv.TVSeries
-import com.mrntlu.projectconsumer.models.main.userList.UserList
 import com.mrntlu.projectconsumer.repository.AnimePreviewRepository
 import com.mrntlu.projectconsumer.repository.TVPreviewRepository
-import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.networkResponseFlowCollector
-import com.mrntlu.projectconsumer.viewmodels.main.profile.USER_LIST_CONTENT_TYPE_KEY
 import com.mrntlu.projectconsumer.viewmodels.main.profile.USER_LIST_SCROLL_POSITION_KEY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import javax.inject.Inject
 
 const val CURRENT_WEEK_DAY = "rv.dow.week_day"
-const val SCROLL_POSITION_KEY = "rv.dow.scroll_position"
 
 @HiltViewModel
 class DayOfWeekViewModel @Inject constructor(
@@ -30,7 +26,7 @@ class DayOfWeekViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
-    var selectedDayOfWeek: Int = savedStateHandle[CURRENT_WEEK_DAY] ?: LocalDate.now().dayOfWeek.value.plus(1)
+    var selectedDayOfWeek: Int = savedStateHandle[CURRENT_WEEK_DAY] ?: if (LocalDate.now().dayOfWeek.value == 7) 1 else LocalDate.now().dayOfWeek.value.plus(1)
         private set
     var scrollPosition: Int = savedStateHandle[USER_LIST_SCROLL_POSITION_KEY] ?: 0
         private set
@@ -56,14 +52,7 @@ class DayOfWeekViewModel @Inject constructor(
     fun setSelectedDayOfWeek(newDayOfWeek: Int) {
         if (newDayOfWeek != selectedDayOfWeek) {
             selectedDayOfWeek = newDayOfWeek
-            savedStateHandle[USER_LIST_CONTENT_TYPE_KEY] = selectedDayOfWeek
-
-            setScrollPosition(0)
+            savedStateHandle[CURRENT_WEEK_DAY] = selectedDayOfWeek
         }
-    }
-
-    fun setScrollPosition(newPosition: Int) {
-        scrollPosition = newPosition
-        savedStateHandle[USER_LIST_SCROLL_POSITION_KEY] = scrollPosition
     }
 }

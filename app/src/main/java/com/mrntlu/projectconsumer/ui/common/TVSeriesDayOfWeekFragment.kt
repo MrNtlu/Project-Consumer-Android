@@ -7,14 +7,14 @@ import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
-import com.mrntlu.projectconsumer.models.main.anime.Anime
+import com.mrntlu.projectconsumer.models.main.tv.TVSeries
 import com.mrntlu.projectconsumer.ui.BaseDayOfWeekFragment
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.viewmodels.main.common.DayOfWeekViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AnimeDayOfWeekFragment: BaseDayOfWeekFragment<Anime>(){
+class TVSeriesDayOfWeekFragment: BaseDayOfWeekFragment<TVSeries>() {
 
     private companion object {
         private const val KEY_VALUE = "day_of_week"
@@ -76,10 +76,10 @@ class AnimeDayOfWeekFragment: BaseDayOfWeekFragment<Anime>(){
             }
         }
 
-        if (!(viewModel.animeList.hasObservers() || viewModel.animeList.value is NetworkResponse.Success || viewModel.animeList.value is NetworkResponse.Loading))
-            viewModel.getAnimeDayOfWeek()
+        if (!(viewModel.tvList.hasObservers() || viewModel.tvList.value is NetworkResponse.Success || viewModel.tvList.value is NetworkResponse.Loading))
+            viewModel.getTVSeriesDayOfWeek()
 
-        viewModel.animeList.observe(viewLifecycleOwner) { response ->
+        viewModel.tvList.observe(viewLifecycleOwner) { response ->
             when(response) {
                 is NetworkResponse.Failure -> contentAdapter?.setErrorView(response.errorMessage)
                 NetworkResponse.Loading -> contentAdapter?.setLoadingView()
@@ -91,10 +91,10 @@ class AnimeDayOfWeekFragment: BaseDayOfWeekFragment<Anime>(){
     }
 
     private fun setDataWithFilter() {
-        if (viewModel.animeList.value is NetworkResponse.Success) {
+        if (viewModel.tvList.value is NetworkResponse.Success) {
             isInitialized = true
 
-            val response = viewModel.animeList.value as NetworkResponse.Success
+            val response = viewModel.tvList.value as NetworkResponse.Success
 
             val dayOfWeekCode = when(viewModel.selectedDayOfWeek) {
                 0 -> 2
@@ -117,12 +117,12 @@ class AnimeDayOfWeekFragment: BaseDayOfWeekFragment<Anime>(){
 
     private fun setRV() {
         setRecyclerView(
-            startFetch = { viewModel.getAnimeDayOfWeek() },
+            startFetch = { viewModel.getTVSeriesDayOfWeek() },
             onItemSelected = { itemId ->
-                if (navController.currentDestination?.id == R.id.animeDayOfWeekFragment) {
+                if (navController.currentDestination?.id == R.id.tvSeriesDayOfWeekFragment) {
                     isNavigatingBack = true
 
-                    val navWithAction = AnimeDayOfWeekFragmentDirections.actionGlobalAnimeDetailsFragment(itemId)
+                    val navWithAction = TVSeriesDayOfWeekFragmentDirections.actionTvSeriesDayOfWeekFragmentToTvDetailsFragment(itemId)
                     navController.navigate(navWithAction)
                 }
             },
@@ -151,7 +151,7 @@ class AnimeDayOfWeekFragment: BaseDayOfWeekFragment<Anime>(){
     }
 
     override fun onDestroyView() {
-        viewModel.animeList.removeObservers(viewLifecycleOwner)
+        viewModel.tvList.removeObservers(viewLifecycleOwner)
 
         super.onDestroyView()
     }

@@ -20,9 +20,6 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Change constraints, bind to see all button with 6 margin
-        binding.seeAllButtonExtra.setGone()
-
         setGuidelineHeight()
         setListeners()
         setShowcaseRecyclerView(
@@ -91,9 +88,9 @@ class TVSeriesFragment : BasePreviewFragment<TVSeries>() {
             }
 
             seeAllButtonExtra.setOnClickListener {
-//                if (navController.currentDestination?.id == R.id.navigation_home) {
-//                    TODO Navigate to DayOfWeekList fragment
-//                }
+                if (navController.currentDestination?.id == R.id.navigation_home) {
+                    navController.navigate(R.id.action_navigation_home_to_tvSeriesDayOfWeekFragment)
+                }
             }
         }
     }

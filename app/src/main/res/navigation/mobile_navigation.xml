@@ -260,6 +260,14 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+
+        <action
+            android:id="@+id/action_navigation_home_to_tvSeriesDayOfWeekFragment"
+            app:destination="@id/tvSeriesDayOfWeekFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -743,6 +751,27 @@
         android:id="@+id/animeDayOfWeekFragment"
         android:name="com.mrntlu.projectconsumer.ui.common.AnimeDayOfWeekFragment"
         android:label="AnimeDayOfWeekFragment"
-        tools:layout="@layout/fragment_user_list"/>
+        tools:layout="@layout/fragment_user_list">
+        <action
+            android:id="@+id/action_animeDayOfWeekFragment_to_animeDetailsFragment"
+            app:destination="@id/animeDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/tvSeriesDayOfWeekFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.TVSeriesDayOfWeekFragment"
+        android:label="TVSeriesDayOfWeekFragment"
+        tools:layout="@layout/fragment_user_list">
+        <action
+            android:id="@+id/action_tvSeriesDayOfWeekFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
 </navigation>

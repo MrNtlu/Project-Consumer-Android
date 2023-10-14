@@ -20,9 +20,6 @@ class AnimeFragment : BasePreviewFragment<Anime>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Change constraints, bind to see all button with 6 margin
-        binding.seeAllButtonExtra.setGone()
-
         setGuidelineHeight()
         setListeners()
         setShowcaseRecyclerView(
