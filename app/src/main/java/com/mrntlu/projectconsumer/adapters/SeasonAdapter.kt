@@ -45,6 +45,10 @@ class SeasonAdapter(
             }
             seasonEpisodeCV.setVisibilityByCondition(season.episodeCount == 0)
 
+            if (season.seasonNum > 0)
+                seasonNumTV.text = season.seasonNum.toString()
+            seasonNumCV.setVisibilityByCondition(season.seasonNum == 0)
+
             seasonIV.loadWithGlide(season.imageURL, placeHolderCV, previewShimmerLayout) {
                 transform(RoundedCorners(radiusInPx.toInt()))
             }
@@ -52,6 +56,7 @@ class SeasonAdapter(
             previewTV.text = season.seasonNum.toString()
             seasonIV.contentDescription = season.name
             seasonEpisodeCV.radius = radiusInPx
+            seasonNumCV.radius = radiusInPx
             placeHolderCV.radius = radiusInPx
         }
     }

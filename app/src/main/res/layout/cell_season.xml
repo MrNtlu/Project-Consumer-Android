@@ -12,6 +12,7 @@
         android:id="@+id/seasonIV"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:contentDescription="@string/season"
         android:elevation="4dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,8 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic"
-        android:contentDescription="@string/season"/>
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/seasonDateCV"
@@ -135,5 +135,27 @@
             android:paddingHorizontal="3dp"
             tools:text="120 eps."
             tools:ignore="SmallSp" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/seasonNumCV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="?attr/toolbarBackButtonColor"
+        app:cardElevation="5dp"
+        app:layout_constraintStart_toStartOf="@+id/seasonIV"
+        app:layout_constraintTop_toTopOf="@+id/seasonIV">
+
+        <TextView
+            android:id="@+id/seasonNumTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingHorizontal="3dp"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:ignore="SmallSp"
+            tools:text="1" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

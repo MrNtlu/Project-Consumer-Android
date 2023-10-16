@@ -39,6 +39,7 @@ import com.mrntlu.projectconsumer.utils.Constants.UserListStatus
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertShortDateToAgoString
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
+import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -278,6 +279,10 @@ class UserListBottomSheet(
                         scoreSelectionACTV.clearFocus()
                 }
 
+                scoreSelectionACTV.setOnClickListener {
+                    hideKeyboard()
+                }
+
                 watchedSeasonTextInputET.addTextChangedListener { text ->
                     watchedSeasonTextLayout.error = if (text.isNullOrEmpty()) getString(R.string.input_number) else null
                 }
@@ -413,12 +418,21 @@ class UserListBottomSheet(
                             layoutEditInc.toggleTabLayout,
                         )
 
-                        if (tv?.text == UserListStatus[1].name)
+                        if (tv?.text == UserListStatus[1].name) {
                             layoutEditInc.timesFinishedTextInputET.setText(
                                 if (userListModel != null && userListModel!!.timesFinished > 0) userListModel!!.timesFinished.toString() else "1"
                             )
-                        else
+
+                            if (episodeSuffix != null)
+                                layoutEditInc.watchedEpisodeTextInputET.setText(episodeSuffix.toString())
+
+                            if (seasonSuffix != null)
+                                layoutEditInc.watchedSeasonTextInputET.setText(seasonSuffix.toString())
+                        } else {
                             layoutEditInc.timesFinishedTextInputET.text = null
+                            layoutEditInc.watchedEpisodeTextInputET.text = null
+                            layoutEditInc.watchedSeasonTextInputET.text = null
+                        }
 
                         layoutEditInc.timesFinishedTextLayout.isErrorEnabled = tv?.text == UserListStatus[1].name
                         layoutEditInc.timesFinishedTextLayout.setVisibilityByConditionWithAnimation(tv?.text != UserListStatus[1].name)

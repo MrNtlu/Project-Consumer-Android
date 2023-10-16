@@ -260,11 +260,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tvDetailsSeasonRV"
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="150dp"
                 android:layout_marginTop="8dp"
+                android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
                 android:paddingHorizontal="16dp"
-                android:clipToPadding="false"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDetailsSeasonTV" />
