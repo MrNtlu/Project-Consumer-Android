@@ -32,7 +32,6 @@ interface TVSeriesApiService {
         @Query("page") page: Int,
     ): Response<DataPaginationResponse<TVSeries>>
 
-    //TODO Implement response
     @GET("tv/airing")
     suspend fun getCurrentlyAiringTVSeriesByDayOfWeek(): Response<DataResponse<List<DayOfWeekResponse<TVSeries>>>>
 

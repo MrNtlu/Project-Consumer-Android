@@ -32,7 +32,6 @@ interface AnimeApiService {
         @Query("page") page: Int,
     ): Response<DataPaginationResponse<Anime>>
 
-    //TODO Implement
     @GET("anime/airing")
     suspend fun getCurrentlyAiringAnimesByDayOfWeek(): Response<DataResponse<List<DayOfWeekResponse<Anime>>>>
 

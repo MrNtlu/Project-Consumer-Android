@@ -4,5 +4,5 @@ enum class FetchType(val tag: String) {
     UPCOMING("upcoming"),
     POPULAR("popular"),
     TOP("top"),
-    EXTRA("extra") //TODO IMPLEMENT
+    EXTRA("extra")
 }
