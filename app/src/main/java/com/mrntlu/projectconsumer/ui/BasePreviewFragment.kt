@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.HeroCarouselStrategy
@@ -14,12 +15,15 @@ import com.mrntlu.projectconsumer.databinding.FragmentPreviewBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
-import com.mrntlu.projectconsumer.models.main.game.Game
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
+import com.mrntlu.projectconsumer.utils.smoothScrollToCenteredPosition
+import com.mrntlu.projectconsumer.viewmodels.main.common.PreviewViewModel
 
 abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPreviewBinding>() {
+
+    private val viewModel: PreviewViewModel by viewModels()
 
     protected var upcomingAdapter: PreviewAdapter<T>? = null
     protected var topRatedAdapter: PreviewAdapter<T>? = null
@@ -69,7 +73,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
             val rvHeight = binding.root.context.resources.displayMetrics.heightPixels.times(guideLinePercent).minus(
                 binding.root.context.dpToPx(8f)
             )
-            val rvItemWidth = if(isGame)
+            val rvItemWidth = if (isGame)
                 (rvHeight * 16) / 9
             else
                 (rvHeight * 2) / 3
@@ -77,6 +81,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
             showCaseAdapter = CarouselAdapter(
                 object: Interaction<T> {
                     override fun onItemSelected(item: T, position: Int) {
+                        viewModel.setScrollPosition(position)
                         onItemClicked(item.id)
                     }
 
@@ -92,6 +97,9 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                 itemWidth = rvItemWidth.toInt(),
             )
             adapter = showCaseAdapter
+
+            if (viewModel.scrollPositionValue() > 0)
+                binding.previewShowcaseRV.smoothScrollToCenteredPosition(viewModel.scrollPositionValue())
         }
     }
 
