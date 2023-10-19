@@ -17,6 +17,8 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
+import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
@@ -257,6 +259,36 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             else
                 getString(R.string.not_rated_yet)
             binding.detailsMetacriticTV.text = metacriticStr
+
+            if (!screenshots.isNullOrEmpty()) {
+                binding.detailsMediaImageSlider.apply {
+                    val imageSliderList = screenshots.map {
+                        SlideModel(imageUrl = it)
+                    }
+
+                    setImageList(imageSliderList)
+
+                    setItemClickListener(object: ItemClickListener {
+                        override fun doubleClick(position: Int) {}
+
+                        override fun onItemSelected(position: Int) {
+                            if (imageSliderList[position].imageUrl?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.gameDetailsFragment) {
+                                isAppBarLifted = binding.detailsAppBarLayout.isLifted
+
+                                val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToImageFragment(
+                                    imageSliderList[position].imageUrl!!,
+                                    isRatioDifferent = true
+                                )
+
+                                navController.navigate(navWithAction)
+                            }
+                        }
+                    })
+                }
+            }
+
+            binding.detailsMediaTV.setVisibilityByCondition(screenshots.isNullOrEmpty())
+            binding.detailsMediaImageSliderCV.setVisibilityByCondition(screenshots.isNullOrEmpty())
         }
     }
 

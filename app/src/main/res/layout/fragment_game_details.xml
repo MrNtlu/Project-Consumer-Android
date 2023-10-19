@@ -371,6 +371,38 @@
                 app:barrierDirection="bottom"
                 app:constraint_referenced_ids="detailsPublishersTV, detailsDevelopersTV" />
 
+            <TextView
+                android:id="@+id/detailsMediaTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/media"
+                android:textColor="?attr/descriptionTitleTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsBarrier" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/detailsMediaImageSliderCV"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="?attr/mainBackgroundColor"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintEnd_toStartOf="@+id/guideline32"
+                app:layout_constraintStart_toStartOf="@+id/guideline31"
+                app:layout_constraintTop_toBottomOf="@+id/detailsMediaTV">
+
+                <com.denzcoskun.imageslider.ImageSlider
+                    android:id="@+id/detailsMediaImageSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:iss_auto_cycle="false" />
+            </androidx.cardview.widget.CardView>
+
             <androidx.legacy.widget.Space
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
@@ -378,7 +410,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/detailsBarrier" />
+                app:layout_constraintTop_toBottomOf="@id/detailsMediaImageSliderCV" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
