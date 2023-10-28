@@ -90,6 +90,7 @@
                 android:textColor="?attr/mainTextColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:drawableTint="@color/yellow700"
                 app:drawableStartCompat="@drawable/ic_star_36"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                 app:layout_constraintEnd_toEndOf="parent"

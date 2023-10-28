@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
+import com.mrntlu.projectconsumer.models.common.ReviewSummary
 import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.common.Translation
 import com.mrntlu.projectconsumer.models.main.anime.AnimeAirDate
@@ -19,6 +20,7 @@ data class Movie(
     override val length: Int,
     val status: String,
     val backdrop: String?,
+    val reviews: ReviewSummary,
 
     @SerializedName("image_url")
     override val imageURL: String,

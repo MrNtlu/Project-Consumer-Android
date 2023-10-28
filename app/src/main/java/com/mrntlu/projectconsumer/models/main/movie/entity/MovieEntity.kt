@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
+import com.mrntlu.projectconsumer.models.common.ReviewSummary
 import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.common.entity.TranslationEntity
 
@@ -20,6 +21,7 @@ data class MovieEntity(
     val length: Int,
     val status: String,
     val backdrop: String?,
+    val reviews: ReviewSummary,
 
     @ColumnInfo("image_url")
     val imageURL: String,
@@ -58,8 +60,8 @@ data class MovieEntity(
     val page: Int,
 ) {
     constructor(): this(
-        "","", listOf(), listOf(), listOf(), listOf(), 0,"", null,"",
-        "","","","","", 0.0,
+        "","", listOf(), listOf(), listOf(), listOf(), 0,"", null, ReviewSummary(),
+        "",  "","","","","", 0.0,
         0.0, 0.0, 0, listOf(), "", 0
     )
 }

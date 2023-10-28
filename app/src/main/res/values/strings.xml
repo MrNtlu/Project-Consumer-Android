@@ -316,6 +316,7 @@
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
+    <string name="sign_in_up">Sign In/Sign Up</string>
     <string name="username">Username</string>
     <string name="network">Network</string>
     <string name="seasons">Seasons</string>
@@ -465,6 +466,8 @@
     <string name="premium_third">Unlimited Watch Later instead of 50.</string>
     <string name="premium_first">AI Suggestions, 3 from each content type</string>
     <string name="premium_first_alt">AI Suggestions, 5 from each content type</string>
+    <string name="reviews">Reviews</string>
+    <string name="write_a_review">Write a Review</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -218,7 +218,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
             } else {
                 accountSecondClickTile.apply {
-                    settingsClickTileTV.text = getString(R.string.sign_in)
+                    settingsClickTileTV.text = getString(R.string.sign_in_up)
                     settingsClickTileTV.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_login_24, 0)
                     arrowIV.setGone()
                     settingsTileIV.setGone()

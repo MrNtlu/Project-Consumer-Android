@@ -11,6 +11,7 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:src="@drawable/ic_star_48"
+        app:tint="@color/yellow700"
         app:layout_constraintBottom_toBottomOf="@+id/watchLaterLottie"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/watchLaterLottie"

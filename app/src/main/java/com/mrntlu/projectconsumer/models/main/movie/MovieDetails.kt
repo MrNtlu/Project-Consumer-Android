@@ -5,6 +5,7 @@ import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.Actor
 import com.mrntlu.projectconsumer.models.common.ProductionAndCompany
 import com.mrntlu.projectconsumer.models.common.Recommendation
+import com.mrntlu.projectconsumer.models.common.ReviewSummary
 import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.common.Trailer
 import com.mrntlu.projectconsumer.models.common.Translation
@@ -25,6 +26,7 @@ data class MovieDetails(
     val backdrop: String?,
     val images: List<String>,
     val trailers: List<Trailer>,
+    val reviews: ReviewSummary,
 
     @SerializedName("image_url")
     val imageURL: String,

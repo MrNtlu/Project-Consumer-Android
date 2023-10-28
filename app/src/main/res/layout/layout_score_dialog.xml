@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:startIconDrawable="@drawable/ic_star_36"
-        app:startIconTint="#F5C518">
+        app:startIconTint="@color/yellow700">
 
         <AutoCompleteTextView
             android:id="@+id/scoreSelectionACTV"

@@ -86,7 +86,7 @@
         app:layout_constraintStart_toStartOf="@+id/startGuideline"
         app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:startIconDrawable="@drawable/ic_star_36"
-        app:startIconTint="#F5C518">
+        app:startIconTint="@color/yellow700">
 
         <AutoCompleteTextView
             android:id="@+id/scoreSelectionACTV"

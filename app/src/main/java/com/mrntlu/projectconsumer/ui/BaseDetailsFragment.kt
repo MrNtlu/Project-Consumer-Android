@@ -1,10 +1,13 @@
 package com.mrntlu.projectconsumer.ui
 
 import android.animation.ValueAnimator
+import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -18,21 +21,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestBuilder
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.button.MaterialButton
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.DetailsAdapter
 import com.mrntlu.projectconsumer.adapters.StreamingAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentAnimeDetailsBinding
+import com.mrntlu.projectconsumer.databinding.LayoutReviewSummaryBinding
 import com.mrntlu.projectconsumer.databinding.LayoutUserInteractionBinding
 import com.mrntlu.projectconsumer.interfaces.DetailsModel
 import com.mrntlu.projectconsumer.models.common.DetailsUI
+import com.mrntlu.projectconsumer.models.common.ReviewSummary
 import com.mrntlu.projectconsumer.models.common.Streaming
 import com.mrntlu.projectconsumer.models.common.StreamingPlatform
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
+import com.mrntlu.projectconsumer.utils.roundSingleDecimal
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showLoginRegisterDialog
 import com.mrntlu.projectconsumer.viewmodels.main.common.DetailsConsumeLaterViewModel
@@ -277,6 +286,55 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
 
             layoutParams = collapsingParams
         }
+    }
+
+    protected fun setReviewSummary(binding: LayoutReviewSummaryBinding, reviewSummary: ReviewSummary) {
+        binding.apply {
+            fiveStarProgress.max = reviewSummary.totalVotes
+            fourStarProgress.max = reviewSummary.totalVotes
+            threeStarProgress.max = reviewSummary.totalVotes
+            twoStarProgress.max = reviewSummary.totalVotes
+            oneStarProgress.max = reviewSummary.totalVotes
+
+            fiveStarProgress.progress = reviewSummary.starCounts.fiveStar
+            fourStarProgress.progress = reviewSummary.starCounts.fourStar
+            threeStarProgress.progress = reviewSummary.starCounts.threeStar
+            twoStarProgress.progress = reviewSummary.starCounts.twoStar
+            oneStarProgress.progress = reviewSummary.starCounts.oneStar
+
+            val totalReviewsStr = "${reviewSummary.totalVotes} reviews"
+            totalReviewsTV.text = totalReviewsStr
+
+            reviewRateTV.text = reviewSummary.averageStar.toDouble().roundSingleDecimal().toString()
+
+            val materialButton = writeReviewButton as MaterialButton
+            if (reviewSummary.isReviewed) {
+                materialButton.text = "Your Review"
+                materialButton.icon = ContextCompat.getDrawable(root.context, R.drawable.ic_rate)
+                materialButton.setTextColor(ContextCompat.getColorStateList(root.context, R.color.white))
+
+                val colorStateList = ContextCompat.getColorStateList(root.context, R.color.blue500)
+
+                materialButton.backgroundTintList = colorStateList
+                materialButton.strokeColor = colorStateList
+            } else if (sharedViewModel.isLoggedIn()) {
+                materialButton.text = getString(R.string.write_a_review)
+                materialButton.icon = ContextCompat.getDrawable(root.context, R.drawable.ic_edit)
+                materialButton.setTextColor(root.context.getColorFromAttr(R.attr.mainTextColor))
+
+                materialButton.strokeColor = ColorStateList.valueOf(generateColorStateList(root.context, R.attr.mainTextColor))
+                materialButton.backgroundTintList = ColorStateList.valueOf(generateColorStateList(root.context, R.attr.mainBackgroundColor))
+            }
+
+            writeReviewButton.setVisibilityByConditionWithAnimation(!sharedViewModel.isLoggedIn())
+            seeAllButton.setVisibilityByConditionWithAnimation(reviewSummary.totalVotes == 0)
+        }
+    }
+
+    private fun generateColorStateList(context: Context, attr: Int): Int {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(attr, typedValue, true)
+        return typedValue.data
     }
 
     override fun onDestroyView() {

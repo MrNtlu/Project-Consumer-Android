@@ -277,6 +277,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detailsRecommendationTV" />
 
+            <include
+                android:id="@+id/reviewSummaryLayout"
+                layout="@layout/layout_review_summary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRecommendationRV" />
+
             <TextView
                 android:id="@+id/detailsProductionTV"
                 android:layout_width="wrap_content"
@@ -287,7 +297,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/detailsRecommendationRV" />
+                app:layout_constraintTop_toBottomOf="@+id/reviewSummaryLayout" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detailsProductionRV"

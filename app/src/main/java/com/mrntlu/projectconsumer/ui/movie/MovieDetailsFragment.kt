@@ -43,6 +43,7 @@ import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.openInBrowser
+import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -213,6 +214,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             binding.detailsAppBarLayout.setExpanded(!isAppBarLifted!!)
 
         movieDetails!!.apply {
+            setReviewSummary(binding.reviewSummaryLayout, reviews)
+
             binding.detailsToolbarProgress.setVisible()
 
             Glide.with(binding.root.context).load(backdrop ?: imageURL).addListener(object: RequestListener<Drawable> {

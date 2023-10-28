@@ -96,7 +96,7 @@
                 android:layout_height="24dp"
                 android:contentDescription="@string/rate_star_cd"
                 android:src="@drawable/ic_star_36"
-                app:tint="#F5C518" />
+                app:tint="@color/yellow700" />
 
             <TextView
                 android:id="@+id/scoreTV"
