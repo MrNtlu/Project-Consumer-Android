@@ -237,6 +237,16 @@
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
                 app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsProductionTV" />
 
+            <include
+                android:id="@+id/include"
+                layout="@layout/layout_shimmer_review_summary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsProductionRV" />
+
             <TextView
                 android:id="@+id/shimmerDetailsAvailableTV"
                 android:layout_width="40dp"
@@ -245,7 +255,7 @@
                 android:background="?attr/shimmerColor"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline5"
-                app:layout_constraintTop_toBottomOf="@+id/shimmerDetailsProductionRV" />
+                app:layout_constraintTop_toBottomOf="@+id/include" />
 
             <View
                 android:id="@+id/shimmerSpinner"

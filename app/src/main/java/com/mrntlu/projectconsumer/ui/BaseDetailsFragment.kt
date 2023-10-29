@@ -309,7 +309,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
 
             val materialButton = writeReviewButton as MaterialButton
             if (reviewSummary.isReviewed) {
-                materialButton.text = "Your Review"
+                materialButton.text = getString(R.string.your_review)
                 materialButton.icon = ContextCompat.getDrawable(root.context, R.drawable.ic_rate)
                 materialButton.setTextColor(ContextCompat.getColorStateList(root.context, R.color.white))
 

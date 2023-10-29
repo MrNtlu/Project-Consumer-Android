@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.models.main.anime
 
 import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.DetailsModel
+import com.mrntlu.projectconsumer.models.common.ReviewSummary
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLater
 import com.mrntlu.projectconsumer.models.main.userList.AnimeWatchList
 
@@ -26,6 +27,7 @@ data class AnimeDetails(
     val demographics: List<AnimeGenre>?,
     val relations: List<AnimeRelation>?,
     val characters: List<AnimeCharacter>?,
+    val reviews: ReviewSummary,
 
     @SerializedName("title_original")
     val titleOriginal: String,

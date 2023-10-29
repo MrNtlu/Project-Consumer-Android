@@ -212,6 +212,8 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.detailsAppBarLayout.setExpanded(!isAppBarLifted!!)
 
         gameDetails!!.apply {
+            setReviewSummary(binding.reviewSummaryLayout, reviews)
+
             binding.detailsToolbarProgress.setVisible()
 
             Glide.with(binding.root.context).load(imageURL).addListener(object:

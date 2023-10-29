@@ -216,6 +216,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             binding.tvDetailsAppBarLayout.setExpanded(!isAppBarLifted!!)
 
         tvDetails!!.apply {
+            setReviewSummary(binding.tvReviewSummaryLayout, reviews)
+
             binding.tvDetailsToolbarProgress.setVisible()
 
             Glide.with(binding.root.context).load(backdrop ?: imageURL).addListener(object:

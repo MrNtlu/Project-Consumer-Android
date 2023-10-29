@@ -253,6 +253,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detailsRelationTV" />
 
+            <include
+                android:id="@+id/reviewSummaryLayout"
+                layout="@layout/layout_review_summary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detailsRelationRV" />
+
             <TextView
                 android:id="@+id/detailsPlatformTV"
                 android:layout_width="wrap_content"
@@ -263,7 +273,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline31"
-                app:layout_constraintTop_toBottomOf="@+id/detailsRelationRV" />
+                app:layout_constraintTop_toBottomOf="@+id/reviewSummaryLayout" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detailsPlatformRV"

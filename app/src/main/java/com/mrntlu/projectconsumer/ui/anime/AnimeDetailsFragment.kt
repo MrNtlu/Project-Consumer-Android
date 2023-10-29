@@ -224,6 +224,8 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
     private fun setUI() {
         animeDetails!!.apply {
+            setReviewSummary(binding.reviewSummaryLayout, reviews)
+
             binding.imageInclude.apply {
                 val radiusInPx = root.context.dpToPxFloat(6f)
 

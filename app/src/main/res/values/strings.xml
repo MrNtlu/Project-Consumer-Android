@@ -382,6 +382,7 @@
     <string name="read_less">Read Less</string>
     <string name="read_more">Read More</string>
     <string name="media">Media</string>
+    <string name="reviews">Reviews</string>
 
     <string name="my_list">My List</string>
     <string name="log_out">Log out</string>
@@ -411,7 +412,10 @@
     <string name="profile_later_title">🕒&#032;Watch Later</string>
     <string name="nothing_to_see_here">Nothing to see here&#032;👀</string>
     <string name="ready_to_suggest">Ready to suggest!</string>
-    <string name="_suggestions">🤖 Suggestions</string>
+    <string name="_suggestions">🤖&#032;Suggestions</string>
+    <string name="write_a_review">Write a Review</string>
+    <string name="your_review">Your Review</string>
+    <string name="_reviews">⭐&#032;Reviews</string>
 
     <string name="notification_permission_info">Enable notifications to receive personalized recommendations, updates, and news about movies, tv shows, games and anime.</string>
     <string name="legend_content_info">Legend content refers to movies, animes, games and tv series that users have watched multiple times.</string>
@@ -466,8 +470,6 @@
     <string name="premium_third">Unlimited Watch Later instead of 50.</string>
     <string name="premium_first">AI Suggestions, 3 from each content type</string>
     <string name="premium_first_alt">AI Suggestions, 5 from each content type</string>
-    <string name="reviews">Reviews</string>
-    <string name="write_a_review">Write a Review</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

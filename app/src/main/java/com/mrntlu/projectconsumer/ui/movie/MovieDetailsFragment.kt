@@ -347,6 +347,12 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 detailsDescriptionTV.toggle()
             }
 
+            reviewSummaryLayout.seeAllButton.setSafeOnClickListener {
+                isAppBarLifted = binding.detailsAppBarLayout.isLifted
+
+                navController.navigate(R.id.action_movieDetailsFragment_to_reviewFragment)
+            }
+
             imdbButton.setOnClickListener {
                 movieDetails?.imdbID?.let {
                     val url = "${Constants.BASE_IMDB_URL}$it"
