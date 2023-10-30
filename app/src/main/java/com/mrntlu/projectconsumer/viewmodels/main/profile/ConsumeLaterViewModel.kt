@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.viewmodels
+package com.mrntlu.projectconsumer.viewmodels.main.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,7 +26,6 @@ import javax.inject.Inject
 const val CONSUME_LATER_SORT_KEY = "rv.cl.sort"
 const val CONSUME_LATER_SCROLL_POSITION_KEY = "rv.cl.scroll_position"
 const val CONSUME_LATER_FILTER_KEY = "rv.cl.scroll_position"
-
 const val CONSUME_LATER_SEARCH_KEY = "rv.cl.search"
 
 @HiltViewModel

@@ -12,6 +12,7 @@ import com.mrntlu.projectconsumer.service.retrofit.AnimeApiService
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.GameApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.ReviewApiService
 import com.mrntlu.projectconsumer.service.retrofit.TVSeriesApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserInteractionApiService
@@ -182,6 +183,14 @@ class SingletonModule {
             .client(okHttpClient)
             .build()
             .create(UserApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideReviewAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): ReviewApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(ReviewApiService::class.java)
 
     @Singleton
     @Provides

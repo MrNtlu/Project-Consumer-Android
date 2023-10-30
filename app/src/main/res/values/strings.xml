@@ -269,6 +269,8 @@
     <string name="drag_bottom_sheet_cd">Drag Bottom Sheet</string>
     <string name="settings_tile_icon_cd">Settings Tile Icon</string>
     <string name="application_logo_cd">Application Logo</string>
+    <string name="like_cd">Like</string>
+    <string name="dislike_cd">Dislike</string>
 
     <string name="refresh_cd">Refresh</string>
     <string name="no_poster">No Poster</string>

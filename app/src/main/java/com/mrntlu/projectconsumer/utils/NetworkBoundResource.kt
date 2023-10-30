@@ -52,3 +52,43 @@ inline fun <EntityType, ModelType, ReturnType> networkBoundResource(
 
     emit(networkListResponse)
 }.flowOn(Dispatchers.IO)
+
+inline fun <ResponseModel, ModelType> networkBoundResourceWithoutCache(
+    isPaginating: Boolean,
+    crossinline fetchNetwork: suspend () -> Response<ResponseModel>,
+    crossinline emptyObjectCreator: () -> ModelType,
+    crossinline handleResponse: suspend (ResponseModel) -> Pair<ModelType, Boolean>,
+) = flow<NetworkListResponse<ModelType>> {
+
+    val networkListResponse: NetworkListResponse<ModelType> = run {
+        emit(if (isPaginating) setPaginationLoading() else setLoading())
+
+        try {
+            val response = fetchNetwork()
+
+            if (response.isSuccessful && response.body() != null) {
+                val result = handleResponse(response.body()!!)
+
+                setData(
+                    result.first,
+                    isPaginating,
+                    result.second
+                )
+            } else {
+                if (isPaginating) {
+                    setData(
+                        emptyObjectCreator(),
+                        isPaginationData = true,
+                        isPaginationExhausted = true,
+                    )
+                } else {
+                    setFailure(isPaginationData = false, isPaginationExhausted = false, errorMessage = response.message())
+                }
+            }
+        } catch (throwable: Throwable) {
+            setFailure(emptyObjectCreator(), isPaginationData = isPaginating, isPaginationExhausted = isPaginating, errorMessage = throwable.message ?: throwable.toString())
+        }
+    }
+
+    emit(networkListResponse)
+}.flowOn(Dispatchers.IO)

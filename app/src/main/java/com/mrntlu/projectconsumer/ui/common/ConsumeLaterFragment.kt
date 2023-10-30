@@ -41,7 +41,7 @@ import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
-import com.mrntlu.projectconsumer.viewmodels.ConsumeLaterViewModel
+import com.mrntlu.projectconsumer.viewmodels.main.profile.ConsumeLaterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

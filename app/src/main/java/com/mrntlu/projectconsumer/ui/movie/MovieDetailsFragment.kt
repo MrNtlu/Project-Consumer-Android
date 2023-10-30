@@ -38,12 +38,12 @@ import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.openInBrowser
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -154,7 +154,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                                 activity?.let {
                                     val listBottomSheet = UserListBottomSheet(
                                         watchList,
-                                        Constants.ContentType.MOVIE,
+                                        ContentType.MOVIE,
                                         if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
                                         movieDetails!!.id,
                                         movieDetails!!.tmdbID,
@@ -348,9 +348,17 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             }
 
             reviewSummaryLayout.seeAllButton.setSafeOnClickListener {
-                isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                if (movieDetails != null) {
+                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
 
-                navController.navigate(R.id.action_movieDetailsFragment_to_reviewFragment)
+                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToReviewFragment(
+                        contentId = movieDetails!!.id,
+                        contentExternalId = movieDetails!!.tmdbID,
+                        contentExternalIntId = -1,
+                        contentType = ContentType.MOVIE.request,
+                    )
+                    navController.navigate(navWithAction)
+                }
             }
 
             imdbButton.setOnClickListener {
@@ -461,7 +469,8 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
                 genreAdapter = GenreAdapter(movieDetails!!.genres) {
                     if (navController.currentDestination?.id == R.id.movieDetailsFragment) {
-                        val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(Constants.ContentType.MOVIE, movieDetails?.genres?.get(it))
+                        val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToDiscoverListFragment(
+                            ContentType.MOVIE, movieDetails?.genres?.get(it))
                         navController.navigate(navWithAction)
                     }
                 }

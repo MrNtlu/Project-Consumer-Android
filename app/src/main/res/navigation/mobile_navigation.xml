@@ -805,6 +805,20 @@
         android:id="@+id/reviewFragment"
         android:name="com.mrntlu.projectconsumer.ui.common.ReviewFragment"
         android:label="fragment_review"
-        tools:layout="@layout/fragment_review" />
+        tools:layout="@layout/fragment_review" >
+        <argument
+            android:name="contentId"
+            app:argType="string" />
+        <argument
+            android:name="contentExternalId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="contentExternalIntId"
+            app:argType="integer" />
+        <argument
+            android:name="contentType"
+            app:argType="string" />
+    </fragment>
 
 </navigation>
