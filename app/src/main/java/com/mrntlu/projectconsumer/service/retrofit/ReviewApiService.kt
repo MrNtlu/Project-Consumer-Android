@@ -7,7 +7,6 @@ import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.review.Review
 import com.mrntlu.projectconsumer.models.main.review.retrofit.ReviewBody
 import com.mrntlu.projectconsumer.models.main.review.retrofit.UpdateReviewBody
-import com.mrntlu.projectconsumer.models.main.review.retrofit.VoteReviewBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -33,9 +32,9 @@ interface ReviewApiService {
     @PATCH("review")
     suspend fun updateReview(@Body body: UpdateReviewBody): Response<DataResponse<Review>>
 
-    @PATCH("review/vote")
-    suspend fun voteReview(@Body body: VoteReviewBody): Response<DataResponse<Review>>
+    @PATCH("review/like")
+    suspend fun voteReview(@Body body: IDBody): Response<DataResponse<Review>>
 
-    @HTTP(method = "DELETE", path = "consume", hasBody = true)
+    @HTTP(method = "DELETE", path = "review", hasBody = true)
     suspend fun deleteReview(@Body body: IDBody): Response<MessageResponse>
 }

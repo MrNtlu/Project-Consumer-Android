@@ -118,6 +118,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_movieDetailsFragment_to_reviewCreateFragment"
+            app:destination="@id/reviewCreateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -408,6 +415,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_tvDetailsFragment_to_reviewCreateFragment"
+            app:destination="@id/reviewCreateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/tvListFragment"
@@ -577,7 +591,11 @@
             android:defaultValue="popular" />
         <action
             android:id="@+id/action_animeListFragment_to_animeDetailsFragment"
-            app:destination="@id/animeDetailsFragment" />
+            app:destination="@id/animeDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/gameListFragment"
@@ -643,6 +661,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_animeDetailsFragment_to_reviewCreateFragment"
+            app:destination="@id/reviewCreateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <action
@@ -700,6 +725,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_gameDetailsFragment_to_reviewCreateFragment"
+            app:destination="@id/reviewCreateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <action
         android:id="@+id/action_global_gameDetailsFragment"
@@ -818,6 +850,44 @@
             app:argType="integer" />
         <argument
             android:name="contentType"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_reviewFragment_to_reviewCreateFragment"
+            app:destination="@id/reviewCreateFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="contentTitle"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewCreateFragment"
+        android:name="com.mrntlu.projectconsumer.ui.common.ReviewCreateFragment"
+        android:label="fragment_review_create"
+        tools:layout="@layout/fragment_review_create" >
+        <argument
+            android:name="review"
+            app:argType="com.mrntlu.projectconsumer.models.main.review.Review"
+            app:nullable="true" />
+
+        <argument
+            android:name="contentId"
+            app:argType="string" />
+        <argument
+            android:name="contentExternalId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="contentExternalIntId"
+            app:argType="integer" />
+        <argument
+            android:name="contentType"
+            app:argType="string" />
+
+        <argument
+            android:name="contentTitle"
             app:argType="string" />
     </fragment>
 

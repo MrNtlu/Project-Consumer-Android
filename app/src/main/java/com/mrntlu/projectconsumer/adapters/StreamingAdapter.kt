@@ -47,7 +47,7 @@ class StreamingAdapter(
 
                 itemHolder.binding.apply {
                     streamingIVProgressBar.setVisible()
-                    streamingIV.loadWithGlide(item.logo, null, streamingIVProgressBar) {
+                    streamingIV.loadWithGlide(item.logo, null, streamingIVProgressBar, 0.75f) {
                         centerCrop()
                     }
 

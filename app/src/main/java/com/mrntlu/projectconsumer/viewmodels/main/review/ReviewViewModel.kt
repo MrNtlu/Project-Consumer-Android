@@ -8,10 +8,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedStateRegistryOwner
+import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
+import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.review.Review
 import com.mrntlu.projectconsumer.repository.ReviewRepository
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
+import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.setData
@@ -20,7 +24,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -49,6 +52,7 @@ class ReviewViewModel @AssistedInject constructor(
             currentOrientation = newOrientation
         }
     }
+
 
     var sort: String = savedStateHandle[REVIEW_SORT_KEY] ?: Constants.SortReviewRequests[0].request
         private set
@@ -93,6 +97,34 @@ class ReviewViewModel @AssistedInject constructor(
                 }
             }
         }
+    }
+
+    fun deleteReview(body: IDBody): LiveData<NetworkResponse<MessageResponse>> {
+        val liveData = MutableLiveData<NetworkResponse<MessageResponse>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            reviewRepository.deleteReview(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
+    }
+
+    fun voteReview(body: IDBody): LiveData<NetworkResponse<DataResponse<Review>>> {
+        val liveData = MutableLiveData<NetworkResponse<DataResponse<Review>>>()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            reviewRepository.voteReview(body).collect { response ->
+                withContext(Dispatchers.Main) {
+                    liveData.value = response
+                }
+            }
+        }
+
+        return liveData
     }
 
     fun setSort(newSort: String) {

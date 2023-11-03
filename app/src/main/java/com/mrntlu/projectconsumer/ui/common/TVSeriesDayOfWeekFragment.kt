@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
@@ -12,6 +13,9 @@ import com.mrntlu.projectconsumer.ui.BaseDayOfWeekFragment
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.viewmodels.main.common.DayOfWeekViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class TVSeriesDayOfWeekFragment: BaseDayOfWeekFragment<TVSeries>() {
@@ -106,12 +110,20 @@ class TVSeriesDayOfWeekFragment: BaseDayOfWeekFragment<TVSeries>() {
                 else -> 1
             }
 
-            contentAdapter?.setData(
-                response.data.data.first {
-                    it.dayOfWeek == dayOfWeekCode
-                }.data.toCollection(ArrayList()),
-                isPaginationExhausted = true,
-            )
+            viewModel.viewModelScope.launch {
+                val data = withContext(Dispatchers.Default) {
+                    response.data.data.first {
+                        it.dayOfWeek == dayOfWeekCode
+                    }.data.toCollection(ArrayList())
+                }
+
+                withContext(Dispatchers.Main) {
+                    contentAdapter?.setData(
+                        data,
+                        isPaginationExhausted = true,
+                    )
+                }
+            }
         }
     }
 

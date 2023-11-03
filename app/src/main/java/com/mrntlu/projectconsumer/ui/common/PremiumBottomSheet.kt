@@ -32,6 +32,8 @@ interface OnPremiumDismissCallback {
 class PremiumBottomSheet(
     private val onPremiumDismissCallback: OnPremiumDismissCallback
 ): BottomSheetDialogFragment() {
+    constructor(): this(object: OnPremiumDismissCallback{ override fun onDismissed(isPurchased: Boolean) {} })
+
     companion object {
         const val TAG = "PremiumBottomSheet"
     }

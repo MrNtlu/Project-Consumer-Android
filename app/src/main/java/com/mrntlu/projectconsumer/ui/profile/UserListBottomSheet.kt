@@ -42,6 +42,7 @@ import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -295,7 +296,7 @@ class UserListBottomSheet(
                     timesFinishedTextLayout.error = if (text.isNullOrEmpty()) getString(R.string.input_number) else null
                 }
 
-                saveButton.setOnClickListener {
+                saveButton.setSafeOnClickListener {
                     if (bottomSheetState == BottomSheetState.EDIT) {
                         if (validateFields()) {
                             val score: Int? = scoreSelectionACTV.text.toString().toIntOrNull()

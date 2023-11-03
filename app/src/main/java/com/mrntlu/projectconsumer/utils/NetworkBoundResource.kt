@@ -59,7 +59,6 @@ inline fun <ResponseModel, ModelType> networkBoundResourceWithoutCache(
     crossinline emptyObjectCreator: () -> ModelType,
     crossinline handleResponse: suspend (ResponseModel) -> Pair<ModelType, Boolean>,
 ) = flow<NetworkListResponse<ModelType>> {
-
     val networkListResponse: NetworkListResponse<ModelType> = run {
         emit(if (isPaginating) setPaginationLoading() else setLoading())
 

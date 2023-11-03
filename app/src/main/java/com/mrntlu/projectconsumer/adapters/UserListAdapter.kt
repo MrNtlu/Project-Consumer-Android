@@ -35,18 +35,20 @@ import com.mrntlu.projectconsumer.utils.Constants.UserListStatus
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
 class UserListAdapter(
     private var contentType: ContentType = ContentType.MOVIE,
+    private val radiusInPx: Float,
     val interaction: UserListInteraction,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
@@ -54,7 +56,10 @@ class UserListAdapter(
 
     private lateinit var userList: UserList
 
-    private fun handleDiffUtil(newList: ArrayList<UserListContentModel>) {
+    private val sizeMultiplier = 0.75f
+    private val sizeMultipliedRadiusInPx = radiusInPx * sizeMultiplier
+
+    private suspend fun handleDiffUtil(newList: ArrayList<UserListContentModel>) = withContext(Dispatchers.Default) {
         val diffUtil = DiffUtilCallback(
             getContentList(),
             newList
@@ -68,7 +73,9 @@ class UserListAdapter(
             ContentType.GAME -> userList.gameList = newList.toList().map { it.convertToGameList() }
         }
 
-        diffResults.dispatchUpdatesTo(this)
+        withContext(Dispatchers.Main) {
+            diffResults.dispatchUpdatesTo(this@UserListAdapter)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -184,7 +191,7 @@ class UserListAdapter(
         }
     }
 
-    fun setData(newUserList: UserList) {
+    suspend fun setData(newUserList: UserList) {
         if (!::userList.isInitialized || isLoading) {
             userList = newUserList
 
@@ -242,7 +249,7 @@ class UserListAdapter(
         }
     }
 
-    fun handleOperation(operation: Operation<UserListModel>) {
+    suspend fun handleOperation(operation: Operation<UserListModel>) {
         val newList = getContentList().toMutableList().toCollection(ArrayList())
 
         when(operation.operationEnum) {
@@ -343,8 +350,6 @@ class UserListAdapter(
             } season${if ((watchedSeasons ?: 0) > 1) "s" else ""}"
 
             binding.apply {
-                val radiusInPx = root.context.dpToPxFloat(6f)
-
                 imageInclude.apply {
                     previewCard.setGone()
                     previewTV.setGone()
@@ -356,11 +361,11 @@ class UserListAdapter(
                     else
                         ImageView.ScaleType.FIT_XY
 
-                    previewIV.loadWithGlide(imageUrl ?: "", previewCard, previewShimmerLayout) {
+                    previewIV.loadWithGlide(imageUrl ?: "", previewCard, previewShimmerLayout, sizeMultiplier) {
                         if (contentType == ContentType.GAME)
-                            transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
+                            transform(CenterCrop(), RoundedCorners(sizeMultipliedRadiusInPx.toInt()))
                         else
-                            transform(RoundedCorners(radiusInPx.toInt()))
+                            transform(RoundedCorners(sizeMultipliedRadiusInPx.toInt()))
                     }
 
                     previewCard.radius = radiusInPx
@@ -411,8 +416,7 @@ class UserListAdapter(
 
                 incrementEpisodeButton.setVisibilityByCondition(contentStatus != "active")
                 incrementSeasonButton.setVisibilityByCondition(contentStatus != "active" || contentType != ContentType.TV)
-//                incrementEpisodeButton.setGone()
-//                incrementSeasonButton.setGone()
+
                 totalSeasonTV.setVisibilityByCondition(contentType != ContentType.TV)
                 watchedSeasonTV.setVisibilityByCondition(contentType != ContentType.TV)
                 episodeSeasonLayout.setVisibilityByCondition(contentType == ContentType.MOVIE)

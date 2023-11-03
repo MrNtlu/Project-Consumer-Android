@@ -19,9 +19,9 @@ class MovieFragment: BasePreviewFragment<Movie>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setGuidelineHeight()
         binding.extraRVTV.text = getString(R.string.in_theaters)
 
+        setGuidelineHeight()
         setListeners()
         setShowcaseRecyclerView(
             onItemClicked = { id ->

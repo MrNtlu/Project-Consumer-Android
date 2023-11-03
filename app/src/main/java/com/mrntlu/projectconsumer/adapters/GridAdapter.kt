@@ -56,7 +56,7 @@ class GridAdapter(
 
             override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>?, dataSource: DataSource, isFirstResource: Boolean): Boolean { return false }
 
-        }).into(binding.genreIV)
+        }).sizeMultiplier(0.75f).into(binding.genreIV)
 
         binding.root.setSafeOnClickListener {
             if (item.genre == "Discover") {

@@ -16,7 +16,6 @@ import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -29,14 +28,18 @@ class CarouselAdapter<T: ContentModel>(
     private val interaction: Interaction<T>,
     private val isGame: Boolean = false,
     private val itemWidth: Int,
+    private val radiusInPx: Float,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var errorMessage: String? = null
     private var isLoading = true
+    private val sizeMultiplier = if (isGame) 0.7f else 0.6f
 
     private var arrayList: ArrayList<T> = arrayListOf()
 
-    private val radius = 8f
+    val shapeAppearanceModel = ShapeAppearanceModel.Builder().apply {
+        setAllCorners(CornerFamily.ROUNDED, radiusInPx)
+    }.build()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
@@ -74,7 +77,7 @@ class CarouselAdapter<T: ContentModel>(
                 (holder as CarouselAdapter<T>.CarouselErrorViewHolder).bind(errorMessage, interaction)
             }
             RecyclerViewEnum.Loading.value -> {
-                (holder as CarouselAdapter<T>.CarouselShimmerViewHolder).setWidthAndRadius(itemWidth, radius)
+                (holder as CarouselAdapter<T>.CarouselShimmerViewHolder).setWidthAndRadius(itemWidth)
             }
         }
     }
@@ -117,14 +120,10 @@ class CarouselAdapter<T: ContentModel>(
     }
 
     inner class CarouselShimmerViewHolder(private val binding: CellCarouselShimmerBinding): RecyclerView.ViewHolder(binding.root) {
-        fun setWidthAndRadius(width: Int, radius: Float) {
+        fun setWidthAndRadius(width: Int) {
             binding.apply {
                 root.layoutParams.width = width
 
-                val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
-                    setAllCorners(CornerFamily.ROUNDED, root.context.dpToPxFloat(radius))
-                }
-                val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
                 binding.shimmerCarouselLayout.shapeAppearanceModel = shapeAppearanceModel
             }
         }
@@ -145,12 +144,6 @@ class CarouselAdapter<T: ContentModel>(
             binding.root.layoutParams.width = itemWidth
 
             binding.apply {
-                val radiusInPx = root.context.dpToPxFloat(radius)
-
-                val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
-                    setAllCorners(CornerFamily.ROUNDED, radiusInPx)
-                }
-                val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
                 binding.carouselLayout.shapeAppearanceModel = shapeAppearanceModel
 
                 previewCard.setGone()
@@ -159,11 +152,11 @@ class CarouselAdapter<T: ContentModel>(
                 previewIV.scaleType = ImageView.ScaleType.CENTER_CROP
 
                 previewComposeView.setVisible()
-                previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView) {
+                previewIV.loadWithGlide(item.imageURL, previewCard, previewComposeView, sizeMultiplier) {
                     if (isGame)
-                        transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
+                        transform(CenterCrop(), RoundedCorners((radiusInPx * sizeMultiplier).toInt()))
                     else
-                        transform(RoundedCorners(radiusInPx.toInt()))
+                        transform(RoundedCorners((radiusInPx * sizeMultiplier).toInt()))
                 }
 
                 previewIV.contentDescription = item.title

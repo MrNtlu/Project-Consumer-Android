@@ -23,7 +23,7 @@ abstract class BaseGridPaginationAdapter<T>(
 
     protected var arrayList: ArrayList<T> = arrayListOf()
 
-    protected abstract fun handleDiffUtil(newList: ArrayList<T>)
+    protected abstract suspend fun handleDiffUtil(newList: ArrayList<T>)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
@@ -89,11 +89,12 @@ abstract class BaseGridPaginationAdapter<T>(
         notifyDataSetChanged()
     }
 
-    fun setData(
+    suspend fun setData(
         newList: ArrayList<T>,
         isPaginationData: Boolean = false,
         isPaginationExhausted: Boolean = false,
         isPaginating: Boolean = false,
+        didOrientationChanged: Boolean = false,
     ) {
         setState(
             if (arrayList.isEmpty() && newList.isEmpty()) RecyclerViewEnum.Empty
@@ -103,7 +104,7 @@ abstract class BaseGridPaginationAdapter<T>(
         )
 
         if (newList.isNotEmpty()) {
-            if (!isPaginationData && !isPaginating) {
+            if (didOrientationChanged || (!isPaginationData && !isPaginating)) {
                 if (arrayList.isNotEmpty())
                     arrayList.clear()
 

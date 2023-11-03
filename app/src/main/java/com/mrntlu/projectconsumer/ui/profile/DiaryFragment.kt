@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mrntlu.projectconsumer.adapters.CalendarAdapter
@@ -23,6 +24,9 @@ import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.smoothScrollToCenteredPosition
 import com.mrntlu.projectconsumer.viewmodels.main.profile.DiaryViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @AndroidEntryPoint
@@ -104,52 +108,56 @@ class DiaryFragment : BaseFragment<FragmentDiaryBinding>() {
                     if (::dialog.isInitialized)
                         dialog.dismissDialog()
 
-                    val logs = response.data.data
-                    val dates = daysInWeekArray()
+                    viewModel.viewModelScope.launch(Dispatchers.Default) {
+                        val logs = response.data.data
+                        val dates = daysInWeekArray()
 
-                    val calendarList = dates.map {
-                        val index = logs?.indexOfFirst { logsByDate ->
-                            it == LocalDate.parse(logsByDate.date)
-                        } ?: -1
+                        val calendarList = dates.map {
+                            val index = logs?.indexOfFirst { logsByDate ->
+                                it == LocalDate.parse(logsByDate.date)
+                            } ?: -1
 
-                        CalendarUI(
-                            it,
-                            if (index != -1)
-                                logs!![index].count
-                            else 0
-                        )
-                    }.toCollection(ArrayList())
+                            CalendarUI(
+                                it,
+                                if (index != -1)
+                                    logs!![index].count
+                                else 0
+                            )
+                        }.toCollection(ArrayList())
 
-                    val logList = logs?.flatMap {
-                        it.data
-                    }?.sortedWith(compareBy {
-                        it.createdAt
-                    })
+                        val logList = logs?.flatMap {
+                            it.data
+                        }?.sortedWith(compareBy {
+                            it.createdAt
+                        })
 
-                    val logUIList  = arrayListOf<LogsUI>()
-                    logList?.forEachIndexed { index, log ->
-                        val isHeader = index == 0 ||
-                            log.createdAt.convertToHumanReadableDateString() !=
-                            logList[index.minus(1)].createdAt.convertToHumanReadableDateString()
-                        if (isHeader)
+                        val logUIList = arrayListOf<LogsUI>()
+                        logList?.forEachIndexed { index, log ->
+                            val isHeader = index == 0 ||
+                                log.createdAt.convertToHumanReadableDateString() !=
+                                logList[index.minus(1)].createdAt.convertToHumanReadableDateString()
+                            if (isHeader)
+                                logUIList.add(
+                                    LogsUI(
+                                        log,
+                                        true
+                                    )
+                                )
+
                             logUIList.add(
                                 LogsUI(
                                     log,
-                                    true
+                                    false
                                 )
                             )
+                        }
 
-                        logUIList.add(
-                            LogsUI(
-                                log,
-                                false
-                            )
-                        )
+                        withContext(Dispatchers.Main) {
+                            updateFocusedDate()
+                            calendarAdapter?.updateDays(calendarList)
+                            diaryAdapter?.setData(logUIList)
+                        }
                     }
-
-                    updateFocusedDate()
-                    calendarAdapter?.updateDays(calendarList)
-                    diaryAdapter?.setData(logUIList)
                 }
             }
         }

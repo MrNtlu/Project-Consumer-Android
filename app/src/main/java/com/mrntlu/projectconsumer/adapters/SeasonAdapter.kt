@@ -7,15 +7,17 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.databinding.CellSeasonBinding
 import com.mrntlu.projectconsumer.models.main.tv.Season
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
 class SeasonAdapter(
-    private val seasonList: List<Season>
+    private val seasonList: List<Season>,
+    private val radiusInPx: Float,
 ): RecyclerView.Adapter<SeasonAdapter.ItemHolder>() {
+
+    private val sizeMultiplier = 0.5f
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         return ItemHolder(CellSeasonBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -27,8 +29,6 @@ class SeasonAdapter(
         val season = seasonList[position]
 
         holder.binding.apply {
-            val radiusInPx = root.context.dpToPxFloat(6f)
-
             placeHolderCV.setGone()
             previewShimmerLayout.setVisible()
             previewShimmerCV.radius = radiusInPx
@@ -49,8 +49,8 @@ class SeasonAdapter(
                 seasonNumTV.text = season.seasonNum.toString()
             seasonNumCV.setVisibilityByCondition(season.seasonNum == 0)
 
-            seasonIV.loadWithGlide(season.imageURL, placeHolderCV, previewShimmerLayout) {
-                transform(RoundedCorners(radiusInPx.toInt()))
+            seasonIV.loadWithGlide(season.imageURL, placeHolderCV, previewShimmerLayout, sizeMultiplier) {
+                transform(RoundedCorners((radiusInPx * sizeMultiplier).toInt()))
             }
 
             previewTV.text = season.seasonNum.toString()

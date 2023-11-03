@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -43,10 +43,13 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLa
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.Constants.GamePlatformUIList
 import com.mrntlu.projectconsumer.utils.Constants.GameStoreList
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -115,6 +118,18 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
         setObservers()
     }
 
+    override fun onStart() {
+        if (gameDetails != null)
+            setImage(gameDetails!!.imageURL)
+        super.onStart()
+    }
+
+    override fun onStop() {
+        if (gameDetails?.imageURL != null)
+            Glide.with(this).clear(binding.detailsToolbarIV)
+        super.onStop()
+    }
+
     private fun setObservers() {
         if (!(viewModel.gameDetails.hasObservers() || viewModel.gameDetails.value is NetworkResponse.Success || viewModel.gameDetails.value is NetworkResponse.Loading))
             viewModel.getGameDetails(args.gameId)
@@ -123,11 +138,12 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
                 toggleCollapsingLayoutScroll(detailsCollapsingToolbar, response !is NetworkResponse.Loading)
-                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
                     is NetworkResponse.Failure -> {
+                        loadingLayout.setGone()
+
                         errorLayoutInc.apply {
                             errorText.text = response.errorMessage
 
@@ -137,42 +153,45 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                     is NetworkResponse.Success -> {
                         gameDetails = response.data.data
 
-                        setUI()
-                        setLottieUI(
-                            detailsInclude,
-                            gameDetails,
-                            createConsumeLater = {
-                                gameDetails!!.apply {
-                                    detailsConsumeLaterViewModel.createConsumeLater(
-                                        ConsumeLaterBody(id, rawgID.toString(), null, TYPE, null)
-                                    )
-                                }
-                            },
-                            showBottomSheet = {
-                                val watchList = gameDetails!!.watchList
+                        viewModel.viewModelScope.launch {
+                            setUI()
+                            setLottieUI(
+                                detailsInclude,
+                                gameDetails,
+                                createConsumeLater = {
+                                    gameDetails!!.apply {
+                                        detailsConsumeLaterViewModel.createConsumeLater(
+                                            ConsumeLaterBody(id, rawgID.toString(), null, TYPE, null)
+                                        )
+                                    }
+                                },
+                                showBottomSheet = {
+                                    val watchList = gameDetails!!.watchList
 
-                                activity?.let {
-                                    val listBottomSheet = UserListBottomSheet(
-                                        watchList,
-                                        Constants.ContentType.GAME,
-                                        if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
-                                        gameDetails!!.id,
-                                        gameDetails!!.rawgID.toString(),
-                                        null, null,
-                                        onBottomSheetClosedCallback,
-                                    )
-                                    listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                                    activity?.let {
+                                        val listBottomSheet = UserListBottomSheet(
+                                            watchList,
+                                            ContentType.GAME,
+                                            if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
+                                            gameDetails!!.id,
+                                            gameDetails!!.rawgID.toString(),
+                                            null, null,
+                                            onBottomSheetClosedCallback,
+                                        )
+                                        listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                                    }
                                 }
-                            }
-                        )
-                        setListeners()
-                        setRecyclerView()
+                            )
+                            setListeners()
+                            setRecyclerView()
+                            loadingLayout.setGone()
+                        }
 
                         if (gameDetails?.watchList != null)
-                        handleWatchListLottie(
-                            binding.detailsInclude,
-                            gameDetails?.watchList == null
-                        )
+                            handleWatchListLottie(
+                                binding.detailsInclude,
+                                gameDetails?.watchList == null
+                            )
 
                         if (gameDetails?.consumeLater != null)
                             handleConsumeLaterLottie(
@@ -180,7 +199,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                                 gameDetails?.consumeLater == null
                             )
                     }
-                    else -> {}
+                    NetworkResponse.Loading -> loadingLayout.setVisible()
                 }
             }
         }
@@ -207,60 +226,46 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
         }
     }
 
-    private fun setUI() {
+    private suspend fun setUI() {
         if (isAppBarLifted != null)
             binding.detailsAppBarLayout.setExpanded(!isAppBarLifted!!)
 
         gameDetails!!.apply {
             setReviewSummary(binding.reviewSummaryLayout, reviews)
+            setImage(imageURL)
 
-            binding.detailsToolbarProgress.setVisible()
+            withContext(Dispatchers.Default) {
+                val releaseDateStr = if (releaseDate != null && releaseDate.isNotEmptyOrBlank())
+                    releaseDate.convertToHumanReadableDateString(isAlt = true)
+                else if (tba)
+                    "TBA"
+                else
+                    ageRating ?: ""
 
-            Glide.with(binding.root.context).load(imageURL).addListener(object:
-                RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                    _binding?.detailsToolbarProgress?.setGone()
-                    _binding?.detailsAppBarLayout?.setExpanded(false)
+                val descriptionStr = Html.fromHtml(description, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-                    if (_binding != null) {
-                        onImageFailedHandler(
-                            binding.detailsCollapsingToolbar,
-                            binding.detailsNestedSV
-                        )
+                val ratingStr = rawgRating.toString()
+                val rateCountStr = " | $rawgRatingCount"
+
+                val metacriticStr = if (metacriticScore != null && !tba && metacriticScore > 0)
+                    "Metacritic $metacriticScore"
+                else
+                    getString(R.string.not_rated_yet)
+
+                withContext(Dispatchers.Main) {
+                    binding.detailsReleaseTV.text = releaseDateStr
+                    binding.detailsTitleTV.text = title
+                    binding.detailsOriginalTV.text = titleOriginal
+                    binding.detailsDescriptionTV.text = descriptionStr
+
+                    binding.detailsInclude.apply {
+                        interactionRateTV.text = ratingStr
+                        interactionsRateCountTV.text = rateCountStr
                     }
 
-                    return false
+                    binding.detailsMetacriticTV.text = metacriticStr
                 }
-
-                override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                    _binding?.detailsToolbarProgress?.setGone()
-                    return false
-                }
-            }).into(binding.detailsToolbarIV)
-
-            binding.detailsTitleTV.text = title
-            binding.detailsOriginalTV.text = titleOriginal
-            binding.detailsDescriptionTV.text = Html.fromHtml(description, HtmlCompat.FROM_HTML_MODE_LEGACY)
-
-            binding.detailsInclude.apply {
-                interactionRateTV.text = rawgRating.toString()
-                val rateCountText = " | $rawgRatingCount"
-                interactionsRateCountTV.text = rateCountText
             }
-
-            val releaseDateStr = if (releaseDate != null && releaseDate.isNotEmptyOrBlank())
-                releaseDate.convertToHumanReadableDateString(isAlt = true)
-            else if (tba)
-                "TBA"
-            else
-                ageRating ?: ""
-            binding.detailsReleaseTV.text = releaseDateStr
-
-            val metacriticStr = if (metacriticScore != null && !tba && metacriticScore > 0)
-                "Metacritic $metacriticScore"
-            else
-                getString(R.string.not_rated_yet)
-            binding.detailsMetacriticTV.text = metacriticStr
 
             if (!screenshots.isNullOrEmpty()) {
                 binding.detailsMediaImageSlider.apply {
@@ -292,6 +297,34 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.detailsMediaTV.setVisibilityByCondition(screenshots.isNullOrEmpty())
             binding.detailsMediaImageSliderCV.setVisibilityByCondition(screenshots.isNullOrEmpty())
         }
+    }
+
+    private fun setImage(imageURL: String) {
+        binding.detailsToolbarProgress.setVisible()
+        Glide.with(binding.root.context).load(imageURL).addListener(object: RequestListener<Drawable> {
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+                _binding?.detailsToolbarProgress?.setGone()
+                _binding?.detailsAppBarLayout?.setExpanded(false)
+
+                if (_binding != null) {
+                    onImageFailedHandler(
+                        binding.detailsCollapsingToolbar,
+                        binding.detailsNestedSV
+                    )
+                }
+
+                return false
+            }
+
+            override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                _binding?.detailsToolbarProgress?.setGone()
+                return false
+            }
+        }).thumbnail(
+            Glide.with(binding.root.context)
+                .load(imageURL)
+                .sizeMultiplier(0.25f)
+        ).into(binding.detailsToolbarIV)
     }
 
     private fun setListeners() {
@@ -328,6 +361,37 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 detailsDescriptionTV.toggle()
             }
 
+            reviewSummaryLayout.seeAllButton.setSafeOnClickListener {
+                if (gameDetails != null) {
+                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
+
+                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToReviewFragment(
+                        contentId = gameDetails!!.id,
+                        contentExternalId = null,
+                        contentExternalIntId = gameDetails!!.rawgID,
+                        contentType = ContentType.GAME.request,
+                        contentTitle = gameDetails!!.title,
+                    )
+                    navController.navigate(navWithAction)
+                }
+            }
+
+            reviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
+                if (gameDetails != null) {
+                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
+
+                    val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToReviewCreateFragment(
+                        review = null,
+                        contentId = gameDetails!!.id,
+                        contentExternalId = null,
+                        contentExternalIntId = gameDetails!!.rawgID,
+                        contentType = ContentType.GAME.request,
+                        contentTitle = gameDetails!!.title
+                    )
+                    navController.navigate(navWithAction)
+                }
+            }
+
             errorLayoutInc.refreshButton.setOnClickListener {
                 viewModel.getGameDetails(args.gameId)
             }
@@ -338,7 +402,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
         }
     }
 
-    private fun setRecyclerView() {
+    private suspend fun setRecyclerView() {
         if (!gameDetails?.genres.isNullOrEmpty()) {
             binding.detailsGenreRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -346,10 +410,12 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
                 genreAdapter = GenreAdapter(gameDetails!!.genres) {
                     if (navController.currentDestination?.id == R.id.gameDetailsFragment) {
-                        val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToDiscoverListFragment(Constants.ContentType.GAME, gameDetails?.genres?.get(it))
+                        val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToDiscoverListFragment(
+                            ContentType.GAME, gameDetails?.genres?.get(it))
                         navController.navigate(navWithAction)
                     }
                 }
+                setHasFixedSize(true)
                 adapter = genreAdapter
             }
         } else {
@@ -357,7 +423,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.detailsGenreRV.setGone()
         }
 
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             val developersStr: String = if (gameDetails?.developers.isNullOrEmpty())
                 getString(R.string.unknown)
             else
@@ -375,7 +441,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             val gameStoreList = gameDetails?.stores?.map { gameStore ->
                 AnimeNameURL(
                     GameStoreList.firstOrNull { it.second == gameStore.storeId }?.first ?: getString(R.string.unknown),
@@ -383,9 +449,9 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 )
             }
 
-            if (!gameStoreList.isNullOrEmpty()) {
-                binding.detailsStoreRV.apply {
-                    withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                if (!gameStoreList.isNullOrEmpty()) {
+                    binding.detailsStoreRV.apply {
                         val flexboxLayout = FlexboxLayoutManager(context)
                         flexboxLayout.apply {
                             flexDirection = FlexDirection.ROW
@@ -396,11 +462,10 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                         layoutManager = flexboxLayout
 
                         storeAdapter = NameUrlAdapter(gameStoreList)
+                        setHasFixedSize(true)
                         adapter = storeAdapter
                     }
-                }
-            } else {
-                withContext(Dispatchers.Main) {
+                } else {
                     binding.detailsStoreTV.setGone()
                     binding.detailsStoreRV.setGone()
                 }
@@ -414,6 +479,8 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
                 relationAdapter = GameRelationsAdapter(
                     gameDetails!!.relatedGames,
+                    binding.root.context.dpToPxFloat(8f),
+                    binding.root.context.dpToPx(130f),
                 ) { rawgId, position ->
                     if (navController.currentDestination?.id == R.id.gameDetailsFragment) {
                         isAppBarLifted = binding.detailsAppBarLayout.isLifted
@@ -423,6 +490,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                         navController.navigate(navWithAction)
                     }
                 }
+                setHasFixedSize(true)
                 adapter = relationAdapter
 
                 if (recommendationPosition != null)
@@ -433,7 +501,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             binding.detailsRelationRV.setGone()
         }
 
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.Default) {
             val platformUIList = gameDetails?.platforms?.map { platform ->
                 GamePlatformUIList.firstOrNull {
                     it.requestMapper.name == platform
@@ -443,9 +511,9 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                 )
             }
 
-            if (!platformUIList.isNullOrEmpty()) {
-                binding.detailsPlatformRV.apply {
-                    withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                if (!platformUIList.isNullOrEmpty()) {
+                    binding.detailsPlatformRV.apply {
                         val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         layoutManager = linearLayout
 
@@ -454,9 +522,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                         setHasFixedSize(true)
                         adapter = platformAdapter
                     }
-                }
-            } else {
-                withContext(Dispatchers.Main) {
+                } else {
                     binding.detailsPlatformTV.setGone()
                     binding.detailsPlatformRV.setGone()
                 }

@@ -20,6 +20,7 @@ import com.mrntlu.projectconsumer.utils.FetchType
 import com.mrntlu.projectconsumer.utils.NetworkListResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
@@ -97,6 +98,8 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
                 isRatioDifferent = isRatioDifferent,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 isAltLayout = sharedViewModel.isAltLayout(),
+                radiusInPx = context.dpToPxFloat(8f),
+                sizeMultiplier = if (sharedViewModel.isAltLayout()) 0.8f else 0.9f,
                 interaction = object: Interaction<T> {
                     override fun onItemSelected(item: T, position: Int) {
                         isNavigatingBack = true
@@ -165,6 +168,7 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
 
     protected fun onListObserveHandler(
         response: NetworkListResponse<List<T>>,
+        didOrientationChange: Boolean = false,
         onRestoringAndOrientationChange: () -> Unit
     ) {
         if (response.isFailed()) {
@@ -174,12 +178,15 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
         } else if (response.isSuccessful() || response.isPaginating) {
             val arrayList = response.data!!.toCollection(ArrayList())
 
-            contentAdapter?.setData(
-                arrayList,
-                response.isPaginationData,
-                response.isPaginationExhausted,
-                response.isPaginating,
-            )
+            viewLifecycleOwner.lifecycleScope.launch {
+                contentAdapter?.setData(
+                    arrayList,
+                    response.isPaginationData,
+                    response.isPaginationExhausted,
+                    response.isPaginating,
+                    didOrientationChange,
+                )
+            }
 
             onRestoringAndOrientationChange()
         }

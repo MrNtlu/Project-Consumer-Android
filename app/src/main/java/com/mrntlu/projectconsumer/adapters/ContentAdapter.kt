@@ -38,7 +38,6 @@ import com.mrntlu.projectconsumer.utils.Constants.DEFAULT_RATIO
 import com.mrntlu.projectconsumer.utils.Constants.GAME_RATIO
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
@@ -46,6 +45,8 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ContentAdapter<T: ContentModel>(
     override val interaction: Interaction<T>,
@@ -53,13 +54,22 @@ class ContentAdapter<T: ContentModel>(
     gridCount: Int,
     isDarkTheme: Boolean,
     private val isAltLayout: Boolean = false,
+    private val sizeMultiplier: Float = 1f,
+    private val radiusInPx: Float,
 ): BaseGridPaginationAdapter<T>(
     interaction, gridCount, isDarkTheme,
     if (isRatioDifferent) GAME_RATIO else DEFAULT_RATIO,
     isAltLayout = isAltLayout
 ) {
 
-    override fun handleDiffUtil(newList: ArrayList<T>) {
+    private val sizeMultipliedRadiusInPx = radiusInPx * sizeMultiplier
+
+    val shapeAppearanceModel = ShapeAppearanceModel.Builder().apply {
+        setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
+        setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
+    }.build()
+
+    override suspend fun handleDiffUtil(newList: ArrayList<T>) = withContext(Dispatchers.Default) {
         val diffUtil = DiffUtilCallback(
             arrayList,
             newList
@@ -67,7 +77,10 @@ class ContentAdapter<T: ContentModel>(
         val diffResults = DiffUtil.calculateDiff(diffUtil, true)
 
         arrayList = newList.toList() as ArrayList<T>
-        diffResults.dispatchUpdatesTo(this)
+
+        withContext(Dispatchers.Main) {
+            diffResults.dispatchUpdatesTo(this@ContentAdapter)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -100,8 +113,6 @@ class ContentAdapter<T: ContentModel>(
         override fun bind(item: T, position: Int, interaction: Interaction<T>) {
             binding.apply {
                 imageInclude.apply {
-                    val radiusInPx = root.context.dpToPxFloat(8f)
-
                     previewCard.setGone()
                     previewShimmerLayout.setVisible()
                     previewGameCV.setGone()
@@ -111,11 +122,11 @@ class ContentAdapter<T: ContentModel>(
                     else
                         ImageView.ScaleType.FIT_XY
 
-                    previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout) {
+                    previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout, sizeMultiplier) {
                         if (isRatioDifferent)
-                            transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
+                            transform(CenterCrop(), RoundedCorners(sizeMultipliedRadiusInPx.toInt()))
                         else
-                            transform(RoundedCorners(radiusInPx.toInt()))
+                            transform(RoundedCorners(sizeMultipliedRadiusInPx.toInt()))
                     }
 
                     previewIV.contentDescription = item.title
@@ -283,8 +294,6 @@ class ContentAdapter<T: ContentModel>(
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
         override fun bind(item: T, position: Int, interaction: Interaction<T>) {
             binding.apply {
-                val radiusInPx = root.context.dpToPxFloat(8f)
-
                 previewCard.setGone()
                 previewShimmerLayout.setVisible()
                 previewGameCV.setVisibilityByCondition(!isRatioDifferent)
@@ -293,25 +302,19 @@ class ContentAdapter<T: ContentModel>(
                 (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
                 (previewShimmerLayout.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
 
-                if (isRatioDifferent) {
-                    val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
-                        setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
-                        setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
-                    }
-                    val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
+                if (isRatioDifferent)
                     previewGameCV.shapeAppearanceModel = shapeAppearanceModel
-                }
 
                 previewIV.scaleType = if (isRatioDifferent)
                     ImageView.ScaleType.CENTER_CROP
                 else
                     ImageView.ScaleType.FIT_XY
 
-                previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout) {
+                previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout, sizeMultiplier) {
                     if (isRatioDifferent)
-                        transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
+                        transform(CenterCrop(), RoundedCorners(sizeMultipliedRadiusInPx.toInt()))
                     else
-                        transform(RoundedCorners(radiusInPx.toInt()))
+                        transform(RoundedCorners(sizeMultipliedRadiusInPx.toInt()))
                 }
 
                 previewIV.contentDescription = item.title

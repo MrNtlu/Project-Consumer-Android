@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.HeroCarouselStrategy
@@ -17,9 +19,13 @@ import com.mrntlu.projectconsumer.interfaces.Interaction
 import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.smoothScrollToCenteredPosition
 import com.mrntlu.projectconsumer.viewmodels.main.common.PreviewViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPreviewBinding>() {
 
@@ -42,18 +48,25 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
 
     protected fun setGuidelineHeight(isGame: Boolean = false) {
         sharedViewModel.windowHeight.observe(viewLifecycleOwner) {
-            val height: WindowSizeClass = it
+            sharedViewModel.viewModelScope.launch(Dispatchers.Default) {
+                val height: WindowSizeClass = it
 
-            binding.guideline14.setGuidelinePercent(
-                when(height) {
+                val guidePercentFloat = when(height) {
                     WindowSizeClass.EXPANDED -> if (isGame) 0.4f else 0.34f
                     else -> if (isGame) 0.34f else 0.28f
                 }
-            )
 
-            guideLinePercent = when(height) {
-                WindowSizeClass.EXPANDED -> if (isGame) 0.4 else 0.34
-                else -> if (isGame) 0.34 else 0.28
+                val defaultGuidePercent = (binding.guideline14.layoutParams as ConstraintLayout.LayoutParams).guidePercent
+
+                withContext(Dispatchers.Main) {
+                    if (guidePercentFloat != defaultGuidePercent)
+                        binding.guideline14.setGuidelinePercent(guidePercentFloat)
+                }
+
+                guideLinePercent = when(height) {
+                    WindowSizeClass.EXPANDED -> if (isGame) 0.4 else 0.34
+                    else -> if (isGame) 0.34 else 0.28
+                }
             }
         }
     }
@@ -78,8 +91,7 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
             else
                 (rvHeight * 2) / 3
 
-            showCaseAdapter = CarouselAdapter(
-                object: Interaction<T> {
+            showCaseAdapter = CarouselAdapter(object : Interaction<T> {
                     override fun onItemSelected(item: T, position: Int) {
                         viewModel.setScrollPosition(position)
                         onItemClicked(item.id)
@@ -95,7 +107,9 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                 },
                 isGame = isGame,
                 itemWidth = rvItemWidth.toInt(),
+                radiusInPx = context.dpToPxFloat(8f)
             )
+            setHasFixedSize(true)
             adapter = showCaseAdapter
 
             if (viewModel.scrollPositionValue() > 0)
@@ -114,61 +128,79 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     ) {
         binding.upcomingPreviewRV.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
-            upcomingAdapter = PreviewAdapter(object: Interaction<T> {
-                override fun onItemSelected(item: T, position: Int) {
-                    firstOnItemSelected(item.id)
-                }
+            upcomingAdapter = PreviewAdapter(
+                object: Interaction<T> {
+                    override fun onItemSelected(item: T, position: Int) {
+                        firstOnItemSelected(item.id)
+                    }
 
-                override fun onCancelPressed() {
-                    navController.popBackStack()
-                }
+                    override fun onCancelPressed() {
+                        navController.popBackStack()
+                    }
 
-                override fun onErrorRefreshPressed() {
-                    firstOnRefreshPressed()
-                }
+                    override fun onErrorRefreshPressed() {
+                        firstOnRefreshPressed()
+                    }
 
-                override fun onExhaustButtonPressed() {}
-            }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
+                    override fun onExhaustButtonPressed() {}
+                },
+                isRatioDifferent = isRatioDifferent,
+                isDarkTheme = !sharedViewModel.isLightTheme(),
+                radiusInPx = context.dpToPxFloat(if (isRatioDifferent) 12f else 8f),
+            )
+            setHasFixedSize(true)
             adapter = upcomingAdapter
         }
 
         binding.topRatedPreviewRV.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
-            topRatedAdapter = PreviewAdapter(object: Interaction<T> {
-                override fun onItemSelected(item: T, position: Int) {
-                    secondOnItemSelected(item.id)
-                }
+            topRatedAdapter = PreviewAdapter(
+                object: Interaction<T> {
+                    override fun onItemSelected(item: T, position: Int) {
+                        secondOnItemSelected(item.id)
+                    }
 
-                override fun onCancelPressed() {
-                    navController.popBackStack()
-                }
+                    override fun onCancelPressed() {
+                        navController.popBackStack()
+                    }
 
-                override fun onErrorRefreshPressed() {
-                    secondOnRefreshPressed()
-                }
+                    override fun onErrorRefreshPressed() {
+                        secondOnRefreshPressed()
+                    }
 
-                override fun onExhaustButtonPressed() {}
-            }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
+                    override fun onExhaustButtonPressed() {}
+                },
+                isRatioDifferent = isRatioDifferent,
+                isDarkTheme = !sharedViewModel.isLightTheme(),
+                radiusInPx = context.dpToPxFloat(if (isRatioDifferent) 12f else 8f),
+            )
+            setHasFixedSize(true)
             adapter = topRatedAdapter
         }
 
         binding.extraPreviewRV.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
-            extraAdapter = PreviewAdapter(object: Interaction<T> {
-                override fun onItemSelected(item: T, position: Int) {
-                    extraOnItemSelected(item.id)
-                }
+            extraAdapter = PreviewAdapter(
+                object: Interaction<T> {
+                    override fun onItemSelected(item: T, position: Int) {
+                        extraOnItemSelected(item.id)
+                    }
 
-                override fun onCancelPressed() {
-                    navController.popBackStack()
-                }
+                    override fun onCancelPressed() {
+                        navController.popBackStack()
+                    }
 
-                override fun onErrorRefreshPressed() {
-                    extraOnRefreshPressed()
-                }
+                    override fun onErrorRefreshPressed() {
+                        extraOnRefreshPressed()
+                    }
 
-                override fun onExhaustButtonPressed() {}
-            }, isRatioDifferent = isRatioDifferent, isDarkTheme = !sharedViewModel.isLightTheme())
+                    override fun onExhaustButtonPressed() {}
+                },
+                isRatioDifferent = isRatioDifferent,
+                isDarkTheme = !sharedViewModel.isLightTheme(),
+                radiusInPx = context.dpToPxFloat(if (isRatioDifferent) 12f else 8f),
+            )
+            setHasFixedSize(true)
             adapter = extraAdapter
         }
     }
@@ -201,8 +233,10 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
     }
 
     override fun onDestroyView() {
-        sharedViewModel.windowHeight.removeObservers(viewLifecycleOwner)
-        sharedViewModel.networkStatus.removeObservers(viewLifecycleOwner)
+        viewLifecycleOwner.apply {
+            sharedViewModel.windowHeight.removeObservers(viewLifecycleOwner)
+            sharedViewModel.networkStatus.removeObservers(viewLifecycleOwner)
+        }
         showCaseAdapter = null
         upcomingAdapter = null
         topRatedAdapter = null

@@ -12,8 +12,6 @@ import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.models.main.game.GameDetailsRelation
-import com.mrntlu.projectconsumer.utils.dpToPx
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
@@ -22,8 +20,15 @@ import com.mrntlu.projectconsumer.utils.setVisible
 
 class GameRelationsAdapter(
     private val relationList: List<GameDetailsRelation>,
+    private val radiusInPx: Float,
+    private val layoutHeight: Int,
     private val onClick: (Int, Int) -> Unit,
 ): RecyclerView.Adapter<GameRelationsAdapter.ItemHolder>() {
+
+    private val shapeAppearanceModel = ShapeAppearanceModel.Builder().apply {
+        setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
+        setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
+    }.build()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameRelationsAdapter.ItemHolder {
         return ItemHolder(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -35,8 +40,6 @@ class GameRelationsAdapter(
         val relation = relationList[position]
 
         holder.binding.apply {
-            val radiusInPx = root.context.dpToPxFloat(8f)
-
             previewCard.setGone()
             previewShimmerLayout.setVisible()
             previewShimmerCV.radius = radiusInPx
@@ -47,21 +50,16 @@ class GameRelationsAdapter(
             (previewShimmerLayout.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "16:9"
 
             val layoutParams = root.layoutParams
-            layoutParams.height = root.context.dpToPx(130f)
+            layoutParams.height = layoutHeight
             layoutParams.width = LayoutParams.WRAP_CONTENT
 
             val marginParams = root.layoutParams as ViewGroup.MarginLayoutParams
             marginParams.setMargins(0, 4, 16, 4)
 
-            val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
-                setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
-                setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
-            }
-            val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
             previewGameCV.shapeAppearanceModel = shapeAppearanceModel
 
             previewIV.scaleType = ImageView.ScaleType.CENTER_CROP
-            previewIV.loadWithGlide(relation.imageURL, previewCard, previewShimmerLayout) {
+            previewIV.loadWithGlide(relation.imageURL, previewCard, previewShimmerLayout, 0.6f) {
                 transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
             }
 

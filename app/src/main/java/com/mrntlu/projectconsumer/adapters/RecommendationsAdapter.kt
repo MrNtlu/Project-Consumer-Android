@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.models.common.Recommendation
-import com.mrntlu.projectconsumer.utils.dpToPx
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -15,8 +13,12 @@ import com.mrntlu.projectconsumer.utils.setVisible
 
 class RecommendationsAdapter(
     private val recommendationList: List<Recommendation>,
+    private val radiusInPx: Float,
+    private val layoutHeight: Int,
     private val onClick: (Int, Recommendation) -> Unit,
 ): RecyclerView.Adapter<RecommendationsAdapter.ItemHolder>() {
+
+    private val sizeMultiplier = 0.65f
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         return ItemHolder(CellPreviewItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -35,18 +37,16 @@ class RecommendationsAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int, recommendation: Recommendation) {
             binding.apply {
-                val radiusInPx = root.context.dpToPxFloat(8f)
-
                 previewCard.setGone()
                 previewShimmerLayout.setVisible()
                 previewGameCV.setGone()
 
                 val layoutParams = root.layoutParams
-                layoutParams.height = root.context.dpToPx(150f)
+                layoutParams.height = layoutHeight
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
 
-                previewIV.loadWithGlide(recommendation.imageURL, previewCard, previewShimmerLayout) {
-                    transform(RoundedCorners(radiusInPx.toInt()))
+                previewIV.loadWithGlide(recommendation.imageURL, previewCard, previewShimmerLayout, sizeMultiplier) {
+                    transform(RoundedCorners((radiusInPx * sizeMultiplier).toInt()))
                 }
 
                 previewIV.contentDescription = recommendation.title

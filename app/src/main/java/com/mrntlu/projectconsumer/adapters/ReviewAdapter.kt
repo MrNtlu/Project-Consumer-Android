@@ -27,15 +27,18 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.sendHapticFeedback
+import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
-import kotlin.math.abs
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
 class ReviewAdapter(
-    private val isDarkTheme: Boolean,
-    private val interaction: ReviewInteraction
+    private val isAuthenticated: Boolean,
+    private val interaction: ReviewInteraction,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var errorMessage: String? = null
     var isLoading = true
@@ -44,7 +47,7 @@ class ReviewAdapter(
 
     private var arrayList: ArrayList<Review> = arrayListOf()
 
-    private fun handleDiffUtil(newList: ArrayList<Review>) {
+    private suspend fun handleDiffUtil(newList: ArrayList<Review>) = withContext(Dispatchers.Default) {
         val diffUtil = DiffUtilCallback(
             arrayList,
             newList
@@ -53,7 +56,9 @@ class ReviewAdapter(
 
         arrayList = newList.toCollection(ArrayList())
 
-        diffResults.dispatchUpdatesTo(this)
+        withContext(Dispatchers.Main) {
+            diffResults.dispatchUpdatesTo(this@ReviewAdapter)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -70,7 +75,7 @@ class ReviewAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
             RecyclerViewEnum.View.value -> {
-                (holder as ItemViewHolder).bind(arrayList[position], position, interaction)
+                (holder as ItemViewHolder).bind(arrayList[position], position)
             }
             RecyclerViewEnum.Error.value -> {
                 (holder as ErrorViewHolderBind<Review>).bind(errorMessage, interaction)
@@ -110,11 +115,12 @@ class ReviewAdapter(
         }
     }
 
-    fun setData(
+    suspend fun setData(
         newList: ArrayList<Review>,
         isPaginationData: Boolean = false,
         isPaginationExhausted: Boolean = false,
         isPaginating: Boolean = false,
+        didOrientationChanged: Boolean = false,
     ) {
         setState(
             if (arrayList.isEmpty() && newList.isEmpty()) RecyclerViewEnum.Empty
@@ -124,7 +130,7 @@ class ReviewAdapter(
         )
 
         if (newList.isNotEmpty()) {
-            if (!isPaginationData && !isPaginating) {
+            if (didOrientationChanged || (!isPaginationData && !isPaginating)) {
                 if (arrayList.isNotEmpty())
                     arrayList.clear()
 
@@ -145,7 +151,7 @@ class ReviewAdapter(
             notifyDataSetChanged()
     }
 
-    fun handleOperation(operation: Operation<Review>) {
+    suspend fun handleOperation(operation: Operation<Review>) {
         val newList = arrayList.toMutableList()
 
         when(operation.operationEnum) {
@@ -155,7 +161,7 @@ class ReviewAdapter(
             OperationEnum.Update -> {
                 if (operation.data != null) {
                     val index = newList.indexOfFirst {
-                        it == operation.data
+                        it.id == operation.data.id
                     }
                     newList[index] = operation.data
                 }
@@ -228,18 +234,16 @@ class ReviewAdapter(
     inner class ItemViewHolder(
         private val binding: CellReviewBinding,
     ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Review, position: Int, reviewInteraction: ReviewInteraction,) {
+        fun bind(item: Review, position: Int) {
             item.apply {
-                binding.authorImage.loadWithGlide(author.image, null, binding.authorProgressBar) { transform(CenterCrop()) }
+                binding.authorImage.loadWithGlide(author.image, null, binding.authorProgressBar, 0.9f) { transform(CenterCrop()) }
                 binding.authorTV.text = author.username
 
                 binding.timeTV.text = createdAt.convertToHumanReadableDateString(true) ?: createdAt
                 binding.reviewRateTV.text = star.toString()
                 binding.popularityTV.text = popularity.toString()
 
-                review?.let {
-                    binding.reviewTV.text = it
-                }
+                binding.reviewTV.text = review
 
                 binding.authorCV.strokeColor = ContextCompat.getColor(
                     binding.root.context,
@@ -253,27 +257,28 @@ class ReviewAdapter(
                 )
 
                 binding.premiumAnimation.setVisibilityByCondition(!author.isPremium)
-                binding.reviewTV.setVisibilityByCondition(review == null)
+                binding.likeButton.setVisibilityByCondition(!isAuthenticated)
+                binding.actionLayout.setVisibilityByCondition(!isAuthor)
+                if (!isAuthenticated)
+                    binding.actionLayout.setGone()
 
-                binding.likeLottie.setAnimation(if(!isDarkTheme) R.raw.like else R.raw.like_night)
-                binding.likeLottie.frame = 0
-                binding.likeLottie.setSafeOnClickListener {
-                    handleLikeLottieAnimation(true)
+                binding.likeButton.setImageResource(if (isLiked) R.drawable.ic_like else R.drawable.ic_like_outline)
+                binding.likeButton.isEnabled = isAuthenticated && !isAuthor
+                binding.likeButton.setSafeOnClickListener {
+                    binding.root.sendHapticFeedback()
+                    interaction.onLikeClicked(item, position)
                 }
-            }
-        }
 
-        private fun handleLikeLottieAnimation(isLiked: Boolean) {
-            binding.likeLottie.apply {
-                setMinAndMaxFrame(0, 130)
-                frame = if (isLiked) 0 else 130
-
-                if (frame != 0) {
-                    setMinAndMaxFrame(75, 129)
-                } else {
-                    setMinAndMaxFrame(0, 75)
+                binding.editButton.setSafeOnClickListener {
+                    binding.root.sendHapticFeedback()
+                    interaction.onEditClicked(item, position)
                 }
-                playAnimation()
+
+                binding.deleteButton.setSafeOnClickListener {
+                    binding.root.sendHapticFeedback()
+
+                    interaction.onDeleteClicked(item, position)
+                }
             }
         }
     }

@@ -10,20 +10,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.divider.MaterialDividerItemDecoration
-import com.google.android.material.tabs.TabLayout
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentUserListBinding
 import com.mrntlu.projectconsumer.interfaces.ContentModel
 import com.mrntlu.projectconsumer.interfaces.Interaction
-import com.mrntlu.projectconsumer.utils.FetchType
-import com.mrntlu.projectconsumer.utils.NetworkListResponse
-import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.dpToPx
-import com.mrntlu.projectconsumer.utils.isFailed
-import com.mrntlu.projectconsumer.utils.isSuccessful
-import com.mrntlu.projectconsumer.utils.printLog
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.quickScrollToTop
 import com.mrntlu.projectconsumer.utils.setGone
 import kotlinx.coroutines.launch
@@ -128,6 +122,8 @@ abstract class BaseDayOfWeekFragment<T: ContentModel>: BaseFragment<FragmentUser
                 gridCount = gridCount,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 isAltLayout = sharedViewModel.isAltLayout(),
+                radiusInPx = context.dpToPxFloat(8f),
+                sizeMultiplier = if (sharedViewModel.isAltLayout()) 0.8f else 0.9f,
                 interaction = object: Interaction<T> {
                     override fun onItemSelected(item: T, position: Int) {
                         onItemSelected(item.id)

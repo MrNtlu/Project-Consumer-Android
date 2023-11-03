@@ -3,19 +3,21 @@ package com.mrntlu.projectconsumer.models.main.review
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.mrntlu.projectconsumer.interfaces.DiffUtilComparison
-import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Review(
     val author: Author,
     val star: Int,
-    val review: String?,
+    val review: String,
     val popularity: Int,
     val likes: ArrayList<String>,
 
     @SerializedName("is_author")
     val isAuthor: Boolean,
+
+    @SerializedName("is_liked")
+    val isLiked: Boolean,
 
     @SerializedName("_id")
     val id: String,
@@ -42,7 +44,7 @@ data class Review(
     val updatedAt: String,
 ): Parcelable, DiffUtilComparison<Review> {
     constructor(): this(
-        Author(), 0, null, 0, arrayListOf(), false, "",  "",
+        Author(), 0, "", 0, arrayListOf(), false, false, "",  "",
         "", null, null, "", "", ""
     )
 
@@ -55,6 +57,7 @@ data class Review(
             id != newItem.id -> false
             star != newItem.star -> false
             review != newItem.review -> false
+            isLiked != newItem.isLiked -> false
             popularity != newItem.popularity -> false
             contentID != newItem.contentID -> false
             likes.toSet() != newItem.likes.toSet() -> false

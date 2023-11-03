@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -41,6 +41,7 @@ import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.openInBrowser
@@ -115,6 +116,18 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         setObservers()
     }
 
+    override fun onStart() {
+        if (movieDetails != null)
+            setImage(movieDetails!!.backdrop, movieDetails!!.imageURL)
+        super.onStart()
+    }
+
+    override fun onStop() {
+        if (movieDetails?.imageURL != null)
+            Glide.with(this).clear(binding.detailsToolbarIV)
+        super.onStop()
+    }
+
     private fun setObservers() {
         if (!(viewModel.movieDetails.hasObservers() || viewModel.movieDetails.value is NetworkResponse.Success || viewModel.movieDetails.value is NetworkResponse.Loading))
             viewModel.getMovieDetails(args.movieId)
@@ -123,11 +136,12 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
                 toggleCollapsingLayoutScroll(detailsCollapsingToolbar, response !is NetworkResponse.Loading)
-                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
                     is NetworkResponse.Failure -> {
+                        loadingLayout.setGone()
+
                         errorLayoutInc.apply {
                             errorText.text = response.errorMessage
 
@@ -137,36 +151,39 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     is NetworkResponse.Success -> {
                         movieDetails = response.data.data
 
-                        setUI()
-                        setLottieUI(
-                            detailsInclude,
-                            movieDetails,
-                            createConsumeLater = {
-                                movieDetails!!.apply {
-                                    detailsConsumeLaterViewModel.createConsumeLater(
-                                        ConsumeLaterBody(id, tmdbID, null, TYPE, null)
-                                    )
-                                }
-                            },
-                            showBottomSheet = {
-                                val watchList = movieDetails!!.watchList
+                        viewModel.viewModelScope.launch {
+                            setUI()
+                            setLottieUI(
+                                detailsInclude,
+                                movieDetails,
+                                createConsumeLater = {
+                                    movieDetails!!.apply {
+                                        detailsConsumeLaterViewModel.createConsumeLater(
+                                            ConsumeLaterBody(id, tmdbID, null, TYPE, null)
+                                        )
+                                    }
+                                },
+                                showBottomSheet = {
+                                    val watchList = movieDetails!!.watchList
 
-                                activity?.let {
-                                    val listBottomSheet = UserListBottomSheet(
-                                        watchList,
-                                        ContentType.MOVIE,
-                                        if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
-                                        movieDetails!!.id,
-                                        movieDetails!!.tmdbID,
-                                        null, null,
-                                        onBottomSheetClosedCallback,
-                                    )
-                                    listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                                    activity?.let {
+                                        val listBottomSheet = UserListBottomSheet(
+                                            watchList,
+                                            ContentType.MOVIE,
+                                            if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
+                                            movieDetails!!.id,
+                                            movieDetails!!.tmdbID,
+                                            null, null,
+                                            onBottomSheetClosedCallback,
+                                        )
+                                        listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                                    }
                                 }
-                            }
-                        )
-                        setListeners()
-                        setRecyclerView()
+                            )
+                            setListeners()
+                            setRecyclerView()
+                            loadingLayout.setGone()
+                        }
 
                         if (movieDetails?.watchList != null)
                             handleWatchListLottie(
@@ -180,7 +197,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                                 movieDetails?.consumeLater == null
                             )
                     }
-                    else -> {}
+                    NetworkResponse.Loading -> loadingLayout.setVisible()
                 }
             }
         }
@@ -207,7 +224,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         }
     }
 
-    private fun setUI() {
+    private suspend fun setUI() {
         setSpinner(binding.detailsStreamingCountrySpinner)
 
         if (isAppBarLifted != null)
@@ -215,31 +232,9 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
         movieDetails!!.apply {
             setReviewSummary(binding.reviewSummaryLayout, reviews)
+            setImage(backdrop, imageURL)
 
-            binding.detailsToolbarProgress.setVisible()
-
-            Glide.with(binding.root.context).load(backdrop ?: imageURL).addListener(object: RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                    _binding?.detailsToolbarProgress?.setGone()
-                    _binding?.detailsAppBarLayout?.setExpanded(false)
-
-                    if (_binding != null) {
-                        onImageFailedHandler(
-                            binding.detailsCollapsingToolbar,
-                            binding.detailsNestedSV
-                        )
-                    }
-
-                    return false
-                }
-
-                override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                    _binding?.detailsToolbarProgress?.setGone()
-                    return false
-                }
-            }).into(binding.detailsToolbarIV)
-
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val titleStr = if (!translations.isNullOrEmpty()) {
                     val translation = translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.title
                     if (translation?.isNotEmptyOrBlank() == true)
@@ -254,53 +249,55 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     else description
                 } else description
 
-                withContext(Dispatchers.Main) {
-                    binding.detailsTitleTV.text = titleStr
-                    binding.detailsDescriptionTV.text = descriptionStr
-                }
-            }
+                val interactionRateStr = tmdbVote.roundSingleDecimal().toString()
+                val rateCountStr = " | $tmdbVoteCount"
 
-            binding.detailsOriginalTV.text = titleOriginal
+                val lengthStr = if (length > 10) {
+                    val hours = length / 60
+                    val minutes = length % 60
+                    String.format("%02dh %02dm • ", hours, minutes)
+                } else null
 
-            binding.detailsInclude.apply {
-                interactionRateTV.text = tmdbVote.roundSingleDecimal().toString()
-                val rateCountText = " | $tmdbVoteCount"
-                interactionsRateCountTV.text = rateCountText
-            }
+                val releaseStr = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.convertToHumanReadableDateString(true) else ""}"
 
-            val lengthStr = if (length > 10) {
-                val hours = length / 60
-                val minutes = length % 60
-                String.format("%02dh %02dm • ", hours, minutes)
-            } else null
-
-            val releaseStr = "${lengthStr ?: ""}${if (releaseDate.isNotEmptyOrBlank()) releaseDate.convertToHumanReadableDateString(true) else ""}"
-            binding.detailsReleaseTV.text = releaseStr
-            binding.detailsStatusTV.text = status
-
-            binding.detailsMediaImageSlider.apply {
                 val imageSliderList = images.map {
                     SlideModel(imageUrl = it)
                 }
 
-                setImageList(imageSliderList)
+                withContext(Dispatchers.Main) {
+                    binding.detailsTitleTV.text = titleStr
+                    binding.detailsDescriptionTV.text = descriptionStr
+                    binding.detailsOriginalTV.text = titleOriginal
 
-                setItemClickListener(object: ItemClickListener {
-                    override fun doubleClick(position: Int) {}
-
-                    override fun onItemSelected(position: Int) {
-                        if (imageSliderList[position].imageUrl?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.movieDetailsFragment) {
-                            isAppBarLifted = binding.detailsAppBarLayout.isLifted
-
-                            val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToImageFragment(
-                                imageSliderList[position].imageUrl!!,
-                                isRatioDifferent = true
-                            )
-
-                            navController.navigate(navWithAction)
-                        }
+                    binding.detailsInclude.apply {
+                        interactionRateTV.text = interactionRateStr
+                        interactionsRateCountTV.text = rateCountStr
                     }
-                })
+
+                    binding.detailsReleaseTV.text = releaseStr
+                    binding.detailsStatusTV.text = status
+
+                    binding.detailsMediaImageSlider.apply {
+                        setImageList(imageSliderList)
+
+                        setItemClickListener(object: ItemClickListener {
+                            override fun doubleClick(position: Int) {}
+
+                            override fun onItemSelected(position: Int) {
+                                if (imageSliderList[position].imageUrl?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.movieDetailsFragment) {
+                                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
+
+                                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToImageFragment(
+                                        imageSliderList[position].imageUrl!!,
+                                        isRatioDifferent = true
+                                    )
+
+                                    navController.navigate(navWithAction)
+                                }
+                            }
+                        })
+                    }
+                }
             }
 
             binding.detailsMediaTV.setVisibilityByCondition(images.isEmpty())
@@ -312,6 +309,34 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             binding.detailsBuyTV.setVisibilityByCondition(streaming.isNullOrEmpty())
             binding.detailsRentTV.setVisibilityByCondition(streaming.isNullOrEmpty())
         }
+    }
+
+    private fun setImage(backdrop: String?, imageURL: String) {
+        binding.detailsToolbarProgress.setVisible()
+        Glide.with(binding.root.context).load(backdrop ?: imageURL).addListener(object: RequestListener<Drawable> {
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+                _binding?.detailsToolbarProgress?.setGone()
+                _binding?.detailsAppBarLayout?.setExpanded(false)
+
+                if (_binding != null) {
+                    onImageFailedHandler(
+                        binding.detailsCollapsingToolbar,
+                        binding.detailsNestedSV
+                    )
+                }
+
+                return false
+            }
+
+            override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                _binding?.detailsToolbarProgress?.setGone()
+                return false
+            }
+        }).thumbnail(
+            Glide.with(binding.root.context)
+                .load(backdrop ?: imageURL)
+                .sizeMultiplier(0.25f)
+        ).into(binding.detailsToolbarIV)
     }
 
     private fun setListeners() {
@@ -356,6 +381,23 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         contentExternalId = movieDetails!!.tmdbID,
                         contentExternalIntId = -1,
                         contentType = ContentType.MOVIE.request,
+                        contentTitle = movieDetails!!.title,
+                    )
+                    navController.navigate(navWithAction)
+                }
+            }
+
+            reviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
+                if (movieDetails != null) {
+                    isAppBarLifted = binding.detailsAppBarLayout.isLifted
+
+                    val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToReviewCreateFragment(
+                        review = null, //TODO if (movieDetails!!.reviews.isReviewed),
+                        contentId = movieDetails!!.id,
+                        contentExternalId = movieDetails!!.tmdbID,
+                        contentExternalIntId = -1,
+                        contentType = ContentType.MOVIE.request,
+                        contentTitle = movieDetails!!.title
                     )
                     navController.navigate(navWithAction)
                 }
@@ -398,11 +440,13 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         }
     }
 
-    private fun setRecyclerView() {
-        val radiusInPx = binding.root.context.dpToPxFloat(12f)
+    private suspend fun setRecyclerView() {
+        val radiusInPx = withContext(Dispatchers.Default) {
+            binding.root.context.dpToPxFloat(12f)
+        }
 
         if (!movieDetails?.actors.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val actorUIList = movieDetails!!.actors!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
@@ -431,7 +475,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         }
 
         if (!movieDetails?.productionCompanies.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val productionAndCompanyUIList = movieDetails!!.productionCompanies!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
@@ -464,8 +508,6 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             binding.detailsGenreRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
-//                val bulletDecoration = BulletItemDecoration(context)
-//                addItemDecoration(bulletDecoration)
 
                 genreAdapter = GenreAdapter(movieDetails!!.genres) {
                     if (navController.currentDestination?.id == R.id.movieDetailsFragment) {
@@ -483,7 +525,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
         }
 
         if (!movieDetails?.streaming.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val streaming = movieDetails!!.streaming!!
 
                 val streamingList = streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
@@ -523,7 +565,11 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
 
-                recommendationsAdapter = RecommendationsAdapter(movieDetails!!.recommendations) { position, recommendation ->
+                recommendationsAdapter = RecommendationsAdapter(
+                    movieDetails!!.recommendations,
+                    binding.root.context.dpToPxFloat(8f),
+                    binding.root.context.dpToPx(150f),
+                ) { position, recommendation ->
                     if (navController.currentDestination?.id == R.id.movieDetailsFragment) {
                         isAppBarLifted = binding.detailsAppBarLayout.isLifted
                         recommendationPosition = position
@@ -532,6 +578,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         navController.navigate(navWithAction)
                     }
                 }
+                setHasFixedSize(true)
                 adapter = recommendationsAdapter
 
                 if (recommendationPosition != null)

@@ -26,7 +26,6 @@ import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.convertLongDateToAgoString
 import com.mrntlu.projectconsumer.utils.convertToFormattedDate
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
@@ -34,10 +33,13 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
 class ConsumeLaterAdapter(
+    private val radiusInPx: Float,
     val interaction: ConsumeLaterInteraction,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>()  {
     private var errorMessage: String? = null
@@ -45,7 +47,10 @@ class ConsumeLaterAdapter(
 
     private var arrayList: ArrayList<ConsumeLaterResponse> = arrayListOf()
 
-    private fun handleDiffUtil(newList: ArrayList<ConsumeLaterResponse>) {
+    private val sizeMultiplier = 0.7f
+    private val sizeMultipliedRadiusInPx = radiusInPx * sizeMultiplier
+
+    private suspend fun handleDiffUtil(newList: ArrayList<ConsumeLaterResponse>) = withContext(Dispatchers.Default) {
         val diffUtil = DiffUtilCallback(
             arrayList,
             newList
@@ -54,7 +59,9 @@ class ConsumeLaterAdapter(
 
         arrayList = newList.toCollection(ArrayList())
 
-        diffResults.dispatchUpdatesTo(this)
+        withContext(Dispatchers.Main) {
+            diffResults.dispatchUpdatesTo(this@ConsumeLaterAdapter)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -113,7 +120,7 @@ class ConsumeLaterAdapter(
         notifyDataSetChanged()
     }
 
-    fun setData(newList: ArrayList<ConsumeLaterResponse>) {
+    suspend fun setData(newList: ArrayList<ConsumeLaterResponse>) {
         setState(
             if (arrayList.isEmpty() && newList.isEmpty()) RecyclerViewEnum.Empty
             else RecyclerViewEnum.View
@@ -152,7 +159,7 @@ class ConsumeLaterAdapter(
         }
     }
 
-    fun handleOperation(operation: Operation<ConsumeLaterResponse>) {
+    suspend fun handleOperation(operation: Operation<ConsumeLaterResponse>) {
         val newList = arrayList.toMutableList()
 
         when(operation.operationEnum) {
@@ -177,8 +184,6 @@ class ConsumeLaterAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ConsumeLaterResponse, position: Int, interaction: ConsumeLaterInteraction) {
             binding.apply {
-                val radiusInPx = root.context.dpToPxFloat(6f)
-
                 imageInclude.apply {
                     previewCard.setGone()
                     previewShimmerLayout.setVisible()
@@ -191,11 +196,11 @@ class ConsumeLaterAdapter(
                     else
                         ImageView.ScaleType.FIT_XY
 
-                    previewIV.loadWithGlide(item.content.imageURL, previewCard, previewShimmerLayout) {
+                    previewIV.loadWithGlide(item.content.imageURL, previewCard, previewShimmerLayout, sizeMultiplier) {
                         if (item.contentType == "game")
-                            transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
+                            transform(CenterCrop(), RoundedCorners(sizeMultipliedRadiusInPx.toInt()))
                         else
-                            transform(RoundedCorners(radiusInPx.toInt()))
+                            transform(RoundedCorners(sizeMultipliedRadiusInPx.toInt()))
                     }
 
                     previewCard.radius = radiusInPx

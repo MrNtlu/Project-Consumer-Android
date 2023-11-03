@@ -55,7 +55,7 @@ class GameListFragment : BaseListFragment<Game>() {
         }
 
         viewModel.games.observe(viewLifecycleOwner) { response ->
-            onListObserveHandler(response) {
+            onListObserveHandler(response, viewModel.didOrientationChange) {
                 if (viewModel.isRestoringData || viewModel.didOrientationChange) {
                     binding.listRV.scrollToPosition(viewModel.scrollPosition - 1)
 

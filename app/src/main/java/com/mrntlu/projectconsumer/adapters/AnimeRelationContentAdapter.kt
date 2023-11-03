@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.databinding.CellPreviewItemBinding
 import com.mrntlu.projectconsumer.models.main.anime.AnimeRelation
-import com.mrntlu.projectconsumer.utils.dpToPx
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 
 class AnimeRelationContentAdapter(
     private val contentList: List<AnimeRelation>,
-    private val onClick: (Int) -> Unit
+    private val radiusInPx: Float,
+    private val layoutHeight: Int,
+    private val onClick: (Int) -> Unit,
 ): RecyclerView.Adapter<AnimeRelationContentAdapter.ItemHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnimeRelationContentAdapter.ItemHolder {
@@ -26,13 +26,11 @@ class AnimeRelationContentAdapter(
         val animeDetails = contentList[position]
 
         holder.binding.apply {
-            val radiusInPx = root.context.dpToPxFloat(8f)
-
             val layoutParams = root.layoutParams
-            layoutParams.height = root.context.dpToPx(150f)
+            layoutParams.height = layoutHeight
             layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
 
-            previewIV.loadWithGlide(animeDetails.imageURL, previewCard, previewShimmerLayout) {
+            previewIV.loadWithGlide(animeDetails.imageURL, previewCard, previewShimmerLayout, 0.5f) {
                 transform(RoundedCorners(radiusInPx.toInt()))
             }
 

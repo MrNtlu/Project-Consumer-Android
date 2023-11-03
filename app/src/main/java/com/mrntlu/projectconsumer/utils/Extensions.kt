@@ -14,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
@@ -244,6 +245,17 @@ fun Context.showNotificationInfoDialog(message: String, onPositive: () -> Unit, 
         .show()
 }
 
+fun Context.showSuccessDialog(message: String, onPositive: () -> Unit) {
+    MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
+        .setTitle(getString(R.string.success))
+        .setMessage(message)
+        .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
+            onPositive()
+            dialog.dismiss()
+        }
+        .show()
+}
+
 fun Context.showInfoDialog(message: String) {
     MaterialAlertDialogBuilder(this, R.style.Theme_ProjectConsumer_InfoMaterialAlertDialog)
         .setTitle(getString(R.string.info))
@@ -378,6 +390,15 @@ fun String.isNotEmptyOrBlank(): Boolean {
     return this.trim().isNotEmpty() && this.trim().isNotBlank()
 }
 
+fun View.sendHapticFeedback() {
+    performHapticFeedback(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+            HapticFeedbackConstants.CONFIRM
+        else
+            HapticFeedbackConstants.KEYBOARD_TAP
+    )
+}
+
 fun View.setVisibilityByConditionWithAnimation(shouldHide: Boolean) {
     if (shouldHide) {
         animate()
@@ -430,7 +451,7 @@ fun Double.roundSingleDecimal(): Double {
     return numberFormat.parse(formattedStr)?.toDouble() ?: this
 }
 
-fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: View, transformImage: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable>) =
+fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: View, sizeMultiplier: Float = 1f, transformImage: RequestBuilder<Drawable>.() -> RequestBuilder<Drawable>) =
     Glide.with(context).load(imageUrl).addListener(object: RequestListener<Drawable> {
         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
             progressBar.setGone()
@@ -443,7 +464,7 @@ fun ImageView.loadWithGlide(imageUrl: String, placeHolder: View?, progressBar: V
             placeHolder?.setGone()
             return false
         }
-    }).transformImage().into(this)
+    }).sizeMultiplier(sizeMultiplier).transformImage().into(this)
 
 fun<Response> ViewModel.networkResponseFlowCollector(
     request: Flow<NetworkResponse<Response>>,

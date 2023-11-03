@@ -8,7 +8,6 @@ import com.mrntlu.projectconsumer.models.main.anime.Anime
 import com.mrntlu.projectconsumer.ui.BasePreviewFragment
 import com.mrntlu.projectconsumer.ui.common.HomeFragmentDirections
 import com.mrntlu.projectconsumer.utils.FetchType
-import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.viewmodels.main.anime.AnimePreviewViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,6 +21,7 @@ class AnimeFragment : BasePreviewFragment<Anime>() {
 
         setGuidelineHeight()
         setListeners()
+
         setShowcaseRecyclerView(
             onItemClicked = { id ->
                 if (navController.currentDestination?.id == R.id.navigation_home) {

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.mrntlu.projectconsumer.databinding.FragmentImageBinding
 import com.mrntlu.projectconsumer.ui.BaseFragment
@@ -44,5 +45,10 @@ class ImageFragment : BaseFragment<FragmentImageBinding>() {
                 transform(CenterCrop())
             }
         }
+    }
+
+    override fun onDestroyView() {
+        Glide.with(this).clear(binding.imageLayout.previewIV)
+        super.onDestroyView()
     }
 }

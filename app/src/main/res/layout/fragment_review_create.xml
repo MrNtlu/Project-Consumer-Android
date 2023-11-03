@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="?attr/mainBackgroundColor"
+    tools:context=".ui.common.ReviewCreateFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/reviewCreateToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            tools:title="@string/_create_review"
+            android:theme="@style/Theme.ProjectConsumer.Toolbar"
+            android:background="?attr/toolbarBackgroundColor"
+            app:navigationIcon="@drawable/ic_arrow_back_24"
+            app:navigationContentDescription="@string/back_cd"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/reviewLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:isIndicator="false"
+            android:layout_gravity="center"
+            android:max="5"
+            android:progress="3"
+            android:stepSize="1"
+            android:progressBackgroundTint="?attr/mainTextColor"
+            android:progressTint="@color/yellow700"
+            android:secondaryProgressTint="@color/yellow700" />
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/reviewTextField"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="32dp"
+            android:labelFor="@id/reviewTextField"
+            app:endIconMode="clear_text"
+            app:endIconTint="?attr/mainTextColor"
+            app:counterEnabled="true"
+            app:counterMaxLength="1000"
+            app:counterTextColor="?attr/subTextColor">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/reviewET"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:hint="@string/write_a_review"
+                android:maxLength="1000"
+                android:textAlignment="gravity"
+                android:textColor="?attr/mainTextColor"
+                android:textColorHint="?attr/subTextColor" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:textColor="@color/white"
+            android:contentDescription="@string/post_update_review_cd"/>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

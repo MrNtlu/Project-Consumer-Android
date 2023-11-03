@@ -44,6 +44,10 @@ class DiscoverBottomSheet(
     private val contentType: Constants.ContentType,
     private val discoverOnBottomSheet: DiscoverOnBottomSheet,
 ): BottomSheetDialogFragment() {
+    constructor() : this(initialSort = SortRequests[0].request, contentType = Constants.ContentType.MOVIE, discoverOnBottomSheet = object: DiscoverOnBottomSheet{
+        override fun onApply(genre: String?, status: String?, sort: String, from: Int?, to: Int?, animeTheme: String?, animeDemographics: String?, gameTBA: Boolean?, gamePlatform: String?) { }
+    })
+
     companion object {
         const val TAG = "DiscoverBottomSheet"
     }

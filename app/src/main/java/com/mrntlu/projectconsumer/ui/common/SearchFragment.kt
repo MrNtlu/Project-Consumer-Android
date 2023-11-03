@@ -13,6 +13,7 @@ import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +29,7 @@ import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
@@ -219,12 +221,15 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                     subtitle = "🔍 ${viewModel.search}"
                 }
 
-                contentAdapter?.setData(
-                    response.data!!.toCollection(ArrayList()),
-                    response.isPaginationData,
-                    response.isPaginationExhausted,
-                    response.isPaginating,
-                )
+                viewModel.viewModelScope.launch {
+                    contentAdapter?.setData(
+                        response.data!!.toCollection(ArrayList()),
+                        response.isPaginationData,
+                        response.isPaginationExhausted,
+                        response.isPaginating,
+                        viewModel.didOrientationChange,
+                    )
+                }
 
                 if (viewModel.isRestoringData || viewModel.didOrientationChange) {
                     binding.movieSearchRV.scrollToPosition(viewModel.scrollPosition - 1)
@@ -278,6 +283,8 @@ class SearchFragment: BaseFragment<FragmentSearchBinding>() {
                 isRatioDifferent = viewModel.contentType == Constants.ContentType.GAME,
                 isDarkTheme = !sharedViewModel.isLightTheme(),
                 isAltLayout = sharedViewModel.isAltLayout(),
+                radiusInPx = context.dpToPxFloat(8f),
+                sizeMultiplier = if (sharedViewModel.isAltLayout()) 0.8f else 0.9f,
                 interaction = object: Interaction<ContentModel> {
                     override fun onItemSelected(item: ContentModel, position: Int) {
                         if (navController.currentDestination?.id == R.id.searchFragment) {

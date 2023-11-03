@@ -20,6 +20,7 @@ import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -51,6 +52,7 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.setGone
@@ -58,6 +60,9 @@ import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.UserListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.abs
 
 @AndroidEntryPoint
@@ -112,31 +117,33 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
     private val onBottomSheetClosedCallback = object: OnBottomSheetClosed {
         override fun onSuccess(data: UserListModel?, operation: BottomSheetOperation) {
-            when(operation) {
-                BottomSheetOperation.INSERT -> {}
-                BottomSheetOperation.UPDATE -> {
-                    viewModel.handleSearchHolderOperation(
-                        data!!.id,
-                        data,
-                        NetworkResponse.Success(null),
-                        OperationEnum.Update
-                    )
+            viewModel.viewModelScope.launch {
+                when(operation) {
+                    BottomSheetOperation.INSERT -> {}
+                    BottomSheetOperation.UPDATE -> {
+                        viewModel.handleSearchHolderOperation(
+                            data!!.id,
+                            data,
+                            NetworkResponse.Success(null),
+                            OperationEnum.Update
+                        )
 
-                    userListAdapter?.handleOperation(
-                        Operation(data, -1, OperationEnum.Update)
-                    )
-                }
-                BottomSheetOperation.DELETE -> {
-                    viewModel.handleSearchHolderOperation(
-                        data!!.id,
-                        null,
-                        NetworkResponse.Success(null),
-                        OperationEnum.Delete
-                    )
+                        userListAdapter?.handleOperation(
+                            Operation(data, -1, OperationEnum.Update)
+                        )
+                    }
+                    BottomSheetOperation.DELETE -> {
+                        viewModel.handleSearchHolderOperation(
+                            data!!.id,
+                            null,
+                            NetworkResponse.Success(null),
+                            OperationEnum.Delete
+                        )
 
-                    userListAdapter?.handleOperation(
-                        Operation(data, -1, OperationEnum.Delete)
-                    )
+                        userListAdapter?.handleOperation(
+                            Operation(data, -1, OperationEnum.Delete)
+                        )
+                    }
                 }
             }
         }
@@ -163,18 +170,20 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 val rightLandscape = 90
                 val leftLandscape = 270
 
-                when {
-                    isWithinOrientationRange(orientation, defaultPortrait) -> {
-                        viewModel.setNewOrientation(Orientation.Portrait)
-                    }
-                    isWithinOrientationRange(orientation, leftLandscape) -> {
-                        viewModel.setNewOrientation(Orientation.Landscape)
-                    }
-                    isWithinOrientationRange(orientation, upsideDownPortrait) -> {
-                        viewModel.setNewOrientation(Orientation.PortraitReverse)
-                    }
-                    isWithinOrientationRange(orientation, rightLandscape) -> {
-                        viewModel.setNewOrientation(Orientation.LandscapeReverse)
+                viewModel.viewModelScope.launch {
+                    when {
+                        isWithinOrientationRange(orientation, defaultPortrait) -> {
+                            viewModel.setNewOrientation(Orientation.Portrait)
+                        }
+                        isWithinOrientationRange(orientation, leftLandscape) -> {
+                            viewModel.setNewOrientation(Orientation.Landscape)
+                        }
+                        isWithinOrientationRange(orientation, upsideDownPortrait) -> {
+                            viewModel.setNewOrientation(Orientation.PortraitReverse)
+                        }
+                        isWithinOrientationRange(orientation, rightLandscape) -> {
+                            viewModel.setNewOrientation(Orientation.LandscapeReverse)
+                        }
                     }
                 }
             }
@@ -188,11 +197,10 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
         setObservers()
     }
 
-    private fun isWithinOrientationRange(
+    private suspend fun isWithinOrientationRange(
         currentOrientation: Int, targetOrientation: Int, epsilon: Int = 30
-    ): Boolean {
-        return currentOrientation > targetOrientation - epsilon
-                && currentOrientation < targetOrientation + epsilon
+    ): Boolean = withContext(Dispatchers.Default){
+        currentOrientation > targetOrientation - epsilon && currentOrientation < targetOrientation + epsilon
     }
 
     override fun onStart() {
@@ -269,7 +277,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
 
             layoutManager = linearLayout
 
-            userListAdapter = UserListAdapter(viewModel.contentType, object: UserListInteraction {
+            userListAdapter = UserListAdapter(viewModel.contentType, binding.root.context.dpToPxFloat(6f), object: UserListInteraction {
                 override fun onDeletePressed(
                     item: UserList,
                     contentType: ContentType,
@@ -304,9 +312,11 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                                     if (::dialog.isInitialized)
                                         dialog.dismissDialog()
 
-                                    userListAdapter?.handleOperation(
-                                        Operation(userListModel, -1, OperationEnum.Delete)
-                                    )
+                                    viewModel.viewModelScope.launch {
+                                        userListAdapter?.handleOperation(
+                                            Operation(userListModel, -1, OperationEnum.Delete)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -519,9 +529,11 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                     if (::dialog.isInitialized)
                         dialog.dismissDialog()
 
-                    userListAdapter?.handleOperation(
-                        Operation(response.data.data, position, OperationEnum.Update)
-                    )
+                    viewModel.viewModelScope.launch {
+                        userListAdapter?.handleOperation(
+                            Operation(response.data.data, position, OperationEnum.Update)
+                        )
+                    }
                 }
             }
         }
@@ -533,7 +545,9 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 is NetworkResponse.Failure -> userListAdapter?.setErrorView(response.errorMessage)
                 NetworkResponse.Loading -> userListAdapter?.setLoadingView()
                 is NetworkResponse.Success -> {
-                    userListAdapter?.setData(response.data.data)
+                    viewModel.viewModelScope.launch {
+                        userListAdapter?.setData(response.data.data)
+                    }
 
                     if (viewModel.didOrientationChange) {
                         binding.userListRV.scrollToPosition(viewModel.scrollPosition - 1)

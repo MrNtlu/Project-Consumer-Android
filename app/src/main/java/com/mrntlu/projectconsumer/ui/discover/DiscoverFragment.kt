@@ -105,18 +105,19 @@ class DiscoverFragment : BaseToolbarAuthFragment<FragmentDiscoverBinding>() {
                     )
                 }
 
+                val height = if (sharedViewModel.isTabIconsEnabled()) context.dpToPx(65f) else ViewGroup.LayoutParams.WRAP_CONTENT
                 for (position in 0..tabCount.minus(1)) {
                     val layout = LayoutInflater.from(context).inflate(R.layout.layout_tab_title, null) as? LinearLayout
 
                     val tabIV = layout?.findViewById<ImageView>(R.id.tabIV)
                     val tabLayoutParams = layoutParams
                     if (sharedViewModel.isTabIconsEnabled()) {
-                        tabLayoutParams.height = context.dpToPx(65f)
+                        tabLayoutParams.height = height
                         layoutParams = tabLayoutParams
 
                         tabIV?.setImageResource(Constants.TabIconList[position])
                     } else {
-                        tabLayoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        tabLayoutParams.height = height
                         layoutParams = tabLayoutParams
 
                         tabIV?.setGone()

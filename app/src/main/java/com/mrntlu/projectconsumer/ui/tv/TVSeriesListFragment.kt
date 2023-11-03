@@ -55,7 +55,7 @@ class TVSeriesListFragment: BaseListFragment<TVSeries>() {
         }
 
         viewModel.tvList.observe(viewLifecycleOwner) { response ->
-            onListObserveHandler(response) {
+            onListObserveHandler(response, viewModel.didOrientationChange) {
                 if (viewModel.isRestoringData || viewModel.didOrientationChange) {
                     binding.listRV.scrollToPosition(viewModel.scrollPosition - 1)
 

@@ -4,11 +4,9 @@ import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.main.review.Review
 import com.mrntlu.projectconsumer.models.main.review.retrofit.ReviewBody
 import com.mrntlu.projectconsumer.models.main.review.retrofit.UpdateReviewBody
-import com.mrntlu.projectconsumer.models.main.review.retrofit.VoteReviewBody
 import com.mrntlu.projectconsumer.service.retrofit.ReviewApiService
 import com.mrntlu.projectconsumer.utils.networkBoundResourceWithoutCache
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ReviewRepository @Inject constructor(
@@ -45,7 +43,7 @@ class ReviewRepository @Inject constructor(
         reviewApiService.updateReview(body)
     }
 
-    fun voteReview(body: VoteReviewBody) = networkResponseFlow {
+    fun voteReview(body: IDBody) = networkResponseFlow {
         reviewApiService.voteReview(body)
     }
 

@@ -11,12 +11,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mrntlu.projectconsumer.adapters.ProfileImageAdapter
 import com.mrntlu.projectconsumer.databinding.LayoutEditProfileBottomSheetBinding
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ProfileImageList
 
 class ProfileEditBottomSheet(
     private val selectedImage: String,
     private val onSaveClicked: (String) -> Unit
 ): BottomSheetDialogFragment() {
+    constructor(): this(ProfileImageList[0], {})
+
     companion object {
         const val TAG = "ProfileEditBottomSheet"
     }
@@ -48,7 +50,7 @@ class ProfileEditBottomSheet(
         binding.apply {
             saveButton.setOnClickListener {
                 onSaveClicked(
-                    profileImageAdapter?.getSelectedImage() ?: Constants.ProfileImageList[0]
+                    profileImageAdapter?.getSelectedImage() ?: ProfileImageList[0]
                 )
 
                 dismiss()

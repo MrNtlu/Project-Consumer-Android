@@ -16,5 +16,5 @@ data class ReviewBody(
     val contentType: String,
 
     val star: Int,
-    val review: String?,
+    val review: String,
 )

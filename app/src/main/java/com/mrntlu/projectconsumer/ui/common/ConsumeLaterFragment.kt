@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import androidx.core.view.size
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrntlu.projectconsumer.MainActivity
@@ -36,6 +37,7 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.dpToPx
+import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
@@ -43,6 +45,9 @@ import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ConsumeLaterViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
@@ -82,18 +87,20 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                 val rightLandscape = 90
                 val leftLandscape = 270
 
-                when {
-                    isWithinOrientationRange(orientation, defaultPortrait) -> {
-                        viewModel.setNewOrientation(Orientation.Portrait)
-                    }
-                    isWithinOrientationRange(orientation, leftLandscape) -> {
-                        viewModel.setNewOrientation(Orientation.Landscape)
-                    }
-                    isWithinOrientationRange(orientation, upsideDownPortrait) -> {
-                        viewModel.setNewOrientation(Orientation.PortraitReverse)
-                    }
-                    isWithinOrientationRange(orientation, rightLandscape) -> {
-                        viewModel.setNewOrientation(Orientation.LandscapeReverse)
+                viewModel.viewModelScope.launch {
+                    when {
+                        isWithinOrientationRange(orientation, defaultPortrait) -> {
+                            viewModel.setNewOrientation(Orientation.Portrait)
+                        }
+                        isWithinOrientationRange(orientation, leftLandscape) -> {
+                            viewModel.setNewOrientation(Orientation.Landscape)
+                        }
+                        isWithinOrientationRange(orientation, upsideDownPortrait) -> {
+                            viewModel.setNewOrientation(Orientation.PortraitReverse)
+                        }
+                        isWithinOrientationRange(orientation, rightLandscape) -> {
+                            viewModel.setNewOrientation(Orientation.LandscapeReverse)
+                        }
                     }
                 }
 
@@ -123,11 +130,10 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
         setListeners()
     }
 
-    private fun isWithinOrientationRange(
+    private suspend fun isWithinOrientationRange(
         currentOrientation: Int, targetOrientation: Int, epsilon: Int = 30
-    ): Boolean {
-        return currentOrientation > targetOrientation - epsilon
-                && currentOrientation < targetOrientation + epsilon
+    ): Boolean = withContext(Dispatchers.Default){
+        currentOrientation > targetOrientation - epsilon && currentOrientation < targetOrientation + epsilon
     }
 
     override fun onStart() {
@@ -342,7 +348,9 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
             } else if (response.isLoading) {
                 consumeLaterAdapter?.setLoadingView()
             } else if (response.isSuccessful()) {
-                consumeLaterAdapter?.setData(response.data!!.toCollection(ArrayList()))
+                viewModel.viewModelScope.launch {
+                    consumeLaterAdapter?.setData(response.data!!.toCollection(ArrayList()))
+                }
 
                 if (viewModel.isRestoringData || viewModel.didOrientationChange) {
                     binding.listRV.scrollToPosition(viewModel.scrollPosition - 1)
@@ -375,7 +383,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
 
             layoutManager = linearLayout
 
-            consumeLaterAdapter = ConsumeLaterAdapter(object: ConsumeLaterInteraction {
+            consumeLaterAdapter = ConsumeLaterAdapter(binding.root.context.dpToPxFloat(6f), object: ConsumeLaterInteraction {
                 override fun onDeletePressed(item: ConsumeLaterResponse, position: Int) {
                     confirmDialog = context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
                         val deleteConsumerLiveData = viewModel.deleteConsumeLater(IDBody(item.id))
@@ -396,7 +404,9 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                                     if (::dialog.isInitialized)
                                         dialog.dismissDialog()
 
-                                    consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                    viewModel.viewModelScope.launch {
+                                        consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                    }
                                 }
                             }
                         }
@@ -434,7 +444,9 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                                             if (::dialog.isInitialized)
                                                 dialog.dismissDialog()
 
-                                            consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                            viewModel.viewModelScope.launch {
+                                                consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                            }
                                         }
                                     }
                                 }

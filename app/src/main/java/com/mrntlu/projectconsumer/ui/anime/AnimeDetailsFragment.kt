@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -34,9 +34,11 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLa
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
@@ -137,11 +139,12 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         viewModel.animeDetails.observe(viewLifecycleOwner) { response ->
             binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
-                loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
                     is NetworkResponse.Failure -> {
+                        loadingLayout.setGone()
+
                         errorLayoutInc.apply {
                             errorText.text = response.errorMessage
 
@@ -151,37 +154,40 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                     is NetworkResponse.Success -> {
                         animeDetails = response.data.data
 
-                        setUI()
-                        setToolbar()
-                        setLottieUI(
-                            detailsInclude,
-                            animeDetails,
-                            createConsumeLater = {
-                                animeDetails!!.apply {
-                                    detailsConsumeLaterViewModel.createConsumeLater(
-                                        ConsumeLaterBody(id, malID.toString(), null, TYPE, null)
-                                    )
-                                }
-                            },
-                            showBottomSheet = {
-                                val watchList = animeDetails!!.watchList
+                        viewModel.viewModelScope.launch {
+                            setUI()
+                            setToolbar()
+                            setLottieUI(
+                                detailsInclude,
+                                animeDetails,
+                                createConsumeLater = {
+                                    animeDetails!!.apply {
+                                        detailsConsumeLaterViewModel.createConsumeLater(
+                                            ConsumeLaterBody(id, malID.toString(), null, TYPE, null)
+                                        )
+                                    }
+                                },
+                                showBottomSheet = {
+                                    val watchList = animeDetails!!.watchList
 
-                                activity?.let {
-                                    val listBottomSheet = UserListBottomSheet(
-                                        watchList,
-                                        Constants.ContentType.ANIME,
-                                        if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
-                                        animeDetails!!.id,
-                                        animeDetails!!.malID.toString(),
-                                        null, animeDetails?.episodes,
-                                        onBottomSheetClosedCallback,
-                                    )
-                                    listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                                    activity?.let {
+                                        val listBottomSheet = UserListBottomSheet(
+                                            watchList,
+                                            ContentType.ANIME,
+                                            if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
+                                            animeDetails!!.id,
+                                            animeDetails!!.malID.toString(),
+                                            null, animeDetails?.episodes,
+                                            onBottomSheetClosedCallback,
+                                        )
+                                        listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                                    }
                                 }
-                            }
-                        )
-                        setListeners()
-                        setRecyclerView()
+                            )
+                            setListeners()
+                            setRecyclerView()
+                            loadingLayout.setGone()
+                        }
 
                         if (animeDetails?.watchList != null)
                             handleWatchListLottie(
@@ -195,7 +201,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                                 animeDetails?.consumeLater == null
                             )
                     }
-                    else -> {}
+                    NetworkResponse.Loading -> loadingLayout.setVisible()
                 }
             }
         }
@@ -222,7 +228,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         }
     }
 
-    private fun setUI() {
+    private suspend fun setUI() {
         animeDetails!!.apply {
             setReviewSummary(binding.reviewSummaryLayout, reviews)
 
@@ -232,7 +238,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 previewCard.setGone()
                 previewShimmerLayout.setVisible()
                 previewShimmerCV.radius = radiusInPx
-                previewIV.loadWithGlide(animeDetails?.imageURL ?: "", previewCard, previewShimmerLayout) {
+                previewIV.loadWithGlide(animeDetails?.imageURL ?: "", previewCard, previewShimmerLayout, 0.5f) {
                     transform(RoundedCorners(radiusInPx.toInt()))
                 }
             }
@@ -292,6 +298,33 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 detailsDescriptionTV.toggle()
             }
 
+            reviewSummaryLayout.seeAllButton.setSafeOnClickListener {
+                if (animeDetails != null) {
+                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToReviewFragment(
+                        contentId = animeDetails!!.id,
+                        contentExternalId = null,
+                        contentExternalIntId = animeDetails!!.malID,
+                        contentType = ContentType.ANIME.request,
+                        contentTitle = animeDetails!!.titleEn,
+                    )
+                    navController.navigate(navWithAction)
+                }
+            }
+
+            reviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
+                if (animeDetails != null) {
+                    val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToReviewCreateFragment(
+                        review = null,
+                        contentId = animeDetails!!.id,
+                        contentExternalId = null,
+                        contentExternalIntId = animeDetails!!.malID,
+                        contentType = ContentType.ANIME.request,
+                        contentTitle = animeDetails!!.titleEn
+                    )
+                    navController.navigate(navWithAction)
+                }
+            }
+
             errorLayoutInc.refreshButton.setOnClickListener {
                 viewModel.getAnimeDetails(args.animeId)
             }
@@ -302,9 +335,9 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         }
     }
 
-    private fun setRecyclerView() {
+    private suspend fun setRecyclerView() {
         if (!animeDetails?.characters.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val characterUIList = animeDetails!!.characters!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
@@ -333,10 +366,12 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
                 genreAdapter = GenreAdapter(animeDetails!!.genres!!.map { it.name }) {
                     if (navController.currentDestination?.id == R.id.animeDetailsFragment) {
-                        val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToDiscoverListFragment(Constants.ContentType.ANIME, animeDetails?.genres?.get(it)?.name)
+                        val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToDiscoverListFragment(
+                            ContentType.ANIME, animeDetails?.genres?.get(it)?.name)
                         navController.navigate(navWithAction)
                     }
                 }
+                setHasFixedSize(true)
                 adapter = genreAdapter
             }
         } else {
@@ -358,6 +393,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 if (!animeDetails?.studios.isNullOrEmpty()) animeDetails!!.studios!!
                 else listOf(AnimeNameURL(getString(R.string.unknown), ""))
             )
+            setHasFixedSize(true)
             adapter = studioAdapter
         }
 
@@ -375,6 +411,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 if (!animeDetails?.producers.isNullOrEmpty()) animeDetails!!.producers!!
                 else listOf(AnimeNameURL(getString(R.string.unknown), ""))
             )
+            setHasFixedSize(true)
             adapter = producerAdapter
         }
 
@@ -390,6 +427,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 layoutManager = flexboxLayout
 
                 streamingAdapter = NameUrlAdapter(animeDetails!!.streaming!!)
+                setHasFixedSize(true)
                 adapter = streamingAdapter
             }
         } else {
@@ -398,21 +436,30 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         }
 
         if (!animeDetails?.relations.isNullOrEmpty()) {
-            binding.detailsRelationRV.apply {
-                val linearLayout = LinearLayoutManager(context)
-                layoutManager = linearLayout
-
+            withContext(Dispatchers.Default) {
                 val relationList = animeDetails!!.relations!!.groupBy {
                     it.relation
                 }.toSortedMap().toList()
 
-                relationAdapter = AnimeRelationsAdapter(relationList) { malID ->
-                    if (navController.currentDestination?.id == R.id.animeDetailsFragment) {
-                        val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
-                        navController.navigate(navWithAction)
+                withContext(Dispatchers.Main) {
+                    binding.detailsRelationRV.apply {
+                        val linearLayout = LinearLayoutManager(context)
+                        layoutManager = linearLayout
+
+                        relationAdapter = AnimeRelationsAdapter(
+                            relationList,
+                            binding.root.context.dpToPxFloat(8f),
+                            binding.root.context.dpToPx(150f),
+                        ) { malID ->
+                            if (navController.currentDestination?.id == R.id.animeDetailsFragment) {
+                                val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(malID.toString())
+                                navController.navigate(navWithAction)
+                            }
+                        }
+                        setHasFixedSize(true)
+                        adapter = relationAdapter
                     }
                 }
-                adapter = relationAdapter
             }
         } else {
             binding.detailsRelationTV.setGone()
@@ -424,12 +471,17 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
 
-                recommendationsAdapter = AnimeRecommendationsAdapter(animeDetails!!.recommendations) {
+                recommendationsAdapter = AnimeRecommendationsAdapter(
+                    animeDetails!!.recommendations,
+                    binding.root.context.dpToPxFloat(8f),
+                    binding.root.context.dpToPx(150f),
+                ) {
                     if (navController.currentDestination?.id == R.id.animeDetailsFragment) {
                         val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentSelf(it.malID.toString())
                         navController.navigate(navWithAction)
                     }
                 }
+                setHasFixedSize(true)
                 adapter = recommendationsAdapter
             }
         } else {

@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -38,8 +38,10 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLa
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
+import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.openInBrowser
@@ -116,20 +118,33 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         setObservers()
     }
 
+    override fun onStart() {
+        if (tvDetails != null)
+            setImage(tvDetails!!.backdrop, tvDetails!!.imageURL)
+        super.onStart()
+    }
+
+    override fun onStop() {
+        if (tvDetails?.imageURL != null)
+            Glide.with(this).clear(binding.tvDetailsToolbarIV)
+        super.onStop()
+    }
+
     private fun setObservers() {
         if (!(viewModel.tvDetails.hasObservers() || viewModel.tvDetails.value is NetworkResponse.Success || viewModel.tvDetails.value is NetworkResponse.Loading))
             viewModel.getTVDetails(args.tvId)
 
         viewModel.tvDetails.observe(viewLifecycleOwner) { response ->
-            binding.tvDetailsInclude.apply {
+            binding.apply {
                 isResponseFailed = response is NetworkResponse.Failure
-                toggleCollapsingLayoutScroll(binding.tvDetailsCollapsingToolbar, response !is NetworkResponse.Loading)
-                binding.loadingLayout.setVisibilityByCondition(response !is NetworkResponse.Loading)
-                binding.errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
+                toggleCollapsingLayoutScroll(tvDetailsCollapsingToolbar, response !is NetworkResponse.Loading)
+                errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
                 when(response) {
                     is NetworkResponse.Failure -> {
-                        binding.errorLayoutInc.apply {
+                        loadingLayout.setGone()
+
+                        errorLayoutInc.apply {
                             errorText.text = response.errorMessage
 
                             setListeners()
@@ -138,51 +153,54 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                     is NetworkResponse.Success -> {
                         tvDetails = response.data.data
 
-                        setUI()
-                        setLottieUI(
-                            binding.tvDetailsInclude,
-                            tvDetails,
-                            createConsumeLater = {
-                                tvDetails!!.apply {
-                                    detailsConsumeLaterViewModel.createConsumeLater(
-                                        ConsumeLaterBody(id, tmdbID, null, TYPE, null)
-                                    )
-                                }
-                            },
-                            showBottomSheet = {
-                                val watchList = tvDetails!!.watchList
+                        viewModel.viewModelScope.launch {
+                            setUI()
+                            setLottieUI(
+                                tvDetailsInclude,
+                                tvDetails,
+                                createConsumeLater = {
+                                    tvDetails!!.apply {
+                                        detailsConsumeLaterViewModel.createConsumeLater(
+                                            ConsumeLaterBody(id, tmdbID, null, TYPE, null)
+                                        )
+                                    }
+                                },
+                                showBottomSheet = {
+                                    val watchList = tvDetails!!.watchList
 
-                                activity?.let {
-                                    val listBottomSheet = UserListBottomSheet(
-                                        watchList,
-                                        Constants.ContentType.TV,
-                                        if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
-                                        args.tvId,
-                                        tvDetails!!.tmdbID,
-                                        tvDetails?.totalSeasons,
-                                        tvDetails?.totalEpisodes,
-                                        onBottomSheetClosedCallback,
-                                    )
-                                    listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                                    activity?.let {
+                                        val listBottomSheet = UserListBottomSheet(
+                                            watchList,
+                                            ContentType.TV,
+                                            if (watchList == null) BottomSheetState.EDIT else BottomSheetState.VIEW,
+                                            args.tvId,
+                                            tvDetails!!.tmdbID,
+                                            tvDetails?.totalSeasons,
+                                            tvDetails?.totalEpisodes,
+                                            onBottomSheetClosedCallback,
+                                        )
+                                        listBottomSheet.show(it.supportFragmentManager, UserListBottomSheet.TAG)
+                                    }
                                 }
-                            }
-                        )
-                        setListeners()
-                        setRecyclerView()
+                            )
+                            setListeners()
+                            setRecyclerView()
+                            loadingLayout.setGone()
+                        }
 
                         if (tvDetails?.watchList != null)
                             handleWatchListLottie(
-                                binding.tvDetailsInclude,
-                                tvDetails?.watchList == null
+                                tvDetailsInclude,
+                                false
                             )
 
                         if (tvDetails?.consumeLater != null)
                             handleConsumeLaterLottie(
-                                binding.tvDetailsInclude,
-                                tvDetails?.consumeLater == null
+                                tvDetailsInclude,
+                                false
                             )
                     }
-                    else -> {}
+                    NetworkResponse.Loading -> loadingLayout.setVisible()
                 }
             }
         }
@@ -209,7 +227,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
     }
 
-    private fun setUI() {
+    private suspend fun setUI() {
         setSpinner(binding.tvDetailsStreamingCountrySpinner)
 
         if (isAppBarLifted != null)
@@ -217,32 +235,9 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
         tvDetails!!.apply {
             setReviewSummary(binding.tvReviewSummaryLayout, reviews)
+            setImage(backdrop, imageURL)
 
-            binding.tvDetailsToolbarProgress.setVisible()
-
-            Glide.with(binding.root.context).load(backdrop ?: imageURL).addListener(object:
-                RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
-                    _binding?.tvDetailsToolbarProgress?.setGone()
-                    _binding?.tvDetailsAppBarLayout?.setExpanded(false)
-
-                    if (_binding != null) {
-                        onImageFailedHandler(
-                            binding.tvDetailsCollapsingToolbar,
-                            binding.tvDetailsNestedSV
-                        )
-                    }
-
-                    return false
-                }
-
-                override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-                    _binding?.tvDetailsToolbarProgress?.setGone()
-                    return false
-                }
-            }).into(binding.tvDetailsToolbarIV)
-
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val titleStr = if (!translations.isNullOrEmpty()) {
                     val translation = translations.firstOrNull { it.lanCode == sharedViewModel.getLanguageCode() }?.title
                     if (translation?.isNotEmptyOrBlank() == true)
@@ -257,51 +252,54 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                     else description
                 } else description
 
-                withContext(Dispatchers.Main) {
-                    binding.tvDetailsTitleTV.text = titleStr
-                    binding.tvDetailsDescriptionTV.text = descriptionStr
-                }
-            }
+                val totalSeasonsStr = "$totalSeasons Season${if (totalSeasons > 1) "s" else ""}"
+                val totalEpisodesStr = "$totalEpisodes Episode${if (totalEpisodes > 1) "s" else ""}"
+                val seasonEpsStr = "$totalSeasonsStr • $totalEpisodesStr"
 
-            binding.tvDetailsOriginalTV.text = titleOriginal
+                val interactionRateStr = tmdbVote.roundSingleDecimal().toString()
+                val rateCountStr = " | $tmdbVoteCount"
 
-            binding.tvDetailsInclude.apply {
-                interactionRateTV.text = tmdbVote.roundSingleDecimal().toString()
-                val rateCountText = " | $tmdbVoteCount"
-                interactionsRateCountTV.text = rateCountText
-            }
+                val firstAirDateStr = firstAirDate.convertToHumanReadableDateString(true)
 
-            binding.tvDetailsInfoTV.text = firstAirDate.convertToHumanReadableDateString(true)
-            binding.tvDetailsStatusTV.text = status
-
-            val totalSeasonsStr = "$totalSeasons Season${if (totalSeasons > 1) "s" else ""}"
-            val totalEpisodesStr = "$totalEpisodes Episode${if (totalEpisodes > 1) "s" else ""}"
-            val seasonEpsStr = "$totalSeasonsStr • $totalEpisodesStr"
-            binding.tvDetailsSeasonEpsTV.text = seasonEpsStr
-
-            binding.tvDetailsMediaImageSlider.apply {
                 val imageSliderList = images.map {
                     SlideModel(imageUrl = it)
                 }
 
-                setImageList(imageSliderList)
+                withContext(Dispatchers.Main) {
+                    binding.tvDetailsTitleTV.text = titleStr
+                    binding.tvDetailsDescriptionTV.text = descriptionStr
+                    binding.tvDetailsSeasonEpsTV.text = seasonEpsStr
+                    binding.tvDetailsOriginalTV.text = titleOriginal
 
-                setItemClickListener(object: ItemClickListener {
-                    override fun doubleClick(position: Int) {}
-
-                    override fun onItemSelected(position: Int) {
-                        if (tvDetails?.imageURL?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.tvDetailsFragment) {
-                            isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
-
-                            val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToImageFragment(
-                                tvDetails!!.imageURL,
-                                isRatioDifferent = true
-                            )
-
-                            navController.navigate(navWithAction)
-                        }
+                    binding.tvDetailsInclude.apply {
+                        interactionRateTV.text = interactionRateStr
+                        interactionsRateCountTV.text = rateCountStr
                     }
-                })
+
+                    binding.tvDetailsInfoTV.text = firstAirDateStr
+                    binding.tvDetailsStatusTV.text = status
+
+                    binding.tvDetailsMediaImageSlider.apply {
+                        setImageList(imageSliderList)
+
+                        setItemClickListener(object: ItemClickListener {
+                            override fun doubleClick(position: Int) {}
+
+                            override fun onItemSelected(position: Int) {
+                                if (tvDetails?.imageURL?.isNotEmptyOrBlank() == true && navController.currentDestination?.id == R.id.tvDetailsFragment) {
+                                    isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
+
+                                    val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToImageFragment(
+                                        tvDetails!!.imageURL,
+                                        isRatioDifferent = true
+                                    )
+
+                                    navController.navigate(navWithAction)
+                                }
+                            }
+                        })
+                    }
+                }
             }
 
             binding.tvDetailsMediaTV.setVisibilityByCondition(images.isEmpty())
@@ -312,6 +310,35 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             binding.tvDetailsBuyTV.setVisibilityByCondition(streaming.isNullOrEmpty())
             binding.tvDetailsRentTV.setVisibilityByCondition(streaming.isNullOrEmpty())
         }
+    }
+
+    private fun setImage(backdrop: String?, imageURL: String) {
+        binding.tvDetailsToolbarProgress.setVisible()
+        Glide.with(binding.root.context).load(backdrop ?: imageURL).addListener(object:
+            RequestListener<Drawable> {
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>, isFirstResource: Boolean): Boolean {
+                _binding?.tvDetailsToolbarProgress?.setGone()
+                _binding?.tvDetailsAppBarLayout?.setExpanded(false)
+
+                if (_binding != null) {
+                    onImageFailedHandler(
+                        binding.tvDetailsCollapsingToolbar,
+                        binding.tvDetailsNestedSV
+                    )
+                }
+
+                return false
+            }
+
+            override fun onResourceReady(resource: Drawable, model: Any, target: Target<Drawable>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+                _binding?.tvDetailsToolbarProgress?.setGone()
+                return false
+            }
+        }).thumbnail(
+            Glide.with(binding.root.context)
+                .load(backdrop ?: imageURL)
+                .sizeMultiplier(0.25f)
+        ).into(binding.tvDetailsToolbarIV)
     }
 
     private fun setListeners() {
@@ -347,6 +374,37 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 tvDetailsDescriptionTV.toggle()
             }
 
+            tvReviewSummaryLayout.seeAllButton.setSafeOnClickListener {
+                if (tvDetails != null) {
+                    isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
+
+                    val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToReviewFragment(
+                        contentId = tvDetails!!.id,
+                        contentExternalId = tvDetails!!.tmdbID,
+                        contentExternalIntId = -1,
+                        contentType = ContentType.TV.request,
+                        contentTitle = tvDetails!!.title,
+                    )
+                    navController.navigate(navWithAction)
+                }
+            }
+
+            tvReviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
+                if (tvDetails != null) {
+                    isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
+
+                    val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToReviewCreateFragment(
+                        review = null,
+                        contentId = tvDetails!!.id,
+                        contentExternalId = tvDetails!!.tmdbID,
+                        contentExternalIntId = -1,
+                        contentType = ContentType.TV.request,
+                        contentTitle = tvDetails!!.title
+                    )
+                    navController.navigate(navWithAction)
+                }
+            }
+
             tmdbButton.setOnClickListener {
                 tvDetails?.tmdbID?.let {
                     val url = "${Constants.BASE_TMDB_URL}tv/$it"
@@ -376,15 +434,17 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
     }
 
-    private fun setRecyclerView() {
-        val radiusInPx = binding.root.context.dpToPxFloat(12f)
+    private suspend fun setRecyclerView() {
+        val radiusInPx = withContext(Dispatchers.Default) {
+            binding.root.context.dpToPxFloat(12f)
+        }
 
         if (!tvDetails?.seasons.isNullOrEmpty()) {
             binding.tvDetailsSeasonRV.apply {
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
 
-                seasonAdapter = SeasonAdapter(tvDetails!!.seasons)
+                seasonAdapter = SeasonAdapter(tvDetails!!.seasons, binding.root.context.dpToPxFloat(6f))
                 setHasFixedSize(true)
                 adapter = seasonAdapter
             }
@@ -399,7 +459,8 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
                 genreAdapter = GenreAdapter(tvDetails!!.genres) {
                     if (navController.currentDestination?.id == R.id.tvDetailsFragment) {
-                        val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToDiscoverListFragment(Constants.ContentType.TV, tvDetails?.genres?.get(it))
+                        val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToDiscoverListFragment(
+                            ContentType.TV, tvDetails?.genres?.get(it))
                         navController.navigate(navWithAction)
                     }
                 }
@@ -412,7 +473,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
 
         if (!tvDetails?.actors.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val actorsUIList = tvDetails!!.actors!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
@@ -441,7 +502,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
 
         if (!tvDetails?.networks.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val networksUIList = tvDetails!!.networks!!.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
@@ -471,7 +532,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
 
         if (!tvDetails?.productionCompanies.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val productionAndCompanyUIList = tvDetails!!.productionCompanies.filter {
                     it.name.isNotEmptyOrBlank()
                 }.map {
@@ -501,35 +562,37 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
         }
 
         if (!tvDetails?.streaming.isNullOrEmpty()) {
-            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val streaming = tvDetails!!.streaming!!
 
                 val streamingList = streaming.firstOrNull { it.countryCode == countryCode }?.streamingPlatforms
                 val buyList = streaming.firstOrNull { it.countryCode == countryCode }?.buyOptions
                 val rentList = streaming.firstOrNull { it.countryCode == countryCode }?.rentOptions
 
-                createStreamingAdapter(
-                    binding.tvDetailsStreamingRV,
-                    streamingList
-                ) {
-                    streamingAdapter = it
-                    it
-                }
+                withContext(Dispatchers.Main) {
+                    createStreamingAdapter(
+                        binding.tvDetailsStreamingRV,
+                        streamingList
+                    ) {
+                        streamingAdapter = it
+                        it
+                    }
 
-                createStreamingAdapter(
-                    binding.tvDetailsBuyRV,
-                    buyList
-                ) {
-                    buyAdapter = it
-                    it
-                }
+                    createStreamingAdapter(
+                        binding.tvDetailsBuyRV,
+                        buyList
+                    ) {
+                        buyAdapter = it
+                        it
+                    }
 
-                createStreamingAdapter(
-                    binding.tvDetailsRentRV,
-                    rentList
-                ) {
-                    rentAdapter = it
-                    it
+                    createStreamingAdapter(
+                        binding.tvDetailsRentRV,
+                        rentList
+                    ) {
+                        rentAdapter = it
+                        it
+                    }
                 }
             }
         }
@@ -539,7 +602,11 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                 val linearLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 layoutManager = linearLayout
 
-                recommendationsAdapter = RecommendationsAdapter(tvDetails!!.recommendations) { position, recommendation ->
+                recommendationsAdapter = RecommendationsAdapter(
+                    tvDetails!!.recommendations,
+                    binding.root.context.dpToPxFloat(8f),
+                    binding.root.context.dpToPx(150f),
+                ) { position, recommendation ->
                     if (navController.currentDestination?.id == R.id.tvDetailsFragment) {
                         isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
                         recommendationPosition = position
@@ -548,6 +615,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                         navController.navigate(navWithAction)
                     }
                 }
+                setHasFixedSize(true)
                 adapter = recommendationsAdapter
 
                 if (recommendationPosition != null)

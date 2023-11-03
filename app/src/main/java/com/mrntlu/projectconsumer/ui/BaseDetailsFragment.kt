@@ -38,13 +38,13 @@ import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
-import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
-import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showLoginRegisterDialog
 import com.mrntlu.projectconsumer.viewmodels.main.common.DetailsConsumeLaterViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
@@ -68,6 +68,12 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         if (binding !is FragmentAnimeDetailsBinding)
             activity?.window?.statusBarColor = Color.TRANSPARENT
         countryCode = sharedViewModel.getCountryCode()
+    }
+
+    override fun onStart() {
+        if (binding !is FragmentAnimeDetailsBinding)
+            activity?.window?.statusBarColor = Color.TRANSPARENT
+        super.onStart()
     }
 
     override fun onStop() {
@@ -163,7 +169,6 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
 
     protected fun handleWatchListLottie(binding: LayoutUserInteractionBinding, isDetailsNull: Boolean) {
         binding.addListLottie.apply {
-
             setMinAndMaxFrame(0, 130)
             frame = if (isDetailsNull) 130 else 0
 
@@ -235,15 +240,19 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         nestedScrollView.background = GradientDrawable().apply { setColor(nestedScrollView.context.getColorFromAttr(R.attr.mainBackgroundColor)) }
     }
 
-    protected fun setSpinner(spinner: Spinner) {
-        val spinnerAdapter = ArrayAdapter(spinner.context, android.R.layout.simple_spinner_item, countryList.map { it.first })
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = spinnerAdapter
-        spinner.setSelection(
-            countryList.indexOfFirst {
-                it.second == countryCode
-            }
-        )
+    protected suspend fun setSpinner(spinner: Spinner) {
+        val spinnerAdapter = withContext(Dispatchers.Default) {
+            ArrayAdapter(spinner.context, android.R.layout.simple_spinner_item, countryList.map { it.first })
+        }
+        withContext(Dispatchers.Main) {
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = spinnerAdapter
+            spinner.setSelection(
+                countryList.indexOfFirst {
+                    it.second == countryCode
+                }
+            )
+        }
     }
 
     protected fun createDetailsAdapter(
@@ -288,46 +297,58 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
         }
     }
 
-    protected fun setReviewSummary(binding: LayoutReviewSummaryBinding, reviewSummary: ReviewSummary) {
-        binding.apply {
-            fiveStarProgress.max = reviewSummary.totalVotes
-            fourStarProgress.max = reviewSummary.totalVotes
-            threeStarProgress.max = reviewSummary.totalVotes
-            twoStarProgress.max = reviewSummary.totalVotes
-            oneStarProgress.max = reviewSummary.totalVotes
-
-            fiveStarProgress.progress = reviewSummary.starCounts.fiveStar
-            fourStarProgress.progress = reviewSummary.starCounts.fourStar
-            threeStarProgress.progress = reviewSummary.starCounts.threeStar
-            twoStarProgress.progress = reviewSummary.starCounts.twoStar
-            oneStarProgress.progress = reviewSummary.starCounts.oneStar
-
+    protected suspend fun setReviewSummary(binding: LayoutReviewSummaryBinding, reviewSummary: ReviewSummary) {
+        withContext(Dispatchers.Default) {
+            val totalVotesStr = reviewSummary.totalVotes
             val totalReviewsStr = "${reviewSummary.totalVotes} reviews"
-            totalReviewsTV.text = totalReviewsStr
+            val reviewRateStr = reviewSummary.averageStar.toDouble().roundSingleDecimal().toString()
 
-            reviewRateTV.text = reviewSummary.averageStar.toDouble().roundSingleDecimal().toString()
+            withContext(Dispatchers.Main) {
+                binding.apply {
+                    fiveStarProgress.max = totalVotesStr
+                    fourStarProgress.max = totalVotesStr
+                    threeStarProgress.max = totalVotesStr
+                    twoStarProgress.max = totalVotesStr
+                    oneStarProgress.max = totalVotesStr
 
-            val materialButton = writeReviewButton as MaterialButton
-            if (reviewSummary.isReviewed) {
-                materialButton.text = getString(R.string.your_review)
-                materialButton.icon = ContextCompat.getDrawable(root.context, R.drawable.ic_rate)
-                materialButton.setTextColor(ContextCompat.getColorStateList(root.context, R.color.white))
+                    fiveStarProgress.progress = reviewSummary.starCounts.fiveStar
+                    fourStarProgress.progress = reviewSummary.starCounts.fourStar
+                    threeStarProgress.progress = reviewSummary.starCounts.threeStar
+                    twoStarProgress.progress = reviewSummary.starCounts.twoStar
+                    oneStarProgress.progress = reviewSummary.starCounts.oneStar
 
-                val colorStateList = ContextCompat.getColorStateList(root.context, R.color.blue500)
+                    totalReviewsTV.text = totalReviewsStr
+                    reviewRateTV.text = reviewRateStr
 
-                materialButton.backgroundTintList = colorStateList
-                materialButton.strokeColor = colorStateList
-            } else if (sharedViewModel.isLoggedIn()) {
-                materialButton.text = getString(R.string.write_a_review)
-                materialButton.icon = ContextCompat.getDrawable(root.context, R.drawable.ic_edit)
-                materialButton.setTextColor(root.context.getColorFromAttr(R.attr.mainTextColor))
+                    val materialButton = writeReviewButton as MaterialButton
+                    materialButton.icon = ContextCompat.getDrawable(
+                        root.context,
+                        if (reviewSummary.isReviewed)
+                            R.drawable.ic_rate
+                        else
+                            R.drawable.ic_edit
+                    )
+                    materialButton.text = getString(if (reviewSummary.isReviewed) R.string.your_review else R.string.write_a_review)
 
-                materialButton.strokeColor = ColorStateList.valueOf(generateColorStateList(root.context, R.attr.mainTextColor))
-                materialButton.backgroundTintList = ColorStateList.valueOf(generateColorStateList(root.context, R.attr.mainBackgroundColor))
+                    if (reviewSummary.isReviewed) {
+                        materialButton.setTextColor(ContextCompat.getColorStateList(root.context, R.color.white))
+
+                        val colorStateList = ContextCompat.getColorStateList(root.context, R.color.blue500)
+
+                        materialButton.backgroundTintList = colorStateList
+                        materialButton.strokeColor = colorStateList
+                    } else if (sharedViewModel.isLoggedIn()) {
+
+                        materialButton.setTextColor(root.context.getColorFromAttr(R.attr.mainTextColor))
+
+                        materialButton.strokeColor = ColorStateList.valueOf(generateColorStateList(root.context, R.attr.mainTextColor))
+                        materialButton.backgroundTintList = ColorStateList.valueOf(generateColorStateList(root.context, R.attr.mainBackgroundColor))
+                    }
+
+                    writeReviewButton.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
+                    seeAllButton.setVisibilityByCondition(reviewSummary.totalVotes == 0)
+                }
             }
-
-            writeReviewButton.setVisibilityByConditionWithAnimation(!sharedViewModel.isLoggedIn())
-            seeAllButton.setVisibilityByConditionWithAnimation(reviewSummary.totalVotes == 0)
         }
     }
 

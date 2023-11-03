@@ -309,6 +309,9 @@
     <string name="delete">Delete</string>
     <string name="remove">Remove</string>
     <string name="update">Update</string>
+    <string name="post">Post</string>
+    <string name="success">Success</string>
+    <string name="posted">posted</string>
     <string name="try_again">Try Again</string>
     <string name="search">Search</string>
     <string name="error">Error</string>
@@ -318,7 +321,7 @@
     <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
     <string name="sign_up">Sign Up</string>
-    <string name="sign_in_up">Sign In/Sign Up</string>
+    <string name="sign_in_up">Sign In / Sign Up</string>
     <string name="username">Username</string>
     <string name="network">Network</string>
     <string name="seasons">Seasons</string>
@@ -401,7 +404,7 @@
     <string name="dont_have_an_account_">Don\'t have an Account?</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="register_header">Create new account</string>
-    <string name="register_sub_header">Please fill the form to register</string>
+    <string name="register_sub_header">Please fill the form to sign up</string>
     <string name="password_again">Password Again</string>
     <string name="already_have_an_account">Already have an Account?</string>
     <string name="please_enter_an_email">Please enter an email.</string>
@@ -415,9 +418,11 @@
     <string name="nothing_to_see_here">Nothing to see here&#032;👀</string>
     <string name="ready_to_suggest">Ready to suggest!</string>
     <string name="_suggestions">🤖&#032;Suggestions</string>
-    <string name="write_a_review">Write a Review</string>
+    <string name="write_a_review">Post a Review</string>
     <string name="your_review">Your Review</string>
     <string name="_reviews">⭐&#032;Reviews</string>
+    <string name="_create_review">📝&#032;Post</string>
+    <string name="_update_review">📝&#032;Update</string>
 
     <string name="notification_permission_info">Enable notifications to receive personalized recommendations, updates, and news about movies, tv shows, games and anime.</string>
     <string name="legend_content_info">Legend content refers to movies, animes, games and tv series that users have watched multiple times.</string>
@@ -472,6 +477,9 @@
     <string name="premium_third">Unlimited Watch Later instead of 50.</string>
     <string name="premium_first">AI Suggestions, 3 from each content type</string>
     <string name="premium_first_alt">AI Suggestions, 5 from each content type</string>
+    <string name="do_you_want_to">Do you want to</string>
+    <string name="review_rating_error">Your rating should be between 1 and 5.</string>
+    <string name="post_update_review_cd">Post/Update Review</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

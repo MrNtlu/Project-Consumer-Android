@@ -22,7 +22,6 @@ import com.mrntlu.projectconsumer.interfaces.ItemViewHolderBind
 import com.mrntlu.projectconsumer.utils.Constants.DEFAULT_RATIO
 import com.mrntlu.projectconsumer.utils.Constants.GAME_RATIO
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -35,12 +34,19 @@ class PreviewAdapter<T: ContentModel>(
     private val interaction: Interaction<T>,
     private val isRatioDifferent: Boolean = false,
     private val isDarkTheme: Boolean,
+    private val radiusInPx: Float
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var errorMessage: String? = null
     var isLoading = true
+    private val sizeMultiplier = 0.8f
 
     private var arrayList: ArrayList<T> = arrayListOf()
+
+    val shapeAppearanceModel = ShapeAppearanceModel.Builder().apply {
+        setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
+        setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
+    }.build()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
@@ -124,8 +130,6 @@ class PreviewAdapter<T: ContentModel>(
     ): RecyclerView.ViewHolder(binding.root), ItemViewHolderBind<T> {
         override fun bind(item: T, position: Int, interaction: Interaction<T>) {
             binding.apply {
-                val radiusInPx = root.context.dpToPxFloat(if (isRatioDifferent) 12f else 8f)
-
                 val params = ConstraintLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -145,25 +149,19 @@ class PreviewAdapter<T: ContentModel>(
                 (previewCard.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
                 (previewShimmerLayout.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = if (isRatioDifferent) "16:9" else "2:3"
 
-                if (isRatioDifferent) {
-                    val shapeAppearanceModelBuilder = ShapeAppearanceModel.Builder().apply {
-                        setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
-                        setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
-                    }
-                    val shapeAppearanceModel = shapeAppearanceModelBuilder.build()
+                if (isRatioDifferent)
                     previewGameCV.shapeAppearanceModel = shapeAppearanceModel
-                }
 
                 previewIV.scaleType = if (isRatioDifferent)
                     ImageView.ScaleType.CENTER_CROP
                 else
                     ImageView.ScaleType.FIT_XY
 
-                previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout) {
+                previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout, sizeMultiplier) {
                     if (isRatioDifferent)
-                        transform(CenterCrop(), RoundedCorners(radiusInPx.toInt()))
+                        transform(CenterCrop(), RoundedCorners((radiusInPx * sizeMultiplier).toInt()))
                     else
-                        transform(RoundedCorners(radiusInPx.toInt()))
+                        transform(RoundedCorners((radiusInPx * sizeMultiplier).toInt()))
                 }
 
                 previewIV.contentDescription = item.title

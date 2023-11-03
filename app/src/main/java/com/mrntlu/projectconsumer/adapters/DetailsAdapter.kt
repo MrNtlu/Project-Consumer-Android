@@ -37,7 +37,7 @@ class DetailsAdapter(
 
             ivCard.radius = cardCornerRadius
             circlePlaceholderIV.setImageDrawable(ContextCompat.getDrawable(root.context, placeHolderImage))
-            circleIV.loadWithGlide(item.image,circlePlaceholderIV, circleIVProgressBar, transformImage)
+            circleIV.loadWithGlide(item.image,circlePlaceholderIV, circleIVProgressBar, 0.6f, transformImage)
 
             nameTV.text = item.title
             subTV.text = item.subTitle

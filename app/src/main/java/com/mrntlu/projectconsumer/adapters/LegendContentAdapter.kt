@@ -16,7 +16,6 @@ import com.mrntlu.projectconsumer.models.auth.UserInfoCommon
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
-import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -24,8 +23,13 @@ import com.mrntlu.projectconsumer.utils.setVisible
 @SuppressLint("NotifyDataSetChanged")
 class LegendContentAdapter(
     private val legendContent: List<UserInfoCommon>,
+    private val radiusInPx: Float,
     private val onClick: (UserInfoCommon) -> Unit,
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private val sizeMultiplier = 0.75f
+    private val sizeMultipliedRadiusInPx = radiusInPx * sizeMultiplier
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             RecyclerViewEnum.Empty.value -> EmptyHorizontalViewHolder(CellEmptyHorizontalBinding.inflate(LayoutInflater.from(parent.context), parent, false))
@@ -63,7 +67,6 @@ class LegendContentAdapter(
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: UserInfoCommon, onClick: (UserInfoCommon) -> Unit) {
             binding.apply {
-                val radiusInPx = root.context.dpToPxFloat(6f)
                 val isRatioDifferent = item.contentType == ContentType.GAME.request
 
                 imageInclude.apply {
@@ -77,14 +80,14 @@ class LegendContentAdapter(
                     else
                         ImageView.ScaleType.FIT_XY
 
-                    previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout) {
+                    previewIV.loadWithGlide(item.imageURL, previewCard, previewShimmerLayout, sizeMultiplier) {
                         if (isRatioDifferent)
                             transform(CenterCrop(), GranularRoundedCorners(
-                                radiusInPx, radiusInPx, 0f, 0f
+                                sizeMultipliedRadiusInPx, sizeMultipliedRadiusInPx, 0f, 0f
                             ))
                         else
                             transform(GranularRoundedCorners(
-                                radiusInPx, radiusInPx, 0f, 0f
+                                sizeMultipliedRadiusInPx, sizeMultipliedRadiusInPx, 0f, 0f
                             ))
                     }
 

@@ -9,6 +9,8 @@ import com.mrntlu.projectconsumer.models.main.anime.AnimeRelation
 
 class AnimeRelationsAdapter(
     private val relationList: List<Pair<String, List<AnimeRelation>>>,
+    private val radiusInPx: Float,
+    private val layoutHeight: Int,
     private val onClick: (Int) -> Unit
 ): RecyclerView.Adapter<AnimeRelationsAdapter.ItemHolder>() {
 
@@ -31,7 +33,9 @@ class AnimeRelationsAdapter(
                 layoutManager = linearLayoutManager
 
                 val childAdapter = AnimeRelationContentAdapter(
-                    relation.second
+                    relation.second,
+                    radiusInPx,
+                    layoutHeight,
                 ) {
                     onClick(it)
                 }
