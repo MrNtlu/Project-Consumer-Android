@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/previewScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -64,43 +65,45 @@
             app:layout_constraintTop_toBottomOf="@+id/seeAllButtonPopular" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/previewCV"
+            android:id="@+id/homeCV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
-            app:cardBackgroundColor="?attr/mainBackgroundColor"
-            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="?attr/subBackgroundColor"
+            app:cardCornerRadius="10dp"
             app:cardElevation="3dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
             app:layout_constraintTop_toTopOf="@+id/guideline14"
-            app:strokeColor="?attr/colorPrimary"
-            app:strokeWidth="2dp">
+            app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingVertical="12dp"
-                android:paddingHorizontal="8dp">
+                android:paddingVertical="15dp"
+                android:paddingHorizontal="12dp"
+                tools:ignore="UseCompoundDrawables">
 
                 <ImageView
-                    android:id="@+id/imageView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/homeIV"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_marginEnd="6dp"
                     android:contentDescription="@string/sign_in"
                     android:src="@drawable/ic_login_24"
                     app:tint="?attr/mainTextColor" />
 
                 <TextView
+                    android:id="@+id/homeInfoTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sign in or Sign up now to access all features."
-                    android:textColor="?attr/mainTextColor"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/authenticate_home_info"
                     android:textAlignment="center"
-                    android:textSize="14sp" />
+                    android:textColor="?attr/mainTextColor"
+                    android:textSize="15sp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -108,13 +111,13 @@
             android:id="@+id/firstRVTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:text="@string/upcoming"
             android:textColor="?attr/mainTextColor"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/previewCV" />
+            app:layout_constraintTop_toBottomOf="@+id/homeCV" />
 
         <ImageButton
             android:id="@+id/seeAllButtonFirst"

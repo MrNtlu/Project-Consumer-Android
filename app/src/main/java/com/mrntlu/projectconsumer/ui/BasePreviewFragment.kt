@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.HeroCarouselStrategy
+import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.WindowSizeClass
 import com.mrntlu.projectconsumer.adapters.CarouselAdapter
 import com.mrntlu.projectconsumer.adapters.PreviewAdapter
@@ -20,6 +22,8 @@ import com.mrntlu.projectconsumer.models.common.retrofit.PreviewResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.smoothScrollToCenteredPosition
 import com.mrntlu.projectconsumer.viewmodels.main.common.PreviewViewModel
@@ -66,6 +70,34 @@ abstract class BasePreviewFragment<T: ContentModel>: BaseFragment<FragmentPrevie
                 guideLinePercent = when(height) {
                     WindowSizeClass.EXPANDED -> if (isGame) 0.4 else 0.34
                     else -> if (isGame) 0.34 else 0.28
+                }
+            }
+        }
+    }
+
+    protected fun setHomeCardView() {
+        binding.apply {
+            homeInfoTV.text = if (sharedViewModel.isLoggedIn())
+                "" //TODO Implement
+            else
+                getString(R.string.authenticate_home_info)
+
+            homeCV.setVisibilityByCondition(sharedViewModel.isLoggedIn())
+
+            homeIV.setImageDrawable(
+                ContextCompat.getDrawable(binding.root.context, if (sharedViewModel.isLoggedIn())
+                    R.drawable.ic_ai
+                else
+                    R.drawable.ic_login_24)
+            )
+
+            homeCV.setSafeOnClickListener {
+                if (sharedViewModel.isLoggedIn()) {
+
+                } else {
+                    if (navController.currentDestination?.id == R.id.navigation_home) {
+                        navController.navigate(R.id.action_global_authFragment)
+                    }
                 }
             }
         }

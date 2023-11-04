@@ -480,6 +480,7 @@
     <string name="do_you_want_to">Do you want to</string>
     <string name="review_rating_error">Your rating should be between 1 and 5.</string>
     <string name="post_update_review_cd">Post/Update Review</string>
+    <string name="authenticate_home_info">Sign in or Sign up now to access all features.</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

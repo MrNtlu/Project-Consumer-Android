@@ -20,6 +20,7 @@ class MovieFragment: BasePreviewFragment<Movie>() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.extraRVTV.text = getString(R.string.in_theaters)
+        setHomeCardView()
 
         setGuidelineHeight()
         setListeners()
