@@ -32,9 +32,9 @@ import com.mrntlu.projectconsumer.utils.setVisible
 @SuppressLint("NotifyDataSetChanged")
 class PreviewAdapter<T: ContentModel>(
     private val interaction: Interaction<T>,
-    private val isRatioDifferent: Boolean = false,
+    private var isRatioDifferent: Boolean = false,
     private val isDarkTheme: Boolean,
-    private val radiusInPx: Float
+    private var radiusInPx: Float
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var errorMessage: String? = null
@@ -43,7 +43,7 @@ class PreviewAdapter<T: ContentModel>(
 
     private var arrayList: ArrayList<T> = arrayListOf()
 
-    val shapeAppearanceModel = ShapeAppearanceModel.Builder().apply {
+    var shapeAppearanceModel = ShapeAppearanceModel.Builder().apply {
         setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
         setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
     }.build()
@@ -99,7 +99,15 @@ class PreviewAdapter<T: ContentModel>(
         notifyDataSetChanged()
     }
 
-    fun setData(newList: List<T>) {
+    fun setData(newList: List<T>, isRatioDifferent: Boolean = false) {
+        if (this.isRatioDifferent != isRatioDifferent) {
+            this.isRatioDifferent = isRatioDifferent
+
+            shapeAppearanceModel = ShapeAppearanceModel.Builder().apply {
+                setBottomLeftCorner(CornerFamily.ROUNDED, radiusInPx)
+                setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
+            }.build()
+        }
         setState(RecyclerViewEnum.View)
 
         if (arrayList.isNotEmpty())

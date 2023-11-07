@@ -314,7 +314,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             reviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
                 if (animeDetails != null) {
                     val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToReviewCreateFragment(
-                        review = null,
+                        review = animeDetails!!.reviews.review,
                         contentId = animeDetails!!.id,
                         contentExternalId = null,
                         contentExternalIntId = animeDetails!!.malID,

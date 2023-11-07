@@ -113,7 +113,8 @@ class MainActivity : AppCompatActivity() {
             setNotificationPref()
     }
 
-    private lateinit var binding: ActivityMainBinding
+    private var _binding: ActivityMainBinding? = null
+    private val binding get() = _binding!!
 
     fun navigateToDiscover() {
         binding.navView.selectedItemId = R.id.navigation_discover
@@ -238,7 +239,7 @@ class MainActivity : AppCompatActivity() {
         }
         AppCompatDelegate.setDefaultNightMode(if (sharedViewModel.isLightTheme()) MODE_NIGHT_NO else MODE_NIGHT_YES)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         firebaseAnalytics = Firebase.analytics
 
@@ -539,6 +540,7 @@ class MainActivity : AppCompatActivity() {
         userSharedViewModel.userInfoResponse.removeObservers(this)
         coroutineScope.cancel()
 
+        _binding = null
         super.onDestroy()
     }
 }

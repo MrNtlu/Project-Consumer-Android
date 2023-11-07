@@ -7,30 +7,6 @@
     app:startDestination="@+id/navigation_home">
 
     <fragment
-        android:id="@+id/navigation_movie"
-        android:name="com.mrntlu.projectconsumer.ui.movie.MovieFragment"
-        android:label="@string/title_movie"
-        tools:layout="@layout/fragment_preview"/>
-
-    <fragment
-        android:id="@+id/navigation_tv"
-        android:name="com.mrntlu.projectconsumer.ui.tv.TVSeriesFragment"
-        android:label="@string/title_tv"
-        tools:layout="@layout/fragment_preview" />
-
-    <fragment
-        android:id="@+id/navigation_anime"
-        android:name="com.mrntlu.projectconsumer.ui.anime.AnimeFragment"
-        android:label="@string/title_anime"
-        tools:layout="@layout/fragment_preview" />
-
-    <fragment
-        android:id="@+id/navigation_game"
-        android:name="com.mrntlu.projectconsumer.ui.game.GameFragment"
-        android:label="@string/title_game"
-        tools:layout="@layout/fragment_preview" />
-
-    <fragment
         android:id="@+id/movieListFragment"
         android:name="com.mrntlu.projectconsumer.ui.movie.MovieListFragment"
         android:label="fragment_movie_list"
@@ -282,29 +258,23 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-    </fragment>
 
-    <fragment
-        android:id="@+id/navigation_discover"
-        android:name="com.mrntlu.projectconsumer.ui.discover.DiscoverFragment"
-        android:label="fragment_discover"
-        tools:layout="@layout/fragment_discover" >
         <action
-            android:id="@+id/action_navigation_discover_to_movieSearchFragment"
+            android:id="@+id/action_navigation_home_to_movieSearchFragment"
             app:destination="@id/searchFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
         <action
-            android:id="@+id/action_navigation_discover_to_discoverListFragment"
+            android:id="@+id/action_navigation_home_to_discoverListFragment"
             app:destination="@id/discoverListFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
         <action
-            android:id="@+id/action_navigation_discover_to_AISuggestionsFragment"
+            android:id="@+id/action_navigation_home_to_AISuggestionsFragment"
             app:destination="@id/AISuggestionsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
@@ -517,7 +487,7 @@
     </fragment>
     <action
         android:id="@+id/action_global_navigation_discover"
-        app:destination="@id/navigation_discover"
+        app:destination="@id/navigation_home"
         app:popUpTo="@id/navigation_later"
         app:popUpToInclusive="true"
         app:enterAnim="@anim/slide_in_right"

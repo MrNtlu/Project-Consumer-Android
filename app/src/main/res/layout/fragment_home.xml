@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homeScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/mainBackgroundColor"
@@ -22,14 +23,265 @@
             app:layout_scrollFlags="scroll|enterAlways"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/homeViewPager"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/previewScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeTabLayout"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:background="?attr/mainBackgroundColor"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <SearchView
+                android:id="@+id/homeSearchView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/bottom_nav_background"
+                android:elevation="4dp"
+                android:queryBackground="@drawable/bottom_nav_background"
+                android:queryHint="@string/search"
+                android:submitBackground="@drawable/bottom_nav_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/popularRVTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/popular"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/seeAllButtonPopular"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/seeAllButtonPopular" />
+
+            <ImageButton
+                android:id="@+id/seeAllButtonPopular"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/see_all_cd"
+                android:padding="4dp"
+                android:src="@drawable/ic_arrow_right_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeSearchView"
+                app:tint="?attr/mainTextColor" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/previewShowcaseRV"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="8dp"
+                android:paddingHorizontal="16dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seeAllButtonPopular" />
+
+            <TextView
+                android:id="@+id/discoverRVTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/discover_title"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/previewShowcaseRV" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/discoverRV"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="16dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/discoverRVTV" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/homeCV"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                app:cardBackgroundColor="?attr/subBackgroundColor"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/discoverRV"
+                app:strokeColor="@color/blue200"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="15dp"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:id="@+id/homeIV"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_marginEnd="8dp"
+                        android:contentDescription="@string/sign_in"
+                        android:src="@drawable/ic_login_24"
+                        app:tint="?attr/mainTextColor"
+                        tools:visibility="visible"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/homeInfoTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/loading_cd"
+                        tools:text="@string/authenticate_home_info"
+                        android:textAlignment="center"
+                        android:textColor="?attr/mainTextColor"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/firstRVTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/upcoming"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/homeCV" />
+
+            <ImageButton
+                android:id="@+id/seeAllButtonFirst"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="4dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/see_all_cd"
+                android:padding="4dp"
+                android:src="@drawable/ic_arrow_right_24"
+                app:layout_constraintBottom_toBottomOf="@+id/firstRVTV"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/firstRVTV"
+                app:tint="?attr/mainTextColor" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/upcomingPreviewRV"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="6dp"
+                android:paddingHorizontal="16dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seeAllButtonFirst" />
+
+            <TextView
+                android:id="@+id/secondRVTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/top_rated"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/upcomingPreviewRV" />
+
+            <ImageButton
+                android:id="@+id/seeAllButtonSecond"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="4dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/see_all_popular_cd"
+                android:padding="4dp"
+                android:src="@drawable/ic_arrow_right_24"
+                app:layout_constraintBottom_toBottomOf="@+id/secondRVTV"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/secondRVTV"
+                app:tint="?attr/mainTextColor" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/topRatedPreviewRV"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="6dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seeAllButtonSecond" />
+
+            <TextView
+                android:id="@+id/extraRVTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/airing_today"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/topRatedPreviewRV" />
+
+            <ImageButton
+                android:id="@+id/seeAllButtonExtra"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="4dp"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/see_all_popular_cd"
+                android:padding="4dp"
+                android:src="@drawable/ic_arrow_right_24"
+                app:layout_constraintBottom_toBottomOf="@+id/extraRVTV"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/extraRVTV"
+                app:tint="?attr/mainTextColor" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/extraPreviewRV"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="76dp"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/seeAllButtonExtra"
+                app:layout_constraintVertical_bias="0.0" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

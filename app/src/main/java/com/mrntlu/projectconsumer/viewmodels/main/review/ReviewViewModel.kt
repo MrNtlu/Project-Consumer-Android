@@ -53,7 +53,6 @@ class ReviewViewModel @AssistedInject constructor(
         }
     }
 
-
     var sort: String = savedStateHandle[REVIEW_SORT_KEY] ?: Constants.SortReviewRequests[0].request
         private set
     private var page: Int = savedStateHandle[REVIEW_PAGE_KEY] ?: 1

@@ -392,7 +392,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                     isAppBarLifted = binding.detailsAppBarLayout.isLifted
 
                     val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToReviewCreateFragment(
-                        review = null, //TODO if (movieDetails!!.reviews.isReviewed),
+                        review = movieDetails!!.reviews.review,
                         contentId = movieDetails!!.id,
                         contentExternalId = movieDetails!!.tmdbID,
                         contentExternalIntId = -1,

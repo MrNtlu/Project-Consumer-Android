@@ -381,7 +381,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                     isAppBarLifted = binding.detailsAppBarLayout.isLifted
 
                     val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToReviewCreateFragment(
-                        review = null,
+                        review = gameDetails!!.reviews.review,
                         contentId = gameDetails!!.id,
                         contentExternalId = null,
                         contentExternalIntId = gameDetails!!.rawgID,

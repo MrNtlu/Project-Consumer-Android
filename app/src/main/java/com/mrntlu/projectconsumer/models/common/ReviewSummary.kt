@@ -2,10 +2,13 @@ package com.mrntlu.projectconsumer.models.common
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.models.main.review.Review
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ReviewSummary(
+    val review: Review?,
+
     @SerializedName("avg_star")
     val averageStar: Float,
 
@@ -18,7 +21,7 @@ data class ReviewSummary(
     @SerializedName("star_counts")
     val starCounts: StarCounts,
 ): Parcelable {
-    constructor(): this(0f, 0, false, StarCounts())
+    constructor(): this(null, 0f, 0, false, StarCounts())
 }
 
 @Parcelize

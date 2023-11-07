@@ -12,6 +12,7 @@ import com.mrntlu.projectconsumer.service.retrofit.AnimeApiService
 import com.mrntlu.projectconsumer.service.retrofit.AuthApiService
 import com.mrntlu.projectconsumer.service.retrofit.GameApiService
 import com.mrntlu.projectconsumer.service.retrofit.MovieApiService
+import com.mrntlu.projectconsumer.service.retrofit.PreviewApiService
 import com.mrntlu.projectconsumer.service.retrofit.ReviewApiService
 import com.mrntlu.projectconsumer.service.retrofit.TVSeriesApiService
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
@@ -111,6 +112,14 @@ class SingletonModule {
                     Constants.API_URL
             )
             .addConverterFactory(GsonConverterFactory.create())
+
+    @Singleton
+    @Provides
+    fun providePreviewAPIService(okHttpClient: OkHttpClient, retrofit: Retrofit.Builder): PreviewApiService =
+        retrofit
+            .client(okHttpClient)
+            .build()
+            .create(PreviewApiService::class.java)
 
     @Singleton
     @Provides

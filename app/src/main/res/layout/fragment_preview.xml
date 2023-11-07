@@ -11,79 +11,107 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="wrap_content"
+        <SearchView
+            android:id="@+id/discoverSearchView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline14"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.28" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/bottom_nav_background"
+            android:elevation="4dp"
+            android:queryBackground="@drawable/bottom_nav_background"
+            android:queryHint="@string/search"
+            android:submitBackground="@drawable/bottom_nav_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/popularRVTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:text="@string/popular"
             android:textColor="?attr/mainTextColor"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/seeAllButtonPopular"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/seeAllButtonPopular" />
 
         <ImageButton
             android:id="@+id/seeAllButtonPopular"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="4dp"
             android:background="@android:color/transparent"
             android:contentDescription="@string/see_all_cd"
             android:padding="4dp"
             android:src="@drawable/ic_arrow_right_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/discoverSearchView"
             app:tint="?attr/mainTextColor" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/previewShowcaseRV"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="200dp"
             android:layout_marginTop="8dp"
+            android:paddingHorizontal="16dp"
             android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
-            android:paddingHorizontal="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/seeAllButtonPopular" />
+
+        <TextView
+            android:id="@+id/discoverRVTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/discover_title"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/previewShowcaseRV" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/discoverRV"
+            android:layout_width="0dp"
+            android:layout_height="75dp"
+            android:layout_marginTop="16dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:paddingHorizontal="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/discoverRVTV" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/homeCV"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             app:cardBackgroundColor="?attr/subBackgroundColor"
             app:cardCornerRadius="10dp"
             app:cardElevation="3dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toTopOf="@+id/guideline14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/discoverRV"
             app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingVertical="15dp"
                 android:paddingHorizontal="12dp"
+                android:paddingVertical="15dp"
                 tools:ignore="UseCompoundDrawables">
 
                 <ImageView
@@ -111,12 +139,13 @@
             android:id="@+id/firstRVTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="32dp"
             android:text="@string/upcoming"
             android:textColor="?attr/mainTextColor"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/homeCV" />
 
         <ImageButton
@@ -149,12 +178,13 @@
             android:id="@+id/secondRVTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/top_rated"
             android:textColor="?attr/mainTextColor"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/upcomingPreviewRV" />
 
         <ImageButton
@@ -187,12 +217,13 @@
             android:id="@+id/extraRVTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
             android:text="@string/airing_today"
             android:textColor="?attr/mainTextColor"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/topRatedPreviewRV" />
 
         <ImageButton

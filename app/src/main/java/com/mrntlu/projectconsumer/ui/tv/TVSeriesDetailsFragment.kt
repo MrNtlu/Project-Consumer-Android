@@ -394,7 +394,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                     isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
 
                     val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToReviewCreateFragment(
-                        review = null,
+                        review = tvDetails!!.reviews.review,
                         contentId = tvDetails!!.id,
                         contentExternalId = tvDetails!!.tmdbID,
                         contentExternalIntId = -1,
