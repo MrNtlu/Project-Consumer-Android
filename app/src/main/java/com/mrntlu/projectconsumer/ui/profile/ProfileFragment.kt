@@ -5,24 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.mrntlu.projectconsumer.MainActivity
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ConsumeLaterPreviewAdapter
-import com.mrntlu.projectconsumer.adapters.LegendContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentProfileBinding
 import com.mrntlu.projectconsumer.interfaces.ConsumeLaterInteraction
-import com.mrntlu.projectconsumer.models.auth.UserInfo
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
-import com.mrntlu.projectconsumer.service.TokenManager
-import com.mrntlu.projectconsumer.ui.BaseFragment
+import com.mrntlu.projectconsumer.ui.BaseProfileFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants
 import com.mrntlu.projectconsumer.utils.NetworkResponse
@@ -30,7 +25,6 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.hideKeyboard
-import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -39,26 +33,16 @@ import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
-import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
-
-    @Inject lateinit var tokenManager: TokenManager
-
+class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
     private val viewModel: ProfileViewModel by viewModels()
-    private val userSharedViewModel: UserSharedViewModel by activityViewModels()
 
     private var isResponseFailed = false
-    private var userInfo: UserInfo? = null
 
     private var confirmDialog: AlertDialog? = null
-    private var legendContentAdapter: LegendContentAdapter? = null
     private var consumeLaterAdapter: ConsumeLaterPreviewAdapter? = null
     private lateinit var dialog: LoadingDialog
 
@@ -107,7 +91,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
 
         if (userInfo?.image != null)
-            setImage(userInfo?.image ?: "")
+            setImage(
+                userInfo?.image ?: "",
+                binding.profileIV,
+                binding.profilePlaceHolderIV,
+                binding.profileImageProgressBar,
+            )
     }
 
     override fun onStop() {
@@ -144,9 +133,37 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                         userInfo = response.data.data
 
                         viewModel.viewModelScope.launch {
-                            setUI()
+                            setUI(
+                                profileIV, profilePlaceHolderIV,
+                                profileImageProgressBar, profileUsernameTV, movieStatTV, tvStatTV,
+                                gameStatTV, animeStatTV, movieWatchedTV, tvWatchedTV,
+                                animeWatchedTV, gamePlayedTV, profileLevelBar, profileLevelTV,
+                            )
                             setListeners()
-                            setRecyclerView()
+                            setRecyclerView(
+                                binding.legendContentRV,
+                            ) { item ->
+                                if (navController.currentDestination?.id == R.id.navigation_profile) {
+                                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
+                                        Constants.ContentType.ANIME -> {
+                                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(item.id)
+                                            navController.navigate(navWithAction)
+                                        }
+                                        Constants.ContentType.MOVIE -> {
+                                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.id)
+                                            navController.navigate(navWithAction)
+                                        }
+                                        Constants.ContentType.TV -> {
+                                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.id)
+                                            navController.navigate(navWithAction)
+                                        }
+                                        Constants.ContentType.GAME -> {
+                                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToGameDetailsFragment(item.id)
+                                            navController.navigate(navWithAction)
+                                        }
+                                    }
+                                }
+                            }
                             consumeLaterAdapter?.setData(userInfo?.watchLater?.toCollection(ArrayList()) ?: arrayListOf())
                             loadingLayout.setGone()
                         }
@@ -160,65 +177,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             if (isResponseFailed && it)
                 viewModel.getUserInfo()
         }
-    }
-
-    private suspend fun setUI() {
-        userInfo?.let {
-            binding.apply {
-                setImage(it.image ?: "")
-
-                withContext(Dispatchers.Default) {
-                    val movieCountStr = it.movieCount.toString()
-                    val tvCountStr = it.tvCount.toString()
-                    val gameCountStr = it.gameCount.toString()
-                    val animeCountStr = it.animeCount.toString()
-
-                    val movieWatchedStr = convertLength(it.movieWatchedTime)
-                    val tvWatchedStr = it.tvWatchedEpisodes.toString()
-                    val animeWatchedStr = it.animeWatchedEpisodes.toString()
-                    val gameTotalPlayedStr = convertLength(it.gameTotalHoursPlayed)
-
-                    val levelStr = "${it.level} lv."
-
-                    withContext(Dispatchers.Main) {
-                        profileUsernameTV.text = it.username
-
-                        movieStatTV.text = movieCountStr
-                        tvStatTV.text = tvCountStr
-                        gameStatTV.text = gameCountStr
-                        animeStatTV.text = animeCountStr
-
-                        movieWatchedTV.text = movieWatchedStr
-                        tvWatchedTV.text = tvWatchedStr
-                        animeWatchedTV.text = animeWatchedStr
-                        gamePlayedTV.text = gameTotalPlayedStr
-
-                        profileLevelBar.progress = it.level
-                        profileLevelTV.text = levelStr
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setImage(imageUrl: String) {
-        binding.profileIV.loadWithGlide(
-            imageUrl,
-            binding.profilePlaceHolderIV,
-            binding.profileImageProgressBar,
-        ) {
-            transform(CenterCrop())
-        }
-    }
-
-    private fun convertLength(length: Long): String {
-        return if (length > 60) {
-            val hours = length / 60
-            if (hours < 10)
-                String.format("%01d", hours)
-            else
-                String.format("%02d", hours)
-        } else length.toString()
     }
 
     private fun setListeners() {
@@ -281,40 +239,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         }
     }
 
-    private fun setRecyclerView() {
-        binding.legendContentRV.apply {
-            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            layoutManager = linearLayoutManager
-
-            legendContentAdapter = LegendContentAdapter(
-                userInfo?.legendContent ?: arrayListOf(),
-                binding.root.context.dpToPxFloat(6f),
-            ) { item ->
-                if (navController.currentDestination?.id == R.id.navigation_profile) {
-                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                        Constants.ContentType.ANIME -> {
-                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(item.id)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.MOVIE -> {
-                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.id)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.TV -> {
-                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.id)
-                            navController.navigate(navWithAction)
-                        }
-                        Constants.ContentType.GAME -> {
-                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToGameDetailsFragment(item.id)
-                            navController.navigate(navWithAction)
-                        }
-                    }
-                }
-            }
-            adapter = legendContentAdapter
-        }
-    }
-
     private fun setConsumeLaterRV() {
         binding.watchLaterRV.apply {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -353,7 +277,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 override fun onAddToListPressed(item: ConsumeLaterResponse, position: Int) {}
 
                 override fun onDiscoverButtonPressed() {
-                    (activity as? MainActivity)?.navigateToDiscover()
+                    (activity as? MainActivity)?.navigateToHome()
                 }
 
                 override fun onItemSelected(item: ConsumeLaterResponse, position: Int) {

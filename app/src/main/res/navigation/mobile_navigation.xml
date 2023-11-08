@@ -831,6 +831,13 @@
         <argument
             android:name="contentTitle"
             app:argType="string" />
+        <action
+            android:id="@+id/action_reviewFragment_to_profileDisplayFragment"
+            app:destination="@id/profileDisplayFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/reviewCreateFragment"
@@ -858,6 +865,15 @@
 
         <argument
             android:name="contentTitle"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileDisplayFragment"
+        android:name="com.mrntlu.projectconsumer.ui.profile.ProfileDisplayFragment"
+        android:label="fragment_profile_display"
+        tools:layout="@layout/fragment_profile_display" >
+        <argument
+            android:name="profileUsername"
             app:argType="string" />
     </fragment>
 

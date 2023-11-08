@@ -482,6 +482,8 @@
     <string name="post_update_review_cd">Post/Update Review</string>
     <string name="authenticate_home_info">Sign in or Sign up now to access all features.</string>
     <string name="authenticated_home_info">Vote now and decide new features!</string>
+    <string name="friend_request_cd">Send Friend Request</string>
+    <string name="send_friend_request">Send Friend Request</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

@@ -6,11 +6,6 @@
         android:title="@string/home" />
 
     <item
-        android:id="@+id/navigation_discover"
-        android:icon="@drawable/selector_discover"
-        android:title="@string/discover" />
-
-    <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/selector_person"
         android:title="@string/profile" />

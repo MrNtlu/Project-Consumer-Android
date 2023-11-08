@@ -5,6 +5,7 @@ import com.mrntlu.projectconsumer.models.common.retrofit.DataResponse
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.models.main.review.Review
+import com.mrntlu.projectconsumer.models.main.review.ReviewByContent
 import com.mrntlu.projectconsumer.models.main.review.retrofit.ReviewBody
 import com.mrntlu.projectconsumer.models.main.review.retrofit.UpdateReviewBody
 import retrofit2.Response
@@ -28,6 +29,13 @@ interface ReviewApiService {
         @Query("page") page: Int,
         @Query("sort") sort: String,
     ): Response<DataPaginationResponse<Review>>
+
+    @GET("review/user")
+    suspend fun getReviewsByUserID(
+        @Query("user_id") userId: String,
+        @Query("page") page: Int,
+        @Query("sort") sort: String,
+    ): Response<DataPaginationResponse<ReviewByContent>>
 
     @PATCH("review")
     suspend fun updateReview(@Body body: UpdateReviewBody): Response<DataResponse<Review>>

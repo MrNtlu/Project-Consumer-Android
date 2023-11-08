@@ -506,7 +506,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
 
                 override fun onDiscoverButtonPressed() {
                     navController.popBackStack()
-                    (activity as? MainActivity)?.navigateToDiscover()
+                    (activity as? MainActivity)?.navigateToHome()
                 }
             })
             adapter = consumeLaterAdapter

@@ -39,6 +39,26 @@ class ReviewRepository @Inject constructor(
         }
     )
 
+    fun getReviewsByUserId(
+        userId: String,
+        page: Int,
+        sort: String,
+    ) = networkBoundResourceWithoutCache(
+        isPaginating = page != 1,
+        fetchNetwork = {
+            reviewApiService.getReviewsByUserID(userId, page, sort)
+        },
+        emptyObjectCreator = {
+            listOf<Review>()
+        },
+        handleResponse = { response ->
+            Pair(
+                response.data,
+                page >= response.pagination.totalPage,
+            )
+        }
+    )
+
     fun updateReview(body: UpdateReviewBody) = networkResponseFlow {
         reviewApiService.updateReview(body)
     }

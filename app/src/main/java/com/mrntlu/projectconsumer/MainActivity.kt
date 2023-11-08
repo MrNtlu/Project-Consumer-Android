@@ -116,8 +116,8 @@ class MainActivity : AppCompatActivity() {
     private var _binding: ActivityMainBinding? = null
     private val binding get() = _binding!!
 
-    fun navigateToDiscover() {
-        binding.navView.selectedItemId = R.id.navigation_discover
+    fun navigateToHome() {
+        binding.navView.selectedItemId = R.id.navigation_home
     }
 
     fun navigateToProfile() {
@@ -309,7 +309,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id) {
-                R.id.navigation_home, R.id.navigation_discover, R.id.navigation_profile -> {
+                R.id.navigation_home, R.id.navigation_profile -> {
                     binding.navView.setVisible()
                     window.navigationBarColor = getColorFromAttr(R.attr.bottomNavBackgroundColor)
                 }
@@ -407,10 +407,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         sharedViewModel.isAuthenticated.observe(this) {
-            if (it && binding.navView.menu[2].itemId != R.id.navigation_profile) {
+            val lastMenuItemIndex = binding.navView.menu.size().minus(1)
+
+            if (it && binding.navView.menu[lastMenuItemIndex].itemId != R.id.navigation_profile) {
                 binding.navView.menu.clear()
                 binding.navView.inflateMenu(R.menu.bottom_nav_auth_menu)
-            } else if (!it && binding.navView.menu[2].itemId != R.id.navigation_settings) {
+            } else if (!it && binding.navView.menu[lastMenuItemIndex].itemId != R.id.navigation_settings) {
                 binding.navView.menu.clear()
                 binding.navView.inflateMenu(R.menu.bottom_nav_menu)
             }
