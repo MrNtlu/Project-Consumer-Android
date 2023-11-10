@@ -6,4 +6,5 @@ interface ReviewInteraction: Interaction<Review> {
     fun onEditClicked(item: Review, position: Int)
     fun onDeleteClicked(item: Review, position: Int)
     fun onLikeClicked(item: Review, position: Int)
+    fun onProfileClicked(item: Review, position: Int)
 }

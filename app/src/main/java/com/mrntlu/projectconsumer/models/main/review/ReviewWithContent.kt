@@ -6,7 +6,7 @@ import com.mrntlu.projectconsumer.interfaces.DiffUtilComparison
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ReviewByContent(
+data class ReviewWithContent(
     val author: Author,
     val star: Int,
     val review: String,
@@ -44,17 +44,17 @@ data class ReviewByContent(
     val updatedAt: String,
 
     val content: ReviewContent,
-): Parcelable, DiffUtilComparison<ReviewByContent> {
+): Parcelable, DiffUtilComparison<ReviewWithContent> {
     constructor(): this(
         Author(), 0, "", 0, arrayListOf(), false, false, "",  "",
         "", null, null, "", "", "", ReviewContent()
     )
 
-    override fun areItemsTheSame(newItem: ReviewByContent): Boolean {
+    override fun areItemsTheSame(newItem: ReviewWithContent): Boolean {
         return id == newItem.id
     }
 
-    override fun areContentsTheSame(newItem: ReviewByContent): Boolean {
+    override fun areContentsTheSame(newItem: ReviewWithContent): Boolean {
         return when {
             id != newItem.id -> false
             star != newItem.star -> false

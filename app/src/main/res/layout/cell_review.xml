@@ -158,7 +158,6 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-
     <TextView
         android:id="@+id/timeTV"
         android:layout_width="0dp"

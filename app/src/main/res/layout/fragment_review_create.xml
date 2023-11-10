@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="?attr/mainBackgroundColor"
-    tools:context=".ui.common.ReviewCreateFragment">
+    tools:context=".ui.review.ReviewCreateFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

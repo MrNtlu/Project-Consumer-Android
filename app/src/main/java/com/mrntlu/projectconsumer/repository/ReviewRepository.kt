@@ -59,6 +59,10 @@ class ReviewRepository @Inject constructor(
         }
     )
 
+    fun getReviewDetails(reviewId: String) = networkResponseFlow {
+        reviewApiService.getReviewDetails(reviewId)
+    }
+
     fun updateReview(body: UpdateReviewBody) = networkResponseFlow {
         reviewApiService.updateReview(body)
     }

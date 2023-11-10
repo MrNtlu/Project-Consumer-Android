@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.mrntlu.projectconsumer.adapters.LegendContentAdapter
+import com.mrntlu.projectconsumer.adapters.ReviewPreviewAdapter
 import com.mrntlu.projectconsumer.models.auth.UserInfo
 import com.mrntlu.projectconsumer.models.auth.UserInfoCommon
+import com.mrntlu.projectconsumer.models.main.review.ReviewWithContent
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
@@ -23,6 +25,7 @@ abstract class BaseProfileFragment<T>: BaseFragment<T>() {
     protected var userInfo: UserInfo? = null
 
     protected var legendContentAdapter: LegendContentAdapter? = null
+    protected var reviewPreviewAdapter: ReviewPreviewAdapter? = null
 
     protected suspend fun setUI(
         profileIV: ImageView,
@@ -85,7 +88,9 @@ abstract class BaseProfileFragment<T>: BaseFragment<T>() {
 
     protected fun setRecyclerView(
         legendContentRV: RecyclerView,
+        reviewRV: RecyclerView,
         onClick: (UserInfoCommon) -> Unit,
+        onReviewClick: (ReviewWithContent) -> Unit,
     ) {
         legendContentRV.apply {
             val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -98,6 +103,19 @@ abstract class BaseProfileFragment<T>: BaseFragment<T>() {
                 onClick(item)
             }
             adapter = legendContentAdapter
+        }
+
+        reviewRV.apply {
+            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = linearLayoutManager
+
+            reviewPreviewAdapter = ReviewPreviewAdapter(
+                userInfo?.reviews ?: arrayListOf(),
+                legendContentRV.context.dpToPxFloat(3f),
+            ) { item ->
+                onReviewClick(item)
+            }
+            adapter = reviewPreviewAdapter
         }
     }
 

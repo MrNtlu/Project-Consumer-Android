@@ -1,6 +1,7 @@
 package com.mrntlu.projectconsumer.models.auth
 
 import com.google.gson.annotations.SerializedName
+import com.mrntlu.projectconsumer.models.main.review.ReviewWithContent
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 
 data class UserInfo(
@@ -47,4 +48,5 @@ data class UserInfo(
     val email: String,
     val image: String?,
     val level: Int,
+    val reviews: List<ReviewWithContent>,
 )

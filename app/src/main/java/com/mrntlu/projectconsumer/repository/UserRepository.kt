@@ -18,6 +18,10 @@ class UserRepository @Inject constructor(
         userApiService.getUserInfo()
     }
 
+    fun getUserProfile(username: String) = networkResponseFlow {
+        userApiService.getUserProfile(username)
+    }
+
     fun updateUserImage(body: UpdateUserImageBody) = networkResponseFlow {
         userApiService.updateUserImage(body)
     }

@@ -26,6 +26,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/mainBackgroundColor"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -584,6 +585,43 @@
                 app:layout_constraintTop_toBottomOf="@+id/seeAllButtonFirst" />
 
             <TextView
+                android:id="@+id/textView23"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/_reviews"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/guideline21"
+                app:layout_constraintTop_toBottomOf="@+id/watchLaterRV" />
+
+            <Button
+                android:id="@+id/reviewButton"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/see_all_cd"
+                android:minHeight="0dp"
+                android:padding="8dp"
+                app:icon="@drawable/ic_arrow_right_24"
+                app:iconTint="?attr/mainTextColor"
+                app:layout_constraintBottom_toBottomOf="@+id/textView23"
+                app:layout_constraintEnd_toStartOf="@+id/guideline22"
+                app:layout_constraintTop_toTopOf="@+id/textView23" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reviewRV"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reviewButton" />
+
+            <TextView
                 android:id="@+id/textView20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -593,7 +631,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/guideline21"
-                app:layout_constraintTop_toBottomOf="@+id/watchLaterRV" />
+                app:layout_constraintTop_toBottomOf="@+id/reviewRV" />
 
             <Button
                 android:id="@+id/legendInfoButton"

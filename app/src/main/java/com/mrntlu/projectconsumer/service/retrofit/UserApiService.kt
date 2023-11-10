@@ -12,6 +12,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.Query
 
 interface UserApiService {
 
@@ -20,6 +21,11 @@ interface UserApiService {
 
     @GET("user/info")
     suspend fun getUserInfo(): Response<DataResponse<UserInfo>>
+
+    @GET("user/profile")
+    suspend fun getUserProfile(
+        @Query("username") username: String,
+    ): Response<DataResponse<UserInfo>>
 
     @PATCH("user/image")
     suspend fun updateUserImage(@Body body: UpdateUserImageBody): Response<MessageResponse>

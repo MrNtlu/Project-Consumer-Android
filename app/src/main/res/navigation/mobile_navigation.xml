@@ -336,6 +336,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_navigation_profile_to_reviewDetailsFragment"
+            app:destination="@id/reviewDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -805,7 +812,7 @@
     </fragment>
     <fragment
         android:id="@+id/reviewFragment"
-        android:name="com.mrntlu.projectconsumer.ui.common.ReviewFragment"
+        android:name="com.mrntlu.projectconsumer.ui.review.ReviewFragment"
         android:label="fragment_review"
         tools:layout="@layout/fragment_review" >
         <argument
@@ -838,10 +845,17 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_reviewFragment_to_reviewDetailsFragment"
+            app:destination="@id/reviewDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/reviewCreateFragment"
-        android:name="com.mrntlu.projectconsumer.ui.common.ReviewCreateFragment"
+        android:name="com.mrntlu.projectconsumer.ui.review.ReviewCreateFragment"
         android:label="fragment_review_create"
         tools:layout="@layout/fragment_review_create" >
         <argument
@@ -875,6 +889,89 @@
         <argument
             android:name="profileUsername"
             app:argType="string" />
+        <action
+            android:id="@+id/action_profileDisplayFragment_to_gameDetailsFragment"
+            app:destination="@id/gameDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profileDisplayFragment_to_animeDetailsFragment"
+            app:destination="@id/animeDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profileDisplayFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profileDisplayFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <argument
+            android:name="isSelf"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_profileDisplayFragment_to_reviewDetailsFragment"
+            app:destination="@id/reviewDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/reviewDetailsFragment"
+        android:name="com.mrntlu.projectconsumer.ui.review.ReviewDetailsFragment"
+        android:label="fragment_review_details"
+        tools:layout="@layout/fragment_review_details" >
+        <action
+            android:id="@+id/action_reviewDetailsFragment_to_profileDisplayFragment"
+            app:destination="@id/profileDisplayFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <argument
+            android:name="reviewId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_reviewDetailsFragment_to_gameDetailsFragment"
+            app:destination="@id/gameDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_reviewDetailsFragment_to_animeDetailsFragment"
+            app:destination="@id/animeDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_reviewDetailsFragment_to_tvDetailsFragment"
+            app:destination="@id/tvDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_reviewDetailsFragment_to_movieDetailsFragment"
+            app:destination="@id/movieDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
 </navigation>

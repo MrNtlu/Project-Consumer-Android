@@ -257,10 +257,17 @@ class ReviewAdapter(
                 )
 
                 binding.premiumAnimation.setVisibilityByCondition(!author.isPremium)
-                binding.likeButton.setVisibilityByCondition(!isAuthenticated)
                 binding.actionLayout.setVisibilityByCondition(!isAuthor)
                 if (!isAuthenticated)
                     binding.actionLayout.setGone()
+
+                binding.authorCV.setSafeOnClickListener {
+                    interaction.onProfileClicked(item, position)
+                }
+
+                binding.authorTV.setSafeOnClickListener {
+                    interaction.onProfileClicked(item, position)
+                }
 
                 binding.likeButton.setImageResource(if (isLiked) R.drawable.ic_like else R.drawable.ic_like_outline)
                 binding.likeButton.isEnabled = isAuthenticated && !isAuthor
@@ -276,8 +283,11 @@ class ReviewAdapter(
 
                 binding.deleteButton.setSafeOnClickListener {
                     binding.root.sendHapticFeedback()
-
                     interaction.onDeleteClicked(item, position)
+                }
+
+                binding.root.setSafeOnClickListener {
+                    interaction.onItemSelected(item, position)
                 }
             }
         }

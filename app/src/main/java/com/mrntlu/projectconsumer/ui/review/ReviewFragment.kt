@@ -1,4 +1,4 @@
-package com.mrntlu.projectconsumer.ui.common
+package com.mrntlu.projectconsumer.ui.review
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -269,7 +269,10 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
                 sharedViewModel.isLoggedIn(),
                 object: ReviewInteraction {
                     override fun onItemSelected(item: Review, position: Int) {
-                        //TODO Implement later, profile redirection
+                        if (navController.currentDestination?.id == R.id.reviewFragment) {
+                            val navWithAction = ReviewFragmentDirections.actionReviewFragmentToReviewDetailsFragment(item.id)
+                            navController.navigate(navWithAction)
+                        }
                     }
 
                     override fun onEditClicked(item: Review, position: Int) {
@@ -345,6 +348,17 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
                                     }
                                 }
                             }
+                        }
+                    }
+
+                    override fun onProfileClicked(item: Review, position: Int) {
+                        if (navController.currentDestination?.id == R.id.reviewFragment) {
+                            val navWithAction = ReviewFragmentDirections.actionReviewFragmentToProfileDisplayFragment(
+                                item.author.username,
+                                isSelf = item.isAuthor
+                            )
+
+                            navController.navigate(navWithAction)
                         }
                     }
 

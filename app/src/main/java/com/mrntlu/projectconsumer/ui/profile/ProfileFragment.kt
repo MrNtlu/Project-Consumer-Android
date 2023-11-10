@@ -19,7 +19,7 @@ import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 import com.mrntlu.projectconsumer.ui.BaseProfileFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
@@ -28,13 +28,16 @@ import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
+import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
@@ -116,6 +119,7 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
                     loadingLayout.setVisible()
                 else if (response is NetworkResponse.Failure)
                     loadingLayout.setGone()
+
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
                 legendContentRV.setVisibilityByCondition(response is NetworkResponse.Failure)
 
@@ -139,31 +143,32 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
                                 gameStatTV, animeStatTV, movieWatchedTV, tvWatchedTV,
                                 animeWatchedTV, gamePlayedTV, profileLevelBar, profileLevelTV,
                             )
+                            withContext(Dispatchers.Main) {
+                                seeAllButtonFirst.setVisibilityByConditionWithAnimation(userInfo?.watchLater?.isEmpty() == true)
+                                reviewButton.setVisibilityByConditionWithAnimation(userInfo?.reviews?.isEmpty() == true)
+                            }
                             setListeners()
                             setRecyclerView(
-                                binding.legendContentRV,
-                            ) { item ->
-                                if (navController.currentDestination?.id == R.id.navigation_profile) {
-                                    when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                                        Constants.ContentType.ANIME -> {
-                                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(item.id)
-                                            navController.navigate(navWithAction)
+                                legendContentRV,
+                                reviewRV,
+                                onClick = { item ->
+                                    if (navController.currentDestination?.id == R.id.navigation_profile) {
+                                        val navWithAction = when(ContentType.fromStringRequest(item.contentType)) {
+                                            ContentType.ANIME -> ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(item.id)
+                                            ContentType.MOVIE -> ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.id)
+                                            ContentType.TV -> ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.id)
+                                            ContentType.GAME -> ProfileFragmentDirections.actionNavigationProfileToGameDetailsFragment(item.id)
                                         }
-                                        Constants.ContentType.MOVIE -> {
-                                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.id)
-                                            navController.navigate(navWithAction)
-                                        }
-                                        Constants.ContentType.TV -> {
-                                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.id)
-                                            navController.navigate(navWithAction)
-                                        }
-                                        Constants.ContentType.GAME -> {
-                                            val navWithAction = ProfileFragmentDirections.actionNavigationProfileToGameDetailsFragment(item.id)
-                                            navController.navigate(navWithAction)
-                                        }
+                                        navController.navigate(navWithAction)
+                                    }
+                                },
+                                onReviewClick = { item ->
+                                    if (navController.currentDestination?.id == R.id.navigation_profile) {
+                                        val navWithAction = ProfileFragmentDirections.actionNavigationProfileToReviewDetailsFragment(item.id)
+                                        navController.navigate(navWithAction)
                                     }
                                 }
-                            }
+                            )
                             consumeLaterAdapter?.setData(userInfo?.watchLater?.toCollection(ArrayList()) ?: arrayListOf())
                             loadingLayout.setGone()
                         }
@@ -284,20 +289,20 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
                     confirmDialog?.dismiss()
 
                     if (navController.currentDestination?.id == R.id.navigation_profile) {
-                        when(Constants.ContentType.fromStringRequest(item.contentType)) {
-                            Constants.ContentType.ANIME -> {
+                        when(ContentType.fromStringRequest(item.contentType)) {
+                            ContentType.ANIME -> {
                                 val navWithAction = ProfileFragmentDirections.actionNavigationProfileToAnimeDetailsFragment(item.contentID)
                                 navController.navigate(navWithAction)
                             }
-                            Constants.ContentType.MOVIE -> {
+                            ContentType.MOVIE -> {
                                 val navWithAction = ProfileFragmentDirections.actionNavigationProfileToMovieDetailsFragment(item.contentID)
                                 navController.navigate(navWithAction)
                             }
-                            Constants.ContentType.TV -> {
+                            ContentType.TV -> {
                                 val navWithAction = ProfileFragmentDirections.actionNavigationProfileToTvDetailsFragment(item.contentID)
                                 navController.navigate(navWithAction)
                             }
-                            Constants.ContentType.GAME -> {
+                            ContentType.GAME -> {
                                 val navWithAction = ProfileFragmentDirections.actionGlobalGameDetailsFragment(item.contentID)
                                 navController.navigate(navWithAction)
                             }
@@ -320,6 +325,7 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
     override fun onDestroyView() {
         legendContentAdapter = null
         consumeLaterAdapter = null
+        reviewPreviewAdapter = null
 
         viewLifecycleOwner.apply {
             sharedViewModel.networkStatus.removeObservers(this)

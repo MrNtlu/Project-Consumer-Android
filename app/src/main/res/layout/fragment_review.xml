@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:background="?attr/mainBackgroundColor"
-    tools:context=".ui.common.ReviewFragment">
+    tools:context=".ui.review.ReviewFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

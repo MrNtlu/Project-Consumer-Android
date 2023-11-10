@@ -54,7 +54,7 @@ class LegendContentAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
             RecyclerViewEnum.View.value -> {
-                (holder as ItemViewHolder).bind(legendContent[position], onClick)
+                (holder as ItemViewHolder).bind(legendContent[position])
             }
             RecyclerViewEnum.Empty.value -> {
                 (holder as EmptyHorizontalViewHolder).setHeight(200f)
@@ -65,7 +65,7 @@ class LegendContentAdapter(
     inner class ItemViewHolder(
         val binding: CellLegendContentBinding,
     ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: UserInfoCommon, onClick: (UserInfoCommon) -> Unit) {
+        fun bind(item: UserInfoCommon) {
             binding.apply {
                 val isRatioDifferent = item.contentType == ContentType.GAME.request
 
