@@ -104,14 +104,14 @@ class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
 
     private suspend fun setUI() = withContext(Dispatchers.Default) {
         reviewDetails?.apply {
-            val authorStr = reviewDetails!!.author.username
+            val authorStr = author.username
             val timeStr = createdAt.convertToHumanReadableDateString(true) ?: createdAt
             val strokeColor = ContextCompat.getColor(
                 binding.root.context,
                 if (isAuthor) R.color.blue500 else android.R.color.transparent
             )
             withContext(Dispatchers.Main) {
-                binding.authorImage.loadWithGlide(reviewDetails!!.author.image, null, binding.authorProgressBar, 0.9f) {
+                binding.authorImage.loadWithGlide(author.image, null, binding.authorProgressBar, 0.9f) {
                     transform(CenterCrop())
                 }
                 binding.authorTV.text = authorStr

@@ -2,6 +2,7 @@ package com.mrntlu.projectconsumer.repository
 
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
 import com.mrntlu.projectconsumer.models.main.review.Review
+import com.mrntlu.projectconsumer.models.main.review.ReviewWithContent
 import com.mrntlu.projectconsumer.models.main.review.retrofit.ReviewBody
 import com.mrntlu.projectconsumer.models.main.review.retrofit.UpdateReviewBody
 import com.mrntlu.projectconsumer.service.retrofit.ReviewApiService
@@ -49,7 +50,7 @@ class ReviewRepository @Inject constructor(
             reviewApiService.getReviewsByUserID(userId, page, sort)
         },
         emptyObjectCreator = {
-            listOf<Review>()
+            listOf<ReviewWithContent>()
         },
         handleResponse = { response ->
             Pair(

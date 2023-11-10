@@ -9,7 +9,7 @@ import com.bumptech.glide.load.resource.bitmap.GranularRoundedCorners
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.viewholders.EmptyHorizontalViewHolder
 import com.mrntlu.projectconsumer.databinding.CellEmptyHorizontalBinding
-import com.mrntlu.projectconsumer.databinding.CellReviewContentBinding
+import com.mrntlu.projectconsumer.databinding.CellReviewContentPreviewBinding
 import com.mrntlu.projectconsumer.models.main.review.ReviewWithContent
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
@@ -31,7 +31,7 @@ class ReviewPreviewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
             RecyclerViewEnum.Empty.value -> EmptyHorizontalViewHolder(CellEmptyHorizontalBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else -> return ItemViewHolder(CellReviewContentBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            else -> return ItemViewHolder(CellReviewContentPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         }
     }
 
@@ -61,7 +61,7 @@ class ReviewPreviewAdapter(
     }
 
     inner class ItemViewHolder(
-        val binding: CellReviewContentBinding,
+        val binding: CellReviewContentPreviewBinding,
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ReviewWithContent) {
             binding.apply {

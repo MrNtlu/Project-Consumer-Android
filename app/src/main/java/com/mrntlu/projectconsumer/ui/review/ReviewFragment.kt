@@ -225,7 +225,6 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
 
                 if (viewModel.didOrientationChange) {
                     binding.reviewsRV.scrollToPosition(viewModel.scrollPosition - 1)
-
                     viewModel.didOrientationChange = false
                 } else if (!response.isPaginating) {
                     binding.reviewsRV.scrollToPosition(viewModel.scrollPosition - 1)
@@ -238,6 +237,8 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
     private fun setListeners() {
         binding.writeReviewFAB.setOnClickListener {
             if (navController.currentDestination?.id == R.id.reviewFragment) {
+                isNavigatingBack = true
+
                 val navWithAction = ReviewFragmentDirections.actionReviewFragmentToReviewCreateFragment(
                     review = null,
                     contentId = args.contentId,
@@ -270,6 +271,8 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
                 object: ReviewInteraction {
                     override fun onItemSelected(item: Review, position: Int) {
                         if (navController.currentDestination?.id == R.id.reviewFragment) {
+                            isNavigatingBack = true
+
                             val navWithAction = ReviewFragmentDirections.actionReviewFragmentToReviewDetailsFragment(item.id)
                             navController.navigate(navWithAction)
                         }
@@ -277,6 +280,8 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
 
                     override fun onEditClicked(item: Review, position: Int) {
                         if (navController.currentDestination?.id == R.id.reviewFragment) {
+                            isNavigatingBack = true
+
                             val navWithAction = ReviewFragmentDirections.actionReviewFragmentToReviewCreateFragment(
                                 review = item,
                                 contentId = args.contentId,
@@ -353,6 +358,8 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
 
                     override fun onProfileClicked(item: Review, position: Int) {
                         if (navController.currentDestination?.id == R.id.reviewFragment) {
+                            isNavigatingBack = true
+
                             val navWithAction = ReviewFragmentDirections.actionReviewFragmentToProfileDisplayFragment(
                                 item.author.username,
                                 isSelf = item.isAuthor

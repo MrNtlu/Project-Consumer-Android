@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:id="@+id/reviewPreviewCV"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="285dp"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="6dp"
+    android:layout_marginVertical="3dp"
+    app:cardElevation="3dp"
+    app:cardCornerRadius="8dp"
+    app:cardBackgroundColor="?attr/subBackgroundColor">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/imageInclude"
+            layout="@layout/cell_preview_item"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:layout_marginTop="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/contentTitleTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout10"
+            app:layout_constraintStart_toEndOf="@+id/imageInclude"
+            app:layout_constraintTop_toTopOf="@+id/imageInclude"
+            tools:text="@tools:sample/full_names" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/contentTitleTV"
+            tools:ignore="UseCompoundDrawables">
+
+            <TextView
+                android:id="@+id/reviewRateTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="3dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView11"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="4" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/rate_star_cd"
+                android:src="@drawable/ic_star_36"
+                app:tint="@color/yellow700" />
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/actionLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="?attr/mainBackgroundColor"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/reviewTV"
+            app:layout_constraintTop_toBottomOf="@+id/reviewTV">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="2dp">
+
+                <ImageButton
+                    android:id="@+id/editButton"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:contentDescription="@string/edit"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_edit"
+                    app:tint="?attr/colorPrimary" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="3dp" />
+
+                <ImageButton
+                    android:id="@+id/deleteButton"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:contentDescription="@string/delete"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_trash"
+                    app:tint="?attr/colorPrimary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/timeTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="?attr/subTextColor"
+            app:layout_constraintEnd_toEndOf="@+id/contentTitleTV"
+            app:layout_constraintStart_toStartOf="@+id/contentTitleTV"
+            app:layout_constraintTop_toBottomOf="@+id/contentTitleTV" />
+
+        <TextView
+            android:id="@+id/reviewTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:lines="3"
+            android:maxLength="1000"
+            android:maxLines="3"
+            android:textColor="?attr/mainTextColor"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout10"
+            app:layout_constraintStart_toStartOf="@+id/imageInclude"
+            app:layout_constraintTop_toBottomOf="@+id/imageInclude"
+            tools:text="@tools:sample/lorem" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageInclude"
+            app:layout_constraintTop_toBottomOf="@+id/reviewTV">
+
+            <ImageButton
+                android:id="@+id/likeButton"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginEnd="3dp"
+                android:contentDescription="@string/like_cd"
+                android:padding="3dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_like_outline"
+                app:tint="?attr/statusDroppedColor" />
+
+            <TextView
+                android:id="@+id/popularityTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dp"
+                android:textColor="?attr/mainTextColor"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="120" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/readButton"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/read_more"
+            android:textSize="12sp"
+            android:paddingVertical="3dp"
+            android:minHeight="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/reviewTV"
+            app:layout_constraintTop_toBottomOf="@+id/reviewTV" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
