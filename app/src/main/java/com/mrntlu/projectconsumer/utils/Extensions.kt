@@ -431,6 +431,10 @@ fun View.setVisible() {
     this.visibility = View.VISIBLE
 }
 
+fun View.setInvisible() {
+    this.visibility = View.INVISIBLE
+}
+
 fun Double.roundOffDecimal(): Double {
     val df = DecimalFormat("#.##")
     df.roundingMode = RoundingMode.CEILING

@@ -19,6 +19,9 @@ data class ReviewWithContent(
     @SerializedName("is_liked")
     val isLiked: Boolean,
 
+    @SerializedName("is_spoiler")
+    val isSpoiler: Boolean,
+
     @SerializedName("_id")
     val id: String,
 
@@ -46,7 +49,7 @@ data class ReviewWithContent(
     val content: ReviewContent,
 ): Parcelable, DiffUtilComparison<ReviewWithContent> {
     constructor(): this(
-        Author(), 0, "", 0, arrayListOf(), false, false, "",  "",
+        Author(), 0, "", 0, arrayListOf(), false, false, false, "",  "",
         "", null, null, "", "", "", ReviewContent()
     )
 
@@ -60,6 +63,7 @@ data class ReviewWithContent(
             star != newItem.star -> false
             review != newItem.review -> false
             isLiked != newItem.isLiked -> false
+            isSpoiler != newItem.isSpoiler -> false
             popularity != newItem.popularity -> false
             contentID != newItem.contentID -> false
             likes.toSet() != newItem.likes.toSet() -> false

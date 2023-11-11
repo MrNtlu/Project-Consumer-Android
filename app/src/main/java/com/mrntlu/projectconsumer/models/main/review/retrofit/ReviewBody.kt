@@ -15,6 +15,9 @@ data class ReviewBody(
     @SerializedName("content_type")
     val contentType: String,
 
+    @SerializedName("is_spoiler")
+    val isSpoiler: Boolean,
+
     val star: Int,
     val review: String,
 )

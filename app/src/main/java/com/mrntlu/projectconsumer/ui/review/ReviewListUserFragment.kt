@@ -25,7 +25,7 @@ import com.mrntlu.projectconsumer.interfaces.ReviewWithContentInteraction
 import com.mrntlu.projectconsumer.models.main.review.ReviewWithContent
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.REVIEW_PAGINATION_LIMIT
 import com.mrntlu.projectconsumer.utils.Constants.SortReviewRequests
 import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.dpToPx
@@ -157,6 +157,7 @@ class ReviewListUserFragment : BaseFragment<FragmentListBinding>() {
     private fun setToolbar(username: String) {
         binding.listToolbar.apply {
             title = "$username's Reviews"
+            inflateMenu(R.menu.sort_toolbar_menu)
 
             setNavigationOnClickListener { navController.popBackStack() }
 
@@ -244,6 +245,7 @@ class ReviewListUserFragment : BaseFragment<FragmentListBinding>() {
     private fun setRecyclerView() {
         binding.listRV.apply {
             val linearLayoutManager = LinearLayoutManager(this.context)
+            layoutManager = linearLayoutManager
 
             val divider = MaterialDividerItemDecoration(this.context, LinearLayoutManager.VERTICAL)
             divider.apply {
@@ -311,7 +313,7 @@ class ReviewListUserFragment : BaseFragment<FragmentListBinding>() {
 
                     val isScrollingUp = dy <= -90
                     val isScrollingDown = dy >= 10
-                    val isThresholdPassed = lastVisibleItemPosition > Constants.REVIEW_PAGINATION_LIMIT
+                    val isThresholdPassed = lastVisibleItemPosition > REVIEW_PAGINATION_LIMIT
 
                     if (isThresholdPassed && isScrollingUp)
                         binding.topFAB.show()

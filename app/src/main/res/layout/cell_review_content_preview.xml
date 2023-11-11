@@ -78,15 +78,15 @@
             android:id="@+id/actionLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"
             android:visibility="gone"
             app:cardBackgroundColor="?attr/mainBackgroundColor"
             app:cardCornerRadius="6dp"
             app:cardElevation="1dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/reviewTV"
-            app:layout_constraintTop_toBottomOf="@+id/reviewTV">
+            app:layout_constraintBottom_toBottomOf="@+id/readButton"
+            app:layout_constraintStart_toEndOf="@+id/linearLayout11"
+            app:layout_constraintTop_toTopOf="@+id/readButton"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -153,6 +153,32 @@
             app:layout_constraintTop_toBottomOf="@+id/imageInclude"
             tools:text="@tools:sample/lorem" />
 
+        <TextView
+            android:id="@+id/reviewSpoilerTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/contains_spoiler_warning"
+            android:textAlignment="center"
+            android:textColor="?attr/messageBoxBackgroundColor"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:lines="3"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout10"
+            app:layout_constraintStart_toStartOf="@+id/imageInclude"
+            app:layout_constraintTop_toBottomOf="@+id/imageInclude"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/reviewBarrier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="reviewTV, reviewSpoilerTV" />
+
         <LinearLayout
             android:id="@+id/linearLayout11"
             android:layout_width="wrap_content"
@@ -163,7 +189,7 @@
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/imageInclude"
-            app:layout_constraintTop_toBottomOf="@+id/reviewTV">
+            app:layout_constraintTop_toBottomOf="@+id/reviewBarrier">
 
             <ImageButton
                 android:id="@+id/likeButton"
@@ -188,17 +214,20 @@
                 tools:text="120" />
         </LinearLayout>
 
-        <Button
+        <TextView
             android:id="@+id/readButton"
-            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/read_more"
-            android:textSize="12sp"
-            android:paddingVertical="3dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
             android:minHeight="0dp"
+            android:paddingVertical="3dp"
+            android:text="@string/read_more"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="12sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/reviewTV"
-            app:layout_constraintTop_toBottomOf="@+id/reviewTV" />
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout10"
+            app:layout_constraintTop_toBottomOf="@+id/reviewBarrier" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

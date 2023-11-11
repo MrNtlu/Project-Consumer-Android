@@ -16,9 +16,9 @@ import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setInvisible
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
-import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileDisplayViewModel
@@ -168,9 +168,12 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
     private fun setUI() {
         binding.apply {
             profileFriendRequestButton.setVisibilityByCondition(args.isSelf)
-            profileDisplayToolbar.subtitle = userInfo?.username
-            seeAllButtonFirst.setVisibilityByConditionWithAnimation(userInfo?.reviews?.isEmpty() == true)
             premiumAnimation.setVisibilityByCondition(userInfo?.isPremium == false)
+            profileDisplayToolbar.subtitle = userInfo?.username
+            if (userInfo?.reviews?.isNotEmpty() == true)
+                seeAllButtonFirst.setVisible()
+            else
+                seeAllButtonFirst.setInvisible()
         }
     }
 
@@ -179,7 +182,10 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
             profileDisplayToolbar.setNavigationOnClickListener { navController.popBackStack() }
 
             seeAllButtonFirst.setSafeOnClickListener {
-                //TODO User all reviews
+                if (navController.currentDestination?.id == R.id.profileDisplayFragment) {
+                    val navWithAction = ProfileDisplayFragmentDirections.actionProfileDisplayFragmentToReviewListUserFragment(userInfo!!.id)
+                    navController.navigate(navWithAction)
+                }
             }
 
             profileFriendRequestButton.setSafeOnClickListener {

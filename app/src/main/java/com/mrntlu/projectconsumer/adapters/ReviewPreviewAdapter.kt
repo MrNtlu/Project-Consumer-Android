@@ -16,7 +16,9 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setInvisible
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
+import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
 
 class ReviewPreviewAdapter(
@@ -100,6 +102,11 @@ class ReviewPreviewAdapter(
                 reviewRateTV.text = item.star.toString()
                 popularityTV.text = item.popularity.toString()
                 reviewTV.text = item.review
+                binding.reviewSpoilerTV.setVisibilityByCondition(!item.isSpoiler)
+                if (item.isSpoiler)
+                    binding.reviewTV.setInvisible()
+                else
+                    binding.reviewTV.setVisible()
 
                 likeButton.setImageResource(if (item.isLiked) R.drawable.ic_like else R.drawable.ic_like_outline)
                 likeButton.isEnabled = false

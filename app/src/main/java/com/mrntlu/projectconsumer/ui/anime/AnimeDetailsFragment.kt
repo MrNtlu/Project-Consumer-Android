@@ -103,6 +103,13 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
         setObservers()
     }
 
+    override fun onStart() {
+        if (shouldFetchData)
+            viewModel.getAnimeDetails(args.animeId)
+
+        super.onStart()
+    }
+
     private fun setToolbar() {
         binding.animeDetailsToolbar.apply {
             setNavigationIcon(R.drawable.ic_arrow_back_24)
@@ -138,6 +145,7 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
         viewModel.animeDetails.observe(viewLifecycleOwner) { response ->
             binding.apply {
+                shouldFetchData = false
                 isResponseFailed = response is NetworkResponse.Failure
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
 
@@ -300,12 +308,15 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
             reviewSummaryLayout.seeAllButton.setSafeOnClickListener {
                 if (animeDetails != null) {
+                    shouldFetchData = true
+
                     val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToReviewFragment(
                         contentId = animeDetails!!.id,
                         contentExternalId = null,
                         contentExternalIntId = animeDetails!!.malID,
                         contentType = ContentType.ANIME.request,
                         contentTitle = animeDetails!!.titleEn,
+                        isAlreadyReviewed = animeDetails!!.reviews.isReviewed
                     )
                     navController.navigate(navWithAction)
                 }
@@ -313,6 +324,8 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
 
             reviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
                 if (animeDetails != null) {
+                    shouldFetchData = true
+
                     val navWithAction = AnimeDetailsFragmentDirections.actionAnimeDetailsFragmentToReviewCreateFragment(
                         review = animeDetails!!.reviews.review,
                         contentId = animeDetails!!.id,

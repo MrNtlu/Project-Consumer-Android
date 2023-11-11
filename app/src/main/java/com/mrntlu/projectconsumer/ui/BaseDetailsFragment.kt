@@ -52,6 +52,7 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
     protected val detailsConsumeLaterViewModel: DetailsConsumeLaterViewModel by viewModels()
 
     protected var isResponseFailed = false
+    protected var shouldFetchData = false
     protected lateinit var countryCode: String
 
     private var consumeLaterDeleteLiveData: LiveData<NetworkResponse<MessageResponse>>? = null

@@ -26,9 +26,9 @@ import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.hideKeyboard
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setInvisible
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
-import com.mrntlu.projectconsumer.utils.setVisibilityByConditionWithAnimation
 import com.mrntlu.projectconsumer.utils.setVisible
 import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
@@ -144,8 +144,15 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
                                 animeWatchedTV, gamePlayedTV, profileLevelBar, profileLevelTV,
                             )
                             withContext(Dispatchers.Main) {
-                                seeAllButtonFirst.setVisibilityByConditionWithAnimation(userInfo?.watchLater?.isEmpty() == true)
-                                reviewButton.setVisibilityByConditionWithAnimation(userInfo?.reviews?.isEmpty() == true)
+                                if (userInfo?.watchLater?.isNotEmpty() == true)
+                                    seeAllButtonFirst.setVisible()
+                                else
+                                    seeAllButtonFirst.setInvisible()
+
+                                if (userInfo?.reviews?.isNotEmpty() == true)
+                                    reviewButton.setVisible()
+                                else
+                                    reviewButton.setInvisible()
                             }
                             setListeners()
                             setRecyclerView(
@@ -195,6 +202,13 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
             seeAllButtonFirst.setSafeOnClickListener {
                 if (navController.currentDestination?.id == R.id.navigation_profile) {
                     navController.navigate(R.id.action_navigation_profile_to_navigation_later)
+                }
+            }
+
+            reviewButton.setSafeOnClickListener {
+                if (navController.currentDestination?.id == R.id.navigation_profile) {
+                    val navWithAction = ProfileFragmentDirections.actionNavigationProfileToReviewListUserFragment(userInfo!!.id)
+                    navController.navigate(navWithAction)
                 }
             }
 

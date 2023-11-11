@@ -73,10 +73,21 @@ class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
 
         viewModel.reviewDetails.observe(viewLifecycleOwner) { response ->
             binding.apply {
+                if (response is NetworkResponse.Loading)
+                    loadingLayout.setVisible()
+                else if (response is NetworkResponse.Failure)
+                    loadingLayout.setGone()
 
+                errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
                 when(response) {
                     is NetworkResponse.Failure -> {
-                        printLog("Error ${response.errorMessage}")
+                        errorLayoutInc.apply {
+                            cancelButton.setGone()
+
+                            errorText.text = response.errorMessage
+
+                            setListeners()
+                        }
                     }
                     is NetworkResponse.Success -> {
                         reviewDetails = response.data.data
@@ -85,6 +96,7 @@ class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
                             setUI()
                             setToolbar()
                             setListeners()
+                            loadingLayout.setGone()
                         }
                     }
                     else -> {}
@@ -206,6 +218,10 @@ class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
                         }
                     }
                 }
+            }
+
+            errorLayoutInc.refreshButton.setSafeOnClickListener {
+                viewModel.getReviewDetails(args.reviewId)
             }
 
             deleteButton.setSafeOnClickListener {

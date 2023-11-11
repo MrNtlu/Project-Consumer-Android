@@ -121,6 +121,10 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
     override fun onStart() {
         if (gameDetails != null)
             setImage(gameDetails!!.imageURL)
+
+        if (shouldFetchData)
+            viewModel.getGameDetails(args.gameId)
+
         super.onStart()
     }
 
@@ -136,6 +140,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
 
         viewModel.gameDetails.observe(viewLifecycleOwner) { response ->
             binding.apply {
+                shouldFetchData = false
                 isResponseFailed = response is NetworkResponse.Failure
                 toggleCollapsingLayoutScroll(detailsCollapsingToolbar, response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
@@ -364,6 +369,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             reviewSummaryLayout.seeAllButton.setSafeOnClickListener {
                 if (gameDetails != null) {
                     isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                    shouldFetchData = true
 
                     val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToReviewFragment(
                         contentId = gameDetails!!.id,
@@ -371,6 +377,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
                         contentExternalIntId = gameDetails!!.rawgID,
                         contentType = ContentType.GAME.request,
                         contentTitle = gameDetails!!.title,
+                        isAlreadyReviewed = gameDetails!!.reviews.isReviewed
                     )
                     navController.navigate(navWithAction)
                 }
@@ -379,6 +386,7 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             reviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
                 if (gameDetails != null) {
                     isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                    shouldFetchData = true
 
                     val navWithAction = GameDetailsFragmentDirections.actionGameDetailsFragmentToReviewCreateFragment(
                         review = gameDetails!!.reviews.review,

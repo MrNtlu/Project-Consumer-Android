@@ -90,18 +90,20 @@
         <TextView
             android:id="@+id/reviewTV"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:background="?attr/shimmerColor"
             android:maxLength="1000"
             android:textSize="16sp"
+            android:lines="3"
             app:layout_constraintEnd_toEndOf="@+id/linearLayout10"
             app:layout_constraintStart_toStartOf="@+id/authorCV"
             app:layout_constraintTop_toBottomOf="@+id/authorCV" />
 
         <LinearLayout
+            android:id="@+id/linearLayout13"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -115,22 +117,37 @@
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:layout_marginEnd="3dp"
+                android:contentDescription="@string/like_cd"
                 android:padding="3dp"
                 android:scaleType="fitXY"
-                app:tint="?attr/shimmerColor"
-                android:layout_marginEnd="3dp"
                 android:src="@drawable/ic_like_outline"
-                android:contentDescription="@string/like_cd" />
+                app:tint="?attr/shimmerColor" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="XX"
                 android:layout_marginBottom="1dp"
+                android:text="XX"
                 android:textColor="?attr/shimmerColor"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/readButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="6dp"
+            android:minHeight="0dp"
+            android:paddingVertical="3dp"
+            android:text="@string/read_more"
+            android:textColor="?attr/shimmerColor"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout13"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout10"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout13" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.facebook.shimmer.ShimmerFrameLayout>

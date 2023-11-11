@@ -5,6 +5,9 @@ import com.mrntlu.projectconsumer.models.main.review.ReviewWithContent
 import com.mrntlu.projectconsumer.models.main.userInteraction.ConsumeLaterResponse
 
 data class UserInfo(
+    @SerializedName("_id")
+    val id: String,
+
     @SerializedName("is_premium")
     val isPremium: Boolean,
 
@@ -48,5 +51,5 @@ data class UserInfo(
     val email: String,
     val image: String?,
     val level: Int,
-    val reviews: List<ReviewWithContent>,
+    val reviews: List<ReviewWithContent>?,
 )

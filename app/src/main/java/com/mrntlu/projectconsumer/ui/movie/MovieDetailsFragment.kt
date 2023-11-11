@@ -119,6 +119,10 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
     override fun onStart() {
         if (movieDetails != null)
             setImage(movieDetails!!.backdrop, movieDetails!!.imageURL)
+
+        if (shouldFetchData)
+            viewModel.getMovieDetails(args.movieId)
+
         super.onStart()
     }
 
@@ -134,6 +138,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
         viewModel.movieDetails.observe(viewLifecycleOwner) { response ->
             binding.apply {
+                shouldFetchData = false
                 isResponseFailed = response is NetworkResponse.Failure
                 toggleCollapsingLayoutScroll(detailsCollapsingToolbar, response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
@@ -375,6 +380,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             reviewSummaryLayout.seeAllButton.setSafeOnClickListener {
                 if (movieDetails != null) {
                     isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                    shouldFetchData = true
 
                     val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToReviewFragment(
                         contentId = movieDetails!!.id,
@@ -382,6 +388,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         contentExternalIntId = -1,
                         contentType = ContentType.MOVIE.request,
                         contentTitle = movieDetails!!.title,
+                        isAlreadyReviewed = movieDetails!!.reviews.isReviewed
                     )
                     navController.navigate(navWithAction)
                 }
@@ -390,6 +397,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             reviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
                 if (movieDetails != null) {
                     isAppBarLifted = binding.detailsAppBarLayout.isLifted
+                    shouldFetchData = true
 
                     val navWithAction = MovieDetailsFragmentDirections.actionMovieDetailsFragmentToReviewCreateFragment(
                         review = movieDetails!!.reviews.review,
@@ -397,7 +405,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
                         contentExternalId = movieDetails!!.tmdbID,
                         contentExternalIntId = -1,
                         contentType = ContentType.MOVIE.request,
-                        contentTitle = movieDetails!!.title
+                        contentTitle = movieDetails!!.title,
                     )
                     navController.navigate(navWithAction)
                 }

@@ -42,6 +42,9 @@ class ReviewCreateFragment : BaseFragment<FragmentReviewCreateBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.let {
+            dialog = LoadingDialog(it)
+        }
 
         setToolbar()
         setUI()
@@ -68,6 +71,7 @@ class ReviewCreateFragment : BaseFragment<FragmentReviewCreateBinding>() {
             if (args.review != null) {
                 ratingBar.rating = args.review!!.star.toFloat()
                 reviewET.setText(args.review!!.review)
+                spoilerCheckBox.isChecked = args.review!!.isSpoiler
             }
         }
     }
@@ -90,7 +94,11 @@ class ReviewCreateFragment : BaseFragment<FragmentReviewCreateBinding>() {
                             viewModel.updateReview(UpdateReviewBody(
                                 args.review!!.id,
                                 reviewET.text!!.toString(),
-                                ratingBar.rating.toInt()
+                                ratingBar.rating.toInt(),
+                                if (args.review!!.isSpoiler != spoilerCheckBox.isChecked)
+                                    spoilerCheckBox.isChecked
+                                else
+                                    null
                             ))
                         } else {
                             viewModel.createReview(ReviewBody(
@@ -98,6 +106,7 @@ class ReviewCreateFragment : BaseFragment<FragmentReviewCreateBinding>() {
                                 args.contentExternalId,
                                 args.contentExternalIntId,
                                 args.contentType,
+                                spoilerCheckBox.isChecked,
                                 ratingBar.rating.toInt(),
                                 reviewET.text!!.toString(),
                             ))

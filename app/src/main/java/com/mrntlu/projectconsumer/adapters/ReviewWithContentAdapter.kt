@@ -259,6 +259,9 @@ class ReviewWithContentAdapter(
                 popularityTV.text = item.popularity.toString()
                 reviewTV.text = item.review
 
+                binding.reviewSpoilerTV.setVisibilityByCondition(!item.isSpoiler)
+                binding.reviewTV.setVisibilityByCondition(item.isSpoiler)
+
                 likeButton.setImageResource(if (item.isLiked) R.drawable.ic_like else R.drawable.ic_like_outline)
                 likeButton.isEnabled = isAuthenticated && !item.isAuthor
                 binding.likeButton.setSafeOnClickListener {

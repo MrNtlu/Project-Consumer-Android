@@ -485,6 +485,8 @@
     <string name="authenticate_home_info">Sign in or Sign up now to access all features.</string>
     <string name="authenticated_home_info">Vote now and decide new features!</string>
     <string name="send_friend_request">Send Friend Request</string>
+    <string name="mark_spoiler_description">SPOILER! This will mark your review as spoiler.</string>
+    <string name="contains_spoiler_warning">This review contains spoiler! Tap to see it.</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

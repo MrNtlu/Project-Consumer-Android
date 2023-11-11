@@ -16,6 +16,9 @@ data class Review(
     @SerializedName("is_author")
     val isAuthor: Boolean,
 
+    @SerializedName("is_spoiler")
+    val isSpoiler: Boolean,
+
     @SerializedName("is_liked")
     val isLiked: Boolean,
 
@@ -44,7 +47,7 @@ data class Review(
     val updatedAt: String,
 ): Parcelable, DiffUtilComparison<Review> {
     constructor(): this(
-        Author(), 0, "", 0, arrayListOf(), false, false, "",  "",
+        Author(), 0, "", 0, arrayListOf(), false, false,false, "",  "",
         "", null, null, "", "", ""
     )
 

@@ -127,6 +127,10 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
     override fun onStop() {
         if (tvDetails?.imageURL != null)
             Glide.with(this).clear(binding.tvDetailsToolbarIV)
+
+        if (shouldFetchData)
+            viewModel.getTVDetails(args.tvId)
+
         super.onStop()
     }
 
@@ -136,6 +140,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
 
         viewModel.tvDetails.observe(viewLifecycleOwner) { response ->
             binding.apply {
+                shouldFetchData = false
                 isResponseFailed = response is NetworkResponse.Failure
                 toggleCollapsingLayoutScroll(tvDetailsCollapsingToolbar, response !is NetworkResponse.Loading)
                 errorLayout.setVisibilityByCondition(response !is NetworkResponse.Failure)
@@ -377,6 +382,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             tvReviewSummaryLayout.seeAllButton.setSafeOnClickListener {
                 if (tvDetails != null) {
                     isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
+                    shouldFetchData = true
 
                     val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToReviewFragment(
                         contentId = tvDetails!!.id,
@@ -384,6 +390,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
                         contentExternalIntId = -1,
                         contentType = ContentType.TV.request,
                         contentTitle = tvDetails!!.title,
+                        isAlreadyReviewed = tvDetails!!.reviews.isReviewed
                     )
                     navController.navigate(navWithAction)
                 }
@@ -392,6 +399,7 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             tvReviewSummaryLayout.writeReviewButton.setSafeOnClickListener {
                 if (tvDetails != null) {
                     isAppBarLifted = binding.tvDetailsAppBarLayout.isLifted
+                    shouldFetchData = true
 
                     val navWithAction = TVSeriesDetailsFragmentDirections.actionTvDetailsFragmentToReviewCreateFragment(
                         review = tvDetails!!.reviews.review,

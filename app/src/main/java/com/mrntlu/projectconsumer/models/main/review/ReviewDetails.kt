@@ -12,6 +12,9 @@ data class ReviewDetails(
     @SerializedName("is_author")
     val isAuthor: Boolean,
 
+    @SerializedName("is_spoiler")
+    var isSpoiler: Boolean,
+
     @SerializedName("is_liked")
     var isLiked: Boolean,
 
@@ -42,7 +45,7 @@ data class ReviewDetails(
     val content: ReviewContent,
 ) {
     constructor(): this(
-        Author(), 0, "", 0, arrayListOf(), false, false, "",  "",
+        Author(), 0, "", 0, arrayListOf(), false, false, false, "",  "",
         "", "", null, null,  "", "", ReviewContent()
     )
 }

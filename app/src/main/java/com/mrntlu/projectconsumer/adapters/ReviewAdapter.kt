@@ -244,6 +244,8 @@ class ReviewAdapter(
                 binding.popularityTV.text = popularity.toString()
 
                 binding.reviewTV.text = review
+                binding.reviewSpoilerTV.setVisibilityByCondition(!isSpoiler)
+                binding.reviewTV.setVisibilityByCondition(isSpoiler)
 
                 binding.authorCV.strokeColor = ContextCompat.getColor(
                     binding.root.context,
