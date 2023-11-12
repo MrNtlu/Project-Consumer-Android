@@ -7,24 +7,30 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.mrntlu.projectconsumer.R
+import com.mrntlu.projectconsumer.adapters.LikeUserStackAdapter
+import com.mrntlu.projectconsumer.adapters.decorations.OverlapDecoration
 import com.mrntlu.projectconsumer.databinding.FragmentReviewDetailsBinding
+import com.mrntlu.projectconsumer.models.auth.BasicUserInfo
 import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
+import com.mrntlu.projectconsumer.models.main.review.Author
 import com.mrntlu.projectconsumer.models.main.review.ReviewDetails
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
+import com.mrntlu.projectconsumer.utils.Constants.ProfileImageList
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.loadWithGlide
-import com.mrntlu.projectconsumer.utils.printLog
 import com.mrntlu.projectconsumer.utils.sendHapticFeedback
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
@@ -34,6 +40,7 @@ import com.mrntlu.projectconsumer.utils.showConfirmationDialog
 import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showSuccessDialog
 import com.mrntlu.projectconsumer.viewmodels.main.review.ReviewDetailsViewModel
+import com.mrntlu.projectconsumer.viewmodels.shared.UserSharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,13 +49,16 @@ import kotlinx.coroutines.withContext
 @AndroidEntryPoint
 class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
 
+    private val userSharedViewModel: UserSharedViewModel by activityViewModels()
     private val viewModel: ReviewDetailsViewModel by viewModels()
     private val args: ReviewDetailsFragmentArgs by navArgs()
 
     private var confirmDialog: AlertDialog? = null
     private lateinit var dialog: LoadingDialog
+    private var userStackAdapter: LikeUserStackAdapter? = null
 
     private var reviewDetails: ReviewDetails? = null
+    private var basicUserInfo: BasicUserInfo? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,12 +106,18 @@ class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
                             setUI()
                             setToolbar()
                             setListeners()
+                            setRecyclerView(reviewDetails!!.likes)
                             loadingLayout.setGone()
                         }
                     }
                     else -> {}
                 }
             }
+        }
+
+        userSharedViewModel.userInfoResponse.observe(viewLifecycleOwner) { response ->
+            if (response is NetworkResponse.Success)
+                basicUserInfo = response.data.data
         }
     }
 
@@ -215,6 +231,27 @@ class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
                             reviewDetails?.isLiked = response.data.data.isLiked
                             reviewDetails?.popularity = response.data.data.popularity
                             handleLikeButton()
+
+                            if (basicUserInfo != null && reviewDetails != null) {
+                                viewModel.viewModelScope.launch {
+                                    val likeList = reviewDetails!!.likes
+                                    if (response.data.data.isLiked) {
+                                        likeList.add(Author(
+                                            basicUserInfo!!.image ?: ProfileImageList[0],
+                                            basicUserInfo!!.username,
+                                            basicUserInfo!!.email,
+                                            "temp_id_holder",
+                                            basicUserInfo!!.isPremium
+                                        ))
+                                    } else {
+                                        likeList.removeIf {
+                                            it.username == basicUserInfo!!.username &&
+                                            it.email == basicUserInfo!!.email
+                                        }
+                                    }
+                                    userStackAdapter?.handleOperation(likeList)
+                                }
+                            }
                         }
                     }
                 }
@@ -294,9 +331,28 @@ class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
         }
     }
 
-    override fun onDestroyView() {
-        viewModel.reviewDetails.removeObservers(viewLifecycleOwner)
+    private fun setRecyclerView(authorList: List<Author>) {
+        binding.likeUserRV.apply {
+            val linearLayoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
+                override fun canScrollHorizontally(): Boolean {
+                    return false
+                }
+            }
+            addItemDecoration(OverlapDecoration())
+            layoutManager = linearLayoutManager
 
+            userStackAdapter = LikeUserStackAdapter(authorList.toCollection(ArrayList()))
+            adapter = userStackAdapter
+        }
+    }
+
+    override fun onDestroyView() {
+        viewLifecycleOwner.apply {
+            viewModel.reviewDetails.removeObservers(this)
+            userSharedViewModel.userInfoResponse.removeObservers(this)
+        }
+
+        userStackAdapter = null
         confirmDialog?.dismiss()
         confirmDialog = null
         super.onDestroyView()

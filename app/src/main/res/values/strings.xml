@@ -487,6 +487,11 @@
     <string name="send_friend_request">Send Friend Request</string>
     <string name="mark_spoiler_description">SPOILER! This will mark your review as spoiler.</string>
     <string name="contains_spoiler_warning">This review contains spoiler! Tap to see it.</string>
+    <string name="share_profile">Share Profile</string>
+    <string name="share_movie">Share Movie</string>
+    <string name="share_tv_series">Share TV Series</string>
+    <string name="share_anime">Share Anime</string>
+    <string name="share_game">Share Game</string>
 
     <string-array name="score_list">
         <item>@string/select</item>

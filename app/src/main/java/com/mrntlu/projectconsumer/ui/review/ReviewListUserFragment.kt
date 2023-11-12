@@ -22,16 +22,24 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ReviewWithContentAdapter
 import com.mrntlu.projectconsumer.databinding.FragmentListBinding
 import com.mrntlu.projectconsumer.interfaces.ReviewWithContentInteraction
+import com.mrntlu.projectconsumer.models.common.retrofit.IDBody
+import com.mrntlu.projectconsumer.models.main.review.Review
 import com.mrntlu.projectconsumer.models.main.review.ReviewWithContent
 import com.mrntlu.projectconsumer.ui.BaseFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
+import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.Constants.REVIEW_PAGINATION_LIMIT
 import com.mrntlu.projectconsumer.utils.Constants.SortReviewRequests
+import com.mrntlu.projectconsumer.utils.NetworkResponse
+import com.mrntlu.projectconsumer.utils.Operation
+import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.Orientation
 import com.mrntlu.projectconsumer.utils.dpToPx
 import com.mrntlu.projectconsumer.utils.dpToPxFloat
 import com.mrntlu.projectconsumer.utils.isFailed
 import com.mrntlu.projectconsumer.utils.isSuccessful
+import com.mrntlu.projectconsumer.utils.showConfirmationDialog
+import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.viewmodels.main.review.ReviewListUserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -245,7 +253,6 @@ class ReviewListUserFragment : BaseFragment<FragmentListBinding>() {
     private fun setRecyclerView() {
         binding.listRV.apply {
             val linearLayoutManager = LinearLayoutManager(this.context)
-            layoutManager = linearLayoutManager
 
             val divider = MaterialDividerItemDecoration(this.context, LinearLayoutManager.VERTICAL)
             divider.apply {
@@ -254,42 +261,159 @@ class ReviewListUserFragment : BaseFragment<FragmentListBinding>() {
             }
             addItemDecoration(divider)
 
+            layoutManager = linearLayoutManager
+
             reviewWithContentAdapter = ReviewWithContentAdapter(
                 sharedViewModel.isLoggedIn(),
                 context.dpToPxFloat(6f),
                 object: ReviewWithContentInteraction {
                     override fun onEditClicked(item: ReviewWithContent, position: Int) {
-                        TODO("Not yet implemented")
+                        if (navController.currentDestination?.id == R.id.reviewListUserFragment) {
+                            isNavigatingBack = true
+
+                            val navWithAction = ReviewListUserFragmentDirections.actionReviewListUserFragmentToReviewCreateFragment(
+                                review = Review(
+                                    item.author,
+                                    item.star,
+                                    item.review,
+                                    item.popularity,
+                                    item.likes,
+                                    item.isAuthor,
+                                    item.isSpoiler,
+                                    item.isLiked,
+                                    item.id,
+                                    item.userID,
+                                    item.contentID,
+                                    item.contentExternalID,
+                                    item.contentExternalIntID,
+                                    item.contentType,
+                                    item.createdAt,
+                                    item.updatedAt
+                                ),
+                                contentId = item.contentID,
+                                contentExternalId = item.contentExternalID,
+                                contentExternalIntId = item.contentExternalIntID ?: -1,
+                                contentType = item.contentType,
+                                contentTitle = item.content.titleEn,
+                            )
+                            navController.navigate(navWithAction)
+                        }
                     }
 
                     override fun onDeleteClicked(item: ReviewWithContent, position: Int) {
-                        TODO("Not yet implemented")
+                        if (confirmDialog != null && confirmDialog?.isShowing == true) {
+                            confirmDialog?.dismiss()
+                            confirmDialog = null
+                        }
+
+                        confirmDialog = context?.showConfirmationDialog(getString(R.string.do_you_want_to_delete)) {
+                            val deleteReviewLiveData = viewModel.deleteReview(IDBody(item.id))
+
+                            deleteReviewLiveData.observe(viewLifecycleOwner) { response ->
+                                when(response) {
+                                    is NetworkResponse.Failure -> {
+                                        if (::dialog.isInitialized)
+                                            dialog.dismissDialog()
+
+                                        context?.showErrorDialog(response.errorMessage)
+                                    }
+                                    NetworkResponse.Loading -> {
+                                        if (::dialog.isInitialized)
+                                            dialog.showLoadingDialog()
+                                    }
+                                    is NetworkResponse.Success -> {
+                                        if (::dialog.isInitialized)
+                                            dialog.dismissDialog()
+
+                                        viewModel.viewModelScope.launch {
+                                            reviewWithContentAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     override fun onLikeClicked(item: ReviewWithContent, position: Int) {
-                        TODO("Not yet implemented")
+                        val voteLiveData = viewModel.voteReview(IDBody(item.id))
+
+                        voteLiveData.observe(viewLifecycleOwner) { response ->
+                            when(response) {
+                                is NetworkResponse.Failure -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    context?.showErrorDialog(response.errorMessage)
+                                }
+                                NetworkResponse.Loading -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.showLoadingDialog()
+                                }
+                                is NetworkResponse.Success -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    viewModel.viewModelScope.launch {
+                                        val updatedReview = response.data.data
+                                        val reviewWithContent = ReviewWithContent(
+                                            updatedReview.author,
+                                            updatedReview.star,
+                                            updatedReview.review,
+                                            updatedReview.popularity,
+                                            updatedReview.likes,
+                                            updatedReview.isAuthor,
+                                            updatedReview.isLiked,
+                                            updatedReview.isSpoiler,
+                                            updatedReview.id,
+                                            updatedReview.userID,
+                                            updatedReview.contentID,
+                                            updatedReview.contentExternalID,
+                                            updatedReview.contentExternalIntID,
+                                            updatedReview.contentType,
+                                            updatedReview.createdAt,
+                                            updatedReview.updatedAt,
+                                            item.content,
+                                        )
+
+                                        reviewWithContentAdapter?.handleOperation(Operation(reviewWithContent, position, OperationEnum.Update))
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     override fun onContentClicked(item: ReviewWithContent, position: Int) {
-                        TODO("Not yet implemented")
+                        if (navController.currentDestination?.id == R.id.reviewListUserFragment) {
+                            val contentId = item.contentID
+
+                            val navWithAction = when(ContentType.fromStringRequest(item.contentType)) {
+                                ContentType.ANIME -> ReviewListUserFragmentDirections.actionReviewListUserFragmentToAnimeDetailsFragment(contentId)
+                                ContentType.MOVIE -> ReviewListUserFragmentDirections.actionReviewListUserFragmentToMovieDetailsFragment(contentId)
+                                ContentType.TV -> ReviewListUserFragmentDirections.actionReviewListUserFragmentToTvDetailsFragment(contentId)
+                                ContentType.GAME -> ReviewListUserFragmentDirections.actionReviewListUserFragmentToGameDetailsFragment(contentId)
+                            }
+                            navController.navigate(navWithAction)
+                        }
                     }
 
                     override fun onItemSelected(item: ReviewWithContent, position: Int) {
-                        TODO("Not yet implemented")
+                        if (navController.currentDestination?.id == R.id.reviewListUserFragment) {
+                            isNavigatingBack = true
+
+                            val navWithAction = ReviewListUserFragmentDirections.actionReviewListUserFragmentToReviewDetailsFragment(item.id)
+                            navController.navigate(navWithAction)
+                        }
                     }
 
                     override fun onErrorRefreshPressed() {
-                        TODO("Not yet implemented")
+                        viewModel.getReviews(shouldRefresh = true)
                     }
 
                     override fun onCancelPressed() {
-                        TODO("Not yet implemented")
+                        navController.popBackStack()
                     }
 
-                    override fun onExhaustButtonPressed() {
-                        TODO("Not yet implemented")
-                    }
-
+                    override fun onExhaustButtonPressed() {}
                 }
             )
             adapter = reviewWithContentAdapter

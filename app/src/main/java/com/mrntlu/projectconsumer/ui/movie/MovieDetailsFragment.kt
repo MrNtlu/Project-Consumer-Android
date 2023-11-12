@@ -365,6 +365,7 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
 
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TITLE, getString(R.string.share_movie))
                     putExtra(Intent.EXTRA_TEXT, shareURL)
                     type = "text/plain"
                 }

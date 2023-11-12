@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentProfileDisplayBinding
 import com.mrntlu.projectconsumer.ui.BaseProfileFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
+import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.hideKeyboard
@@ -60,7 +62,19 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
 
                 when(it.itemId) {
                     R.id.shareMenu -> {
-                        //TODO Share URL
+                        if (userInfo != null) {
+                            val shareURL = "$BASE_DOMAIN_URL/profile/${userInfo!!.username}"
+
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TITLE, getString(R.string.share_profile))
+                                putExtra(Intent.EXTRA_TEXT, shareURL)
+                                type = "text/plain"
+                            }
+
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            startActivity(shareIntent)
+                        }
                     }
                 }
 
@@ -189,7 +203,7 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
             }
 
             profileFriendRequestButton.setSafeOnClickListener {
-                //TODO Implement
+                context?.showInfoDialog("Coming soon...")
             }
 
             errorLayoutInc.refreshButton.setSafeOnClickListener {

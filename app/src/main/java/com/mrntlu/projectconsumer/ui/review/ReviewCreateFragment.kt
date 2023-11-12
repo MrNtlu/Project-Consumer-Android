@@ -104,7 +104,7 @@ class ReviewCreateFragment : BaseFragment<FragmentReviewCreateBinding>() {
                             viewModel.createReview(ReviewBody(
                                 args.contentId,
                                 args.contentExternalId,
-                                args.contentExternalIntId,
+                                if (args.contentExternalIntId < 0) null else args.contentExternalIntId,
                                 args.contentType,
                                 spoilerCheckBox.isChecked,
                                 ratingBar.rating.toInt(),
