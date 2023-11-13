@@ -38,6 +38,7 @@ import com.mrntlu.projectconsumer.models.common.retrofit.MessageResponse
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
+import com.mrntlu.projectconsumer.utils.sendHapticFeedback
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.showErrorDialog
@@ -94,6 +95,8 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.bookmark else R.raw.bookmark_night)
 
             setSafeOnClickListener {
+                sendHapticFeedback()
+
                 if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
                     if (details != null && details.consumeLater == null) {
                         createConsumeLater()
@@ -137,6 +140,8 @@ abstract class BaseDetailsFragment<T>: BaseFragment<T>() {
             setAnimation(if(sharedViewModel.isLightTheme()) R.raw.like else R.raw.like_night)
 
             setSafeOnClickListener {
+                sendHapticFeedback()
+
                 if (sharedViewModel.isNetworkAvailable() && sharedViewModel.isLoggedIn()) {
                     if (details != null) {
                         showBottomSheet()

@@ -19,8 +19,8 @@ android {
         applicationId "com.mrntlu.projectconsumer"
         minSdk 28
         targetSdk 34
-        versionCode 42
-        versionName "0.2.0"
+        versionCode 43
+        versionName "0.2.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

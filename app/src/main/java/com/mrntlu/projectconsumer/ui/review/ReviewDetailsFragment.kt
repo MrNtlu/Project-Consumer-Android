@@ -262,7 +262,7 @@ class ReviewDetailsFragment : BaseFragment<FragmentReviewDetailsBinding>() {
             }
 
             deleteButton.setSafeOnClickListener {
-                binding.root.sendHapticFeedback()
+                root.sendHapticFeedback()
 
                 if (confirmDialog != null && confirmDialog?.isShowing == true) {
                     confirmDialog?.dismiss()
