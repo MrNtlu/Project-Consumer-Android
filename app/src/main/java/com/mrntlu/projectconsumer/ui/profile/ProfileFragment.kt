@@ -285,9 +285,7 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
                                     if (::dialog.isInitialized)
                                         dialog.dismissDialog()
 
-                                    viewModel.viewModelScope.launch {
-                                        consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
-                                    }
+                                    consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
                                 }
                             }
                         }

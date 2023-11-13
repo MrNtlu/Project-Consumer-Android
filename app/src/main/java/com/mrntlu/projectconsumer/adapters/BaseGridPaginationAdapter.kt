@@ -23,7 +23,7 @@ abstract class BaseGridPaginationAdapter<T>(
 
     protected var arrayList: ArrayList<T> = arrayListOf()
 
-    protected abstract suspend fun handleDiffUtil(newList: ArrayList<T>)
+    protected abstract fun handleDiffUtil(newList: ArrayList<T>)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)) {
@@ -89,7 +89,7 @@ abstract class BaseGridPaginationAdapter<T>(
         notifyDataSetChanged()
     }
 
-    suspend fun setData(
+    fun setData(
         newList: ArrayList<T>,
         isPaginationData: Boolean = false,
         isPaginationExhausted: Boolean = false,

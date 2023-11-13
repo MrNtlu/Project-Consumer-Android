@@ -215,15 +215,13 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
             } else if (response.isSuccessful() || response.isPaginating) {
                 val arrayList = response.data!!.toCollection(ArrayList())
 
-                viewModel.viewModelScope.launch {
-                    reviewAdapter?.setData(
-                        arrayList,
-                        response.isPaginationData,
-                        response.isPaginationExhausted,
-                        response.isPaginating,
-                        viewModel.didOrientationChange
-                    )
-                }
+                reviewAdapter?.setData(
+                    arrayList,
+                    response.isPaginationData,
+                    response.isPaginationExhausted,
+                    response.isPaginating,
+                    viewModel.didOrientationChange
+                )
 
                 if (viewModel.didOrientationChange) {
                     binding.reviewsRV.scrollToPosition(viewModel.scrollPosition - 1)
@@ -322,9 +320,7 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
                                         if (::dialog.isInitialized)
                                             dialog.dismissDialog()
 
-                                        viewModel.viewModelScope.launch {
-                                            reviewAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
-                                        }
+                                        reviewAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
                                     }
                                 }
                             }
@@ -350,9 +346,7 @@ class ReviewFragment: BaseFragment<FragmentReviewBinding>() {
                                     if (::dialog.isInitialized)
                                         dialog.dismissDialog()
 
-                                    viewModel.viewModelScope.launch {
-                                        reviewAdapter?.handleOperation(Operation(response.data.data, position, OperationEnum.Update))
-                                    }
+                                    reviewAdapter?.handleOperation(Operation(response.data.data, position, OperationEnum.Update))
                                 }
                             }
                         }

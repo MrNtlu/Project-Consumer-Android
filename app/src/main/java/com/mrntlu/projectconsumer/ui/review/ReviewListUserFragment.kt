@@ -139,17 +139,15 @@ class ReviewListUserFragment : BaseFragment<FragmentListBinding>() {
             } else if (response.isSuccessful() || response.isPaginating) {
                 val arrayList = response.data!!.toCollection(ArrayList())
 
-                viewModel.viewModelScope.launch {
-                    setToolbar(arrayList.first().author.username)
+                setToolbar(arrayList.first().author.username)
 
-                    reviewWithContentAdapter?.setData(
-                        arrayList,
-                        response.isPaginationData,
-                        response.isPaginationExhausted,
-                        response.isPaginating,
-                        viewModel.didOrientationChange
-                    )
-                }
+                reviewWithContentAdapter?.setData(
+                    arrayList,
+                    response.isPaginationData,
+                    response.isPaginationExhausted,
+                    response.isPaginating,
+                    viewModel.didOrientationChange
+                )
 
                 if (viewModel.didOrientationChange) {
                     binding.listRV.scrollToPosition(viewModel.scrollPosition - 1)
@@ -325,9 +323,7 @@ class ReviewListUserFragment : BaseFragment<FragmentListBinding>() {
                                         if (::dialog.isInitialized)
                                             dialog.dismissDialog()
 
-                                        viewModel.viewModelScope.launch {
-                                            reviewWithContentAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
-                                        }
+                                        reviewWithContentAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
                                     }
                                 }
                             }
@@ -353,30 +349,28 @@ class ReviewListUserFragment : BaseFragment<FragmentListBinding>() {
                                     if (::dialog.isInitialized)
                                         dialog.dismissDialog()
 
-                                    viewModel.viewModelScope.launch {
-                                        val updatedReview = response.data.data
-                                        val reviewWithContent = ReviewWithContent(
-                                            updatedReview.author,
-                                            updatedReview.star,
-                                            updatedReview.review,
-                                            updatedReview.popularity,
-                                            updatedReview.likes,
-                                            updatedReview.isAuthor,
-                                            updatedReview.isLiked,
-                                            updatedReview.isSpoiler,
-                                            updatedReview.id,
-                                            updatedReview.userID,
-                                            updatedReview.contentID,
-                                            updatedReview.contentExternalID,
-                                            updatedReview.contentExternalIntID,
-                                            updatedReview.contentType,
-                                            updatedReview.createdAt,
-                                            updatedReview.updatedAt,
-                                            item.content,
-                                        )
+                                    val updatedReview = response.data.data
+                                    val reviewWithContent = ReviewWithContent(
+                                        updatedReview.author,
+                                        updatedReview.star,
+                                        updatedReview.review,
+                                        updatedReview.popularity,
+                                        updatedReview.likes,
+                                        updatedReview.isAuthor,
+                                        updatedReview.isLiked,
+                                        updatedReview.isSpoiler,
+                                        updatedReview.id,
+                                        updatedReview.userID,
+                                        updatedReview.contentID,
+                                        updatedReview.contentExternalID,
+                                        updatedReview.contentExternalIntID,
+                                        updatedReview.contentType,
+                                        updatedReview.createdAt,
+                                        updatedReview.updatedAt,
+                                        item.content,
+                                    )
 
-                                        reviewWithContentAdapter?.handleOperation(Operation(reviewWithContent, position, OperationEnum.Update))
-                                    }
+                                    reviewWithContentAdapter?.handleOperation(Operation(reviewWithContent, position, OperationEnum.Update))
                                 }
                             }
                         }

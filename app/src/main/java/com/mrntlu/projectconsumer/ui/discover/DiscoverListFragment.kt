@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.AbsListView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -154,15 +153,13 @@ class DiscoverListFragment: BaseFragment<FragmentListBinding>() {
             } else if (response.isLoading) {
                 contentAdapter?.setLoadingView()
             } else if (response.isSuccessful() || response.isPaginating) {
-                viewModel.viewModelScope.launch {
-                    contentAdapter?.setData(
-                        response.data!!.toCollection(ArrayList()),
-                        response.isPaginationData,
-                        response.isPaginationExhausted,
-                        response.isPaginating,
-                        viewModel.didOrientationChange,
-                    )
-                }
+                contentAdapter?.setData(
+                    response.data!!.toCollection(ArrayList()),
+                    response.isPaginationData,
+                    response.isPaginationExhausted,
+                    response.isPaginating,
+                    viewModel.didOrientationChange,
+                )
 
                 if (viewModel.isRestoringData || viewModel.didOrientationChange) {
                     binding.listRV.scrollToPosition(viewModel.scrollPosition - 1)

@@ -45,8 +45,6 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class ContentAdapter<T: ContentModel>(
     override val interaction: Interaction<T>,
@@ -69,7 +67,7 @@ class ContentAdapter<T: ContentModel>(
         setBottomRightCorner(CornerFamily.ROUNDED, radiusInPx)
     }.build()
 
-    override suspend fun handleDiffUtil(newList: ArrayList<T>) = withContext(Dispatchers.Default) {
+    override fun handleDiffUtil(newList: ArrayList<T>) {
         val diffUtil = DiffUtilCallback(
             arrayList,
             newList
@@ -78,9 +76,7 @@ class ContentAdapter<T: ContentModel>(
 
         arrayList = newList.toList() as ArrayList<T>
 
-        withContext(Dispatchers.Main) {
-            diffResults.dispatchUpdatesTo(this@ContentAdapter)
-        }
+        diffResults.dispatchUpdatesTo(this@ContentAdapter)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

@@ -30,8 +30,6 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
@@ -51,7 +49,7 @@ class ReviewWithContentAdapter(
 
     private var arrayList: ArrayList<ReviewWithContent> = arrayListOf()
 
-    private suspend fun handleDiffUtil(newList: ArrayList<ReviewWithContent>) = withContext(Dispatchers.Default) {
+    private fun handleDiffUtil(newList: ArrayList<ReviewWithContent>) {
         val diffUtil = DiffUtilCallback(
             arrayList,
             newList
@@ -60,9 +58,7 @@ class ReviewWithContentAdapter(
 
         arrayList = newList.toCollection(ArrayList())
 
-        withContext(Dispatchers.Main) {
-            diffResults.dispatchUpdatesTo(this@ReviewWithContentAdapter)
-        }
+        diffResults.dispatchUpdatesTo(this@ReviewWithContentAdapter)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -113,7 +109,7 @@ class ReviewWithContentAdapter(
         }
     }
 
-    suspend fun setData(
+    fun setData(
         newList: ArrayList<ReviewWithContent>,
         isPaginationData: Boolean = false,
         isPaginationExhausted: Boolean = false,
@@ -148,7 +144,7 @@ class ReviewWithContentAdapter(
             notifyDataSetChanged()
     }
 
-    suspend fun handleOperation(operation: Operation<ReviewWithContent>) {
+    fun handleOperation(operation: Operation<ReviewWithContent>) {
         val newList = arrayList.toMutableList()
 
         when(operation.operationEnum) {

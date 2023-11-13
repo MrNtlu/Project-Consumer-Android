@@ -178,15 +178,13 @@ abstract class BaseListFragment<T: ContentModel>: BaseFragment<FragmentListBindi
         } else if (response.isSuccessful() || response.isPaginating) {
             val arrayList = response.data!!.toCollection(ArrayList())
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                contentAdapter?.setData(
-                    arrayList,
-                    response.isPaginationData,
-                    response.isPaginationExhausted,
-                    response.isPaginating,
-                    didOrientationChange,
-                )
-            }
+            contentAdapter?.setData(
+                arrayList,
+                response.isPaginationData,
+                response.isPaginationExhausted,
+                response.isPaginating,
+                didOrientationChange,
+            )
 
             onRestoringAndOrientationChange()
         }

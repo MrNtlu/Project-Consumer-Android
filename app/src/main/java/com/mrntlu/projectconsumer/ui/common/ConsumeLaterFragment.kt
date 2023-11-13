@@ -348,9 +348,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
             } else if (response.isLoading) {
                 consumeLaterAdapter?.setLoadingView()
             } else if (response.isSuccessful()) {
-                viewModel.viewModelScope.launch {
-                    consumeLaterAdapter?.setData(response.data!!.toCollection(ArrayList()))
-                }
+                consumeLaterAdapter?.setData(response.data!!.toCollection(ArrayList()))
 
                 if (viewModel.isRestoringData || viewModel.didOrientationChange) {
                     binding.listRV.scrollToPosition(viewModel.scrollPosition - 1)
@@ -404,9 +402,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                                     if (::dialog.isInitialized)
                                         dialog.dismissDialog()
 
-                                    viewModel.viewModelScope.launch {
-                                        consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
-                                    }
+                                    consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
                                 }
                             }
                         }
@@ -444,9 +440,7 @@ class ConsumeLaterFragment: BaseFragment<FragmentListBinding>() {
                                             if (::dialog.isInitialized)
                                                 dialog.dismissDialog()
 
-                                            viewModel.viewModelScope.launch {
-                                                consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
-                                            }
+                                            consumeLaterAdapter?.handleOperation(Operation(item, position, OperationEnum.Delete))
                                         }
                                     }
                                 }

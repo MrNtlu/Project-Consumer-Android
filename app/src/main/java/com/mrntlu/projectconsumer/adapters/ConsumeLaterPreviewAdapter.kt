@@ -24,8 +24,6 @@ import com.mrntlu.projectconsumer.utils.sendHapticFeedback
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisible
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
@@ -40,7 +38,7 @@ class ConsumeLaterPreviewAdapter(
     private var errorMessage: String? = null
     private var arrayList: ArrayList<ConsumeLaterResponse> = arrayListOf()
 
-    private suspend fun handleDiffUtil(newList: ArrayList<ConsumeLaterResponse>) = withContext(Dispatchers.Default) {
+    private fun handleDiffUtil(newList: ArrayList<ConsumeLaterResponse>) {
         val diffUtil = DiffUtilCallback(
             arrayList,
             newList
@@ -49,9 +47,7 @@ class ConsumeLaterPreviewAdapter(
 
         arrayList = newList.toCollection(ArrayList())
 
-        withContext(Dispatchers.Main) {
-            diffResults.dispatchUpdatesTo(this@ConsumeLaterPreviewAdapter)
-        }
+        diffResults.dispatchUpdatesTo(this@ConsumeLaterPreviewAdapter)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -98,7 +94,7 @@ class ConsumeLaterPreviewAdapter(
         notifyDataSetChanged()
     }
 
-    suspend fun setData(newList: ArrayList<ConsumeLaterResponse>) {
+     fun setData(newList: ArrayList<ConsumeLaterResponse>) {
         setState(
             if (arrayList.isEmpty() && newList.isEmpty()) RecyclerViewEnum.Empty
             else RecyclerViewEnum.View
@@ -128,7 +124,7 @@ class ConsumeLaterPreviewAdapter(
         }
     }
 
-    suspend fun handleOperation(operation: Operation<ConsumeLaterResponse>) {
+    fun handleOperation(operation: Operation<ConsumeLaterResponse>) {
         val newList = arrayList.toMutableList()
 
         when(operation.operationEnum) {

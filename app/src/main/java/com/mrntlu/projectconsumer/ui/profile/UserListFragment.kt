@@ -545,9 +545,7 @@ class UserListFragment: BaseFragment<FragmentUserListBinding>() {
                 is NetworkResponse.Failure -> userListAdapter?.setErrorView(response.errorMessage)
                 NetworkResponse.Loading -> userListAdapter?.setLoadingView()
                 is NetworkResponse.Success -> {
-                    viewModel.viewModelScope.launch {
-                        userListAdapter?.setData(response.data.data)
-                    }
+                    userListAdapter?.setData(response.data.data)
 
                     if (viewModel.didOrientationChange) {
                         binding.userListRV.scrollToPosition(viewModel.scrollPosition - 1)

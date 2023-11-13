@@ -42,8 +42,6 @@ import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Suppress("UNCHECKED_CAST")
 @SuppressLint("NotifyDataSetChanged")
@@ -60,7 +58,7 @@ class UserListAdapter(
     private val sizeMultiplier = 0.75f
     private val sizeMultipliedRadiusInPx = radiusInPx * sizeMultiplier
 
-    private suspend fun handleDiffUtil(newList: ArrayList<UserListContentModel>) = withContext(Dispatchers.Default) {
+    private fun handleDiffUtil(newList: ArrayList<UserListContentModel>) {
         val diffUtil = DiffUtilCallback(
             getContentList(),
             newList
@@ -74,9 +72,7 @@ class UserListAdapter(
             ContentType.GAME -> userList.gameList = newList.toList().map { it.convertToGameList() }
         }
 
-        withContext(Dispatchers.Main) {
-            diffResults.dispatchUpdatesTo(this@UserListAdapter)
-        }
+        diffResults.dispatchUpdatesTo(this@UserListAdapter)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -195,7 +191,7 @@ class UserListAdapter(
         }
     }
 
-    suspend fun setData(newUserList: UserList) {
+    fun setData(newUserList: UserList) {
         if (!::userList.isInitialized || isLoading) {
             userList = newUserList
 
@@ -253,7 +249,7 @@ class UserListAdapter(
         }
     }
 
-    suspend fun handleOperation(operation: Operation<UserListModel>) {
+    fun handleOperation(operation: Operation<UserListModel>) {
         val newList = getContentList().toMutableList().toCollection(ArrayList())
 
         when(operation.operationEnum) {
