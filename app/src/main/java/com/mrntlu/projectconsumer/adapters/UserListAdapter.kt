@@ -37,6 +37,7 @@ import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.getColorFromAttr
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.sendHapticFeedback
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -102,11 +103,13 @@ class UserListAdapter(
                     }
 
                     binding.incrementEpisodeButton.setSafeOnClickListener {
+                        it.sendHapticFeedback()
                         interaction.onEpisodeIncrementPressed(userList, contentType, holder.adapterPosition)
                     }
 
                     if (contentType.request == ContentType.TV.request) {
                         binding.incrementSeasonButton.setSafeOnClickListener {
+                            it.sendHapticFeedback()
                             interaction.onSeasonIncrementPressed(userList, contentType, holder.adapterPosition)
                         }
                     }
@@ -156,6 +159,7 @@ class UserListAdapter(
             }
             lastTimeClicked = SystemClock.elapsedRealtime()
 
+            binding.root.sendHapticFeedback()
             when(item.itemId) {
                 R.id.detailsMenu -> {
                     interaction.onDetailsPressed(userList, contentType, position)

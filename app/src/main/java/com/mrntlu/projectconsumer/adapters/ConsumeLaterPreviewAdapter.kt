@@ -20,6 +20,7 @@ import com.mrntlu.projectconsumer.utils.Operation
 import com.mrntlu.projectconsumer.utils.OperationEnum
 import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.loadWithGlide
+import com.mrntlu.projectconsumer.utils.sendHapticFeedback
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisible
@@ -192,6 +193,7 @@ class ConsumeLaterPreviewAdapter(
                 titleTV.text = item.content.titleEn
 
                 bookmarkButton.setSafeOnClickListener {
+                    it.sendHapticFeedback()
                     interaction.onDeletePressed(item, position)
                 }
 

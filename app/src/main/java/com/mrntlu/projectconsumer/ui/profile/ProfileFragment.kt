@@ -246,11 +246,12 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
                 }
             }
 
-            profileDiaryButton.setSafeOnClickListener {
-                if (navController.currentDestination?.id == R.id.navigation_profile) {
-                    navController.navigate(R.id.action_navigation_profile_to_diaryFragment)
-                }
-            }
+            //TODO Implement later
+//            profileDiaryButton.setSafeOnClickListener {
+//                if (navController.currentDestination?.id == R.id.navigation_profile) {
+//                    navController.navigate(R.id.action_navigation_profile_to_diaryFragment)
+//                }
+//            }
 
             legendInfoButton.setSafeOnClickListener {
                 context?.showInfoDialog(getString(R.string.legend_content_info))

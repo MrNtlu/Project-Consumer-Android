@@ -29,6 +29,7 @@ import com.mrntlu.projectconsumer.utils.convertToFormattedDate
 import com.mrntlu.projectconsumer.utils.isNotEmptyOrBlank
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.roundSingleDecimal
+import com.mrntlu.projectconsumer.utils.sendHapticFeedback
 import com.mrntlu.projectconsumer.utils.setGone
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
@@ -243,6 +244,7 @@ class ConsumeLaterAdapter(
                         }
                         lastTimeClicked = SystemClock.elapsedRealtime()
 
+                        it.sendHapticFeedback()
                         when(menuItem.itemId) {
                             R.id.removeMenu -> {
                                 interaction.onDeletePressed(item, position)

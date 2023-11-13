@@ -18,6 +18,7 @@ import com.mrntlu.projectconsumer.utils.RecyclerViewEnum
 import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
 import com.mrntlu.projectconsumer.utils.loadWithGlide
 import com.mrntlu.projectconsumer.utils.setGone
+import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisible
 
 @SuppressLint("NotifyDataSetChanged")
@@ -126,7 +127,7 @@ class LegendContentAdapter(
                     }
                 ))
 
-                root.setOnClickListener {
+                root.setSafeOnClickListener {
                     onClick(item)
                 }
             }

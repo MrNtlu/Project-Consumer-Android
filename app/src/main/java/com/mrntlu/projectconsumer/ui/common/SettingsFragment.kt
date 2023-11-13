@@ -105,8 +105,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             accountInfoSettingsCard.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
             deleteAccountButton.setVisibilityByCondition(!sharedViewModel.isLoggedIn())
 
-            val isNotLoggedInOrIsPremium = !sharedViewModel.isLoggedIn() ||
-                (sharedViewModel.isLoggedIn() && userSharedViewModel.userInfo?.isPremium == true)
+            val isNotLoggedInOrIsPremium = true
+            //TODO Remove later after fixing
+//                !sharedViewModel.isLoggedIn() ||
+//                (sharedViewModel.isLoggedIn() && userSharedViewModel.userInfo?.isPremium == true)
 
             premiumTile.setVisibilityByCondition(isNotLoggedInOrIsPremium)
             premiumDivider.setVisibilityByCondition(isNotLoggedInOrIsPremium)
