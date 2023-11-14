@@ -42,7 +42,7 @@ import com.mrntlu.projectconsumer.models.main.game.GameDetails
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.Constants.GamePlatformUIList
 import com.mrntlu.projectconsumer.utils.Constants.GameStoreList
@@ -346,11 +346,13 @@ class GameDetailsFragment : BaseDetailsFragment<FragmentGameDetailsBinding>() {
             }
 
             detailsToolbarBackButton.setSafeOnClickListener {
-                navController.popBackStack()
+                if (!navController.popBackStack()) {
+                    navController.navigate(GameDetailsFragmentDirections.actionGlobalNavigationDiscover())
+                }
             }
 
             detailsToolbarShareButton.setSafeOnClickListener {
-                val shareURL = "${Constants.BASE_DOMAIN_URL}/game/${gameDetails?.id}"
+                val shareURL = "$BASE_DOMAIN_URL/game/${gameDetails?.id}"
 
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND

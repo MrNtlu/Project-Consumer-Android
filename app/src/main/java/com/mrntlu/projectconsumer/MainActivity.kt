@@ -16,6 +16,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -38,6 +39,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
+import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.ktx.Firebase
@@ -51,6 +60,7 @@ import com.mrntlu.projectconsumer.ui.anime.AnimeDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.common.BoardingBottomSheet
 import com.mrntlu.projectconsumer.ui.game.GameDetailsFragmentDirections
 import com.mrntlu.projectconsumer.ui.movie.MovieDetailsFragmentDirections
+import com.mrntlu.projectconsumer.ui.profile.ProfileDisplayFragmentDirections
 import com.mrntlu.projectconsumer.ui.tv.TVSeriesDetailsFragmentDirections
 import com.mrntlu.projectconsumer.utils.Constants.BOARDING_PREF
 import com.mrntlu.projectconsumer.utils.Constants.COUNTRY_PREF
@@ -96,6 +106,9 @@ class MainActivity : AppCompatActivity() {
 
     private var notificationDialog: AlertDialog? = null
 
+    private lateinit var appUpdateManager: AppUpdateManager
+    private val updateType = AppUpdateType.FLEXIBLE
+
     private lateinit var firebaseAnalytics: FirebaseAnalytics
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private val navController: NavController by lazy {
@@ -111,6 +124,32 @@ class MainActivity : AppCompatActivity() {
     ) {
         if (it)
             setNotificationPref()
+    }
+
+    private fun checkForAppUpdates() {
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+            val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+            val isUpdateAllowed = when(updateType) {
+                AppUpdateType.FLEXIBLE -> info.isFlexibleUpdateAllowed
+                AppUpdateType.IMMEDIATE -> info.isImmediateUpdateAllowed
+                else -> false
+            }
+            if (isUpdateAllowed && isUpdateAvailable) {
+                appUpdateManager.startUpdateFlowForResult(
+                    info, updateType, this, 123
+                )
+            }
+        }
+    }
+
+    private val installStateUpdatedListener = InstallStateUpdatedListener { state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
+            Toast.makeText(this, "Download successfully. Restarting app in 3 seconds.", Toast.LENGTH_LONG).show()
+            lifecycleScope.launch {
+                delay(3000L)
+                appUpdateManager.completeUpdate()
+            }
+        }
     }
 
     private var _binding: ActivityMainBinding? = null
@@ -155,6 +194,19 @@ class MainActivity : AppCompatActivity() {
 
                         override fun onLoadCleared(placeholder: Drawable?) {}
                     })
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (updateType == AppUpdateType.IMMEDIATE) {
+            appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+                if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    appUpdateManager.startUpdateFlowForResult(
+                        info, updateType, this, 123
+                    )
+                }
             }
         }
     }
@@ -208,6 +260,11 @@ class MainActivity : AppCompatActivity() {
                             val navWithAction = GameDetailsFragmentDirections.actionGlobalGameDetailsFragment(data)
                             navController.navigate(navWithAction)
                         }
+
+                        "profile" -> {
+                            val navWithAction = ProfileDisplayFragmentDirections.actionGlobalProfileDisplayFragment(data)
+                            navController.navigate(navWithAction)
+                        }
                     }
                 }
             }
@@ -229,6 +286,12 @@ class MainActivity : AppCompatActivity() {
         sharedViewModel.setThemeCode(prefs.getInt(THEME_PREF, DARK_THEME))
 
         super.onCreate(savedInstanceState)
+
+        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        if (updateType == AppUpdateType.FLEXIBLE) {
+            appUpdateManager.registerListener(installStateUpdatedListener)
+        }
+        checkForAppUpdates()
 
         installSplashScreen()
 
@@ -530,6 +593,9 @@ class MainActivity : AppCompatActivity() {
         notificationDialog?.dismiss()
         notificationDialog = null
 
+        if (updateType == AppUpdateType.FLEXIBLE) {
+            appUpdateManager.unregisterListener(installStateUpdatedListener)
+        }
         sharedViewModel.layoutSelection.removeObservers(this)
         sharedViewModel.tabLayoutSelection.removeObservers(this)
         sharedViewModel.shouldPreventBottomSelection.removeObservers(this)

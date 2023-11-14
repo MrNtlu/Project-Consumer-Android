@@ -193,7 +193,11 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
 
     private fun setListeners() {
         binding.apply {
-            profileDisplayToolbar.setNavigationOnClickListener { navController.popBackStack() }
+            profileDisplayToolbar.setNavigationOnClickListener {
+                if (!navController.popBackStack()) {
+                    navController.navigate(ProfileDisplayFragmentDirections.actionGlobalNavigationDiscover())
+                }
+            }
 
             seeAllButtonFirst.setSafeOnClickListener {
                 if (navController.currentDestination?.id == R.id.profileDisplayFragment) {

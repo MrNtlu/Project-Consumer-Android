@@ -76,6 +76,7 @@ Discover Anime, Movies, TV Shows, Games - all in one app! Track & list your fun 
   <li> <b>SafeArgs</b> - Generates simple object and builder classes for type-safe navigation and access to any associated arguments.
   <li> <b>SplashScreen</b>
   <li> <b>Flexbox</b> - Library project which brings the similar capabilities of CSS Flexible Box Layout Module to Android.
+  <li> <b>In-App Update</b>
 </ul>
 
 ### Level Calculation <a name="level"></a>

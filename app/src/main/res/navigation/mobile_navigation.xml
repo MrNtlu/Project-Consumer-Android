@@ -896,7 +896,7 @@
         android:id="@+id/profileDisplayFragment"
         android:name="com.mrntlu.projectconsumer.ui.profile.ProfileDisplayFragment"
         android:label="fragment_profile_display"
-        tools:layout="@layout/fragment_profile_display" >
+        tools:layout="@layout/fragment_profile_display">
         <argument
             android:name="profileUsername"
             app:argType="string" />
@@ -906,46 +906,50 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_profileDisplayFragment_to_animeDetailsFragment"
             app:destination="@id/animeDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_profileDisplayFragment_to_tvDetailsFragment"
             app:destination="@id/tvDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_profileDisplayFragment_to_movieDetailsFragment"
             app:destination="@id/movieDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="isSelf"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
         <action
             android:id="@+id/action_profileDisplayFragment_to_reviewDetailsFragment"
             app:destination="@id/reviewDetailsFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_profileDisplayFragment_to_reviewListUserFragment"
             app:destination="@id/reviewListUserFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
+        <deepLink
+            android:id="@+id/deepLink4"
+            android:autoVerify="true"
+            app:uri="watchlistfy.com/profile/{profileUsername}" />
     </fragment>
     <fragment
         android:id="@+id/reviewDetailsFragment"
@@ -1042,5 +1046,13 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
+    <action
+        android:id="@+id/action_global_profileDisplayFragment"
+        app:destination="@id/profileDisplayFragment"
+        app:enterAnim="@anim/slide_in_right"
+        app:exitAnim="@anim/slide_out_left"
+        app:launchSingleTop="true"
+        app:popEnterAnim="@anim/slide_in_left"
+        app:popExitAnim="@anim/slide_out_right" />
 
 </navigation>

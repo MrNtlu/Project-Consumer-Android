@@ -38,6 +38,7 @@ import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLa
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
 import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.convertToHumanReadableDateString
@@ -359,11 +360,13 @@ class TVSeriesDetailsFragment : BaseDetailsFragment<FragmentTvDetailsBinding>() 
             }
 
             tvDetailsToolbarBackButton.setSafeOnClickListener {
-                navController.popBackStack()
+                if (!navController.popBackStack()) {
+                    navController.navigate(TVSeriesDetailsFragmentDirections.actionGlobalNavigationDiscover())
+                }
             }
 
             detailsToolbarShareButton.setSafeOnClickListener {
-                val shareURL = "${Constants.BASE_DOMAIN_URL}/tv/${tvDetails?.id}"
+                val shareURL = "$BASE_DOMAIN_URL/tv/${tvDetails?.id}"
 
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND

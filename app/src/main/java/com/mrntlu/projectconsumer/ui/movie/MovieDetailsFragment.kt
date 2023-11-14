@@ -357,7 +357,9 @@ class MovieDetailsFragment : BaseDetailsFragment<FragmentMovieDetailsBinding>() 
             }
 
             detailsToolbarBackButton.setSafeOnClickListener {
-                navController.popBackStack()
+                if (!navController.popBackStack()) {
+                    navController.navigate(MovieDetailsFragmentDirections.actionGlobalNavigationDiscover())
+                }
             }
 
             detailsToolbarShareButton.setSafeOnClickListener {

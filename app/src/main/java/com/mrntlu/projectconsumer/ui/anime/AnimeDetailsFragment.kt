@@ -33,7 +33,7 @@ import com.mrntlu.projectconsumer.models.main.anime.AnimeNameURL
 import com.mrntlu.projectconsumer.models.main.userInteraction.retrofit.ConsumeLaterBody
 import com.mrntlu.projectconsumer.ui.BaseDetailsFragment
 import com.mrntlu.projectconsumer.ui.profile.UserListBottomSheet
-import com.mrntlu.projectconsumer.utils.Constants
+import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
 import com.mrntlu.projectconsumer.utils.capitalizeFirstLetter
@@ -115,14 +115,16 @@ class AnimeDetailsFragment : BaseDetailsFragment<FragmentAnimeDetailsBinding>() 
             setNavigationIcon(R.drawable.ic_arrow_back_24)
             setNavigationContentDescription(R.string.back_cd)
             setNavigationOnClickListener {
-                navController.popBackStack()
+                if (!navController.popBackStack()) {
+                    navController.navigate(AnimeDetailsFragmentDirections.actionGlobalNavigationDiscover())
+                }
             }
 
             inflateMenu(R.menu.details_share_menu)
             setOnMenuItemClickListener {
                 when(it.itemId) {
                     R.id.shareMenu -> {
-                        val shareURL = "${Constants.BASE_DOMAIN_URL}/anime/${animeDetails?.id}"
+                        val shareURL = "$BASE_DOMAIN_URL/anime/${animeDetails?.id}"
 
                         val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
