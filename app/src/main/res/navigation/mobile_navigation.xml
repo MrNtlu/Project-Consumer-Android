@@ -350,6 +350,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_profile_to_socialHubFragment"
+            app:destination="@id/socialHubFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -1054,5 +1061,10 @@
         app:launchSingleTop="true"
         app:popEnterAnim="@anim/slide_in_left"
         app:popExitAnim="@anim/slide_out_right" />
+    <fragment
+        android:id="@+id/socialHubFragment"
+        android:name="com.mrntlu.projectconsumer.ui.social.SocialHubFragment"
+        android:label="fragment_social_hub"
+        tools:layout="@layout/fragment_social_hub" />
 
 </navigation>

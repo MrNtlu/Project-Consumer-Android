@@ -10,6 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.badge.BadgeUtils
+import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.mrntlu.projectconsumer.MainActivity
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.adapters.ConsumeLaterPreviewAdapter
@@ -37,10 +40,9 @@ import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
+@ExperimentalBadgeUtils
 @AndroidEntryPoint
 class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
     private val viewModel: ProfileViewModel by viewModels()
@@ -160,17 +162,7 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
                                 gameStatTV, animeStatTV, movieWatchedTV, tvWatchedTV,
                                 animeWatchedTV, gamePlayedTV, profileLevelBar, profileLevelTV,
                             )
-                            withContext(Dispatchers.Main) {
-                                if (userInfo?.watchLater?.isNotEmpty() == true)
-                                    seeAllButtonFirst.setVisible()
-                                else
-                                    seeAllButtonFirst.setInvisible()
-
-                                if (userInfo?.reviews?.isNotEmpty() == true)
-                                    reviewButton.setVisible()
-                                else
-                                    reviewButton.setInvisible()
-                            }
+                            setUI()
                             setListeners()
                             setRecyclerView(
                                 legendContentRV,
@@ -208,8 +200,37 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
         }
     }
 
+    private fun setUI() {
+        binding.apply {
+            if (userInfo?.watchLater?.isNotEmpty() == true)
+                seeAllButtonFirst.setVisible()
+            else
+                seeAllButtonFirst.setInvisible()
+
+            if (userInfo?.reviews?.isNotEmpty() == true)
+                reviewButton.setVisible()
+            else
+                reviewButton.setInvisible()
+
+            if (userInfo != null) {
+                val badgeDrawable = BadgeDrawable.create(root.context)
+
+                badgeDrawable.number = userInfo!!.friendRequestCount
+                badgeDrawable.isVisible = userInfo!!.friendRequestCount > 0
+
+                BadgeUtils.attachBadgeDrawable(badgeDrawable, profileFriendsButton)
+            }
+        }
+    }
+
     private fun setListeners() {
         binding.apply {
+            profileFriendsButton.setSafeOnClickListener {
+                if (navController.currentDestination?.id == R.id.navigation_profile) {
+                    navController.navigate(R.id.action_navigation_profile_to_socialHubFragment)
+                }
+            }
+
             profileUserListButton.setSafeOnClickListener {
                 if (navController.currentDestination?.id == R.id.navigation_profile) {
                     navController.navigate(R.id.action_navigation_profile_to_navigation_user_list)

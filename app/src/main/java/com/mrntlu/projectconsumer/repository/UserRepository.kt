@@ -2,7 +2,10 @@ package com.mrntlu.projectconsumer.repository
 
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateFCMTokenBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateMembershipBody
+import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateNotification
+import com.mrntlu.projectconsumer.models.auth.retrofit.UpdatePassword
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUserImageBody
+import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUsernameBody
 import com.mrntlu.projectconsumer.service.retrofit.UserApiService
 import com.mrntlu.projectconsumer.utils.networkResponseFlow
 import javax.inject.Inject
@@ -22,6 +25,10 @@ class UserRepository @Inject constructor(
         userApiService.getUserProfile(username)
     }
 
+    fun getFriendRequests() = networkResponseFlow {
+        userApiService.getFriendRequests()
+    }
+
     fun updateUserImage(body: UpdateUserImageBody) = networkResponseFlow {
         userApiService.updateUserImage(body)
     }
@@ -32,6 +39,22 @@ class UserRepository @Inject constructor(
 
     fun updateMembership(body: UpdateMembershipBody) = networkResponseFlow {
         userApiService.updateMembership(body)
+    }
+
+    fun changeUsername(body: UpdateUsernameBody) = networkResponseFlow {
+        userApiService.changeUsername(body)
+    }
+
+    fun changePassword(body: UpdatePassword) = networkResponseFlow {
+        userApiService.changePassword(body)
+    }
+
+    fun changeNotification(body: UpdateNotification) = networkResponseFlow {
+        userApiService.changeNotification(body)
+    }
+
+    fun sendFriendRequest(body: UpdateUsernameBody) = networkResponseFlow {
+        userApiService.sendFriendRequest(body)
     }
 
     fun deleteUser() = networkResponseFlow {

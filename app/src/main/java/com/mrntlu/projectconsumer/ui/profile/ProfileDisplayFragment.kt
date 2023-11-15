@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.google.android.material.button.MaterialButton
 import com.mrntlu.projectconsumer.R
 import com.mrntlu.projectconsumer.databinding.FragmentProfileDisplayBinding
+import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUsernameBody
 import com.mrntlu.projectconsumer.ui.BaseProfileFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
 import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
@@ -22,6 +25,8 @@ import com.mrntlu.projectconsumer.utils.setInvisible
 import com.mrntlu.projectconsumer.utils.setSafeOnClickListener
 import com.mrntlu.projectconsumer.utils.setVisibilityByCondition
 import com.mrntlu.projectconsumer.utils.setVisible
+import com.mrntlu.projectconsumer.utils.showConfirmationDialog
+import com.mrntlu.projectconsumer.utils.showErrorDialog
 import com.mrntlu.projectconsumer.utils.showInfoDialog
 import com.mrntlu.projectconsumer.viewmodels.main.profile.ProfileDisplayViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -182,12 +187,36 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
     private fun setUI() {
         binding.apply {
             profileFriendRequestButton.setVisibilityByCondition(args.isSelf)
+
+            setFriendRequestButtonUI()
+
             premiumAnimation.setVisibilityByCondition(userInfo?.isPremium == false)
             profileDisplayToolbar.subtitle = userInfo?.username
             if (userInfo?.reviews?.isNotEmpty() == true)
                 seeAllButtonFirst.setVisible()
             else
                 seeAllButtonFirst.setInvisible()
+        }
+    }
+
+    private fun setFriendRequestButtonUI() {
+        binding.profileFriendRequestButton.apply {
+            (this as? MaterialButton)?.icon = ContextCompat.getDrawable(
+                context,
+                if (userInfo?.isFriendRequestSent == true)
+                    R.drawable.ic_round_check
+                else if (userInfo?.isFriendsWith == true)
+                    R.drawable.ic_people
+                else
+                    R.drawable.ic_friend_request
+            )
+            text = if (userInfo?.isFriendRequestSent == true)
+                getString(R.string.friend_request_sent)
+            else if (userInfo?.isFriendsWith == true)
+                getString(R.string.friend)
+            else
+                getString(R.string.send_friend_request)
+            isEnabled = userInfo?.isFriendRequestSent != true && userInfo?.isFriendsWith != true
         }
     }
 
@@ -207,7 +236,31 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
             }
 
             profileFriendRequestButton.setSafeOnClickListener {
-                context?.showInfoDialog("Coming soon...")
+                if (userInfo != null) {
+                    context?.showConfirmationDialog("Do you want to add ${userInfo!!.username} as friend?") {
+                        viewModel.sendFriendRequest(UpdateUsernameBody(userInfo!!.username)).observe(viewLifecycleOwner) { response ->
+                            when(response) {
+                                is NetworkResponse.Failure -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    context?.showErrorDialog(response.errorMessage)
+                                }
+                                NetworkResponse.Loading -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.showLoadingDialog()
+                                }
+                                is NetworkResponse.Success -> {
+                                    if (::dialog.isInitialized)
+                                        dialog.dismissDialog()
+
+                                    userInfo!!.isFriendRequestSent = true
+                                    setFriendRequestButtonUI()
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             errorLayoutInc.refreshButton.setSafeOnClickListener {

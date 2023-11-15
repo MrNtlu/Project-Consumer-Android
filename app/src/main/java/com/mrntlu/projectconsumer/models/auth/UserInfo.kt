@@ -11,6 +11,15 @@ data class UserInfo(
     @SerializedName("is_premium")
     val isPremium: Boolean,
 
+    @SerializedName("is_friend_request_sent")
+    var isFriendRequestSent: Boolean,
+
+    @SerializedName("is_friends_with")
+    val isFriendsWith: Boolean,
+
+    @SerializedName("friend_request_count")
+    val friendRequestCount: Int,
+
     @SerializedName("membership_type")
     val membershipType: Int,
 

@@ -100,9 +100,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="?attr/shimmerColor"
+            app:layout_constraintEnd_toStartOf="@+id/guideline23"
+            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
+
+        <Button
+            android:id="@+id/shimmerProfileUserListButton"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
             android:backgroundTint="?attr/shimmerColor"
             app:layout_constraintEnd_toStartOf="@+id/guideline22"
-            app:layout_constraintStart_toStartOf="@+id/guideline21"
+            app:layout_constraintStart_toStartOf="@+id/guideline23"
             app:layout_constraintTop_toBottomOf="@+id/profileLevelLayout" />
 
         <com.google.android.material.divider.MaterialDivider

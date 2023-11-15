@@ -492,6 +492,10 @@
     <string name="share_tv_series">Share TV Series</string>
     <string name="share_anime">Share Anime</string>
     <string name="share_game">Share Game</string>
+    <string name="friend_request_sent">Friend Request Sent</string>
+    <string name="friend">Friend</string>
+    <string name="friends_hub_cd">Friends Hub</string>
+    <string name="friends">Friends</string>
 
     <string-array name="score_list">
         <item>@string/select</item>
