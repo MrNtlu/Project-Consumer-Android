@@ -16,6 +16,7 @@ import com.mrntlu.projectconsumer.databinding.FragmentProfileDisplayBinding
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateUsernameBody
 import com.mrntlu.projectconsumer.ui.BaseProfileFragment
 import com.mrntlu.projectconsumer.ui.dialog.LoadingDialog
+import com.mrntlu.projectconsumer.ui.dialog.SuccessDialog
 import com.mrntlu.projectconsumer.utils.Constants.BASE_DOMAIN_URL
 import com.mrntlu.projectconsumer.utils.Constants.ContentType
 import com.mrntlu.projectconsumer.utils.NetworkResponse
@@ -37,6 +38,8 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
     private val viewModel: ProfileDisplayViewModel by viewModels()
 
     private lateinit var dialog: LoadingDialog
+    private lateinit var successDialog: SuccessDialog
+
     private var isResponseFailed = false
 
     private val args: ProfileDisplayFragmentArgs by navArgs()
@@ -53,6 +56,7 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
         super.onViewCreated(view, savedInstanceState)
         activity?.let {
             dialog = LoadingDialog(it)
+            successDialog = SuccessDialog(it)
         }
 
         setToolbar()
@@ -130,9 +134,9 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
                 when(response) {
                     is NetworkResponse.Failure -> {
                         errorLayoutInc.apply {
-                            cancelButton.setGone()
-
                             errorText.text = response.errorMessage
+                            cancelButton.text = getString(R.string.back_cd)
+                            refreshButton.setVisibilityByCondition(response.errorMessage == "Sorry, couldn't find user.")
 
                             setListeners()
                         }
@@ -207,6 +211,8 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
                     R.drawable.ic_round_check
                 else if (userInfo?.isFriendsWith == true)
                     R.drawable.ic_people
+                else if (userInfo?.isFriendRequestReceived == true)
+                    R.drawable.ic_notification_on_24
                 else
                     R.drawable.ic_friend_request
             )
@@ -214,6 +220,8 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
                 getString(R.string.friend_request_sent)
             else if (userInfo?.isFriendsWith == true)
                 getString(R.string.friend)
+            else if (userInfo?.isFriendRequestReceived == true)
+                getString(R.string.friend_request_received)
             else
                 getString(R.string.send_friend_request)
             isEnabled = userInfo?.isFriendRequestSent != true && userInfo?.isFriendsWith != true
@@ -237,25 +245,34 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
 
             profileFriendRequestButton.setSafeOnClickListener {
                 if (userInfo != null) {
-                    context?.showConfirmationDialog("Do you want to add ${userInfo!!.username} as friend?") {
-                        viewModel.sendFriendRequest(UpdateUsernameBody(userInfo!!.username)).observe(viewLifecycleOwner) { response ->
-                            when(response) {
-                                is NetworkResponse.Failure -> {
-                                    if (::dialog.isInitialized)
-                                        dialog.dismissDialog()
+                    if (userInfo!!.isFriendRequestReceived) {
+                        if (navController.currentDestination?.id == R.id.profileDisplayFragment) {
+                            navController.navigate(
+                                ProfileDisplayFragmentDirections.actionProfileDisplayFragmentToRequestsFragment()
+                            )
+                        }
+                    } else {
+                        context?.showConfirmationDialog("Do you want to add ${userInfo!!.username} as friend?") {
+                            viewModel.sendFriendRequest(UpdateUsernameBody(userInfo!!.username)).observe(viewLifecycleOwner) { response ->
+                                when(response) {
+                                    is NetworkResponse.Failure -> {
+                                        if (::dialog.isInitialized)
+                                            dialog.dismissDialog()
 
-                                    context?.showErrorDialog(response.errorMessage)
-                                }
-                                NetworkResponse.Loading -> {
-                                    if (::dialog.isInitialized)
-                                        dialog.showLoadingDialog()
-                                }
-                                is NetworkResponse.Success -> {
-                                    if (::dialog.isInitialized)
-                                        dialog.dismissDialog()
+                                        context?.showErrorDialog(response.errorMessage)
+                                    }
+                                    NetworkResponse.Loading -> {
+                                        if (::dialog.isInitialized)
+                                            dialog.showLoadingDialog()
+                                    }
+                                    is NetworkResponse.Success -> {
+                                        if (::dialog.isInitialized)
+                                            dialog.dismissDialog()
 
-                                    userInfo!!.isFriendRequestSent = true
-                                    setFriendRequestButtonUI()
+                                        successDialog.showDialog(response.data.message) {}
+                                        userInfo!!.isFriendRequestSent = true
+                                        setFriendRequestButtonUI()
+                                    }
                                 }
                             }
                         }
@@ -265,6 +282,12 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
 
             errorLayoutInc.refreshButton.setSafeOnClickListener {
                 viewModel.getUserProfile(args.profileUsername)
+            }
+
+            errorLayoutInc.cancelButton.setSafeOnClickListener {
+                if (!navController.popBackStack()) {
+                    navController.navigate(ProfileDisplayFragmentDirections.actionGlobalNavigationDiscover())
+                }
             }
 
             legendInfoButton.setSafeOnClickListener {
@@ -279,9 +302,11 @@ class ProfileDisplayFragment : BaseProfileFragment<FragmentProfileDisplayBinding
             sharedViewModel.networkStatus.removeObservers(this)
         }
 
+        if (::successDialog.isInitialized)
+            successDialog.dismissDialog()
+
         legendContentAdapter = null
         reviewPreviewAdapter = null
-
         super.onDestroyView()
     }
 }

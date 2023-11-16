@@ -14,6 +14,9 @@ data class UserInfo(
     @SerializedName("is_friend_request_sent")
     var isFriendRequestSent: Boolean,
 
+    @SerializedName("is_friend_request_received")
+    var isFriendRequestReceived: Boolean,
+
     @SerializedName("is_friends_with")
     val isFriendsWith: Boolean,
 

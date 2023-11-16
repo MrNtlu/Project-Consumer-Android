@@ -1,5 +1,6 @@
 package com.mrntlu.projectconsumer.repository
 
+import com.mrntlu.projectconsumer.models.auth.retrofit.AnswerFriendRequestBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateFCMTokenBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateMembershipBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateNotification
@@ -29,6 +30,10 @@ class UserRepository @Inject constructor(
         userApiService.getFriendRequests()
     }
 
+    fun getFriends() = networkResponseFlow {
+        userApiService.getFriends()
+    }
+
     fun updateUserImage(body: UpdateUserImageBody) = networkResponseFlow {
         userApiService.updateUserImage(body)
     }
@@ -55,6 +60,10 @@ class UserRepository @Inject constructor(
 
     fun sendFriendRequest(body: UpdateUsernameBody) = networkResponseFlow {
         userApiService.sendFriendRequest(body)
+    }
+
+    fun answerFriendRequest(body: AnswerFriendRequestBody) = networkResponseFlow {
+        userApiService.answerFriendRequest(body)
     }
 
     fun deleteUser() = networkResponseFlow {

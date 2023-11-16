@@ -80,6 +80,7 @@ class ProfileFragment : BaseProfileFragment<FragmentProfileBinding>() {
 
                 when(it.itemId) {
                     R.id.settingsMenu -> {
+                        //TODO Move to a normal navigation
                         navController.navigate(R.id.action_global_settingsFragment)
                     }
                     R.id.shareMenu -> {

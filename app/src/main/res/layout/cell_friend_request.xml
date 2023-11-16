@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="3dp"
+    android:layout_marginVertical="8dp"
+    android:background="?attr/mainBackgroundColor">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/senderCV"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="?attr/bottomNavBackgroundColor"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@android:color/transparent"
+        app:strokeWidth="2dp">
+
+        <ImageView
+            android:id="@+id/senderImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/profile_image_cd"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic"
+            tools:visibility="visible" />
+
+        <ProgressBar
+            android:id="@+id/senderProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="?attr/mainTextColor"
+            tools:visibility="gone" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/senderTV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="?attr/mainTextColor"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/senderCV"
+        app:layout_constraintTop_toTopOf="@+id/senderCV"
+        tools:text="@tools:sample/full_names" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="3dp"
+        android:gravity="end"
+        app:layout_constraintBottom_toBottomOf="@+id/senderCV"
+        app:layout_constraintEnd_toEndOf="@+id/senderTV"
+        app:layout_constraintStart_toStartOf="@+id/senderTV"
+        app:layout_constraintTop_toBottomOf="@+id/senderTV">
+
+        <TextView
+            android:id="@+id/createdAtTV"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:layout_marginEnd="6dp"
+            android:layout_gravity="center_vertical"
+            tools:text="@tools:sample/date/ddmmyy"
+            android:textColor="?attr/subTextColor" />
+
+        <ImageButton
+            android:id="@+id/acceptButton"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/edit"
+            android:padding="0dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_round_check"
+            app:tint="?attr/statusActiveColor" />
+
+        <ImageButton
+            android:id="@+id/ignoreButton"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/edit"
+            android:padding="0dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_notification_off"
+            app:tint="?attr/bottomNavUnselectedColor" />
+
+        <ImageButton
+            android:id="@+id/denyButton"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/edit"
+            android:padding="0dp"
+            android:src="@drawable/ic_cancel"
+            app:tint="?attr/statusDroppedColor" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

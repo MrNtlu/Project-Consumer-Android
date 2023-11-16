@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/addFriendMenu"
+        app:showAsAction="ifRoom"
+        android:title="@string/friend_request_cd"
+        android:icon="@drawable/ic_friend_request" />
+
+    <item
+        android:id="@+id/notificationMenu"
+        app:showAsAction="always"
+        android:title="@string/friend_requests"
+        android:icon="@drawable/ic_notification_on_24" />
+</menu>

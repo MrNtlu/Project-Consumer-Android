@@ -957,6 +957,13 @@
             android:id="@+id/deepLink4"
             android:autoVerify="true"
             app:uri="watchlistfy.com/profile/{profileUsername}" />
+        <action
+            android:id="@+id/action_profileDisplayFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/reviewDetailsFragment"
@@ -1065,6 +1072,38 @@
         android:id="@+id/socialHubFragment"
         android:name="com.mrntlu.projectconsumer.ui.social.SocialHubFragment"
         android:label="fragment_social_hub"
-        tools:layout="@layout/fragment_social_hub" />
+        tools:layout="@layout/fragment_social_hub" >
+        <action
+            android:id="@+id/action_socialHubFragment_to_requestsFragment"
+            app:destination="@id/requestsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_socialHubFragment_to_profileDisplayFragment"
+            app:destination="@id/profileDisplayFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestsFragment"
+        android:name="com.mrntlu.projectconsumer.ui.social.RequestsFragment"
+        android:label="RequestsFragment"
+        tools:layout="@layout/fragment_list">
+        <action
+            android:id="@+id/action_requestsFragment_to_profileDisplayFragment"
+            app:destination="@id/profileDisplayFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <deepLink
+            android:id="@+id/deepLink5"
+            android:autoVerify="true"
+            app:uri="watchlistfy.com/friend-requests" />
+    </fragment>
 
 </navigation>

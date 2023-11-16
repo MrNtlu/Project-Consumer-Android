@@ -3,6 +3,7 @@ package com.mrntlu.projectconsumer.service.retrofit
 import com.mrntlu.projectconsumer.models.auth.BasicUserInfo
 import com.mrntlu.projectconsumer.models.auth.FriendRequest
 import com.mrntlu.projectconsumer.models.auth.UserInfo
+import com.mrntlu.projectconsumer.models.auth.retrofit.AnswerFriendRequestBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateFCMTokenBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateMembershipBody
 import com.mrntlu.projectconsumer.models.auth.retrofit.UpdateNotification
@@ -17,6 +18,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface UserApiService {
@@ -34,6 +36,9 @@ interface UserApiService {
 
     @GET("user/requests")
     suspend fun getFriendRequests(): Response<DataNullableResponse<List<FriendRequest>>>
+
+    @GET("user/friends")
+    suspend fun getFriends(): Response<DataResponse<List<BasicUserInfo>>>
 
     @PATCH("user/image")
     suspend fun updateUserImage(@Body body: UpdateUserImageBody): Response<MessageResponse>
@@ -53,8 +58,11 @@ interface UserApiService {
     @PATCH("user/notification")
     suspend fun changeNotification(@Body body: UpdateNotification): Response<MessageResponse>
 
-    @PATCH("user/friend")
+    @POST("user/friend")
     suspend fun sendFriendRequest(@Body body: UpdateUsernameBody): Response<MessageResponse>
+
+    @POST("user/request-answer")
+    suspend fun answerFriendRequest(@Body body: AnswerFriendRequestBody): Response<MessageResponse>
 
     @DELETE("user/delete")
     suspend fun deleteUser(): Response<MessageResponse>
