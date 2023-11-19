@@ -19,8 +19,8 @@ android {
         applicationId "com.mrntlu.projectconsumer"
         minSdk 28
         targetSdk 34
-        versionCode 45
-        versionName "0.2.3"
+        versionCode 47
+        versionName "0.2.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -114,10 +114,6 @@ dependencies {
     def play_review_version = "2.0.1"
     implementation "com.google.android.play:review:$play_review_version"
     implementation "com.google.android.play:review-ktx:$play_review_version"
-
-    def app_update_version = "2.0.1"
-    implementation "com.google.android.play:app-update:$app_update_version"
-    implementation "com.google.android.play:app-update-ktx:$app_update_version"
 
     implementation 'com.revenuecat.purchases:purchases:6.9.5'
 
