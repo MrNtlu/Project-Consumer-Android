@@ -1,5 +1,7 @@
 <div align="center">
 
+## App development stopped and moved to Flutter.
+
 ![logo_bg](https://github.com/MrNtlu/Project-Consumer-Android/assets/25686023/fc57304b-bc39-4e66-ae26-7cfc59408a21)
 
 # [Watchlistfy](https://watchlistfy.com/)
