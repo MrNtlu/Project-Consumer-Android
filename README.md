@@ -1,6 +1,6 @@
 <div align="center">
 
-## App development stopped and moved to Flutter.
+# [App development stopped and moved to Flutter](https://github.com/MrNtlu/Project-Consumer-Flutter)
 
 ![logo_bg](https://github.com/MrNtlu/Project-Consumer-Android/assets/25686023/fc57304b-bc39-4e66-ae26-7cfc59408a21)
 
@@ -17,12 +17,6 @@ Discover Anime, Movies, TV Shows, Games - all in one app! Track & list your fun 
 <a href="https://play.google.com/store/apps/details?id=com.mrntlu.projectconsumer"><img  src="https://play.google.com/intl/en_us/badges/images/badge_new.png"/></a>
 
 </div>
-
-## Table of Contents
-- [Features](#features)
-- [Screenshots](#ss)
-- [Libraries](#libraries)
-- [Level Calculation](#level)
 
 &nbsp;
 
@@ -96,21 +90,6 @@ e.g. If user has 3600 Score, their level is 12,
 Level = 60 * 0.2
 Level = 12
 ```
-
-### Tutorials
-#### Table of Contents
-* **[Pagination](#pagination)**
-* **[Caching](#caching)**
-* **[Search](#search)**
-* **[Dark Theme](#dark-theme)**
-* **[Error Handling](#error-handling)**
-* **[Orientation Change](#orientation-change)**
-* **[Screen-Base Grid](#screen-based-grid)**
-* **[DeepLink](#deeplink)**
-* **[Flexbox](#flexbox)**
-* **[SplashScreen](#splashscreen)**
-* **[Themed Icon](#themed-icon)**
-* **[Google Sign-in with Backend](#sign-in-backend)**
 
 &nbsp;
 &nbsp;
